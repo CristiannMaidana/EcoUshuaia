@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:eco_ushuaia/utils/validators_login.dart';
 
 void main() {
   runApp(LoginScreen());
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget{
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -68,28 +77,18 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 26), // Add space between text and text fields
-                // Text fields for email 
-                Container(
-                  //Le agrego sombra por afuera del container
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                        offset: Offset(0, 7),
-                      ),
-                    ],
-                  ),
+                // Form for email 
+                Form(
+                  key: _formKey,
                   //TextField for email
-                  child: TextField(
+                  child: TextFormField(
                     style: TextStyle(
                       color:Color.fromRGBO(28, 28, 30, 1),
-                      fontSize: 20, 
+                      fontSize: 14, 
                     ),
                     decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never, // To keep the label always invisible
-                      contentPadding: EdgeInsets.all(25),
+                      contentPadding: EdgeInsets.all(20),
                       labelText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
@@ -122,7 +121,12 @@ class LoginScreen extends StatelessWidget {
                           width: 1.5,
                         ),
                       ),
+                      errorStyle: TextStyle(
+                        fontSize: 12, 
+                      ),
+                      errorMaxLines: 10,
                     ),
+                    validator: validarEmail,
                   ),
                 ),
                 SizedBox(height: 26), // Add space between text fields
