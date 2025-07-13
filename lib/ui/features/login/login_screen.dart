@@ -68,8 +68,65 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 26), // Add space between text and text fields
-                
-            ],
+                // Text fields for email 
+                Container(
+                  //Le agrego sombra por afuera del container
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        offset: Offset(0, 7),
+                      ),
+                    ],
+                  ),
+                  //TextField for email
+                  child: TextField(
+                    style: TextStyle(
+                      color:Color.fromRGBO(28, 28, 30, 1),
+                      fontSize: 20, 
+                    ),
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never, // To keep the label always invisible
+                      contentPadding: EdgeInsets.all(25),
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide(color: Color(0xFF202020), width: 1),
+                      ),
+                      labelStyle: TextStyle(
+                        color: Color.fromRGBO(108, 108, 112, 1),
+                        fontSize: 20,
+                        ),
+                      fillColor: Color.fromRGBO(235, 235, 240, 1),
+                      filled: true,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide(
+                          color: Colors.blue.shade200, // azul brillante
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide(
+                          color: Colors.red.shade200, // rojo para error
+                          width: 1.5,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide(
+                          color: Colors.red.shade200, // rojo para error
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 26), // Add space between text fields
+             ],
             )
           )
         ),
