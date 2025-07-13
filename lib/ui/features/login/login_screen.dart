@@ -10,7 +10,8 @@ class LoginScreen extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Login Screen'),
+          title: Text('EcoUshuaia',
+          style: TextStyle(color: Color(0xFF202020), fontSize: 45),),
         ),
         body: Center(
           child: Text('Welcome to the Login Screen!'),
