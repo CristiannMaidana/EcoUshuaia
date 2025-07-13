@@ -24,8 +24,33 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: Center(
-          child: Text('Welcome to the Login Screen!'),
+        body: Container(
+          alignment: Alignment.center,
+          color: Color.fromRGBO(0, 137, 50, 1),
+          padding: EdgeInsets.all(25), // Add padding to the body
+          
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(48, 209, 88, 1),
+              borderRadius: BorderRadius.circular(50), // Rounded corners
+              border: Border.all(
+                color: Color.fromRGBO(10, 20, 13, 0.498),
+                width: 1, // Border width
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  offset: Offset(0, 7),
+                  blurRadius: 20,
+                ),
+              ],
+            ),
+            width: 600,
+            height: 600,            
+            padding:EdgeInsets.all(25),// Add padding to the container
+            
+            child: ListView()
+          )
         ),
       ),
     );
