@@ -15,6 +15,7 @@ class LoginScreen extends StatelessWidget {
             style: TextStyle(
               color: Colors.white,
               fontSize: 46,
+              fontWeight: FontWeight.bold,
               shadows: [
                 Shadow(
                   color: Colors.black,
@@ -49,7 +50,27 @@ class LoginScreen extends StatelessWidget {
             height: 600,            
             padding:EdgeInsets.all(25),// Add padding to the container
             
-            child: ListView()
+            child: ListView(
+              children: <Widget>[
+                SizedBox(height: 10), // Add space at the top
+                Text('Ingrese en su cuenta',
+                  style: TextStyle(
+                    color: Color.fromRGBO(233, 233, 240, 1),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 1.35),
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 26), // Add space between text and text fields
+                
+            ],
+            )
           )
         ),
       ),
