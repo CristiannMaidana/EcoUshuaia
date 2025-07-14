@@ -1,8 +1,9 @@
+import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validators_login.dart';
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
-import 'package:eco_ushuaia/ui/core/themes/espacio_theme.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -65,6 +66,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     espacioVerticalMediano,
                   ],
                 )              
+              ),
+              //Alineo en el medio al boton
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BotonEstandar(
+                    texto: "Aceptar",
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Todos los campos validaron OK
+                        // Podés continuar con el envío o acción
+                      } else {
+                        // Algún campo no pasó la validación
+                      }
+                    },
+                    width: 150,
+                    height: 54,
+                  ),
+                ],
               ),
             ],
           )
