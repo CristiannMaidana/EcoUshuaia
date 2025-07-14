@@ -1,10 +1,11 @@
+import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validators_login.dart';
-import 'package:eco_ushuaia/ui/core/themes/texto_theme.dart';
+import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 
 void main() {
   runApp(MaterialApp(
-    theme: appTextTheme,
+    theme: appLoginTheme, 
     home: LoginScreen(),
   ));
 }
@@ -20,20 +21,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 137, 50, 1),
           title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),
         ),
         body: Container(
           alignment: Alignment.center,
-          color: Color.fromRGBO(0, 137, 50, 1),
           padding: EdgeInsets.all(25), // Add padding to the body
           
           child: Container(
             decoration: BoxDecoration(
-              color: Color.fromRGBO(48, 209, 88, 1),
+              color: verdeLoginContainer,
               borderRadius: BorderRadius.circular(50), // Rounded corners
               border: Border.all(
                 color: Color.fromRGBO(10, 20, 13, 0.498),
@@ -41,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: sombraNegro,
                   offset: Offset(0, 7),
                   blurRadius: 20,
                 ),
@@ -67,29 +65,29 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(color: Color(0xFF202020), width: 1),
+                        borderSide: BorderSide(color: sombraNegro, width: 1),
                       ),
                       labelStyle: Theme.of(context).textTheme.labelLarge,
-                      fillColor: Color.fromRGBO(235, 235, 240, 1),
+                      fillColor: inputBlanco,
                       filled: true,
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                         borderSide: BorderSide(
-                          color: Colors.blue.shade200, // azul brillante
+                          color: azulBrillante,
                           width: 1.5,
                         ),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                         borderSide: BorderSide(
-                          color: Colors.red.shade200, // rojo para error
+                          color: rojoError,
                           width: 1.5,
                         ),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                         borderSide: BorderSide(
-                          color: Colors.red.shade200, // rojo para error
+                          color: rojoError,
                           width: 1.5,
                         ),
                       ),
@@ -100,45 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 26), // Add space between text fields
-                
-
-                // TextField for password
-                TextField(
-                  obscureText: true, // To hide the password input
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(25),
-                    labelText: 'Contraseña',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50),
-                      borderSide: BorderSide(color: Color(0xFF34C759), width: 1),
-                    ),
-                    labelStyle: TextStyle(color: Color(0xFF4A4A4A), fontSize: 20),
-                    fillColor: Color(0xFFebebeb), // Light gray background
-                    filled: true,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                  ),
-                ),
-                
-
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Todos los campos validaron OK
-                      // Podés continuar con el envío o acción
-                    } else {
-                      // Algún campo no pasó la validación
-                    }
-                  },
-                  child: Text('Aceptar'),
-                ),
              ],
             )
           )
         ),
-      ),
     );
   }
 }
