@@ -1,4 +1,4 @@
-//Validator Login user.dar
+//Validator Login user
 String? validarEmail(String? value) {
   if (value == null || value.isEmpty) {
     return 'El email no puede estar vacío';
@@ -15,5 +15,22 @@ String? validarEmail(String? value) {
       return true.toString();
     }
     else return false.toString();
+  }
+}
+
+//Validator Login password
+String? validarPassword(String? value){
+  if (value == null || value.isEmpty){
+    return 'La contraseña no puede estar vacío';
+  }
+  else {
+    //Acá debería hacer la validacíon del user. y su contraseña, 
+    //Si coincide con contraseña del usuario.
+    if (value == '123456'){
+      return true.toString();
+    }
+    else{
+      return false.toString();
+    }
   }
 }
