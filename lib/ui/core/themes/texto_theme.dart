@@ -63,16 +63,3 @@ final TextStyle labelDeError = const TextStyle(
     )
   ]
 );
-
-final ThemeData appTextTheme = ThemeData(
-  fontFamily: 'Roboto',
-  textTheme: TextTheme(
-    displayLarge: logo,
-    headlineLarge: subTitulo,
-    //titleLarge: TextStyle(),
-    //bodyLarge: TextStyle(),
-    labelLarge: labelConTexto,
-    labelMedium: labelInput,
-    labelSmall: labelDeError,
-  )
-);
