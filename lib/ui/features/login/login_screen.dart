@@ -22,40 +22,54 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),),
-        body: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.all(25), // Add padding to the body
-          
-          child: Container(
-            decoration: containerInputsLogin,
-            width: 600,
-            height: 600,            
-            padding:EdgeInsets.all(25),// Add padding to the container
-            child: ListView(
-              children: <Widget>[
-                espacioVerticalMediano,
-                Text('Ingrese en su cuenta', style: Theme.of(context).textTheme.headlineLarge),
-                espacioVerticalMediano,
-                // Form for email 
-                Form(
-                  key: _formKey,
-                  //TextField for email
-                  child: TextFormField(
-                    style: Theme.of(context).textTheme.labelMedium,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: Theme.of(context).textTheme.labelLarge,
-                      errorStyle: Theme.of(context).textTheme.labelSmall,
+      appBar: AppBar(title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),),
+      body: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(25), // Add padding to the body
+        
+        child: Container(
+          decoration: containerInputsLogin,
+          width: 600,
+          height: 600,            
+          padding:EdgeInsets.all(25),// Add padding to the container
+          child: ListView(
+            children: <Widget>[
+              espacioVerticalMediano,
+              Text('Ingrese en su cuenta', style: Theme.of(context).textTheme.headlineLarge),
+              espacioVerticalMediano,
+              // Form for email 
+              Form(
+                key: _formKey,
+                //TextField for email
+                child: Column(
+                  children: [
+                    TextFormField(
+                      style: Theme.of(context).textTheme.labelMedium,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: Theme.of(context).textTheme.labelLarge,
+                        errorStyle: Theme.of(context).textTheme.labelSmall,
+                      ),
+                      validator: validarEmail,
                     ),
-                    validator: validarEmail,
-                  ),
-                ),
-                espacioVerticalMediano,
-             ],
-            )
+                    espacioVerticalMediano,
+                    TextFormField(
+                      style: Theme.of(context).textTheme.labelMedium,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Contraseña',
+                        labelStyle: Theme.of(context).textTheme.labelLarge,
+                        errorStyle: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ),
+                    espacioVerticalMediano,
+                  ],
+                )              
+              ),
+            ],
           )
-        ),
+        )
+      ),
     );
   }
 }
