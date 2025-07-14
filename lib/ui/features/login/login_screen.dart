@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validators_login.dart';
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
+import 'package:eco_ushuaia/ui/core/themes/espacio_theme.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -33,9 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
             padding:EdgeInsets.all(25),// Add padding to the container
             child: ListView(
               children: <Widget>[
-                SizedBox(height: 26), // Add space at the top
+                espacioVerticalMediano,
                 Text('Ingrese en su cuenta', style: Theme.of(context).textTheme.headlineLarge),
-                SizedBox(height: 26), // Add space between text and text fields
+                espacioVerticalMediano,
                 // Form for email 
                 Form(
                   key: _formKey,
@@ -50,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: validarEmail,
                   ),
                 ),
-                SizedBox(height: 26), // Add space between text fields
+                espacioVerticalMediano,
              ],
             )
           )
