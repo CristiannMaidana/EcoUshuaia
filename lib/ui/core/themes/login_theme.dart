@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'colores_theme.dart';
 import 'texto_theme.dart';
+import 'inputs_theme.dart';
 
 final ThemeData appLoginTheme = ThemeData(
   fontFamily: 'Roboto',
@@ -16,4 +17,5 @@ final ThemeData appLoginTheme = ThemeData(
     labelMedium: labelInput,
     labelSmall: labelDeError,
   ),
+  inputDecorationTheme:appInputDecorationTheme,
 );
