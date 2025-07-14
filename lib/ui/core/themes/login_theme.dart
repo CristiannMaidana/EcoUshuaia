@@ -1,4 +1,5 @@
 //Este sera el theme principal para la pagina Login, el cual convinara todos los temes necesarios
+import 'package:eco_ushuaia/ui/core/themes/botones_theme.dart';
 import 'package:flutter/material.dart';
 import 'colores_theme.dart';
 import 'texto_theme.dart';
@@ -18,4 +19,5 @@ final ThemeData appLoginTheme = ThemeData(
     labelSmall: labelDeError,
   ),
   inputDecorationTheme:appInputDecorationTheme,
+  elevatedButtonTheme: ElevatedButtonThemeData(style: botonEstandar),
 );
