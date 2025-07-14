@@ -22,9 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-        appBar: AppBar(
-          title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),
-        ),
+        appBar: AppBar(title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),),
         body: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.all(25), // Add padding to the body
@@ -58,41 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 Form(
                   key: _formKey,
                   //TextField for email
-                  child: TextFormField(style: Theme.of(context).textTheme.labelMedium,
+                  child: TextFormField(
+                    style: Theme.of(context).textTheme.labelMedium,
                     decoration: InputDecoration(
-                      floatingLabelBehavior: FloatingLabelBehavior.never, // To keep the label always invisible
-                      contentPadding: EdgeInsets.all(20),
                       labelText: 'Email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(color: sombraNegro, width: 1),
-                      ),
                       labelStyle: Theme.of(context).textTheme.labelLarge,
-                      fillColor: inputBlanco,
-                      filled: true,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(
-                          color: azulBrillante,
-                          width: 1.5,
-                        ),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(
-                          color: rojoError,
-                          width: 1.5,
-                        ),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(
-                          color: rojoError,
-                          width: 1.5,
-                        ),
-                      ),
                       errorStyle: Theme.of(context).textTheme.labelSmall,
-                      errorMaxLines: 10,
                     ),
                     validator: validarEmail,
                   ),
