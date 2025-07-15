@@ -62,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelStyle: Theme.of(context).textTheme.labelLarge,
                         errorStyle: Theme.of(context).textTheme.labelSmall,
                       ),
+                      validator: validarPassword,
                     ),
                     espacioVerticalMediano,
                   ],
