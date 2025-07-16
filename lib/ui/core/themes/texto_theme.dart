@@ -1,13 +1,14 @@
 //Theme para los diferentes tipos de textos
+import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:flutter/material.dart';
 
 final TextStyle logo = const TextStyle(
-  color: Colors.white,
+  color: camarone950,
   fontSize: 46,
   fontWeight: FontWeight.bold,
   shadows: [
     Shadow(
-      color: Colors.black,
+      color: sombraNegro,
       offset: Offset(0, 1),
       blurRadius: 2,
     ),
@@ -15,7 +16,7 @@ final TextStyle logo = const TextStyle(
 );
 
 final TextStyle subTitulo = const TextStyle(
-  color: Color.fromRGBO(233, 233, 240, 1),
+  color: camarone950,
   fontSize: 26,
   fontWeight: FontWeight.bold,
   shadows: [
@@ -28,11 +29,11 @@ final TextStyle subTitulo = const TextStyle(
 );
 
 final TextStyle labelConTexto = const TextStyle(
-  color: Color.fromRGBO(108, 108, 112, 1),
+  color: colorNegro,
   fontSize: 20,
   shadows: [
     Shadow(
-      color: Colors.black87,
+      color: camarone100,
       offset: Offset(0, 1),
       blurRadius: 1,
     )
@@ -40,11 +41,11 @@ final TextStyle labelConTexto = const TextStyle(
 );
 
 final TextStyle labelInput = const TextStyle(
-  color: Color.fromRGBO(28, 28, 30, 1),
+  color: colorNegro,
   fontSize: 16,
   shadows: [
     Shadow(
-      color: Colors.black54,           // sombra oscura pero semi-transparente
+      color: sombraNegro,           // sombra oscura pero semi-transparente
       offset: Offset(0, 1),            // sombra cerca del texto, no tan lejos
       blurRadius: 3,                   // desenfoque suave
     ),
