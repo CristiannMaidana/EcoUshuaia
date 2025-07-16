@@ -5,7 +5,7 @@ import 'colores_theme.dart'; // Importá tus colores personalizados
 final InputDecorationTheme appInputDecorationTheme = InputDecorationTheme(
   floatingLabelBehavior: FloatingLabelBehavior.never,
   contentPadding: EdgeInsets.all(20),
-  fillColor: inputBlanco,
+  fillColor: camarone50,
   filled: true,
   focusedBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(50),
