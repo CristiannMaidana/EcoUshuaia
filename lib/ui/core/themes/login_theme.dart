@@ -7,8 +7,8 @@ import 'inputs_theme.dart';
 
 final ThemeData appLoginTheme = ThemeData(
   fontFamily: 'Roboto',
-  scaffoldBackgroundColor: verdeBackGround,
-  appBarTheme: AppBarTheme(backgroundColor: verdeBackGround),
+  scaffoldBackgroundColor: camarone300,
+  appBarTheme: AppBarTheme(backgroundColor: camarone300),
   textTheme: TextTheme(
     displayLarge: logo,
     headlineLarge: subTitulo,
