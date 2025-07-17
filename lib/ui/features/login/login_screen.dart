@@ -1,9 +1,12 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
+import 'package:eco_ushuaia/ui/features/forgot_password/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validators_login.dart';
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
+
+bool _recordarme = false; // Esto tiene que estar en el estado
 
 void main() {
   runApp(MaterialApp(
@@ -75,6 +78,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     )              
                   ),
                   //Texto debajo del input.
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //Para el checkbox y el nombre esten juntos.
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _recordarme, 
+                            onChanged: (bool? valor){
+                            setState(() {
+                              //aca deberia haber un metodo para que el cache siempre entre logeado
+                              _recordarme = valor ?? false;
+                            });
+                            }
+                          ),
+                          Text('Recuerdame', style: Theme.of(context).textTheme.labelMedium,),
+                        ],
+                      ),
+                      //Texto para mandarlo a la pagina de recordar contraseña
+                      TextButton(onPressed: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context) => ForgotPasswordScreen())
+                        );},                     
+                        child: Text('Olvido contraseña?', style: Theme.of(context).textTheme.labelMedium,),
+                      ),
+                    ],
+                  ),
                   BotonEstandar(
                     texto: "Ingresar",
                     onPressed: () {
