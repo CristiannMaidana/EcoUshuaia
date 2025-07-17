@@ -3,9 +3,16 @@ import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/utils/validators_forgot_password.dart';
 import 'package:flutter/material.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
-  //const ForgotPasswordScreen({Key? key}) : super(key: key);
+class ForgotPasswordScreen extends StatefulWidget {
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  // Nueva variable de estado para saber si está en modo email o celular
+  bool _esCelular = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,39 +30,41 @@ class ForgotPasswordScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Email", style: Theme.of(context).textTheme.headlineLarge,),
+              Text(
+                _esCelular ? "Celular" : "Email", 
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
               Form(
                 key: _formKey,
                 child: TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Ingrese un mail',
+                    labelText: _esCelular ? 'Ingrese un número' : 'Ingrese un mail',
                     labelStyle: Theme.of(context).textTheme.labelLarge,
                     errorStyle: Theme.of(context).textTheme.labelSmall
                   ),
-                  validator: validarEmailPassword,
+                  validator: _esCelular ? validarCelular : validarEmailPassword,
                 ),
               ),
               TextButton(
-                onPressed: (){
-                  //Aca tiene que estar el metodo que haga que cambie el nombre de Email a celular,
+                onPressed: () {
+                  setState(() {
+                    _esCelular = !_esCelular; // Cambia entre email y celular
+                  });
                 },
-                child: Text('Cambiar a celular')
+                child: Text(_esCelular ? 'Cambiar a email' : 'Cambiar a celular'),
               ),
               BotonEstandar(
                 texto: 'Siguiente',
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     // Todos los campos validaron OK
-                    // Podés continuar con el envío o acción
-                  } else {
-                    // Algún campo no pasó la validación
                   }
                 },
                 width: 150,
                 height: 54,
               ),
             ],
-          )
+          ),
         ),
       ),
     );
