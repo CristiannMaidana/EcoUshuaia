@@ -30,50 +30,53 @@ class _LoginScreenState extends State<LoginScreen> {
         
         child: Container(
           decoration: containerInputsLogin,
+          constraints: BoxConstraints(
+              maxHeight: 650,
+          ),
           width: 600,
-          height: 600,            
           padding:EdgeInsets.all(25),// Add padding to the container
-          child: ListView(
-            children: <Widget>[
-              espacioVerticalMediano,
-              Text('Ingrese en su cuenta', style: Theme.of(context).textTheme.headlineLarge),
-              espacioVerticalMediano,
-              // Form for email 
-              Form(
-                key: _formKey,
-                //TextField for email
-                child: Column(
-                  children: [
-                    TextFormField(
-                      style: Theme.of(context).textTheme.labelMedium,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: Theme.of(context).textTheme.labelLarge,
-                        errorStyle: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      validator: validarEmail,
-                    ),
-                    espacioVerticalMediano,
-                    TextFormField(
-                      style: Theme.of(context).textTheme.labelMedium,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        labelStyle: Theme.of(context).textTheme.labelLarge,
-                        errorStyle: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      validator: validarPassword,
-                    ),
-                    espacioVerticalMediano,
-                  ],
-                )              
-              ),
-              //Alineo en el medio al boton
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          
+          //Para que los hijos tengan la misma altura que su padre.
+          child: IntrinsicHeight(
+            //Para que pueda deslizarse
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Text('Ingrese a su cuenta', style: Theme.of(context).textTheme.headlineLarge),
+                  espacioVerticalMediano,
+                  // Form for email 
+                  Form(
+                    key: _formKey,
+                    //TextField for email
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          style: Theme.of(context).textTheme.labelMedium,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle: Theme.of(context).textTheme.labelLarge,
+                            errorStyle: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          validator: validarEmail,
+                        ),
+                        espacioVerticalMediano,
+                        TextFormField(
+                          style: Theme.of(context).textTheme.labelMedium,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Contraseña',
+                            labelStyle: Theme.of(context).textTheme.labelLarge,
+                            errorStyle: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          validator: validarPassword,
+                        ),
+                      ],
+                    )              
+                  ),
+                  //Texto debajo del input.
                   BotonEstandar(
-                    texto: "Aceptar",
+                    texto: "Ingresar",
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         // Todos los campos validaron OK
@@ -84,12 +87,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     width: 150,
                     height: 54,
-                  ),
+                  ), 
                 ],
-              ),
-            ],
+              )
+            )
           )
-        )
+        ),
       ),
     );
   }
