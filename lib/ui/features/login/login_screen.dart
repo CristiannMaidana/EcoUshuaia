@@ -119,6 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 150,
                     height: 54,
                   ), 
+                  espacioVerticalMediano,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('O ingrese con', style: Theme.of(context).textTheme.labelMedium,)
+                    ]
+                  ),
                 ],
               )
             )
