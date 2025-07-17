@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
+import 'package:eco_ushuaia/utils/validators_forgot_password.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
@@ -31,6 +32,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     labelStyle: Theme.of(context).textTheme.labelLarge,
                     errorStyle: Theme.of(context).textTheme.labelSmall
                   ),
+                  validator: validarEmailPassword,
                 ),
               ),
               TextButton(
