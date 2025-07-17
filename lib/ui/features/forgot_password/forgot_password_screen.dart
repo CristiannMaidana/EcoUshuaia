@@ -30,9 +30,14 @@ class ForgotPasswordScreen extends StatelessWidget {
                     labelStyle: Theme.of(context).textTheme.labelLarge,
                     errorStyle: Theme.of(context).textTheme.labelSmall
                   ),
-
                 ),
-              )
+              ),
+              TextButton(
+                onPressed: (){
+                  //Aca tiene que estar el metodo que haga que cambie el nombre de Email a celular,
+                },
+                child: Text('Cambiar a celular')
+              ),
             ],
           )
        ),
