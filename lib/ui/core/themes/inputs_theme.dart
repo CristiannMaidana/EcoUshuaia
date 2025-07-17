@@ -8,25 +8,25 @@ final InputDecorationTheme appInputDecorationTheme = InputDecorationTheme(
   fillColor: camarone50,
   filled: true,
   focusedBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(50),
+    borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(
       color: azulBrillante,
       width: 1.5,
     ),
   ),
   border: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(50),
+    borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(color: sombraNegro, width: 1),
   ),
   focusedErrorBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(50),
+    borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(
       color: rojoError,
       width: 1.5,
     ),
   ),
   errorBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(50),
+    borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(
       color: rojoError,
       width: 1.5,
