@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/ui/features/forgot_password/forgot_password_screen.dart';
+import 'package:eco_ushuaia/ui/features/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validators_login.dart';
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
@@ -133,6 +134,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
                       IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
                       IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70)
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Eres nuevo aquí?', style: Theme.of(context).textTheme.labelMedium,),
+                      TextButton(onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegisterScreen())
+                        );},
+                        child: Text('Registrate', style: Theme.of(context).textTheme.labelMedium,)
+                      ),
                     ],
                   ),
                 ],
