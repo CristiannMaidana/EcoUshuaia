@@ -126,6 +126,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text('O ingrese con', style: Theme.of(context).textTheme.labelMedium,)
                     ]
                   ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
+                      IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
+                      IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70)
+                    ],
+                  ),
                 ],
               )
             )
