@@ -1,7 +1,9 @@
+import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  //const ForgotPasswordScreen({Key? key}) : super(key: key);
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -10,10 +12,30 @@ class ForgotPasswordScreen extends StatelessWidget {
         title: Text('Olvido contraseña'),
       ),
       body: Center(
-        child: Text(
-          '¡Bienvenido a la otra página!',
-          style: TextStyle(fontSize: 22),
-        ),
+        child: Container(
+          decoration: containerInputsLogin,
+          width: 400,
+          height: 300,
+          padding: EdgeInsets.all(25),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Email", style: Theme.of(context).textTheme.headlineLarge,),
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Ingrese un mail',
+                    labelStyle: Theme.of(context).textTheme.labelLarge,
+                    errorStyle: Theme.of(context).textTheme.labelSmall
+                  ),
+
+                ),
+              )
+            ],
+          )
+       ),
       ),
     );
   }
