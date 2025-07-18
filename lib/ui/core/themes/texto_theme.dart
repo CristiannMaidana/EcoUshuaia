@@ -64,3 +64,29 @@ final TextStyle labelDeError = const TextStyle(
     )
   ]
 );
+
+final TextStyle titulo = const TextStyle(
+  color: camarone950,
+  fontSize: 34,
+  fontWeight: FontWeight.bold,
+  shadows: [
+    Shadow(
+      color: sombraNegro,
+      offset: Offset(0, 1),
+      blurRadius: 2,
+    ),
+  ],
+);
+
+final TextStyle cuerpo = const TextStyle(
+  color: camarone950,
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+    shadows: [
+    Shadow(
+      color: sombraNegro,
+      offset: Offset(0, 1),
+      blurRadius: 2,
+    ),
+  ],
+);
