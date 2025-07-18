@@ -6,8 +6,7 @@ import 'package:eco_ushuaia/utils/validators_login.dart';
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
-
-bool _recordarme = false; // Esto tiene que estar en el estado
+import 'package:eco_ushuaia/ui/core/ui/custom_avatar.dart'; 
 
 void main() {
   runApp(MaterialApp(
@@ -23,6 +22,14 @@ class LoginScreen extends StatefulWidget{
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _recordarme = false; 
+  final FocusNode _emailFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         TextFormField(
+                          focusNode: _emailFocusNode,
                           style: Theme.of(context).textTheme.labelMedium,
                           decoration: InputDecoration(
                             labelText: 'Email',
                             labelStyle: Theme.of(context).textTheme.labelLarge,
                             errorStyle: Theme.of(context).textTheme.labelSmall,
+                            prefixIcon: Padding(
+                              padding: EdgeInsets.only(left: 12),
+                              child: CustomAvatar(focusNode: _emailFocusNode)
+                            ),
                           ),
                           validator: validarEmail,
                         ),
