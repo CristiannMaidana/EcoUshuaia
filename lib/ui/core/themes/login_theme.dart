@@ -12,8 +12,9 @@ final ThemeData appLoginTheme = ThemeData(
   textTheme: TextTheme(
     displayLarge: logo,
     headlineLarge: subTitulo,
+    headlineMedium: titulo,
     //titleLarge: TextStyle(),
-    //bodyLarge: TextStyle(),
+    bodyLarge: cuerpo,
     labelLarge: labelConTexto,
     labelMedium: labelInput,
     labelSmall: labelDeError,
