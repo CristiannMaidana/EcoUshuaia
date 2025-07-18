@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
+import 'package:eco_ushuaia/ui/features/otp_code/otp_screen.dart';
 import 'package:eco_ushuaia/utils/validators_forgot_password.dart';
 import 'package:flutter/material.dart';
 
@@ -82,7 +83,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     texto: 'Siguiente',
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Todos los campos validaron OK
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              _esCelular ? '¡Numero enviado!':'¡Mail enviado!', 
+                              style: Theme.of(context).textTheme.labelLarge, 
+                              textAlign: TextAlign.center,
+                            ),
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.white, // Opcional: color de fondo
+                          ),
+                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
                       }
                     },
                     width: 150,
