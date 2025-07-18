@@ -13,9 +13,9 @@ String? validarEmailPassword(String? value) {
     //Aca deberia traer todos los emails de la base de datos y comparar si el email ingresado ya existe, 
     //si existe enviar un mail 
     if (value == 'Cristian@gmail.com'){
-      return 'Mail enviado ';
+      return null;
     }
-    else return 'No esta registrado este mail';
+    else return 'Este mail no esta registrado';
   }
 }
 
