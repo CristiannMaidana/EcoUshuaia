@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_eye_password.dart';
 import 'package:eco_ushuaia/ui/features/forgot_password/forgot_password_screen.dart';
 import 'package:eco_ushuaia/ui/features/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:eco_ushuaia/utils/validators_login.dart';
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
-import 'package:eco_ushuaia/ui/core/ui/custom_avatar.dart'; 
+import 'package:eco_ushuaia/ui/core/ui/custom_avatar.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -24,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _recordarme = false; 
   final FocusNode _emailFocusNode = FocusNode();
+  bool _obscurePassword = true; // Estado para mostrar/ocultar
 
   @override
   void dispose() {
@@ -79,11 +81,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         espacioVerticalMediano,
                         TextFormField(
                           style: Theme.of(context).textTheme.labelMedium,
-                          obscureText: true,
+                          obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             labelText: 'Contraseña',
                             labelStyle: Theme.of(context).textTheme.labelLarge,
                             errorStyle: Theme.of(context).textTheme.labelSmall,
+                            prefixIcon: Padding(
+                              padding: EdgeInsets.only(left: 12),
+                              child: CustomEyePassword(
+                                isClosed: _obscurePassword,// true=cerrado, false = abierto
+                                onTap: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              )
+                            )
                           ),
                           validator: validarPassword,
                         ),
