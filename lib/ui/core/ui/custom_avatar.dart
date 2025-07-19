@@ -8,7 +8,7 @@ class CustomAvatar extends StatefulWidget {
   const CustomAvatar({
     Key? key,
     required this.focusNode,
-    this.size = 40,
+    this.size = 10,
   }) : super(key: key);
 
   @override
