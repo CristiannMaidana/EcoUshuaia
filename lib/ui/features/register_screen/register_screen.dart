@@ -7,13 +7,18 @@ class RegisterScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registrate'), titleTextStyle: Theme.of(context).textTheme.headlineLarge,),
+      appBar: AppBar(title: Text('EcoUshuaia'), titleTextStyle: Theme.of(context).textTheme.displayLarge,),
       body: Container(
         margin: EdgeInsets.all(20),
         padding: EdgeInsets.all(25),
         decoration: containerInputsLogin,
         width: 500,
         height: 700,
+        child: Column(
+          children: [
+            Text("Registrese", style: Theme.of(context).textTheme.headlineLarge,),
+          ],
+        ),
       ),        
     );
   }
