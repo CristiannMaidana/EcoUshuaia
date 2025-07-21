@@ -4,17 +4,9 @@ import 'package:eco_ushuaia/ui/features/forgot_password/forgot_password_screen.d
 import 'package:eco_ushuaia/ui/features/register_screen/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validators_login.dart';
-import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
 import 'package:eco_ushuaia/ui/core/themes/container_decoration_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_avatar.dart';
-
-void main() {
-  runApp(MaterialApp(
-    theme: appLoginTheme, 
-    home: LoginScreen(),
-  ));
-}
 
 class LoginScreen extends StatefulWidget{
   @override
