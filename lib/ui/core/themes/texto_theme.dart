@@ -30,7 +30,7 @@ final TextStyle subTitulo = const TextStyle(
 
 final TextStyle labelConTexto = const TextStyle(
   color: colorNegro,
-  fontSize: 20,
+  fontSize: 16,
   shadows: [
     Shadow(
       color: camarone100,
@@ -42,12 +42,12 @@ final TextStyle labelConTexto = const TextStyle(
 
 final TextStyle labelInput = const TextStyle(
   color: colorNegro,
-  fontSize: 16,
+  fontSize: 15,
   shadows: [
     Shadow(
-      color: sombraNegro,           // sombra oscura pero semi-transparente
-      offset: Offset(0, 1),            // sombra cerca del texto, no tan lejos
-      blurRadius: 3,                   // desenfoque suave
+      color: sombraNegro,           
+      offset: Offset(0, 1),            
+      blurRadius: 3,
     ),
   ],
 );
