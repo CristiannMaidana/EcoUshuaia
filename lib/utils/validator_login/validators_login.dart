@@ -18,7 +18,17 @@ String? validarEmail(String? value) {
   }
 }
 
-//Validator Login password
+String? emailNuevoValidator(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'El email es obligatorio';
+  }
+  final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  if (!emailRegExp.hasMatch(value.trim())) {
+    return 'Ingresá un email válido';
+  }
+  return null;
+}
+
 String? validarPassword(String? value){
   if (value == null || value.isEmpty){
     return 'La contraseña no puede estar vacío';
