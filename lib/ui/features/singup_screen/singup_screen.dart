@@ -3,6 +3,7 @@ import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_avatar.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_eye_password.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email.dart';
+import 'package:eco_ushuaia/ui/features/login/login_screen.dart';
 import 'package:eco_ushuaia/utils/validator_singup_screen/validators_singup.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +20,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscurePasswordTwo = true; 
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +179,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 espacioVerticalMediano,
                                 
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Ya tiene una cuenta?', style: Theme.of(context).textTheme.labelMedium,),
+                                    TextButton(onPressed: (){
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                                        (route) => false,
+                                      );
+                                    },
+                                      child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
+                                    ),
+                                  ],
+                                ),              
+                                espacioVerticalMediano,
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('O ingrese con', style: Theme.of(context).textTheme.labelMedium,)
+                                  ]
+                                ),
+  
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
+                                    IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
+                                    IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70)
+                                  ],
+                                ),
                               ]
                             ),
                           ),
