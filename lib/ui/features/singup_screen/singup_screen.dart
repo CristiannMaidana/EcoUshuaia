@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_avatar.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email.dart';
 import 'package:eco_ushuaia/utils/validator_singup_screen/validators_singup.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class RegisterScreen extends StatefulWidget{
 class _RegisterScreenState extends State<RegisterScreen> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final FocusNode _userFocusNode = FocusNode();
+    final FocusNode _emailFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ],
                                   ),
                                 ),
+                                espacioVerticalMediano,
+
+                                Text('Email', style: Theme.of(context).textTheme.bodyLarge,),
+                                SizedBox(
+                                  child: TextFormField(
+                                    focusNode: _emailFocusNode,
+                                    decoration: InputDecoration(
+                                      labelText: "Email",
+                                      contentPadding: EdgeInsets.all(13),
+                                      labelStyle: Theme.of(context).textTheme.labelLarge,
+                                      errorStyle: Theme.of(context).textTheme.labelSmall,
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsetsGeometry.only(left: 12),
+                                        child: CustomEmail(focusNode: _emailFocusNode,),
+                                      ),
+                                    ),
+                                    validator: emailNuevoValidator,
+                                  ),
+                                ),
+                                espacioVerticalMediano,
                               ]
                             ),
                           ),
