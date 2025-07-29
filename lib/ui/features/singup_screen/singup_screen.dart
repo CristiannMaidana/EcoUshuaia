@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_avatar.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_eye_password.dart';
@@ -171,6 +172,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),                 
                                 espacioVerticalMediano,
 
+                                BotonEstandar(
+                                  texto: 'Registrarse',
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()){}
+                                  },
+                                ),
+                                espacioVerticalMediano,
+                                
                               ]
                             ),
                           ),
