@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_avatar.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_eye_password.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email.dart';
 import 'package:eco_ushuaia/utils/validator_singup_screen/validators_singup.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +13,11 @@ class RegisterScreen extends StatefulWidget{
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    final FocusNode _userFocusNode = FocusNode();
-    final FocusNode _emailFocusNode = FocusNode();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();    final FocusNode _userFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +115,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 espacioVerticalMediano,
+
+                                Text('Contraseña', style: Theme.of(context).textTheme.bodyLarge,),
+                                SizedBox(
+                                  child: TextFormField(
+                                    controller: passwordController,
+                                    obscureText: _obscurePassword,
+                                    decoration: InputDecoration(
+                                      labelText: 'Contraseña',
+                                      contentPadding: EdgeInsets.all(13),
+                                      labelStyle: Theme.of(context).textTheme.labelLarge,
+                                      errorStyle: Theme.of(context).textTheme.labelSmall,
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsetsGeometry.only(left: 12),
+                                          child: CustomEyePassword(
+                                            isClosed: _obscurePassword,// true=cerrado, false = abierto
+                                            onTap: () {
+                                              setState(() {
+                                                _obscurePassword = !_obscurePassword;
+                                              });
+                                            },
+                                          )
+                                        )
+                                    ),
+                                    validator: contrasennaValidator,
+                                  ),
+                                ),                        
+                                espacioVerticalMediano,
+
                               ]
                             ),
                           ),
