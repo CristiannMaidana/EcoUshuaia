@@ -17,6 +17,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscurePasswordTwo = true; 
+
 
 
   @override
@@ -141,6 +143,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     validator: contrasennaValidator,
                                   ),
                                 ),                        
+                                espacioVerticalMediano,
+
+                                Text('Repetir contraseña', style: Theme.of(context).textTheme.bodyLarge,),
+                                SizedBox(
+                                  child: TextFormField(
+                                    obscureText: _obscurePasswordTwo,
+                                    decoration: InputDecoration(
+                                      labelText: 'Repita contraseña',
+                                      contentPadding: EdgeInsets.all(13),
+                                      labelStyle: Theme.of(context).textTheme.labelLarge,
+                                      errorStyle: Theme.of(context).textTheme.labelSmall,
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsetsGeometry.only(left: 12),
+                                        child: CustomEyePassword(
+                                          isClosed: _obscurePasswordTwo,
+                                           onTap: () {
+                                            setState(() {
+                                              _obscurePasswordTwo = !_obscurePasswordTwo;
+                                            });
+                                           }
+                                        ),
+                                      )
+                                    ),
+                                    validator: (value) => repetirContrasennaValidator(value, passwordController.text)
+                                  ),
+                                ),                 
                                 espacioVerticalMediano,
 
                               ]
