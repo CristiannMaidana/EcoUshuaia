@@ -69,10 +69,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ],
                                         ),
                                       ),
+                                      SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            Text('Apellido', style: Theme.of(context).textTheme.bodyLarge),
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                labelText: 'Apellido',
+                                                contentPadding: EdgeInsets.all(13),
+                                                labelStyle: Theme.of(context).textTheme.labelLarge,
+                                                errorStyle: Theme.of(context).textTheme.labelSmall,
+                                              ),
+                                              validator: apellidoValidator,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-
                               ]
                             ),
                           ),
