@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_avatar.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email_validate.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_eye_password.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email.dart';
 import 'package:eco_ushuaia/ui/features/login/login_screen.dart';
@@ -20,6 +21,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscurePasswordTwo = true; 
+  bool emailNoAceptado = true;
+  final _emailFieldKey = GlobalKey<FormFieldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -102,15 +105,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Text('Email', style: Theme.of(context).textTheme.bodyLarge,),
                                 SizedBox(
                                   child: TextFormField(
+                                    key: _emailFieldKey,
                                     focusNode: _emailFocusNode,
                                     decoration: InputDecoration(
                                       labelText: "Email",
                                       contentPadding: EdgeInsets.all(13),
                                       labelStyle: Theme.of(context).textTheme.labelLarge,
                                       errorStyle: Theme.of(context).textTheme.labelSmall,
-                                      prefixIcon: Padding(
+                                      prefixIcon: emailNoAceptado? Padding(
                                         padding: EdgeInsetsGeometry.only(left: 12),
                                         child: CustomEmail(focusNode: _emailFocusNode,),
+                                      ) : Padding(
+                                        padding: EdgeInsetsGeometry.only(left: 12),
+                                        child: CustomEmailValidate(),
                                       ),
                                     ),
                                     validator: emailNuevoValidator,
@@ -174,6 +181,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 BotonEstandar(
                                   texto: 'Registrarse',
                                   onPressed: () {
+                                    final emailIsValid = _emailFieldKey.currentState?.validate() ?? false;
+                                    setState(() {
+                                      emailNoAceptado = !emailIsValid;
+                                    });
                                     if (_formKey.currentState!.validate()){}
                                   },
                                 ),
