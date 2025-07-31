@@ -11,10 +11,10 @@ String? validarEmail(String? value) {
   }
   else {
     //Aca deberia traer todos los emails de la base de datos y comparar si el email ingresado ya existe
-    if (value == 'Cristian@gmail.com'){
-      return true.toString();
-    }
-    else return false.toString();
+    //if (value == 'Cristian@gmail.com'){
+    //  return true.toString();
+    //}
+    //else return false.toString();
   }
 }
 
@@ -36,11 +36,11 @@ String? validarPassword(String? value){
   else {
     //Acá debería hacer la validacíon del user. y su contraseña, 
     //Si coincide con contraseña del usuario.
-    if (value == '123456'){
-      return true.toString();
-    }
-    else{
-      return false.toString();
-    }
+    //if (value == '123456'){
+    //  return true.toString();
+    //}
+    //else{
+    //  return false.toString();
+    //}
   }
 }
