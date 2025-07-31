@@ -1,9 +1,11 @@
+import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_avatar.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email_validate.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_eye_password.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_email.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_text_list.dart';
 import 'package:eco_ushuaia/ui/features/login/login_screen.dart';
 import 'package:eco_ushuaia/utils/validator_singup_screen/validators_singup.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +19,13 @@ class RegisterScreen extends StatefulWidget{
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();    final FocusNode _userFocusNode = FocusNode();
+  final _emailFieldKey = GlobalKey<FormFieldState>();
   final FocusNode _emailFocusNode = FocusNode();
   final passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscurePasswordTwo = true; 
   bool emailNoAceptado = true;
-  final _emailFieldKey = GlobalKey<FormFieldState>();
+  bool mensajePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +151,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         )
                                     ),
                                     validator: contrasennaValidator,
+                                    onTap: () {
+                                      if(mensajePassword){
+                                        mensajePassword = false;
+                                        showDialog(
+                                          context: context, 
+                                          builder: (context) => AlertDialog(
+                                            backgroundColor: camarone300,
+                                            title: Text('Instrucciones', style: TextStyle(color: camarone950),),
+                                            content: Container(
+                                              height: 120,
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('La contraseña debe tener al menos:', style: TextStyle(color: camarone950)),
+                                                  SizedBox(height: 8),
+                                                  listInstrucciones('8 caracteres'),
+                                                  listInstrucciones('1 mayúscula'),
+                                                  listInstrucciones('1 número'),
+                                                  listInstrucciones('1 caracter especial')
+                                                ],
+                                              ),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: Text('Aceptar', style: TextStyle(color: colorNegro)),
+                                              ),
+                                            ],
+                                          ) 
+                                        );
+                                      }
+                                    },
                                   ),
                                 ),                        
                                 espacioVerticalMediano,
