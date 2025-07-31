@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_Button.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_eye_password.dart';
 import 'package:eco_ushuaia/ui/features/forgot_password/forgot_password_screen.dart';
+import 'package:eco_ushuaia/ui/features/home/home_screen.dart';
 import 'package:eco_ushuaia/ui/features/singup/singup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/utils/validator_login/validators_login.dart';
@@ -128,8 +129,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     texto: "Ingresar",
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Todos los campos validaron OK
-                        // Podés continuar con el envío o acción
+                        // user Cristian@gmail.com, contraseña 123456
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          (route) => false,
+                        );
                       } else {
                         // Algún campo no pasó la validación
                       }
