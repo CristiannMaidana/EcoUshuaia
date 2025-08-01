@@ -26,6 +26,13 @@ class _CustomMapState extends State<CustomMapa> with SingleTickerProviderStateMi
   Widget build(context){
     return GestureDetector(
       onTap: _handleTap,
+      child: Lottie.asset(
+        _touched ? 'assets/lottie/mapa_in_reveal.json' 
+        : 'assets/lottie/mapa_hover_pinch.json',
+        animate: false,
+        width: widget.size,
+        height: widget.size, 
+      ),
     );
   }
 }
