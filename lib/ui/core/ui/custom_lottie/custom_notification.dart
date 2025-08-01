@@ -3,10 +3,12 @@ import 'package:lottie/lottie.dart';
 
 class CustomNotification extends StatefulWidget {
   final double size;
+  final List notificaciones;
 
   const CustomNotification({
     Key? key,
-    this.size = 70,
+    this.size = 60,
+    required this.notificaciones,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class _CustomNotificationState extends State<CustomNotification> with SingleTick
       _touched = true;
     });
     _controller.forward(from: 0);
+    //Aca debería colocar el overlay para los mensajes de las notificaciones
   }
 
   @override
