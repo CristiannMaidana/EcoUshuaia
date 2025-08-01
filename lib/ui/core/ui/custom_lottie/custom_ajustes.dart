@@ -14,9 +14,17 @@ class CustomAjustes extends StatefulWidget{
 }
 
 class _CustomAjustesState extends State<CustomAjustes> with SingleTickerProviderStateMixin{
+  bool _touched = false;
 
+  void _handleTap() {
+    setState(() {
+      _touched = true;    
+    });
+  }
   @override
   Widget build(context){
-    return GestureDetector();
+    return GestureDetector(
+      onTap: _handleTap,
+    );
   }
 }
