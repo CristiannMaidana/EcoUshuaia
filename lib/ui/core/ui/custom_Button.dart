@@ -41,7 +41,6 @@ class BotonEstandar extends StatelessWidget {
 
     Widget result = button;
 
-    // Si pasás ancho o alto, lo envuelve en un SizedBox
     if (width != null || height != null) {
       result = SizedBox(
         width: width,
