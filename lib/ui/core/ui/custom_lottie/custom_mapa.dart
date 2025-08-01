@@ -29,7 +29,7 @@ class _CustomMapState extends State<CustomMapa> with SingleTickerProviderStateMi
       child: Lottie.asset(
         _touched ? 'assets/lottie/mapa_in_reveal.json' 
         : 'assets/lottie/mapa_hover_pinch.json',
-        animate: false,
+        repeat: false,
         width: widget.size,
         height: widget.size, 
       ),
