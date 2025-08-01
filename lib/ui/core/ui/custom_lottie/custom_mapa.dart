@@ -14,9 +14,18 @@ class CustomMapa extends StatefulWidget{
 }
 
 class _CustomMapState extends State<CustomMapa> with SingleTickerProviderStateMixin{
+  bool _touched = false;
+
+  void _handleTap() {
+    setState(() {
+      _touched = true;
+    });
+  }
 
   @override
   Widget build(context){
-    return Container();
+    return GestureDetector(
+      onTap: _handleTap,
+    );
   }
 }
