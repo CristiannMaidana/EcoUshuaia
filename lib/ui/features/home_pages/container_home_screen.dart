@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_ButtomNavegationBar.dart';
 import 'package:eco_ushuaia/ui/features/home_pages/home/home_screen.dart';
+import 'package:eco_ushuaia/ui/features/home_pages/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class ContainerHomeScreen extends StatefulWidget{
@@ -16,7 +17,7 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
     HomeScreen(),
     Center(child: Text('Calendario')),
     Center(child: Text('Mapa')),
-    Center(child: Text('Ajustes'),)
+    SettingsScreen(),
   ];
 
   @override
