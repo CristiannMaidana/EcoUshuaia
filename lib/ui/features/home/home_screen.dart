@@ -10,6 +10,14 @@ class HomeScreen extends StatefulWidget{
 
 class _HomeScreenState extends State<HomeScreen>{
   final List listaNotificaciones=List.empty(); //Simula ser la lista de todas las notificaciones de la base de dato
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    Center(child: Text('Inicio')),
+    Center(child: Text('Calendario')),
+    Center(child: Text('Mapa')),
+    Center(child: Text('Ajustes'),)
+  ];
 
   @override
   Widget build(BuildContext context){
