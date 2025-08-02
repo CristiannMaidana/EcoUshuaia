@@ -2,14 +2,14 @@ import 'package:eco_ushuaia/ui/core/ui/custom_ButtomNavegationBar.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_notification.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget{
-  HomeScreen({Key? key}) : super (key: key);
+class ContainerHomeScreen extends StatefulWidget{
+  ContainerHomeScreen({Key? key}) : super (key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ContainerHomeScreen> createState() => _ContainerHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>{
+class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
   final List listaNotificaciones=List.empty(); //Simula ser la lista de todas las notificaciones de la base de dato
   int _selectedIndex = 0;
 
