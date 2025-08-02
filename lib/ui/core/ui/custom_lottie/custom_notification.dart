@@ -7,7 +7,7 @@ class CustomNotification extends StatefulWidget {
 
   const CustomNotification({
     Key? key,
-    this.size = 60,
+    this.size = 44,
     required this.notificaciones,
   }) : super(key: key);
 
