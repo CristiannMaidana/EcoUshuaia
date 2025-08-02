@@ -192,14 +192,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
-  lordicon:
-    dependency: "direct main"
-    description:
-      name: lordicon
-      sha256: "6555f0059f20bfc3bd44c40344623235cd86965f10dc4cb79c91ad25f3402014"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   lottie:
     dependency: "direct main"
     description:
