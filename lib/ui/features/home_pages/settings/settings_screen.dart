@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_chevron.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget{
@@ -24,7 +25,7 @@ class SettingsScreen extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Editar perfil', style: Theme.of(context).textTheme.labelLarge,),
-                        Icon(Icons.insert_chart_outlined_rounded)
+                        CustomChevron(),
                       ],
                     ),
                   )
