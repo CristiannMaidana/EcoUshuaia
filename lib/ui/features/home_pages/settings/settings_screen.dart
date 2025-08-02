@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_chevron.dart';
+import 'package:eco_ushuaia/ui/features/home_pages/settings/edit_user/edit_user_screen.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget{
@@ -21,6 +22,12 @@ class SettingsScreen extends StatelessWidget{
               child: Column(
                 children: [
                   GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => EditUserScreen())
+                      );
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
