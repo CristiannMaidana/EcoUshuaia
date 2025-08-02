@@ -25,9 +25,18 @@ class _HomeScreenState extends State<HomeScreen>{
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20), 
-            child: CustomNotification(notificaciones: listaNotificaciones),
+          Container(
+            padding: EdgeInsets.only(right: 20),
+            child:  Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                border: Border.all(
+                  width: 1
+                )
+              ),
+              child: CustomNotification(notificaciones: listaNotificaciones)
+              ),
           )
         ],
       ),
