@@ -18,7 +18,6 @@ class CustomBottomNavBar extends StatefulWidget {
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> with TickerProviderStateMixin {
   late final List<AnimationController> _controllers;
-  int _lastSelected = 0;
 
   @override
   void initState() {
@@ -40,7 +39,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> with TickerProv
   void _onTab(int idx) {
     widget.onTabSelected(idx);
     setState(() {
-      _lastSelected = idx;
     });
     _controllers[idx].forward(from: 0);
   }
