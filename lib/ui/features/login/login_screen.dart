@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // user Cristian@gmail.com, contraseña 123456
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          MaterialPageRoute(builder: (context) => ContainerHomeScreen()),
                           (route) => false,
                         );
                       } else {
