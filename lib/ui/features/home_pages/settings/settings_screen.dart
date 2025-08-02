@@ -13,13 +13,17 @@ class SettingsScreen extends StatelessWidget{
           children: [
             Text('Cuenta'),
             Container(
+              margin: EdgeInsets.all(50),
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
               child: Column(
                 children: [
                   GestureDetector(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Editar perfil'),
+                        Text('Editar perfil', style: Theme.of(context).textTheme.labelLarge,),
                         Icon(Icons.insert_chart_outlined_rounded)
                       ],
                     ),
