@@ -3,6 +3,11 @@ import 'package:eco_ushuaia/ui/features/home_pages/settings/edit_user/edit_user_
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget{
+  final List<String> labels = const [
+    'Editar perfil',
+    'Editar contraseña',
+    'Editar direccion',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -11,35 +16,33 @@ class SettingsScreen extends StatelessWidget{
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Cuenta'),
-            Container(
-              margin: EdgeInsets.all(50),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context) => EditUserScreen())
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Editar perfil', style: Theme.of(context).textTheme.labelLarge,),
-                        CustomChevron(),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
+            Text('Datos de ususario', style: Theme.of(context).textTheme.headlineLarge,),
+            ...List.generate(labels.length, (index) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 50),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),  
+                child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EditUserScreen()),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(labels[index], style: Theme.of(context).textTheme.labelLarge,),
+                            CustomChevron(),
+                          ],
+                        ),
+                      ),
+              );
+            }),
+          ]
         ),
       ),
     );
