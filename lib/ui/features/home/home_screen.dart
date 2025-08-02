@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/ui/custom_ButtomNavegationBar.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_notification.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +30,15 @@ class _HomeScreenState extends State<HomeScreen>{
             child: CustomNotification(notificaciones: listaNotificaciones),
           )
         ],
+      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        onTabSelected: (idx) {
+          setState(() {
+            _selectedIndex = idx;
+          });
+        }
       ),
     );
   }
