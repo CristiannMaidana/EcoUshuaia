@@ -8,6 +8,9 @@ class SeccionAjustes extends StatefulWidget{
   final List<String> lista;
   final List<Widget> listPaginas;
   final List<Widget> listaIcons;
+  final void Function(bool)? onToggleModoNoche;
+  final void Function(bool)? onToggleNotificacion;
+
 
   const SeccionAjustes({
     Key? key,
@@ -15,6 +18,8 @@ class SeccionAjustes extends StatefulWidget{
     required this.lista,
     required this.listPaginas,
     required this.listaIcons,
+    required this.onToggleModoNoche,
+    required this.onToggleNotificacion,
   }): super(key: key);
 
   @override
@@ -50,7 +55,7 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          if (widget.lista[index] != 'Notificaciones' && widget.lista[index] != 'Modo oscuro') {
+                          if (widget.lista[index] != 'Desactivar notificaciones' && widget.lista[index] != 'Modo oscuro') {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => widget.listPaginas[index]),
@@ -77,10 +82,13 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
                                 ],
                               ),
                             ),
-                            if (widget.lista[index] != 'Notificaciones' && widget.lista[index] != 'Modo oscuro')
+                            if (widget.lista[index] != 'Desactivar notificaciones' && widget.lista[index] != 'Modo oscuro')
                               CustomChevron(),
-                            if (widget.lista[index] == 'Notificaciones' || widget.lista[index] == 'Modo oscuro')
-                              CustomSwitch(),
+                            if (widget.lista[index] == 'Desactivar notificaciones' || widget.lista[index] == 'Modo oscuro')
+                              if(widget.lista[index] == 'Modo oscuro')
+                                CustomSwitch(onChanged: widget.onToggleModoNoche),
+                              if(widget.lista[index] == 'Desactivar notificaciones')
+                                CustomSwitch(onChanged: widget.onToggleNotificacion),
                           ],
                         ),
                       ),
