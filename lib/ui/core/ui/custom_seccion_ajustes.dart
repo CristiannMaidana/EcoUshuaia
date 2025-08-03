@@ -25,7 +25,7 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Datos de ususario', style: Theme.of(context).textTheme.headlineLarge,),
+            widget.titulo,
             ...List.generate(widget.lista.length, (index) {return Container(
                 margin: EdgeInsets.symmetric(horizontal: 50),
                 decoration: BoxDecoration(
