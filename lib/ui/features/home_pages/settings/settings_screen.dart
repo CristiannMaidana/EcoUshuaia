@@ -9,6 +9,15 @@ class SettingsScreen extends StatelessWidget{
     'Editar direccion',
   ];
 
+  final List<String> labelsSistema = const [
+    'Modo oscuro',
+    'Lenguaje',
+    'Limpiar cache',
+    'Termino de uso',
+    'Politicas de privacidad'
+    'Eliminar cuenta',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
