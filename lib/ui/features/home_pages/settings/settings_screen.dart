@@ -11,6 +11,21 @@ class SettingsScreen extends StatefulWidget{
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool modoNoche = false;
+  bool notificacion = false;
+  
+  void _onToggleModoNoche(bool value) {
+    setState(() {
+      modoNoche = value;
+    });
+  }
+  
+  void _onToggleNotificaciones(bool value) {
+    setState(() {
+      notificacion = value;
+    });
+  }
+
   final List<String> labelsUsuario = const [
     'Editar perfil',
     'Editar contraseña',
@@ -18,7 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ];
 
   final List<String> labelsSistema = const [
-    'Notificaciones',
+    'Desactivar notificaciones',
     'Modo oscuro',
     'Lenguaje',
     'Limpiar cache',
@@ -40,18 +55,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Image.asset('assets/icons/settings/user/adress.png'),
   ];
 
-  final List<Widget> listaSistemaIcons = [
-    Image.asset('assets/icons/settings/system/bell.png'),
-    CustomSunNight(modoNoche: false,),
-    Image.asset('assets/icons/settings/system/language.png'),
-    Image.asset('assets/icons/settings/system/data-cleaning.png'),
-    Image.asset('assets/icons/settings/system/info.png'),
-    Image.asset('assets/icons/settings/system/file.png'),
-    Image.asset('assets/icons/settings/system/delete-user.png'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Widget> listaSistemaIcons = [
+      Image.asset('assets/icons/settings/system/bell.png'),
+      CustomSunNight(modoNoche: modoNoche,),
+      Image.asset('assets/icons/settings/system/language.png'),
+      Image.asset('assets/icons/settings/system/data-cleaning.png'),
+      Image.asset('assets/icons/settings/system/info.png'),
+      Image.asset('assets/icons/settings/system/file.png'),
+      Image.asset('assets/icons/settings/system/delete-user.png'),
+    ];
+
     return Scaffold(
       backgroundColor: camarone50,
       appBar: AppBar(title: Text('Configuracion', style: Theme.of(context).textTheme.displayLarge,)),
@@ -70,6 +85,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       lista: labelsUsuario, 
                       listPaginas: listaPaginas,
                       listaIcons: listaUsuarioIcons,
+                      onToggleModoNoche: null,
+                      onToggleNotificacion: _onToggleNotificaciones,
                     ),
                     espacioVerticalMediano,
                     SeccionAjustes(
@@ -77,6 +94,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       lista: labelsSistema,
                       listPaginas: listaPaginas,
                       listaIcons: listaSistemaIcons,
+                      onToggleModoNoche: _onToggleModoNoche,
+                      onToggleNotificacion: null,
                     ),
                   ],
                 ),
