@@ -38,7 +38,12 @@ class SettingsScreen extends StatelessWidget{
               titulo: Text('Datos de ususario', style: Theme.of(context).textTheme.headlineLarge,), 
               lista: labelsUsuario, 
               listPaginas: listaPaginas
-            )
+            ),
+            SeccionAjustes(
+              titulo: Text('Sistema'),
+              lista: labelsSistema,
+              listPaginas: listaPaginas
+            ),
           ]
         ),
       ),
