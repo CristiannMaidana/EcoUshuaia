@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_sun_night.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_seccion_ajustes.dart';
 import 'package:eco_ushuaia/ui/features/home_pages/settings/edit_user/edit_user_screen.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,9 @@ class SettingsScreen extends StatelessWidget{
     Image.asset('assets/icons/settings/user/adress.png'),
   ];
 
-  final List<Image> listaSistemaIcons = [
+  final List<Widget> listaSistemaIcons = [
     Image.asset('assets/icons/settings/system/bell.png'),
-    Image.asset('assets/icons/settings/system/bell.png'),
+    CustomSunNight(modoNoche: false,),
     Image.asset('assets/icons/settings/system/language.png'),
     Image.asset('assets/icons/settings/system/data-cleaning.png'),
     Image.asset('assets/icons/settings/system/info.png'),
