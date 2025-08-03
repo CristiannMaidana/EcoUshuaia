@@ -3,7 +3,7 @@ import 'package:eco_ushuaia/ui/features/home_pages/settings/edit_user/edit_user_
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget{
-  final List<String> labels = const [
+  final List<String> labelsUsuario = const [
     'Editar perfil',
     'Editar contraseña',
     'Editar direccion',
@@ -19,7 +19,7 @@ class SettingsScreen extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Datos de ususario', style: Theme.of(context).textTheme.headlineLarge,),
-            ...List.generate(labels.length, (index) {
+            ...List.generate(labelsUsuario.length, (index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 50),
                 decoration: BoxDecoration(
@@ -35,7 +35,7 @@ class SettingsScreen extends StatelessWidget{
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(labels[index], style: Theme.of(context).textTheme.labelLarge,),
+                            Text(labelsUsuario[index], style: Theme.of(context).textTheme.labelLarge,),
                             CustomChevron(),
                           ],
                         ),
