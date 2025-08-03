@@ -5,7 +5,12 @@ import 'package:eco_ushuaia/ui/core/ui/custom_seccion_ajustes.dart';
 import 'package:eco_ushuaia/ui/features/home_pages/settings/edit_user/edit_user_screen.dart';
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatelessWidget{
+class SettingsScreen extends StatefulWidget{
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   final List<String> labelsUsuario = const [
     'Editar perfil',
     'Editar contraseña',
@@ -21,7 +26,7 @@ class SettingsScreen extends StatelessWidget{
     'Politicas de privacidad',
     'Eliminar cuenta',
   ];
-  
+
   //Solo para testear
   final List<Widget> listaPaginas = const [
     EditUserScreen(),
