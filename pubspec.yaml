@@ -63,6 +63,8 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/icons/settings/user/
+    - assets/icons/settings/system/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
