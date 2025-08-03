@@ -26,10 +26,13 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         widget.titulo,
-        ...List.generate(widget.lista.length, (index) {return Container(
+        ...List.generate(widget.lista.length, (index) {
+          return Container(
+            height: 60,
+            padding: EdgeInsets.only(left: 20, right: 20),
             margin: EdgeInsets.symmetric(horizontal: 50),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFFFFFFFF),
             ),  
             child: GestureDetector(
               onTap: () {
