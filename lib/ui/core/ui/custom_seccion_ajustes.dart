@@ -1,12 +1,13 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_chevron.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_switch.dart';
 import 'package:flutter/material.dart';
 
 class SeccionAjustes extends StatefulWidget{
   final Widget titulo;
   final List<String> lista;
   final List<Widget> listPaginas;
-  final List<Image> listaIcons;
+  final List<Widget> listaIcons;
 
   const SeccionAjustes({
     Key? key,
@@ -74,7 +75,10 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
                                 ],
                               ),
                             ),
-                            CustomChevron(),
+                            if (widget.lista[index] != 'Notificaciones' && widget.lista[index] != 'Modo oscuro')
+                              CustomChevron(),
+                            if (widget.lista[index] == 'Notificaciones' || widget.lista[index] == 'Modo oscuro')
+                              CustomSwitch(),
                           ],
                         ),
                       ),
