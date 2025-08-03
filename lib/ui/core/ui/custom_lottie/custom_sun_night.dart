@@ -47,8 +47,7 @@ class _CustomSunNightState extends State<CustomSunNight> with SingleTickerProvid
 
   @override
   Widget build(context) {
-    return GestureDetector(
-      child: Lottie.asset(
+    return Lottie.asset(
         'assets/lottie/sun_night.json',
         height: widget.size,
         width: widget.size,
@@ -56,8 +55,8 @@ class _CustomSunNightState extends State<CustomSunNight> with SingleTickerProvid
         controller: _controller,
         onLoaded: (composition) {
           _controller.duration = composition.duration;
+          _controller.value = widget.modoNoche ? 1 : 0;
         } 
-      ),
     );
   }
 }
