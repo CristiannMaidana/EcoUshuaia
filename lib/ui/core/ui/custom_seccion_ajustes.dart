@@ -50,10 +50,12 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => widget.listPaginas[index]),
-                          );
+                          if (widget.lista[index] != 'Notificaciones' && widget.lista[index] != 'Modo oscuro') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => widget.listPaginas[index]),
+                            );
+                          }
                         },
                         child: Row(
                           children: [
