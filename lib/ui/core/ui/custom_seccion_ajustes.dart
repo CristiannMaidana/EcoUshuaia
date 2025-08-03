@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_chevron.dart';
 import 'package:flutter/material.dart';
 
 class SeccionAjustes extends StatefulWidget{
@@ -20,6 +21,34 @@ class _SeccionAjustesState extends State<SeccionAjustes> with SingleTickerProvid
 
   @override
   Widget build(context) {
-    return Column();
+    return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Datos de ususario', style: Theme.of(context).textTheme.headlineLarge,),
+            ...List.generate(widget.lista.length, (index) {return Container(
+                margin: EdgeInsets.symmetric(horizontal: 50),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),  
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => widget.listPaginas[index]),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(widget.lista[index], style: Theme.of(context).textTheme.labelLarge,),
+                      CustomChevron(),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ]
+    );
   }
 }
