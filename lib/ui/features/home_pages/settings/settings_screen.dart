@@ -98,6 +98,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onToggleModoNoche: _onToggleModoNoche,
                       onToggleNotificacion: _onToggleNotificaciones,
                     ),
+                    espacioVerticalMediano,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton.icon(
+                          onPressed: (){},
+                          label: Text('Cerrar sesión'),
+                          icon: Icon(Icons.logout, color: Colors.red, size: 35,),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            textStyle: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                    espacioVerticalMediano,
                   ],
                 ),
               ),
