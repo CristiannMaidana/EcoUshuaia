@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_SizedBox.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_bell.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_lottie/custom_sun_night.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_seccion_ajustes.dart';
 import 'package:eco_ushuaia/ui/features/home_pages/settings/edit_user/edit_user_screen.dart';
@@ -58,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> listaSistemaIcons = [
-      Image.asset('assets/icons/settings/system/bell.png'),
+      CustomBell(isActive: notificacion,),
       CustomSunNight(modoNoche: modoNoche,),
       Image.asset('assets/icons/settings/system/language.png'),
       Image.asset('assets/icons/settings/system/data-cleaning.png'),
@@ -86,7 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       listPaginas: listaPaginas,
                       listaIcons: listaUsuarioIcons,
                       onToggleModoNoche: null,
-                      onToggleNotificacion: _onToggleNotificaciones,
+                      onToggleNotificacion: null,
                     ),
                     espacioVerticalMediano,
                     SeccionAjustes(
@@ -95,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       listPaginas: listaPaginas,
                       listaIcons: listaSistemaIcons,
                       onToggleModoNoche: _onToggleModoNoche,
-                      onToggleNotificacion: null,
+                      onToggleNotificacion: _onToggleNotificaciones,
                     ),
                   ],
                 ),
