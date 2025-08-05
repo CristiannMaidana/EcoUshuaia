@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/custom_items_novedades.dart';
 import 'package:flutter/material.dart';
 
 class CustomNovedades extends StatefulWidget {
@@ -58,38 +59,65 @@ class _CustomNovedadesState extends State<CustomNovedades> {
   
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.4,
-      minChildSize: 0.4,
-      maxChildSize: 0.7,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(22),
-              topRight: Radius.circular(22),
-            ),
-            border: Border.all(color: Colors.grey[400]!, width: 1.5),
-          ),
-          child: ListView(
-            controller: scrollController,
-            children: [
-              Center(
+    return GestureDetector(
+      onTap: _bajarSheet,
+      behavior: HitTestBehavior.opaque,
+      child: Stack(
+        children: [
+          DraggableScrollableSheet(
+            controller: _draggableController,
+            initialChildSize: 0.4,
+            minChildSize: 0.4,
+            maxChildSize: 0.7,
+            builder: (context, scrollController) {
+              if (_localController != scrollController) {
+                _localController?.removeListener(_scrollListener);
+                _localController = scrollController;
+                _localController!.addListener(_scrollListener);
+              }
+              return GestureDetector(
+                onTap: () {},
                 child: Container(
-                  margin: EdgeInsets.only(top: 12, bottom: 12),
-                  width: 40,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(8),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(22),
+                      topRight: Radius.circular(22),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 12, bottom: 8),
+                        width: 40,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          controller: scrollController,
+                          children: [
+                            CustomItemsNovedades(listaNovedades: [],),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
