@@ -116,6 +116,17 @@ class _CustomNovedadesState extends State<CustomNovedades> {
               );
             },
           ),
+          if (_mostrarFlecha)
+            Positioned(
+              right: 24,
+              bottom: 48,
+              child: FloatingActionButton(
+                backgroundColor: Colors.black.withOpacity(0.8),
+                mini: true,
+                onPressed: _subirTodo,
+                child: const Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 32),
+              ),
+            ),
         ],
       ),
     );
