@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/ui/core/ui/custom_ButtomNavegationBar.dart';
+import 'package:eco_ushuaia/ui/features/home_pages/calender/calender_screen.dart';
 import 'package:eco_ushuaia/ui/features/home_pages/home/home_screen.dart';
 import 'package:eco_ushuaia/ui/features/home_pages/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
 
   final List<Widget> _pages = [
     HomeScreen(),
-    Center(child: Text('Calendario')),
+    CalenderScreen(),
     Center(child: Text('Mapa')),
     SettingsScreen(),
   ];
