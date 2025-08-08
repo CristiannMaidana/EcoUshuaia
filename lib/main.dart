@@ -1,5 +1,5 @@
 import 'package:eco_ushuaia/ui/core/themes/login_theme.dart';
-import 'package:eco_ushuaia/ui/features/login/login_screen.dart';
+import 'package:eco_ushuaia/ui/features/home_pages/container_home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,8 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: appLoginTheme,
-      home: LoginScreen(),
+      theme: appLoginTheme, 
+      home: ContainerHomeScreen(),
     );
   }
 }
