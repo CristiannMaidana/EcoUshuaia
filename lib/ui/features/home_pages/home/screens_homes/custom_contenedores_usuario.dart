@@ -1,7 +1,9 @@
+import 'package:eco_ushuaia/ui/mapaUshuaia.dart';
 import 'package:flutter/material.dart';
 
 class CustomContenedoresUsuario extends StatefulWidget {
-  
+  const CustomContenedoresUsuario({Key? key}) : super(key: key);
+
   @override
   State<CustomContenedoresUsuario> createState() => _CustomContenedoresUsuarioState();
 }
@@ -18,12 +20,16 @@ class _CustomContenedoresUsuarioState extends State<CustomContenedoresUsuario> w
           child: Text('Contenedores cercanos', style: Theme.of(context).textTheme.headlineLarge),
         ),
         Container(
-          height: 300,
+          height: 325,
           margin: const EdgeInsets.symmetric(horizontal: 25),
           decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(36),
           border: Border.all(width: 1.5, color: Colors.grey[400]!),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(36),
+            child: MapaUshuaia()
           ),
         ),
         FloatingActionButton(
