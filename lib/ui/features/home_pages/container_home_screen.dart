@@ -5,14 +5,25 @@ import 'package:eco_ushuaia/ui/features/home_pages/settings/settings_screen.dart
 import 'package:flutter/material.dart';
 
 class ContainerHomeScreen extends StatefulWidget{
-  ContainerHomeScreen({Key? key}) : super (key: key);
+  final int initialIndex;
+
+  ContainerHomeScreen({
+    Key? key,
+    this.initialIndex = 0,
+  }) : super (key: key);
 
   @override
   State<ContainerHomeScreen> createState() => _ContainerHomeScreenState();
 }
 
 class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   final List<Widget> _pages = [
     HomeScreen(),
