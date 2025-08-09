@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
+import 'package:eco_ushuaia/ui/features/home_pages/mapa/screens_mapa/contenedores_screen.dart';
 import 'package:flutter/material.dart';
 
 class MapaScreen extends StatefulWidget{
@@ -13,7 +14,6 @@ class _MapaScreenState extends State<MapaScreen> with SingleTickerProviderStateM
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: camarone50,
         appBar: AppBar(
           backgroundColor: camarone400,
           toolbarHeight: 0,
@@ -28,9 +28,9 @@ class _MapaScreenState extends State<MapaScreen> with SingleTickerProviderStateM
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            Center(child: Text('Contenedores')),
+            ContenedoresScreen(),
             Center(child: Text('Mapa')),
           ],
         ),
