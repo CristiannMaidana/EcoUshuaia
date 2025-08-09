@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_Pop_up_menu_botton.dart';
 import 'package:flutter/material.dart';
 
 class ContenedoresScreen extends StatefulWidget{
@@ -38,6 +39,7 @@ class _ContendoresScreenState extends State<ContenedoresScreen> with SingleTicke
                   child: Text('Favoritos', style: Theme.of(context).textTheme.labelLarge,),
                 ),
               ),
+              CustomPopUpMenuBotton()
             ],
           )
         ],
