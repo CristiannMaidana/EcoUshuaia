@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_Pop_up_menu_botton.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_lista_contenedores.dart';
 import 'package:flutter/material.dart';
 
 class ContenedoresScreen extends StatefulWidget{
@@ -18,11 +19,12 @@ class _ContendoresScreenState extends State<ContenedoresScreen> with SingleTicke
     return Scaffold(
       backgroundColor: camarone50,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: TextButton(
                   onPressed: () {},
                   style: TextButton.styleFrom(
@@ -39,9 +41,25 @@ class _ContendoresScreenState extends State<ContenedoresScreen> with SingleTicke
                   child: Text('Favoritos', style: Theme.of(context).textTheme.labelLarge,),
                 ),
               ),
-              CustomPopUpMenuBotton()
+              CustomPopUpMenuBotton(),
+              //Aca deberia tener un callback para cambiar el setState
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text('Seleccione contenedor para ir', style: Theme.of(context).textTheme.bodyLarge,),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: List.generate(
+                  30,
+                  (index) => CustomListaContenedores(),
+                ),
+              ),
+            ),
           )
+
         ],
       ),
     );
