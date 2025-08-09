@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomPopUpMenuBotton extends StatefulWidget{
@@ -28,6 +29,22 @@ class _CustomPopUpMenuBottonState extends State<CustomPopUpMenuBotton> with Sing
                     child: Text(widget.categorias[i], style: Theme.of(context).textTheme.labelLarge,)
                 )
             ),
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                    color: camarone300,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: Colors.grey[400]!, width: 1),
+                    boxShadow: const [
+                        BoxShadow(
+                            color: Colors.black38,
+                            blurRadius: 9,
+                            offset: Offset(1, 4),
+                        ),
+                    ],
+                ),
+                child: Text('Contenedores', style: Theme.of(context).textTheme.labelLarge,),
+            ), 
         );
     } 
 }
