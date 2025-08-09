@@ -16,6 +16,32 @@ class _ContendoresScreenState extends State<ContenedoresScreen> with SingleTicke
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: camarone50,
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    backgroundColor: camarone300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      side: BorderSide(color: Colors.grey[400]!, width: 1),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    minimumSize: Size(120, 40),
+                    elevation: 5,
+                    shadowColor: Colors.black
+                  ),
+                  child: Text('Favoritos', style: Theme.of(context).textTheme.labelLarge,),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
