@@ -21,8 +21,17 @@ class _CustomMapaState extends State<CustomMapa> with SingleTickerProviderStateM
     MapboxOptions.setAccessToken(accessToken);
   }
 
+  CameraOptions camera = CameraOptions(
+    center: Point(coordinates: Position(-68.3030, -54.8019)),
+    zoom: 12,
+    bearing: 0,
+    pitch: 0,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return MapWidget();
+    return MapWidget(
+      cameraOptions: camera,
+    );
   }
 }
