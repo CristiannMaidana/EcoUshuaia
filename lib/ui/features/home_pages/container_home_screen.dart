@@ -29,7 +29,7 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
   final List<Widget> _pages = [
     HomeScreen(),
     CalenderScreen(),
-    MapaScreen(),
+    ContainerMapaScreen(),
     SettingsScreen(),
   ];
 
