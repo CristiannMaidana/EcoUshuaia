@@ -1,106 +1,45 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:flutter/material.dart';
 
-class CustomRadiolisttitle extends StatefulWidget{
-  final List<String> texto;
+enum MapStyle { Estandar, Satelite, Oscuro, Terreno }
+
+class CustomRadiolisttitle extends StatelessWidget{
+  final MapStyle? seleccionado;
   
   CustomRadiolisttitle({
     Key? key,
-    required this.texto,
+    required this.seleccionado,
   }): super(key: key);
 
   @override
-  State<CustomRadiolisttitle> createState() => _CustomRadiolisttitleState();
-}
-
-class _CustomRadiolisttitleState extends State<CustomRadiolisttitle> {
-  late String opcionSeleccionada = '';
-
-  @override
-  Widget build(BuildContext constext) {
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        RadioListTile<String>(
-          title: Row(
-            children: [
-              Image.asset('assets/icons/mapa/map-standar.png'),
-              SizedBox(width: 20,),
-              Text(widget.texto[0], style: Theme.of(context).textTheme.bodyLarge),
-            ],
-          ),
-          value: widget.texto[0], 
-          groupValue: opcionSeleccionada, 
-          controlAffinity: ListTileControlAffinity.trailing,
-          activeColor: camarone600,
-          splashRadius: 20,
-          radioScaleFactor: 1.5,
-          onChanged: (value) {
-            setState(() {
-              opcionSeleccionada = value!;
-            });
-          }
-        ),        
-        RadioListTile<String>(
-          title: Row(
-            children: [
-              Image.asset('assets/icons/mapa/map-route.png'),
-              SizedBox(width: 20,),
-              Text(widget.texto[1], style: Theme.of(context).textTheme.bodyLarge,),
-            ],
-          ),
-          value: widget.texto[1], 
-          groupValue: opcionSeleccionada, 
-          controlAffinity: ListTileControlAffinity.trailing,
-          activeColor: camarone600,
-          splashRadius: 20,
-          radioScaleFactor: 1.5,        
-          onChanged: (value) {
-            setState(() {
-              opcionSeleccionada = value!;
-            });
-          }
-        ),        
-        RadioListTile<String>(
-          title: Row(
-            children: [
-              Image.asset('assets/icons/mapa/map-black.png'),
-              SizedBox(width: 20,),
-              Text(widget.texto[2], style: Theme.of(context).textTheme.bodyLarge),
-            ],
-          ),
-          value: widget.texto[2], 
-          groupValue: opcionSeleccionada, 
-          controlAffinity: ListTileControlAffinity.trailing,
-          activeColor: camarone600,
-          splashRadius: 20,
-          radioScaleFactor: 1.5,        
-          onChanged: (value) {
-            setState(() {
-              opcionSeleccionada = value!;
-            });
-          }
-        ),        
-        RadioListTile<String>(
-          title: Row(
-            children: [
-              Image.asset('assets/icons/mapa/map-mountain.png'),
-              SizedBox(width: 20,),
-              Text(widget.texto[3], style: Theme.of(context).textTheme.bodyLarge),
-            ],
-          ),
-          value: widget.texto[3], 
-          groupValue: opcionSeleccionada, 
-          controlAffinity: ListTileControlAffinity.trailing,
-          activeColor: camarone600,
-          splashRadius: 20,
-          radioScaleFactor: 1.5,        
-          onChanged: (value) {
-            setState(() {
-              opcionSeleccionada = value!;
-            });
-          }
-        ),
+        _radio(context, MapStyle.Estandar, 'Estandar', 'assets/icons/mapa/map-standar.png'),
+        _radio(context, MapStyle.Satelite, 'Satelite', 'assets/icons/mapa/map-route.png'),
+        _radio(context, MapStyle.Oscuro, 'Oscuro', 'assets/icons/mapa/map-black.png'),
+        _radio(context, MapStyle.Terreno, 'Terreno', 'assets/icons/mapa/map-mountain.png'),
       ],
+    );
+  }
+  
+  Widget _radio(BuildContext context, MapStyle value, String label, String asset) {
+    return RadioListTile<MapStyle>(
+      title: Row(
+        children: [
+          Image.asset(asset),
+          const SizedBox(width: 20),
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
+        ],
+      ),
+      value: value,
+      groupValue: seleccionado,
+      controlAffinity: ListTileControlAffinity.trailing,
+      activeColor: camarone600,
+      splashRadius: 20,
+      onChanged: (style) {
+        if (style != null) Navigator.pop(context, style); 
+      },
     );
   }
 }
