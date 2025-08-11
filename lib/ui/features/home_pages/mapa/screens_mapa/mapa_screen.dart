@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_RadioListTitle.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_mapa_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/data/services/location_service.dart';
@@ -18,6 +19,7 @@ class _MapaScreenState extends State<MapaScreen> {
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   CustomMapaController? _mapController;
+  MapStyle _estiloActual = MapStyle.Estandar; 
 
   @override
   void initState() {
@@ -40,6 +42,42 @@ class _MapaScreenState extends State<MapaScreen> {
     if (ok && _mapController != null) {
       _mapController!.enableUserPuck();
     }
+  }
+
+  Future<void> _mostrarOpciones(BuildContext context) async {
+    final estilo = await showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.black.withOpacity(.4),
+      backgroundColor: camarone50,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Estilo de mapa', style: Theme.of(context).textTheme.headlineLarge,),
+                Text('Elegi como queres ver el mapa.', style: Theme.of(context).textTheme.bodyLarge,),
+                CustomRadiolisttitle(
+                  seleccionado: _estiloActual,
+                ), 
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    
+    if (!mounted || estilo == null) return;
+
+    setState(() => _estiloActual = estilo);
+
+    _mapController?.setStyle(estilo); 
   }
 
   @override
@@ -88,16 +126,26 @@ class _MapaScreenState extends State<MapaScreen> {
         Positioned(
           right: 16,
           bottom: 16,
-          child: FloatingActionButton(
-            backgroundColor: camarone500,
-            onPressed: () async {
-              if (!_hasLocationPermission) {
-                await _retryPermission();
-                return;
-              }
-              await _mapController?.centerOnUserOnce(); 
-            },
-            child: const Icon(Icons.my_location),
+          child: Row(
+            children: [
+              FloatingActionButton(
+                onPressed: () => _mostrarOpciones(context),
+                backgroundColor: camarone500,
+                child: Image.asset('assets/icons/mapa/maps-style.png',),
+              ),
+              SizedBox(width: 20,),
+              FloatingActionButton(
+                onPressed: () async {
+                  if (!_hasLocationPermission) {
+                    await _retryPermission();
+                    return;
+                  }
+                  await _mapController?.centerOnUserOnce(); 
+                },
+                backgroundColor: camarone500,
+                child: const Icon(Icons.my_location, color: Colors.black, size: 32,),
+              ),
+            ],
           ),
         ),
       ],
