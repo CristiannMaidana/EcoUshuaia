@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/ui/core/ui/custom_RadioListTitle.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:flutter/services.dart';
@@ -43,6 +44,30 @@ class CustomMapaController {
         zoom: zoom,
       ),
     );
+  }
+
+  Future<void> setStyle(MapStyle style) async {
+    final map = _map;
+    switch (style) {
+      case MapStyle.Estandar:
+        await map!.style.setStyleURI(MapboxStyles.STANDARD);
+        break;
+
+      case MapStyle.Satelite:
+        await map!.style.setStyleURI(MapboxStyles.SATELLITE_STREETS);
+        break;
+
+      case MapStyle.Oscuro:
+        await map!.style.setStyleURI(MapboxStyles.DARK);
+        break;
+
+      case MapStyle.Terreno:
+        await map!.style.setStyleURI(MapboxStyles.OUTDOORS);
+        break;
+
+      default:
+        return;
+    }
   }
 
   void attach(MapboxMap map) {
