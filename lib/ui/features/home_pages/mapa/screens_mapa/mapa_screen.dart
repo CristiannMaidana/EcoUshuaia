@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/ui/core/themes/colores_theme.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_RadioListTitle.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_mapa_controller.dart';
+import 'package:eco_ushuaia/ui/core/ui/custom_navegador_mapa.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/data/services/location_service.dart';
 import 'package:eco_ushuaia/ui/core/ui/custom_mapa.dart';
@@ -124,8 +125,8 @@ class _MapaScreenState extends State<MapaScreen> {
           ),
 
         Positioned(
-          right: 16,
-          bottom: 16,
+          right: 24,
+          bottom: 180,
           child: Row(
             children: [
               FloatingActionButton(
@@ -148,6 +149,14 @@ class _MapaScreenState extends State<MapaScreen> {
             ],
           ),
         ),
+
+        Positioned(
+          right: 20,
+          bottom: 100,
+          child: Center(
+            child: CustomNavegadorMapa(),
+          ),
+        )
       ],
     );
   }
