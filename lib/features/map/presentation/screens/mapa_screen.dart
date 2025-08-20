@@ -3,7 +3,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.d
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:eco_ushuaia/features/map/data/services/location_service.dart';
+import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_widget.dart';
 
 class MapaScreen extends StatefulWidget {
