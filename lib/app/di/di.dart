@@ -1,4 +1,4 @@
-import 'package:eco_ushuaia/features/waste/data/respositories/residuo_repository_imp.dart';
+import 'package:eco_ushuaia/features/waste/data/repositories/residuo_repository_imp.dart';
 import 'package:eco_ushuaia/features/waste/domain/repositories/residuo_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
