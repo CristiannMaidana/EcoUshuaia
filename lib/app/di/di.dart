@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../../core/network/http_client.dart';
-import '../../features/waste/data/datasources/residuos_remote_data_source.dart';
+import '../../features/waste/data/sources/residuos_remote_data_source.dart';
 
 List<SingleChildWidget> buildAppProviders() => [
   Provider<http.Client>(
