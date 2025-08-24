@@ -1,7 +1,7 @@
 import 'package:eco_ushuaia/features/waste/domain/repositories/residuo_repository.dart';
 
 import '../../domain/entities/residuo.dart';
-import '../datasources/residuos_remote_data_source.dart';
+import '../sources/residuos_remote_data_source.dart';
 
 class ResiduosRepositoryImpl implements ResiduosRepository {
   final ResiduosRemoteDataSource remote;
