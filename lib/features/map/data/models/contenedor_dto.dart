@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/residuo_lite.dart';
 
 class ContenedorDto {
   final int idContenedor;
@@ -9,9 +10,9 @@ class ContenedorDto {
   final DateTime? ultimoVaciado;
   final String? descripcionUbicacion;
   final int? idZona;
-  final int? idResiduo;
   final int? idCoordenada;
   final int? idMapa;
+  final ResiduoLite? residuo;
 
   ContenedorDto({
     required this.idContenedor,
@@ -22,12 +23,24 @@ class ContenedorDto {
     this.ultimoVaciado, 
     this.descripcionUbicacion,
     this.idZona,
-    this.idResiduo,
     this.idCoordenada,
-    this.idMapa
+    this.idMapa,
+    this.residuo,
   });
 
   factory ContenedorDto.fromJson(Map<String, dynamic> json) {
+    ResiduoLite? parseResiduo(dynamic r) {
+      if (r is Map<String, dynamic>) {
+        final id = r['id'] is int ? r['id'] as int : int.tryParse('${r['id']}');
+        final nombre = (r['nombre'] ?? '').toString();
+        final categoria = r['categoria'] as String?;
+        if (id != null && nombre.isNotEmpty) {
+          return ResiduoLite(id: id, nombre: nombre, categoria: categoria);
+        }
+      }
+      return null;
+    }
+
     return ContenedorDto(
       idContenedor: (json['id_contenedor']) as int,
       nombreContenedor: (json['nombre_contenedor']) as String?,
@@ -37,9 +50,9 @@ class ContenedorDto {
       ultimoVaciado: (json['ultimo_vaciado']) as DateTime?,
       descripcionUbicacion: (json['descripcion_ubicacion']) as String?,
       idZona: (json['id_zona']) as int?,
-      idResiduo: (json['id_residuo']) as int?,
       idCoordenada: (json['id_coordenda']) as int?,
       idMapa: (json['id_mapa']) as int?,
+      residuo: parseResiduo(json['residuo']),
     );
   }
 
@@ -52,8 +65,8 @@ class ContenedorDto {
     ultimoVaciado: ultimoVaciado,
     descripcionUbicacion: descripcionUbicacion,
     idZona: idZona,
-    idResiduo: idResiduo,
     idCoordenada: idCoordenada,
     idMapa: idMapa,
+    residuo: residuo,
   );
 }
