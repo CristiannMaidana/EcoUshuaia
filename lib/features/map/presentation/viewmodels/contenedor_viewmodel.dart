@@ -15,12 +15,12 @@ class ContenedorViewModel extends ChangeNotifier {
   String? get error => _error;
   List<Contenedor> get items => _items;
 
-  Future<void> load() async {
+  Future<void> load({Map <String, dynamic>? filtros}) async {
     _loading = true;
     _error = null;
     notifyListeners();
     try {
-      _items = await repo.list();
+      _items = await repo.list(filtros: filtros);
     } catch (e) {
       _error = e.toString();
     } finally {
