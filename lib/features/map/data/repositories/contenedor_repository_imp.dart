@@ -8,8 +8,8 @@ class ContenedorRepositoryImp implements ContenedorRepository{
   ContenedorRepositoryImp(this.remote);
 
   @override
-  Future<List<Contenedor>> list() async {
-    final dtos = await remote.list();
+  Future<List<Contenedor>> list({Map<String, dynamic>? filtros}) async {
+    final dtos = await remote.list(filtros: filtros);
     return dtos.map((e) => e.toEntity()).toList();
   }
 }
