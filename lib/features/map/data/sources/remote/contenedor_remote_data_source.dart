@@ -6,8 +6,8 @@ class ContenedorRemoteDataSource {
 
   ContenedorRemoteDataSource(this.api);
 
-  Future<List<ContenedorDto>> list() async {
-    final data = await api.get('/contenedores/');
+  Future<List<ContenedorDto>> list({Map<String, dynamic>? filtros}) async {
+    final data = await api.get('/contenedores/', query: filtros);
     List<dynamic> list;
     if (data is Map && data['results'] is List) {
       list = data['results'] as List;
