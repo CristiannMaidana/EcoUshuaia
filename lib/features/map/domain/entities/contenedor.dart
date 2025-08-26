@@ -1,3 +1,5 @@
+import 'package:eco_ushuaia/features/map/domain/entities/residuo_lite.dart';
+
 class Contenedor {
   final int idContenedor;
   final String? nombreContenedor;
@@ -7,9 +9,9 @@ class Contenedor {
   final DateTime? ultimoVaciado;
   final String? descripcionUbicacion;
   final int? idZona;
-  final int? idResiduo;
   final int? idCoordenada;
   final int? idMapa;
+  final ResiduoLite? residuo;
 
   Contenedor({
     required this.idContenedor,
@@ -20,8 +22,8 @@ class Contenedor {
     this.ultimoVaciado, 
     this.descripcionUbicacion,
     this.idZona,
-    this.idResiduo,
     this.idCoordenada,
-    this.idMapa
+    this.idMapa,
+    this.residuo,
   });
 }
