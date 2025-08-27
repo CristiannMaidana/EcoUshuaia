@@ -1,21 +1,46 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/categories_popup_button.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ContenedoresScreen extends StatefulWidget{
+class ContenedoresScreen extends StatelessWidget {
+  const ContenedoresScreen({super.key});
 
-  ContenedoresScreen({
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (ctx) =>
+          ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
+      child: ContenedorPage(),
+    );
+  }
+}
+
+class ContenedorPage extends StatefulWidget{
+
+  ContenedorPage({
     Key ? Key,
   }): super (key: Key);
 
   @override
-  State<ContenedoresScreen> createState() => _ContendoresScreenState();
+  State<ContenedorPage> createState() => _ContenedorPageState();
 }
 
-class _ContendoresScreenState extends State<ContenedoresScreen> with SingleTickerProviderStateMixin {
+class _ContenedorPageState extends State<ContenedorPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<ContenedorViewModel>();
+
+    final categorias = vm.items
+        .map((r) => r.residuo?.nombre)
+        .whereType<String>()     
+        .toSet()
+        .toList()
+      ..sort();
+  
     return Scaffold(
       backgroundColor: camarone50,
       body: Column(
@@ -41,7 +66,7 @@ class _ContendoresScreenState extends State<ContenedoresScreen> with SingleTicke
                   child: Text('Favoritos', style: Theme.of(context).textTheme.labelLarge,),
                 ),
               ),
-              CategoriesPopupButton(),
+              CategoriesPopupButton(categorias: categorias,),
               //Aca deberia tener un callback para cambiar el setState
             ],
           ),
