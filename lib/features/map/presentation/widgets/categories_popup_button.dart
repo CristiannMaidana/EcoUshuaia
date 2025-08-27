@@ -2,12 +2,11 @@ import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesPopupButton extends StatefulWidget{
-    //Esto tendria que ser traido de la base de datos ahora es una prueba
     final List<String> categorias;
 
     CategoriesPopupButton({
         Key? key,
-        this.categorias = const ['Todos', 'Plastico', 'Papel y carton', 'Vidrio', 'Metales', 'Organico', 'Residuos electronicos', 'Textiles', 'Residuos peligrosos', 'Residuos voluminosos', 'Residuos de construccion y demolicion', 'Residuos sanitarios'],
+        required this.categorias,
     }) : super(key: key);
 
     @override
