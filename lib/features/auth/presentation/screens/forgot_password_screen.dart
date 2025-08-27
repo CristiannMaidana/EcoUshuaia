@@ -1,7 +1,7 @@
 import 'package:eco_ushuaia/core/theme/container_theme.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
-import 'package:eco_ushuaia/features/auth/presentation/otp_screen.dart';
+import 'package:eco_ushuaia/features/auth/presentation/screens/otp_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/forgot_password_validators.dart';
 import 'package:flutter/material.dart';
 
