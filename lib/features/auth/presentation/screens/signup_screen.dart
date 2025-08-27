@@ -8,6 +8,7 @@ import 'package:eco_ushuaia/core/ui/animations/email_lottie.dart';
 import 'package:eco_ushuaia/core/ui/text/text_list_item.dart';
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/singup_validators.dart';
+import 'package:eco_ushuaia/features/auth/presentation/widgets/textFormFieldDataUser.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget{
@@ -18,7 +19,8 @@ class RegisterScreen extends StatefulWidget{
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();    final FocusNode _userFocusNode = FocusNode();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();    
+  final FocusNode _userFocusNode = FocusNode();
   final _emailFieldKey = GlobalKey<FormFieldState>();
   final FocusNode _emailFocusNode = FocusNode();
   final passwordController = TextEditingController();
@@ -64,20 +66,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                           children: [
-                                            Text('Nombre', style: Theme.of(context).textTheme.bodyLarge),
-                                            TextFormField(
-                                              focusNode: _userFocusNode,
-                                              decoration: InputDecoration(
-                                                labelText: 'Nombre',
-                                                contentPadding: EdgeInsets.all(13),
-                                                labelStyle: Theme.of(context).textTheme.labelLarge,
-                                                errorStyle: Theme.of(context).textTheme.labelSmall,
-                                                prefixIcon: Padding(
-                                                  padding: EdgeInsets.only(left: 12),
-                                                  child: AvatarLottie(focusNode: _userFocusNode),
-                                                ),
-                                              ),
-                                              validator: nombreValidator,
+                                            TextFormFieldDataUser(
+                                              lottie: AvatarLottie(focusNode: _userFocusNode), 
+                                              validate: nombreValidator, 
+                                              nombre: 'Nombre', 
+                                              focusNode: _userFocusNode
                                             ),
                                           ],
                                         ),
@@ -87,15 +80,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                           children: [
-                                            Text('Apellido', style: Theme.of(context).textTheme.bodyLarge),
-                                            TextFormField(
-                                              decoration: InputDecoration(
-                                                labelText: 'Apellido',
-                                                contentPadding: EdgeInsets.all(13),
-                                                labelStyle: Theme.of(context).textTheme.labelLarge,
-                                                errorStyle: Theme.of(context).textTheme.labelSmall,
-                                              ),
-                                              validator: apellidoValidator,
+                                            TextFormFieldDataUser(
+                                              lottie: null, 
+                                              validate: apellidoValidator, 
+                                              nombre: 'Apellido', 
+                                              focusNode: null
                                             ),
                                           ],
                                         ),
