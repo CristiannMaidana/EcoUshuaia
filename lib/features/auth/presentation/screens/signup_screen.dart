@@ -1,13 +1,12 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_validate_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_lottie.dart';
-import 'package:eco_ushuaia/core/ui/text/text_list_item.dart';
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/singup_validators.dart';
+import 'package:eco_ushuaia/features/auth/presentation/widgets/showDialogPassword.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/textFormFieldDataUser.dart';
 import 'package:flutter/material.dart';
 
@@ -130,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       prefixIcon: Padding(
                                         padding: EdgeInsetsGeometry.only(left: 12),
                                           child: EyePasswordLottie(
-                                            isClosed: _obscurePassword,// true=cerrado, false = abierto
+                                            isClosed: _obscurePassword,
                                             onTap: () {
                                               setState(() {
                                                 _obscurePassword = !_obscurePassword;
@@ -145,31 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         mensajePassword = false;
                                         showDialog(
                                           context: context, 
-                                          builder: (context) => AlertDialog(
-                                            backgroundColor: camarone300,
-                                            title: Text('Instrucciones', style: TextStyle(color: camarone950),),
-                                            content: Container(
-                                              height: 120,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text('La contraseña debe tener al menos:', style: TextStyle(color: camarone950)),
-                                                  SizedBox(height: 8),
-                                                  TextListItem('8 caracteres'),
-                                                  TextListItem('1 mayúscula'),
-                                                  TextListItem('1 número'),
-                                                  TextListItem('1 caracter especial')
-                                                ],
-                                              ),
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.of(context).pop(),
-                                                child: Text('Aceptar', style: TextStyle(color: colorNegro)),
-                                              ),
-                                            ],
-                                          ) 
+                                          builder: (context) => Showdialogpassword(),
                                         );
                                       }
                                     },
