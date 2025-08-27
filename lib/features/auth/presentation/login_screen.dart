@@ -1,8 +1,8 @@
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
-import 'package:eco_ushuaia/features/auth/presentation/forgot_password_screen.dart';
+import 'package:eco_ushuaia/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:eco_ushuaia/features/shell/presentation/app_shell_screen.dart';
-import 'package:eco_ushuaia/features/auth/presentation/signup_screen.dart';
+import 'package:eco_ushuaia/features/auth/presentation/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/core/utils/validators/login_validators.dart';
 import 'package:eco_ushuaia/core/theme/container_theme.dart';
