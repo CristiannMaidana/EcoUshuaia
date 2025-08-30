@@ -7,6 +7,7 @@ class TextFormFieldDataUser extends StatefulWidget{
   final StringValidator? validate;
   final String nombre;
   final FocusNode? focusNode;
+  final TextEditingController? controller;
 
   TextFormFieldDataUser({
     Key ? key,
@@ -14,6 +15,7 @@ class TextFormFieldDataUser extends StatefulWidget{
     required this.validate,
     required this.nombre,
     required this.focusNode,
+    this.controller,
   }): super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class _TextFormFieldDataUserState extends State<TextFormFieldDataUser> {
         children: [
           Text(widget.nombre, style: Theme.of(context).textTheme.bodyLarge),
           TextFormField(
+            controller: widget.controller,
             focusNode: widget.focusNode,
             decoration: InputDecoration(
               labelText: widget.nombre,
@@ -46,4 +49,4 @@ class _TextFormFieldDataUserState extends State<TextFormFieldDataUser> {
       ),
     );
   }
-}
+} 
