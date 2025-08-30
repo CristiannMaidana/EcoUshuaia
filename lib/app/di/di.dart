@@ -1,3 +1,6 @@
+import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_remote_data_source.dart';
+import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_repository_imp.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
@@ -38,8 +41,18 @@ List<SingleChildWidget> _contenedoresProviders() => [
   ),
 ];
 
+List<SingleChildWidget> _usuariosProviders() => [
+    ProxyProvider<ApiClient, UsuariosRemoteDataSource>(
+      update: (_, api, __) => UsuariosRemoteDataSource(api),
+    ),
+    ProxyProvider<UsuariosRemoteDataSource, UsuariosRepository>(
+      update: (_, ds, __) => UsuariosRepositoryImp(ds),
+    ),
+];
+
 List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
   ..._contenedoresProviders(),
+  ..._usuariosProviders(),
 ];
