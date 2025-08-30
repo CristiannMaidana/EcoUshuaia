@@ -22,20 +22,6 @@ class ApiClient {
     return query.map((k, v) => MapEntry(k, v?.toString() ?? ''));
   }
 
-  Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
-    final uri = _buildUri(path, query);
-    try {
-      final res = await _client.get(uri).timeout(Env.receiveTimeout);
-      return _handleResponse(res);
-    } on SocketException {
-      throw NetworkException('Sin conexión a internet');
-    } on HttpException {
-      throw NetworkException('Error HTTP');
-    } on FormatException {
-      throw ParseException('Respuesta inválida del servidor');
-    }
-  }
-
   dynamic _handleResponse(http.Response res) {
     final code = res.statusCode;
     if (code >= 200 && code < 300) {
@@ -49,5 +35,45 @@ class ApiClient {
       message = body is Map && body['detail'] != null ? body['detail'].toString() : message;
     } catch (_) {}
     throw ServerException(message, statusCode: code);
+  }
+  
+  Map<String, String> _jsonHeaders([Map<String, String>? extra]) {
+    return {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      ...?extra,
+    };
+  }
+  
+  Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
+    final uri = _buildUri(path, query);
+    try {
+      final res = await _client
+          .get(uri)
+          .timeout(Env.receiveTimeout);
+      return _handleResponse(res);
+    } on SocketException {
+      throw NetworkException('Sin conexión a internet');
+    } on HttpException {
+      throw NetworkException('Error HTTP');
+    } on FormatException {
+      throw ParseException('Respuesta inválida del servidor');
+    }
+  }
+
+  Future<dynamic> post(String path, {Object? body}) async {
+    final uri = _buildUri(path);
+    try {
+      final res = await _client
+          .post(uri, headers: _jsonHeaders(), body: body == null ? null : json.encode(body))
+          .timeout(Env.receiveTimeout);
+      return _handleResponse(res);
+    } on SocketException {
+      throw NetworkException('Sin conexión a internet');
+    } on HttpException {
+      throw NetworkException('Error HTTP');
+    } on FormatException {
+      throw ParseException('Respuesta inválida del servidor');
+    }
   }
 }
