@@ -16,18 +16,20 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
+
     return Scaffold(
       backgroundColor: camarone50,
       appBar: AppBar(
         backgroundColor: camarone50,
-        toolbarHeight: 80,
+        toolbarHeight: 60,
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Calendario', style: Theme.of(context).textTheme.bodyLarge),
-              Text('12/32/32: título ', style: Theme.of(context).textTheme.labelMedium),
+              Text('$fechaHoy', style: Theme.of(context).textTheme.labelMedium),
             ],
           ),
         ),
@@ -52,7 +54,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             children: [
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                height: 400,
+                height: 415,
                 decoration: BoxDecoration(
                   color: Colors.grey[350],
                   borderRadius: BorderRadius.circular(22),
