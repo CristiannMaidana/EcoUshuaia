@@ -4,7 +4,9 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basi
 import 'package:eco_ushuaia/features/news/presentation/widgets/novedades_sheet.dart';
 import 'package:flutter/material.dart';
 
-class CalenderScreen extends StatefulWidget{
+class CalenderScreen extends StatefulWidget {
+  const CalenderScreen({super.key});
+
   @override
   State<CalenderScreen> createState() => _CalenderScreenState();
 }
@@ -33,7 +35,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
             child: StandardButton(
-              texto: _cambioAnuncios? 'Recordatorio' : 'Novedades',
+              texto: _cambioAnuncios? 'Recordatorio' : 'Noticias',
               onPressed: () {
                 setState(() {
                   _cambioAnuncios = !_cambioAnuncios;
@@ -45,25 +47,32 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
       ),
       body: Stack(
         children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-            height: 392,
-            decoration: BoxDecoration(
-              color: Colors.grey[350],
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: Colors.grey[400]!, width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3),
+          ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                height: 400,
+                decoration: BoxDecoration(
+                  color: Colors.grey[350],
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: Colors.grey[400]!, width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: calendario,
+                child: CalendarioWidget(), 
+              ),
+              const SizedBox(height: 400),
+            ],
           ),
-            CustomNovedades(),
+
+          CustomNovedades(),
         ],
       ),
     );
