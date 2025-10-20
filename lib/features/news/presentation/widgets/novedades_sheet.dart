@@ -1,5 +1,9 @@
 import 'package:eco_ushuaia/features/news/presentation/widgets/items_novedades.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+
 
 class CustomNovedades extends StatefulWidget {
   const CustomNovedades({Key? key}) : super(key: key);
@@ -84,6 +88,14 @@ class _CustomNovedadesState extends State<CustomNovedades> {
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<CalendarioViewmodel>();
+    final DateTime? sel = vm.selectedDay;
+    final List<Calendarios> data = (sel != null)
+        ? vm.eventsOf(sel)
+        : vm.eventsInMonth(vm.visibleMonth);
+
+    final bool hasContentForSelectedDay = (sel != null && data.isEmpty);
+
     return Stack(
       children: [
         if (_isExpanded)
@@ -140,11 +152,13 @@ class _CustomNovedadesState extends State<CustomNovedades> {
                       ),
                     ),
                     Expanded(
-                      child: ListView(
-                        controller: scrollController,
-                        children: [
-                          ItemsNovedades(listaNovedades: const[]),
-                        ],
+                      child: hasContentForSelectedDay
+                        ? const SizedBox.shrink()
+                        : ListView(
+                            controller: scrollController,
+                            children: [
+                              ItemsNovedades(listaNovedades: data),
+                            ],        
                       ),
                     ),
                   ],
