@@ -1,10 +1,11 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ItemsNovedades extends StatefulWidget{
-  //Tiene que venir tanto lista novedades como lista mensajes
-  List<Widget> listaNovedades;
+  final List<Calendarios> listaNovedades;
 
   ItemsNovedades({
     Key? key,
@@ -19,9 +20,15 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
+
     return Column(
       children: [
         ...List.generate(widget.listaNovedades.length, (index) {
+          final n = widget.listaNovedades[index];
+          final mes = DateFormat.MMM(locale).format(n.fechaHora).toUpperCase();
+          final dia = n.fechaHora.day.toString().padLeft(2, '0');
+      
           return Column(
             children: [
               espacioVerticalMediano,
@@ -47,9 +54,8 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          //Estos datos tienen que venir del objeto novedades
-                          Text('DIC'),
-                          Text('32'),
+                          Text(mes, style: Theme.of(context).textTheme.labelMedium),
+                          Text(dia, style: Theme.of(context).textTheme.labelMedium),
                         ],
                       ),
                     ),
@@ -63,8 +69,7 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(color: Colors.grey[400]!, width: 1.5),
                       ),
-                      //Este dato tiene que venir del objeto novedades
-                      child:Text('Título de la novedad', style: Theme.of(context).textTheme.bodyLarge),
+                      child: Text(n.titulo, style: Theme.of(context).textTheme.labelMedium),
                     ),
                   ],
                 ),
