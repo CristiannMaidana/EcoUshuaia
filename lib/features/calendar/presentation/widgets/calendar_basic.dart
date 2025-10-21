@@ -175,7 +175,10 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                 calendarFormat: _format,
                 availableGestures: AvailableGestures.all,
                 startingDayOfWeek: StartingDayOfWeek.monday,
-              
+                
+                headerVisible: false,   
+                rowHeight: 50,
+                
                 // Selección de día
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                 onDaySelected: (selectedDay, focusedDay) {
@@ -197,15 +200,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                     setState(() => _format = format);
                   }
                 },
-              
-                headerStyle: HeaderStyle(
-                  titleTextStyle: Theme.of(context).textTheme.titleLarge!,
-                  headerPadding: EdgeInsets.only(bottom: 8, top: 0, left: 30),
-                  formatButtonVisible: false,
-                  leftChevronVisible: false,
-                  rightChevronVisible: false,
-                ),
-
+                          
                 eventLoader: vm.eventsOf,                                            
                 calendarBuilders: CalendarBuilders<Calendarios>(
                   defaultBuilder: (context, day, focusedDay) {
