@@ -1,6 +1,9 @@
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 
 class CalendarioWidget extends StatefulWidget {
   const CalendarioWidget({super.key});
@@ -32,6 +35,8 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
     setState(() {
       _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
     });
+    context.read<CalendarioViewmodel>().setSelectedDay(null);
+    context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
   }
 
   void _goNextMonth() {
@@ -41,6 +46,8 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
     setState(() {
       _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
     });
+    context.read<CalendarioViewmodel>().setSelectedDay(null);
+    context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
   }
 
   bool _isMonthDisabled(int year, int month) {
@@ -52,6 +59,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
+    final vm = context.watch<CalendarioViewmodel>();
 
     return Stack(
       children: [
@@ -64,7 +72,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.chevron_left),
-                    onPressed: _goPrevMonth,
+                    onPressed: () => _goPrevMonth,
                   ),
                   IconButton(
                     icon: const Icon(Icons.chevron_right),
@@ -82,7 +90,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
             ),
             
             Expanded(
-              child: TableCalendar(
+              child: TableCalendar<Calendarios>(
                 firstDay: _firstDay,
                 lastDay: _lastDay,
                 focusedDay: _focusedDay,
@@ -98,10 +106,12 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay; 
                   });
+                  context.read<CalendarioViewmodel>().setSelectedDay(selectedDay);
                 },
               
                 onPageChanged: (focusedDay) {
                   _focusedDay = focusedDay;
+                  context.read<CalendarioViewmodel>().setVisibleMonth(focusedDay);
                 },
               
                 // Toggle de formato (Mes / 2 semanas / Semana)
@@ -117,6 +127,50 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                   leftChevronVisible: false,
                   rightChevronVisible: false,
                 ),
+
+                eventLoader: vm.eventsOf,                                            
+                calendarBuilders: CalendarBuilders<Calendarios>(
+                  defaultBuilder: (context, day, focusedDay) {
+                    if (!vm.hasEvents(day)) return null;                             
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE6F5EA),                              
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('${day.day}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                    );
+                  },
+                  todayBuilder: (context, day, focusedDay) {                         
+                    final has = vm.hasEvents(day);
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: has ? const Color(0xFFDBECFF) : const Color(0xFFEFF6FF),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.2),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('${day.day}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                    );
+                  },
+                  selectedBuilder: (context, day, focusedDay) {                  
+                    final has = vm.hasEvents(day);
+                    final base = Theme.of(context).colorScheme.primary;
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: has ? base.withOpacity(0.18) : base.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: base, width: 1.6),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('${day.day}', style: TextStyle(fontWeight: FontWeight.w700, color: base)),
+                    );
+                  },
+                ),
+
               ),
             )
           ],
@@ -190,6 +244,9 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                                       _selectedDay = DateTime(_yearSelected, month, 1);
                                       _monthSeleceted = false;
                                     });
+                                    final vm = context.read<CalendarioViewmodel>();
+                                    vm.setVisibleMonth(_focusedDay);
+                                    vm.setSelectedDay(_selectedDay);
                                   },
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(
