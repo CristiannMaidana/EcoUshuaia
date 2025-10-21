@@ -61,70 +61,108 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
     final vm = context.watch<CalendarioViewmodel>();
-
+    final titulo = DateFormat.yMMMM(locale).format(_focusedDay);
+    
     return Stack(
       children: [
         Column(
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.grey[400]!, width: 1),
-                    ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () => setState(() {
+                      _yearSelected = _focusedDay.year;
+                      _monthSeleceted = true;
+                    }),
                     child: Row(
                       children: [
-                        Icon(Icons.edit_calendar_sharp),
-                        SizedBox(width: 5),
-                        Text('Filtro', style: Theme.of(context).textTheme.labelMedium,)
-                      ]
+                        Padding(
+                          padding: const EdgeInsets.only(left:30),
+                          child: Text(
+                            titulo,
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        Icon(Icons.arrow_drop_down),
+                      ],
                     ),
                   ),
-                  //Filtra las novedades por categorias para que aparezcan en el calendario
-                  onPressed: () {}
-                ), 
-                IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  onPressed: _goPrevMonth,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  onPressed: _goNextMonth,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.calendar_month),
-                  onPressed: () => setState(() {
-                    _yearSelected = _focusedDay.year;
-                    _monthSeleceted = true;
-                  }), 
-                ),
+
                 TextButton(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.grey[400]!, width: 1),
+                      margin: EdgeInsets.only(right: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: Colors.grey[400]!, width: 1),
+                      ),
+                      child: Text('Hoy', style: Theme.of(context).textTheme.labelMedium)
                     ),
-                    child: Text('Hoy', style: Theme.of(context).textTheme.labelMedium)
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _focusedDay = DateTime.now();
-                      _selectedDay = null;
-                    });
-                    context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
-                    context.read<CalendarioViewmodel>().setSelectedDay(null);
-                  },
+                    onPressed: () {
+                      setState(() {
+                        _focusedDay = DateTime.now();
+                        _selectedDay = null;
+                      });
+                      context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
+                      context.read<CalendarioViewmodel>().setSelectedDay(null);
+                    },
                 ),
-                IconButton(
-                  icon: Icon(Icons.notifications),
-                  onPressed: () {}
-                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.chevron_left),
+                        onPressed: _goPrevMonth,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.chevron_right),
+                        onPressed: _goNextMonth,
+                      ),
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Row(
+                    children: [
+                      TextButton(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.grey[400]!, width: 1),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit_calendar_sharp),
+                              SizedBox(width: 5),
+                              Text('Filtro', style: Theme.of(context).textTheme.labelMedium,)
+                            ]
+                          ),
+                        ),
+                        //Filtra las novedades por categorias para que aparezcan en el calendario
+                        onPressed: () {}
+                      ), 
+                      IconButton(
+                        icon: Icon(Icons.notifications),
+                        onPressed: () {}
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             
