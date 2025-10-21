@@ -54,7 +54,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             padding: EdgeInsets.zero,
             children: [
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 height: 415,
                 decoration: BoxDecoration(
                   color: Colors.grey[350],
