@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_header.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -67,105 +68,31 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
       children: [
         Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () => setState(() {
-                      _yearSelected = _focusedDay.year;
-                      _monthSeleceted = true;
-                    }),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left:30),
-                          child: Text(
-                            titulo,
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                        Icon(Icons.arrow_drop_down),
-                      ],
-                    ),
-                  ),
-                ),
-
-                TextButton(
-                  child: Container(
-                      margin: EdgeInsets.only(right: 15),
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: Colors.grey[400]!, width: 1),
-                      ),
-                      child: Text('Hoy', style: Theme.of(context).textTheme.labelMedium)
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _focusedDay = DateTime.now();
-                        _selectedDay = null;
-                      });
-                      context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
-                      context.read<CalendarioViewmodel>().setSelectedDay(null);
-                    },
-                ),
-              ],
+            CalendarHeader(
+              title: titulo,
+              onTapTitle: () => setState(() {
+                _yearSelected = _focusedDay.year;
+                _monthSeleceted = true;
+              }),
+              onToday: () {
+                setState(() {
+                  _focusedDay = DateTime.now();
+                  _selectedDay = null;
+                });
+                final vm = context.read<CalendarioViewmodel>();
+                vm.setVisibleMonth(_focusedDay);
+                vm.setSelectedDay(null);
+              },
+              onPrev: _goPrevMonth,
+              onNext: _goNextMonth,
+              onFilter: () {
+                // TODO: abrir panel de filtros o diálogo
+              },
+              onNotifications: () {
+                // TODO: acción de notificaciones
+              },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.chevron_left),
-                        onPressed: _goPrevMonth,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.chevron_right),
-                        onPressed: _goNextMonth,
-                      ),
-                    ],
-                  ),
-                ),
 
-                Padding(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: Row(
-                    children: [
-                      TextButton(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: Colors.grey[400]!, width: 1),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit_calendar_sharp),
-                              SizedBox(width: 5),
-                              Text('Filtro', style: Theme.of(context).textTheme.labelMedium,)
-                            ]
-                          ),
-                        ),
-                        //Filtra las novedades por categorias para que aparezcan en el calendario
-                        onPressed: () {}
-                      ), 
-                      IconButton(
-                        icon: Icon(Icons.notifications),
-                        onPressed: () {}
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            
             Expanded(
               child: TableCalendar<Calendarios>(
                 firstDay: _firstDay,
