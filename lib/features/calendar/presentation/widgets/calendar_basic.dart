@@ -141,8 +141,9 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                   }
                 },
               
-                headerStyle: const HeaderStyle(
-                  headerPadding: EdgeInsets.only(bottom: 10, top: 0, left: 30),
+                headerStyle: HeaderStyle(
+                  titleTextStyle: Theme.of(context).textTheme.titleLarge!,
+                  headerPadding: EdgeInsets.only(bottom: 8, top: 0, left: 30),
                   formatButtonVisible: false,
                   leftChevronVisible: false,
                   rightChevronVisible: false,
