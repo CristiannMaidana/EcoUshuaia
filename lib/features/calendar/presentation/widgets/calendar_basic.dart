@@ -72,7 +72,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.chevron_left),
-                    onPressed: () => _goPrevMonth,
+                    onPressed: _goPrevMonth,
                   ),
                   IconButton(
                     icon: const Icon(Icons.chevron_right),
