@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 
+
 class CalendarioWidget extends StatefulWidget {
   const CalendarioWidget({super.key});
 
@@ -79,11 +80,30 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                     onPressed: _goNextMonth,
                   ),
                   IconButton(
+                    icon: const Icon(Icons.calendar_month),
                     onPressed: () => setState(() {
                       _yearSelected = _focusedDay.year;
                       _monthSeleceted = true;
                     }), 
-                    icon: const Icon(Icons.calendar_month)
+                  ),
+                  TextButton(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: Colors.grey[400]!, width: 1),
+                      ),
+                      child: Text('Hoy', style: Theme.of(context).textTheme.labelMedium)
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _focusedDay = DateTime.now();
+                        _selectedDay = null;
+                      });
+                      context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
+                      context.read<CalendarioViewmodel>().setSelectedDay(null);
+                    },
                   ),
                 ],
               ),
