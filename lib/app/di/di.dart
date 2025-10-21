@@ -1,6 +1,10 @@
 import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_remote_data_source.dart';
 import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_repository_imp.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
+import 'package:eco_ushuaia/features/calendar/data/repositories/calendario_repository_imp.dart';
+import 'package:eco_ushuaia/features/calendar/data/sources/calendario_remote_data_sources.dart';
+import 'package:eco_ushuaia/features/calendar/domain/repositories/calendario_repositories.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
@@ -50,9 +54,24 @@ List<SingleChildWidget> _usuariosProviders() => [
     ),
 ];
 
+List<SingleChildWidget> _calendarioProviders() => [
+  ProxyProvider<ApiClient, CalendarioRemoteDataSources>(
+    update: (_, api, __) => CalendarioRemoteDataSources(api),
+  ),
+  ProxyProvider<CalendarioRemoteDataSources, CalendarioRepository>(
+    update: (_, ds, __) => CalendarioRepositoryImp(ds),
+  ),
+    ChangeNotifierProvider<CalendarioViewmodel>(
+    create: (ctx) => CalendarioViewmodel(
+      ctx.read<CalendarioRepository>(),
+    )..load(),
+  ),
+];
+
 List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
   ..._contenedoresProviders(),
   ..._usuariosProviders(),
+  ..._calendarioProviders()
 ];
