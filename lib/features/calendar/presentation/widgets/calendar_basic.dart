@@ -71,6 +71,25 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  TextButton(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: Colors.grey[400]!, width: 1),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit_calendar_sharp),
+                          SizedBox(width: 5),
+                          Text('Filtro', style: Theme.of(context).textTheme.labelMedium,)
+                        ]
+                      ),
+                    ),
+                    //Filtra las novedades por categorias para que aparezcan en el calendario
+                    onPressed: () {}
+                  ), 
                   IconButton(
                     icon: const Icon(Icons.chevron_left),
                     onPressed: _goPrevMonth,
