@@ -1,11 +1,10 @@
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_header.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
-
 
 class CalendarioWidget extends StatefulWidget {
   const CalendarioWidget({super.key});
@@ -54,7 +53,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
 
   bool _isMonthDisabled(int year, int month) {
     final firstOfMonth = DateTime(year, month, 1);
-    final lastOfMonth  = DateTime(year, month + 1, 0); // día 0 del sig. mes = último día del mes
+    final lastOfMonth  = DateTime(year, month + 1, 0);
     return lastOfMonth.isBefore(_firstDay) || firstOfMonth.isAfter(_lastDay);
   }
 
@@ -94,85 +93,32 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
             ),
 
             Expanded(
-              child: TableCalendar<Calendarios>(
+              child: Calendar(
                 firstDay: _firstDay,
                 lastDay: _lastDay,
                 focusedDay: _focusedDay,
-              
-                calendarFormat: _format,
-                availableGestures: AvailableGestures.all,
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                
-                headerVisible: false,   
+                selectedDay: _selectedDay,
+                format: _format,
                 rowHeight: 50,
-                
-                // Selección de día
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                onDaySelected: (selectedDay, focusedDay) {
+                headerVisible: false,
+                onDaySelected: (sel, foc) {
                   setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay; 
+                    _selectedDay = sel;
+                    _focusedDay = foc;
                   });
-                  context.read<CalendarioViewmodel>().setSelectedDay(selectedDay);
+                  context.read<CalendarioViewmodel>().setSelectedDay(sel);
                 },
-              
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                  context.read<CalendarioViewmodel>().setVisibleMonth(focusedDay);
+                onPageChanged: (foc) {
+                  _focusedDay = foc;
+                  context.read<CalendarioViewmodel>().setVisibleMonth(foc);
                 },
-              
-                // Toggle de formato (Mes / 2 semanas / Semana)
-                onFormatChanged: (format) {
-                  if (_format != format) {
-                    setState(() => _format = format);
-                  }
+                onFormatChanged: (fmt) {
+                  if (_format != fmt) setState(() => _format = fmt);
                 },
-                          
-                eventLoader: vm.eventsOf,                                            
-                calendarBuilders: CalendarBuilders<Calendarios>(
-                  defaultBuilder: (context, day, focusedDay) {
-                    if (!vm.hasEvents(day)) return null;                             
-                    return Container(
-                      margin: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE6F5EA),                              
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text('${day.day}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                    );
-                  },
-                  todayBuilder: (context, day, focusedDay) {                         
-                    final has = vm.hasEvents(day);
-                    return Container(
-                      margin: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: has ? const Color(0xFFDBECFF) : const Color(0xFFEFF6FF),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.2),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text('${day.day}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                    );
-                  },
-                  selectedBuilder: (context, day, focusedDay) {                  
-                    final has = vm.hasEvents(day);
-                    final base = Theme.of(context).colorScheme.primary;
-                    return Container(
-                      margin: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: has ? base.withOpacity(0.18) : base.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: base, width: 1.6),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text('${day.day}', style: TextStyle(fontWeight: FontWeight.w700, color: base)),
-                    );
-                  },
-                ),
-
+                eventLoader: vm.eventsOf,
+                hasEvents: vm.hasEvents,
               ),
-            )
+            ),
           ],
         ),
 
