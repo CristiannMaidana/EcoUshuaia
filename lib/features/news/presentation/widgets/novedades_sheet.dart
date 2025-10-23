@@ -6,7 +6,9 @@ import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 
 
 class CustomNovedades extends StatefulWidget {
-  const CustomNovedades({Key? key}) : super(key: key);
+  final ValueChanged<Calendarios> expand;
+
+  const CustomNovedades({Key? key, required this.expand}) : super(key: key);
 
   @override
   State<CustomNovedades> createState() => _CustomNovedadesState();
@@ -157,7 +159,7 @@ class _CustomNovedadesState extends State<CustomNovedades> {
                         : ListView(
                             controller: scrollController,
                             children: [
-                              ItemsNovedades(listaNovedades: data),
+                              ItemsNovedades(listaNovedades: data, expand: widget.expand),
                             ],        
                       ),
                     ),
