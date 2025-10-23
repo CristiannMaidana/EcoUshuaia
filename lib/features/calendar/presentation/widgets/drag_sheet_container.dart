@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/gradiente.dart';
 import 'package:flutter/material.dart';
 
 class DragSheetContainer extends StatefulWidget {
@@ -101,35 +102,24 @@ class DragSheetContainerState extends State<DragSheetContainer> {
                 onTap: expand,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                  child: Material(
-                    color: Colors.white,
-                    elevation: 12,
-                    child: ListView(
-                      controller: scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(
+                        child: Gradiente(),
+                      ),
+                      Material(
+                        elevation: 12,
+                        color: Colors.transparent,
+                        child: ListView(
+                          controller: scrollController,
+                          physics: const BouncingScrollPhysics(),
                           children: [
-                            //Boton cerrar
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(32),
-                                  border: Border.all(color: Colors.grey[400]!, width: 1),
-                                ),
-                                child: IconButton(onPressed: collapse, icon: Icon(Icons.close))
-                              ),
-                            ),
-                          ]
+                            const SizedBox(height: 18),
+                            widget.child,
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        widget.child,
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               );
