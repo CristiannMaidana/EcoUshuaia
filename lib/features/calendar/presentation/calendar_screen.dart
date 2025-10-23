@@ -1,13 +1,16 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/drag_sheet_container.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/novedades_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({super.key});
-
+  
   @override
   State<CalenderScreen> createState() => _CalenderScreenState();
 }
@@ -15,6 +18,13 @@ class CalenderScreen extends StatefulWidget {
 class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProviderStateMixin {
   bool _cambioAnuncios = true;
 
+  final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
+  Calendarios? _selectedCal;
+
+  void _onNovedadTap(Calendarios c) {
+    setState(() => _selectedCal = c);
+    _sheetKey.currentState?.expand();
+  }
   @override
   Widget build(BuildContext context) {
     final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
@@ -75,7 +85,13 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             ],
           ),
 
-          CustomNovedades(),
+          CustomNovedades(expand:  _onNovedadTap),
+          
+          //Sheet de detalle de noticia
+          DragSheetContainer(
+            key: _sheetKey,
+            child: DetailNews(newCalendar: _selectedCal),
+          )
         ],
       ),
     );
