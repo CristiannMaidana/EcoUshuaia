@@ -25,6 +25,11 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
     setState(() => _selectedCal = c);
     _sheetKey.currentState?.expand();
   }
+
+  void _closeSheet() {
+    _sheetKey.currentState?.collapse();
+  }
+
   @override
   Widget build(BuildContext context) {
     final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
@@ -90,7 +95,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
           //Sheet de detalle de noticia
           DragSheetContainer(
             key: _sheetKey,
-            child: DetailNews(newCalendar: _selectedCal),
+            child: DetailNews(newCalendar: _selectedCal, onClose: _closeSheet),
           )
         ],
       ),
