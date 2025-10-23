@@ -6,10 +6,12 @@ import 'package:intl/intl.dart';
 
 class ItemsNovedades extends StatefulWidget{
   final List<Calendarios> listaNovedades;
+  final ValueChanged<Calendarios> expand;
 
   ItemsNovedades({
     Key? key,
     required this.listaNovedades,
+    required this.expand,
   }) : super(key: key);
 
   @override
@@ -33,13 +35,7 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
             children: [
               espacioVerticalMediano,
               GestureDetector(
-                onTap: () {
-                  //Aca deberia cargar una nueva pantalla con la novedad
-                  //Se le cargara el objeto de la novedad
-                  //La nueva ventana entendera y imprimira correctamente segun la novedad seleccionada
-                  //La novedad tiene que ser una lista y coincidir los index con la lista de elementos
-                  print('Novedad tocada');
-                },
+                onTap: () => widget.expand(n),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
