@@ -1,11 +1,20 @@
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DetailDate extends StatelessWidget {
-  const DetailDate({super.key});
+  final Calendarios date;
+  const DetailDate({super.key, required this.date});
 
   @override
   Widget build(BuildContext context) {
+    final String dia = toBeginningOfSentenceCase(DateFormat('EEE d MMM y').format(date.fechaHora));
+
+    final String hora = DateFormat('HH:mm').format(date.fechaHora);
+
+    final String duracion = '90 min';
+
     return Padding(
         padding: const EdgeInsets.all(20),
         child: Container(
@@ -16,11 +25,11 @@ class DetailDate extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _row(context, "Dia", "Mié 21 oct 2025"),
+              _row(context, "Dia", "$dia"),
               lineDivider(),
-              _row(context, "Hora", "10:00"),
+              _row(context, "Hora", "$hora"),
               lineDivider(),
-              _row(context, "Duracion", "90 min"),
+              _row(context, "Duracion", "$duracion"),
             ],
           ),
         ),
