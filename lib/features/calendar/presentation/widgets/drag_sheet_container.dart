@@ -30,8 +30,10 @@ class DragSheetContainerState extends State<DragSheetContainer> {
   double _minFrac = 0.1;
   double _maxFrac = 0.3;
 
-  //bloquea toques cuando el sheet está expandido
-  bool _barrierActive = false; 
+  bool _barrierActive = false;
+
+  ScrollController? _localController;
+  bool _showJumpTop = false;
 
   @override
   void initState() {
@@ -47,16 +49,44 @@ class DragSheetContainerState extends State<DragSheetContainer> {
 
   @override
   void dispose() {
+    _localController?.removeListener(_onScrollChange);
     _ctrl.dispose();
     super.dispose();
   }
 
-  void collapse() {
-    _ctrl.animateTo(
-      _minFrac,
-      duration: widget.duration,
-      curve: widget.curve,
-    );
+  void _attachScrollController(ScrollController sc) {
+    if (_localController == sc) return;
+    _localController?.removeListener(_onScrollChange);
+    _localController = sc;
+    _localController!.addListener(_onScrollChange);
+  }
+
+  void _onScrollChange() {
+    if (_localController == null) return;
+    final show = _localController!.offset > 100;
+    if (show != _showJumpTop) setState(() => _showJumpTop = show);
+  }
+
+  Future<void> _jumpToTop() async {
+    if (_localController == null) return;
+    try {
+      await _localController!.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    } catch (_) {}
+  }
+
+  Future<void> collapse() async {
+    await _jumpToTop();
+    try {
+      await _ctrl.animateTo(
+        _minFrac,
+        duration: widget.duration,
+        curve: widget.curve,
+      );
+    } catch (_) {}
   }
 
   void expand() {
@@ -81,7 +111,7 @@ class DragSheetContainerState extends State<DragSheetContainer> {
             ignoring: !_barrierActive,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: collapse,
+              onTap: () { collapse(); },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 450),
                 color: _barrierActive ? widget.scrimColor : Colors.transparent,
@@ -98,15 +128,15 @@ class DragSheetContainerState extends State<DragSheetContainer> {
             maxChildSize: .9,
             snap: true,
             builder: (context, scrollController) {
+              _attachScrollController(scrollController);
+
               return GestureDetector(
-                onTap: expand,
+                onTap: () { expand(); },
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
                   child: Stack(
                     children: [
-                      const Positioned.fill(
-                        child: Gradiente(),
-                      ),
+                      const Positioned.fill(child: Gradiente()),
                       Material(
                         elevation: 12,
                         color: Colors.transparent,
@@ -119,6 +149,20 @@ class DragSheetContainerState extends State<DragSheetContainer> {
                           ],
                         ),
                       ),
+
+                      //Boton para subir arriba
+                      if (_showJumpTop)
+                        Positioned(
+                          right: 10,
+                          bottom: 10,
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            mini: true,
+                            onPressed: () { _jumpToTop(); },
+                            child: const Icon(Icons.keyboard_arrow_up,
+                                color: Colors.white, size: 32),
+                          ),
+                        ),
                     ],
                   ),
                 ),
