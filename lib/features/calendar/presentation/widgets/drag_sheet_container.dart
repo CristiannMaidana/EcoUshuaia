@@ -13,7 +13,7 @@ class DragSheetContainer extends StatefulWidget {
   const DragSheetContainer({
     super.key,
     this.minHeight = 0,
-    this.maxHeight = 800,
+    this.maxHeight = 900,
     this.duration = const Duration(milliseconds: 450),
     this.curve = Curves.easeOutCubic,
     this.child = const SizedBox.shrink(),
@@ -112,7 +112,7 @@ class DragSheetContainerState extends State<DragSheetContainer> {
                         color: Colors.transparent,
                         child: ListView(
                           controller: scrollController,
-                          physics: const BouncingScrollPhysics(),
+                          physics: const ClampingScrollPhysics(),
                           children: [
                             const SizedBox(height: 18),
                             widget.child,
