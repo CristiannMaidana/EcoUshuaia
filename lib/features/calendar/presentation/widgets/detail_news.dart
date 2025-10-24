@@ -48,6 +48,7 @@ class _DetailNewsState extends State<DetailNews> {
   void _showOverlayBelowAnchor() {
     final anchorCtx = _anchorKey.currentContext;
     final overlayState = Overlay.of(context);
+    // ignore: unnecessary_null_comparison
     if (anchorCtx == null || overlayState == null) return;
 
     final btnBox  = anchorCtx.findRenderObject() as RenderBox;
@@ -77,13 +78,12 @@ class _DetailNewsState extends State<DetailNews> {
             color: Colors.transparent,
             onTapOutside: () => _toggleDateDetail(false),
           ),
-
           // Panel
           Positioned(
             left: left,
             top: panelTop,
             width: width,
-            child: const DetailDate(),
+            child: DetailDate(date: widget.newCalendar!),
           ),
         ]);
       },
