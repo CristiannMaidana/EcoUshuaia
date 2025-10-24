@@ -86,7 +86,7 @@ class DetailNews extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -115,7 +115,7 @@ class DetailNews extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: InfoGrid(
               items: const [
                 InfoItem('Zona', 'Centro'),
@@ -131,8 +131,8 @@ class DetailNews extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 10),
-            child: Text(c.novedad, style: Theme.of(context).textTheme.bodyMedium),
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 20),
+            child: Text(c.novedad, style: Theme.of(context).textTheme.labelMedium),
           ),
         ),
       ],
@@ -142,7 +142,8 @@ class DetailNews extends StatelessWidget{
 
 Divider _lineDivider (BuildContext context){
   return Divider(
-    height: 1,
-    color: Colors.black,
+    height: .6,
+    thickness: .6,
+    color: Colors.grey,
   );
 }
