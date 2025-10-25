@@ -9,11 +9,20 @@ class DetailDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String dia = toBeginningOfSentenceCase(DateFormat('EEE d MMM y').format(date.fechaHora));
+    final String dia = toBeginningOfSentenceCase(DateFormat('EEE d MMM y').format(date.fecha));
+    final dt = DateTime.utc(1970, 1, 1).add(date.hora);
+    final hora = DateFormat('HH:mm').format(dt);
 
-    final String hora = DateFormat('HH:mm').format(date.fechaHora);
+    String formatDuration(Duration d, {bool seconds = false}) {
+      final h = d.inHours;
+      final m = d.inMinutes.remainder(60);
+      final s = d.inSeconds.remainder(60);
+      return seconds
+          ? '${h.toString().padLeft(2,'0')}:${m.toString().padLeft(2,'0')}:${s.toString().padLeft(2,'0')}'
+          : '${h.toString().padLeft(2,'0')}:${m.toString().padLeft(2,'0')}';
+    }
 
-    final String duracion = '90 min';
+    final String duracion = date.todoElDia ? "Todo el día": formatDuration(date.duracion); 
 
     return Padding(
         padding: const EdgeInsets.all(20),
@@ -27,9 +36,9 @@ class DetailDate extends StatelessWidget {
             children: [
               _row(context, "Dia", "$dia"),
               lineDivider(),
-              _row(context, "Hora", "$hora"),
+              _row(context, "Hora", "$hora hs"),
               lineDivider(),
-              _row(context, "Duracion", "$duracion"),
+              date.todoElDia? _row(context, "Duracion", "$duracion"): _row(context, "Duracion", "$duracion hs"),
             ],
           ),
         ),
