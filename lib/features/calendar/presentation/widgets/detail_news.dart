@@ -147,7 +147,7 @@ class _DetailNewsState extends State<DetailNews> {
                   children: [
                     const Icon(Icons.message_sharp),
                     const SizedBox(width: 10),
-                    Text("Categoria", style: Theme.of(context).textTheme.labelMedium),
+                    Text("${widget.newCalendar?.categoriaNoticia}", style: Theme.of(context).textTheme.labelMedium),
                   ],
                 ),
               ),
@@ -167,7 +167,7 @@ class _DetailNewsState extends State<DetailNews> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(DateFormat('dd/MM/yy – HH:mm').format(c.fechaHora), style: Theme.of(context).textTheme.labelMedium,),
+                Text(DateFormat('dd/MM/yy').format(c.fecha), style: Theme.of(context).textTheme.labelMedium,),
                 // Alterna entre "Detalle de fecha" y boton salir
                 Container(
                   key: _anchorKey,
@@ -212,7 +212,7 @@ class _DetailNewsState extends State<DetailNews> {
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Text(c.novedad, style: Theme.of(context).textTheme.labelMedium),
+            child: Text(c.cuerpo, style: Theme.of(context).textTheme.labelMedium),
           ),
         ),
       ],
