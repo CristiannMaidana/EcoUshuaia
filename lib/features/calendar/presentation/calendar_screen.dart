@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
@@ -16,8 +15,6 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProviderStateMixin {
-  bool _cambioAnuncios = true;
-
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
   Calendarios? _selectedCal;
 
@@ -40,7 +37,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
         backgroundColor: camarone50,
         toolbarHeight: 60,
         title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -51,14 +48,24 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-            child: StandardButton(
-              texto: _cambioAnuncios? 'Recordatorio' : 'Noticias',
-              onPressed: () {
-                setState(() {
-                  _cambioAnuncios = !_cambioAnuncios;
-                });
-              },
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Container(
+              decoration: _Decoration(context),
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    //Aca hay que abrir un nuevo widget, que este por encima de la ventana
+                    //deberia desaparecer este boton y hacer efecto que se convierte en el widget grande,
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add, color: Colors.black, size: 22,),
+                    SizedBox(width: 8,),
+                    Text('Recordatorio', style: Theme.of(context).textTheme.labelMedium,)
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -101,4 +108,13 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
       ),
     );
   }
+}
+
+BoxDecoration _Decoration(BuildContext context) {
+  final borderColor = Colors.grey[400]!;
+  return BoxDecoration(
+    color: Colors.grey[300],
+    borderRadius: BorderRadius.circular(14),
+    border: Border.all(color: borderColor, width: 1),
+  );
 }
