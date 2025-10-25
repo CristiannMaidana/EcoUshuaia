@@ -28,8 +28,8 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
       children: [
         ...List.generate(widget.listaNovedades.length, (index) {
           final n = widget.listaNovedades[index];
-          final mes = DateFormat.MMM(locale).format(n.fechaHora).toUpperCase();
-          final dia = n.fechaHora.day.toString().padLeft(2, '0');
+          final mes = DateFormat.MMM(locale).format(n.fecha).toUpperCase();
+          final dia = n.fecha.day.toString().padLeft(2, '0');
       
           return Column(
             children: [
