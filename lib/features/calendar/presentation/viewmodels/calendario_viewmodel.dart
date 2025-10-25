@@ -42,8 +42,9 @@ class CalendarioViewmodel extends ChangeNotifier {
 
       _eventsByDay.clear();
       for (final n in _items) {
-        final k = _key(n.fechaHora);
-        _eventsByDay.putIfAbsent(k, () => []).add(n);
+        final k = _key(n.fecha);
+        final list = _eventsByDay.putIfAbsent(k, () => []);
+        list.add(n);
       }
 
       _loadedOnce = true;
@@ -56,7 +57,7 @@ class CalendarioViewmodel extends ChangeNotifier {
   }
 
   void setSelectedDay(DateTime? day) {
-    _selectedDay = (day == null) ? null : DateTime(day.year, day.month, day.day);
+    _selectedDay = (day == null) ? null : _key(day);
     notifyListeners();
   }
 
@@ -68,7 +69,7 @@ class CalendarioViewmodel extends ChangeNotifier {
   List<Calendarios> eventsInMonth(DateTime monthAnchor) {
     final ym = DateTime(monthAnchor.year, monthAnchor.month);
     return _items.where((n) =>
-      n.fechaHora.year == ym.year && n.fechaHora.month == ym.month
+      n.fecha.year == ym.year && n.fecha.month == ym.month
     ).toList();
   }
 }
