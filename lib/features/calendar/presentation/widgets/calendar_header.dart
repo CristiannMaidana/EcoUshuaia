@@ -106,7 +106,7 @@ class CalendarHeader extends StatelessWidget {
                       decoration: _Decoration(context),
                       child: Row(
                         children: [
-                          const Icon(Icons.edit_calendar_sharp),
+                          const Icon(Icons.edit_calendar_sharp, color: Colors.black,),
                           const SizedBox(width: 5),
                           Text('Filtro', style: textTheme.labelMedium),
                         ],
