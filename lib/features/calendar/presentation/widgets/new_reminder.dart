@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/custom_time_picker.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/date_time_section.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/repeat_reminder.dart';
 import 'package:flutter/material.dart';
 
 class NewReminder extends StatefulWidget {
@@ -63,6 +64,7 @@ class _StateNewReminder extends State<NewReminder> {
     final horaTexto = _formatTime(context, _selectedTime);
 
     return Container(
+      height: 600,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(width: 1, color: Colors.black26),
@@ -105,6 +107,9 @@ class _StateNewReminder extends State<NewReminder> {
               onHourChanged: _onHourSwitchChanged,
               hourText: horaTexto,
             ),
+            const SizedBox(height: 20),
+            //Repetir
+            RepeatReminder()
           ],
         ),
       ),
