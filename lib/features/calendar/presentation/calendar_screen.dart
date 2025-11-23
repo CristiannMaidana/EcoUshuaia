@@ -3,6 +3,7 @@ import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/drag_sheet_container.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/new_reminder.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/novedades_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -53,10 +54,29 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
               decoration: _Decoration(context),
               child: TextButton(
                 onPressed: () {
-                  setState(() {
-                    //Aca hay que abrir un nuevo widget, que este por encima de la ventana
-                    //deberia desaparecer este boton y hacer efecto que se convierte en el widget grande,
-                  });
+                  showGeneralDialog< void >(
+                    context: context,
+                    barrierDismissible: true,
+                    barrierLabel: 'Nuevo recordatorio',
+                    barrierColor: Colors.black45,
+                    transitionDuration: const Duration(milliseconds: 280),
+                    pageBuilder: (_, __, ___) => Center(
+                      child: Material(
+                        color: Colors.transparent,
+                        child: NewReminder(),
+                      ),
+                    ),
+                    transitionBuilder: (_, anim, __, child) {
+                      final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+                      return FadeTransition(
+                        opacity: curved,
+                        child: ScaleTransition(
+                          scale: Tween(begin: 0.95, end: 1.0).animate(curved),
+                          child: child,
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: Row(
                   children: [
@@ -103,7 +123,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
           DragSheetContainer(
             key: _sheetKey,
             child: DetailNews(newCalendar: _selectedCal, onClose: _closeSheet),
-          )
+          ),          
         ],
       ),
     );
