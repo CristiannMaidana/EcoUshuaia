@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_header.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -85,7 +86,17 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
               onPrev: _goPrevMonth,
               onNext: _goNextMonth,
               onFilter: () {
-                // TODO: abrir panel de filtros o diálogo
+                showGeneralDialog<void>(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierLabel: 'Seleccione categoria',
+                  pageBuilder: (_, __, ___) => Center(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: FilterWidget(),
+                    ),
+                  ),
+                );
               },
               onNotifications: () {
                 // TODO: acción de notificaciones
