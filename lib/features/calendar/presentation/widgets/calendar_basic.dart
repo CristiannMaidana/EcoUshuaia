@@ -25,7 +25,6 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   late int _yearSelected;
 
   // Ancla y overlay para el panel de Filtro
-  final LayerLink _filterLink = LayerLink();
   final GlobalKey _filterBtnKey = GlobalKey();
   OverlayEntry? _filterEntry;
 
@@ -33,6 +32,12 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   void initState() {
     super.initState();
     _yearSelected = _focusedDay.year;
+  }
+
+  @override
+  void dispose() {
+    _hideFilter();
+    super.dispose();
   }
 
   void _goPrevMonth() {
@@ -53,6 +58,64 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
     final firstOfMonth = DateTime(year, month, 1);
     final lastOfMonth  = DateTime(year, month + 1, 0);
     return lastOfMonth.isBefore(_firstDay) || firstOfMonth.isAfter(_lastDay);
+  }
+
+  // Boton de filtro: mostrar/ocultar panel
+  void _toggleFilter() {
+    if (_filterEntry == null) {
+      _showFilterBelow();
+    } else {
+      _hideFilter();
+    }
+  }
+
+  // Mostrar el panel de filtro debajo del botón
+  void _showFilterBelow() {
+    final overlay = Overlay.of(context);
+    // ignore: unnecessary_null_comparison
+    if (overlay == null) return;
+
+    // posición del botón "Filtro" para calcular el TOP
+    final box = _filterBtnKey.currentContext?.findRenderObject() as RenderBox?;
+    final btnPos  = box?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final btnSize = box?.size ?? const Size(0, 0);
+    final double top = btnPos.dy + btnSize.height + 6; // justo debajo
+
+    _filterEntry = OverlayEntry(
+      builder: (_) => Stack(
+        children: [
+          // Creo fondo que detecta taps fuera del panel para cerrarlo
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _hideFilter,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+          // Creo panel anclado debajo del botón
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: top),
+                child: Material(
+                  color: Colors.transparent,
+                  child: const FilterWidget(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    overlay.insert(_filterEntry!);
+  }
+
+  // Ocultar el panel de filtro
+  void _hideFilter() {
+    _filterEntry?.remove();
+    _filterEntry = null;
   }
 
   @override
@@ -83,9 +146,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
               onPrev: _goPrevMonth,
               onNext: _goNextMonth,
               // Metodo boton 
-              onFilter: (){},
-              // Ancla para el overlay
-              filterAnchor: _filterLink,
+              onFilter: _toggleFilter,
               // Key del botón filtro
               filterKey: _filterBtnKey,
 
