@@ -11,6 +11,8 @@ class CalendarHeader extends StatelessWidget {
     this.onFilter,
     this.onNotifications,
     this.leftInsetTitle = 30.0,
+    this.filterAnchor,
+    this.filterKey,
   });
 
   /// Texto del mes 
@@ -32,6 +34,9 @@ class CalendarHeader extends StatelessWidget {
 
   final double leftInsetTitle;
 
+  // Anclar el panel debajo del botón filtro
+  final LayerLink? filterAnchor;
+  final Key? filterKey;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +55,7 @@ class CalendarHeader extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: leftInsetTitle),
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.start,
-                        style: textTheme.titleLarge,
-                      ),
+                      child: Text(title, textAlign: TextAlign.start, style: textTheme.titleLarge),
                     ),
                     const Icon(Icons.arrow_drop_down),
                   ],
@@ -82,14 +83,8 @@ class CalendarHeader extends StatelessWidget {
               padding: const EdgeInsets.only(left: 15),
               child: Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    onPressed: onPrev,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right),
-                    onPressed: onNext,
-                  ),
+                  IconButton(icon: const Icon(Icons.chevron_left), onPressed: onPrev),
+                  IconButton(icon: const Icon(Icons.chevron_right), onPressed: onNext),
                 ],
               ),
             ),
@@ -113,10 +108,7 @@ class CalendarHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.notifications),
-                    onPressed: onNotifications,
-                  ),
+                  IconButton(icon: const Icon(Icons.notifications), onPressed: onNotifications),
                 ],
               ),
             ),
