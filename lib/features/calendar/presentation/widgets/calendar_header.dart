@@ -11,7 +11,7 @@ class CalendarHeader extends StatelessWidget {
     this.onFilter,
     this.onNotifications,
     this.leftInsetTitle = 30.0,
-    this.filterAnchor,
+    required this.filterAnchor,
     this.filterKey,
   });
 
@@ -35,7 +35,7 @@ class CalendarHeader extends StatelessWidget {
   final double leftInsetTitle;
 
   // Anclar el panel debajo del botón filtro
-  final LayerLink? filterAnchor;
+  final LayerLink filterAnchor;
   final Key? filterKey;
 
   @override
@@ -96,17 +96,21 @@ class CalendarHeader extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: onFilter,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      decoration: _Decoration(context),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.edit_calendar_sharp, color: Colors.black,),
-                          const SizedBox(width: 5),
-                          Text('Filtro', style: textTheme.labelMedium),
-                        ],
+                    child: CompositedTransformTarget(
+                      link: filterAnchor,
+                      child: Container(
+                        key: filterKey,
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        decoration: _Decoration(context),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.edit_calendar_sharp, color: Colors.black),
+                            const SizedBox(width: 5),
+                            Text('Filtro', style: textTheme.labelMedium),
+                          ],
+                        ),
                       ),
-                    ),
+                    )
                   ),
                   IconButton(icon: const Icon(Icons.notifications), onPressed: onNotifications),
                 ],
