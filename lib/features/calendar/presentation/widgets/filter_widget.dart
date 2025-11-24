@@ -7,13 +7,10 @@ class FilterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      width: 400,
+      width: 350,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black54, width: 1),
       ),
     );
