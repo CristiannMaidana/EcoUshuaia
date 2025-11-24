@@ -24,6 +24,11 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   bool _monthSeleceted = false;
   late int _yearSelected;
 
+  // Ancla y overlay para el panel de Filtro
+  final LayerLink _filterLink = LayerLink();
+  final GlobalKey _filterBtnKey = GlobalKey();
+  OverlayEntry? _filterEntry;
+
   @override
   void initState() {
     super.initState();
@@ -31,23 +36,15 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   }
 
   void _goPrevMonth() {
-    if (_isMonthDisabled(_focusedDay.year, _focusedDay.month - 1)) {
-      return;
-    }
-    setState(() {
-      _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
-    });
+    if (_isMonthDisabled(_focusedDay.year, _focusedDay.month - 1)) return;
+    setState(() => _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1, 1));
     context.read<CalendarioViewmodel>().setSelectedDay(null);
     context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
   }
 
   void _goNextMonth() {
-    if (_isMonthDisabled(_focusedDay.year, _focusedDay.month + 1)) {
-      return;
-    }
-    setState(() {
-      _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
-    });
+    if (_isMonthDisabled(_focusedDay.year, _focusedDay.month + 1)) return;
+    setState(() => _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 1));
     context.read<CalendarioViewmodel>().setSelectedDay(null);
     context.read<CalendarioViewmodel>().setVisibleMonth(_focusedDay);
   }
@@ -85,19 +82,13 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
               },
               onPrev: _goPrevMonth,
               onNext: _goNextMonth,
-              onFilter: () {
-                showGeneralDialog<void>(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: 'Seleccione categoria',
-                  pageBuilder: (_, __, ___) => Center(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: FilterWidget(),
-                    ),
-                  ),
-                );
-              },
+              // Metodo boton 
+              onFilter: (){},
+              // Ancla para el overlay
+              filterAnchor: _filterLink,
+              // Key del botón filtro
+              filterKey: _filterBtnKey,
+
               onNotifications: () {
                 // TODO: acción de notificaciones
               },
@@ -187,8 +178,8 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                         ),
                         itemBuilder: (context, index) {
                           final month = index + 1;
-                          final date   = DateTime(_yearSelected, month, 1);
-                          final label  = DateFormat.MMM(locale).format(date).toUpperCase();
+                          final date  = DateTime(_yearSelected, month, 1);
+                          final label = DateFormat.MMM(locale).format(date).toUpperCase();
                           final isCurrentFocused = (_focusedDay.year == _yearSelected && _focusedDay.month == month);
                           final disabled = _isMonthDisabled(_yearSelected, month);
 
