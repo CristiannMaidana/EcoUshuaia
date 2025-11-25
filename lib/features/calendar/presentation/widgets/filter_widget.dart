@@ -12,20 +12,24 @@ class FilterWidget extends StatelessWidget {
       create: (_) => CategoriaNoticiasViewmodel(
         context.read<CategoriaNoticiasRepositories>(),
       )..load(),
-      child: const _FilterWidgetState(),
+      child: const _FilterWidgetView(),
     );
   }
 }
 
-class _FilterWidgetState extends StatelessWidget {
-  const _FilterWidgetState();
+class _FilterWidgetView extends StatefulWidget {
+  const _FilterWidgetView({super.key});
 
+  @override
+  State<_FilterWidgetView> createState() => _FilterWidgetViewState();
+}
+
+class _FilterWidgetViewState extends State<_FilterWidgetView> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<CategoriaNoticiasViewmodel>();
-    
+
     return Container(
-      width: 400,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -42,7 +46,7 @@ class _FilterWidgetState extends StatelessWidget {
               label: Text(item.categoria, style: Theme.of(context).textTheme.labelLarge,), onSelected: (bool value) { print(item.categoria);},
           );
         }).toList(),
-      )
+      ),
     );
   }
 }
