@@ -25,13 +25,24 @@ class _FilterWidgetState extends StatelessWidget {
     final vm = context.watch<CategoriaNoticiasViewmodel>();
     
     return Container(
-      height: 100,
-      width: 350,
+      width: 400,
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black54, width: 1),
       ),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.start,
+        spacing: 8,
+        runSpacing: 8,
+        children: vm.items.map((item) {
+          return  FilterChip(
+              label: Text(item.categoria, style: Theme.of(context).textTheme.labelLarge,), onSelected: (bool value) { print(item.categoria);},
+          );
+        }).toList(),
+      )
     );
   }
 }
