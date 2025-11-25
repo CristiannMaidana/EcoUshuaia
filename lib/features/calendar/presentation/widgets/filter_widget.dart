@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_toggle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,17 @@ class _FilterWidgetView extends StatefulWidget {
 }
 
 class _FilterWidgetViewState extends State<_FilterWidgetView> {
+  final Set<String> _selected = {};
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final vm = context.read<CategoriaNoticiasViewmodel>();
+    if (_selected.isEmpty && vm.items.isNotEmpty) {
+      _selected.addAll(vm.items.map((e) => e.categoria));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<CategoriaNoticiasViewmodel>();
@@ -42,11 +54,32 @@ class _FilterWidgetViewState extends State<_FilterWidgetView> {
         spacing: 8,
         runSpacing: 8,
         children: vm.items.map((item) {
-          return  FilterChip(
-              label: Text(item.categoria, style: Theme.of(context).textTheme.labelLarge,), onSelected: (bool value) { print(item.categoria);},
+          final label = item.categoria;
+          final color = _hexToColor(item.colorHex);
+          final isSelected = _selected.contains(label);
+
+          return FilterToggleButton(
+            categoria: label,
+            dotColor: color,
+            selected: isSelected,
+            onPressed: () {
+              setState(() {
+                if (isSelected) {
+                  _selected.remove(label);
+                } else {
+                  _selected.add(label);
+                }
+              });
+            },
           );
         }).toList(),
       ),
     );
   }
+}
+
+Color _hexToColor(String hex) {
+  var v = hex.replaceAll('#', '');
+  if (v.length == 6) v = 'FF$v';
+  return Color(int.parse(v, radix: 16));
 }
