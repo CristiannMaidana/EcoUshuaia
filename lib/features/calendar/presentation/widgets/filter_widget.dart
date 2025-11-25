@@ -5,6 +5,15 @@ class FilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const _FilterWidgetState();
+  }
+}
+
+class _FilterWidgetState extends StatelessWidget {
+  const _FilterWidgetState();
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 100,
       width: 350,
