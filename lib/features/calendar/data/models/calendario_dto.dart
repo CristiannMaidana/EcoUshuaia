@@ -9,7 +9,7 @@ class CalendarioDto {
   final String duracion;
   final String? subtitulo;
   final bool todoElDia;
-  final int categoriaNoticia;
+  final int categoriaNoticiaId;
   final String creadoAt;
 
   CalendarioDto({
@@ -21,7 +21,7 @@ class CalendarioDto {
     required this.duracion,
     required this.subtitulo,
     required this.todoElDia,
-    required this.categoriaNoticia,
+    required this.categoriaNoticiaId,
     required this.creadoAt,
   });
 
@@ -35,7 +35,7 @@ class CalendarioDto {
       duracion: (json['duracion']) as String,
       subtitulo: (json['subtitulo']) as String?,
       todoElDia: (json['todo_el_dia']) as bool,
-      categoriaNoticia: (json['categoria_noticia']) as int,
+      categoriaNoticiaId: (json['categoria_noticia']) as int,
       creadoAt: (json['creado_at']) as String,
     );
   }
@@ -49,7 +49,7 @@ class CalendarioDto {
         duracion: _parseIntervalToDuration(duracion),
         subtitulo: subtitulo,
         todoElDia: todoElDia,
-        categoriaNoticia: categoriaNoticia,
+        categoriaNoticiaId: categoriaNoticiaId,
         creadoAt: DateTime.parse(creadoAt),
       );
 
