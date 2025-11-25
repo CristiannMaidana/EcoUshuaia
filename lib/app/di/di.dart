@@ -2,8 +2,11 @@ import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_remote_da
 import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_repository_imp.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
 import 'package:eco_ushuaia/features/calendar/data/repositories/calendario_repository_imp.dart';
+import 'package:eco_ushuaia/features/calendar/data/repositories/categoria_noticias_imp.dart';
 import 'package:eco_ushuaia/features/calendar/data/sources/calendario_remote_data_sources.dart';
+import 'package:eco_ushuaia/features/calendar/data/sources/categoria_noticias_remote_data_sources.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/calendario_repositories.dart';
+import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
@@ -68,10 +71,20 @@ List<SingleChildWidget> _calendarioProviders() => [
   ),
 ];
 
+List<SingleChildWidget> _categoriaNoticiasProviders() => [
+  ProxyProvider<ApiClient, CategoriaNoticiasRemoteDataSources>(
+    update: (_, api, __) => CategoriaNoticiasRemoteDataSources(api),
+  ),
+  ProxyProvider<CategoriaNoticiasRemoteDataSources, CategoriaNoticiasRepositories>(
+    update: (_, ds, __) => CategoriaNoticiasImp(ds),
+  ),
+];
+
 List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
   ..._contenedoresProviders(),
   ..._usuariosProviders(),
-  ..._calendarioProviders()
+  ..._calendarioProviders(),
+  ..._categoriaNoticiasProviders(),
 ];
