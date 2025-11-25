@@ -7,7 +7,7 @@ class Calendarios {
   final Duration duracion;
   final String? subtitulo;
   final bool todoElDia;
-  final String categoriaNoticia;
+  final int categoriaNoticia;
   final DateTime creadoAt;
 
   const Calendarios({
