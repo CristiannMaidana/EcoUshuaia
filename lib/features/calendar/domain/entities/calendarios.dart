@@ -7,7 +7,7 @@ class Calendarios {
   final Duration duracion;
   final String? subtitulo;
   final bool todoElDia;
-  final int categoriaNoticia;
+  final int categoriaNoticiaId;
   final DateTime creadoAt;
 
   const Calendarios({
@@ -19,7 +19,7 @@ class Calendarios {
     required this.duracion,
     required this.subtitulo,
     required this.todoElDia,
-    required this.categoriaNoticia,
+    required this.categoriaNoticiaId,
     required this.creadoAt,
   });  
 }
