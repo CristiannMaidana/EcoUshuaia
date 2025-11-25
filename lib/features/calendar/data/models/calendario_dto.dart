@@ -9,7 +9,7 @@ class CalendarioDto {
   final String duracion;
   final String? subtitulo;
   final bool todoElDia;
-  final String categoriaNoticia;
+  final int categoriaNoticia;
   final String creadoAt;
 
   CalendarioDto({
@@ -35,7 +35,7 @@ class CalendarioDto {
       duracion: (json['duracion']) as String,
       subtitulo: (json['subtitulo']) as String?,
       todoElDia: (json['todo_el_dia']) as bool,
-      categoriaNoticia: (json['categoria_noticia']) as String,
+      categoriaNoticia: (json['categoria_noticia']) as int,
       creadoAt: (json['creado_at']) as String,
     );
   }
