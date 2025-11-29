@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_header.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_widget.dart';
@@ -72,14 +73,15 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   // Mostrar el panel de filtro debajo del botón
   void _showFilterBelow() {
     final overlay = Overlay.of(context);
-    // ignore: unnecessary_null_comparison
     if (overlay == null) return;
 
-    // posición del botón "Filtro" para calcular el TOP
-    final box = _filterBtnKey.currentContext?.findRenderObject() as RenderBox?;
-    final btnPos  = box?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final btnSize = box?.size ?? const Size(0, 0);
-    final double top = btnPos.dy + btnSize.height + 6; // justo debajo
+    // Posición del botón "Filtro"
+    final box   = _filterBtnKey.currentContext?.findRenderObject() as RenderBox?;
+    final pos   = box?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final size  = box?.size ?? const Size(0, 0);
+    final top   = pos.dy + size.height + 6; // justo debajo
+
+    final catsVm = context.read<CategoriaNoticiasViewmodel>();
 
     _filterEntry = OverlayEntry(
       builder: (_) => Stack(
@@ -100,7 +102,10 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                 padding: EdgeInsets.only(top: top),
                 child: Material(
                   color: Colors.transparent,
-                  child: const FilterWidget(),
+                  child: ChangeNotifierProvider<CategoriaNoticiasViewmodel>.value(
+                    value: catsVm,
+                    child: const FilterWidget(),
+                  ),
                 ),
               ),
             ),
@@ -111,7 +116,6 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
 
     overlay.insert(_filterEntry!);
   }
-
   // Ocultar el panel de filtro
   void _hideFilter() {
     _filterEntry?.remove();
