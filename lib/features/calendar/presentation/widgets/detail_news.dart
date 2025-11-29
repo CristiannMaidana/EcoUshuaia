@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_button.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_date.dart';
@@ -7,6 +8,7 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.
 import 'package:eco_ushuaia/features/news/presentation/widgets/info_grind.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DetailNews extends StatefulWidget {
   final Calendarios? newCalendar;
@@ -115,6 +117,12 @@ class _DetailNewsState extends State<DetailNews> {
     final c = widget.newCalendar;
     if (c == null) return const SizedBox.shrink();
 
+    final cats = context.watch<CategoriaNoticiasViewmodel>();
+
+    final int? catId = c.categoriaNoticiaId;
+
+    final String categoria  = (catId != null) ? (cats.labelFor(catId) ?? 'Sin categoría') : 'Sin categoría';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -147,7 +155,7 @@ class _DetailNewsState extends State<DetailNews> {
                   children: [
                     const Icon(Icons.message_sharp),
                     const SizedBox(width: 10),
-                    Text("${widget.newCalendar?.categoriaNoticia}", style: Theme.of(context).textTheme.labelMedium),
+                    Text("${categoria}", style: Theme.of(context).textTheme.labelMedium),
                   ],
                 ),
               ),
