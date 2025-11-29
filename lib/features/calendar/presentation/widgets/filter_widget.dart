@@ -1,31 +1,16 @@
-import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_toggle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FilterWidget extends StatelessWidget {
+class FilterWidget extends StatefulWidget {
   const FilterWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CategoriaNoticiasViewmodel(
-        context.read<CategoriaNoticiasRepositories>(),
-      )..load(),
-      child: const _FilterWidgetView(),
-    );
-  }
+  State<FilterWidget> createState() => _FilterWidgetState();
 }
 
-class _FilterWidgetView extends StatefulWidget {
-  const _FilterWidgetView({super.key});
-
-  @override
-  State<_FilterWidgetView> createState() => _FilterWidgetViewState();
-}
-
-class _FilterWidgetViewState extends State<_FilterWidgetView> {
+class _FilterWidgetState extends State<FilterWidget> {
   final Set<String> _selected = {};
 
   @override
@@ -39,7 +24,7 @@ class _FilterWidgetViewState extends State<_FilterWidgetView> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<CategoriaNoticiasViewmodel>();
+    final vm = context.watch<CategoriaNoticiasViewmodel>(); 
 
     return Container(
       padding: const EdgeInsets.all(10),
