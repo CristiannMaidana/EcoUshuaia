@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:provider/provider.dart';
+
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 
 class Calendar extends StatelessWidget {
   const Calendar({
@@ -34,9 +37,11 @@ class Calendar extends StatelessWidget {
   final void Function(DateTime focusedDay) onPageChanged;
   final void Function(CalendarFormat format) onFormatChanged;
 
+  // Datos
   final List<Calendarios> Function(DateTime day) eventLoader;
   final bool Function(DateTime day) hasEvents;
 
+  // Estilos
   final double rowHeight;
   final bool headerVisible;
   final StartingDayOfWeek startingDayOfWeek;
@@ -46,6 +51,7 @@ class Calendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
+
     return TableCalendar<Calendarios>(
       locale: locale,
       firstDay: firstDay,
@@ -69,36 +75,70 @@ class Calendar extends StatelessWidget {
       eventLoader: eventLoader,
 
       calendarBuilders: CalendarBuilders<Calendarios>(
-        defaultBuilder: (context, day, focused) {
-          if (!hasEvents(day)) return null;
+        defaultBuilder: (context, day, focusedDay) {
+          final evs = eventLoader(day);
+          final has = evs.isNotEmpty;
+
           return _dayCell(
             context,
             day,
-            bgColor: const Color(0xFFE6F5EA),
+            bgColor: has ? (const Color(0xFFE6F5EA)).withOpacity(0.18) : null,
             margin: cellMargin,
           );
         },
-        todayBuilder: (context, day, focused) {
-          final has = hasEvents(day);
-          return _dayCell(
-            context,
-            day,
-            bgColor: has ? const Color(0xFFDBECFF) : const Color(0xFFEFF6FF),
-            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.2),
-            margin: cellMargin,
-          );
-        },
-        selectedBuilder: (context, day, focused) {
-          final has = hasEvents(day);
+        todayBuilder: (context, day, focusedDay) {
           final base = Theme.of(context).colorScheme.primary;
           return _dayCell(
             context,
             day,
-            bgColor: has ? base.withOpacity(0.18) : base.withOpacity(0.12),
+            bgColor: base.withOpacity(0.22),
+            border: Border.all(color: base, width: 1.2),
+            margin: cellMargin,
+          );
+        },
+        selectedBuilder: (context, day, focusedDay) {
+          final base = Theme.of(context).colorScheme.primary;
+          return _dayCell(
+            context,
+            day,
+            bgColor: base.withOpacity(0.28),
             border: Border.all(color: base, width: 1.6),
             textColor: base,
             fontWeight: FontWeight.w700,
             margin: cellMargin,
+          );
+        },
+
+        // Generacion de circulos de colores para eventos
+        markerBuilder: (context, day, events) {
+          final evs = events.cast<Calendarios>();
+          if (evs.isEmpty) return const SizedBox.shrink();
+
+          final cats = context.watch<CategoriaNoticiasViewmodel>();
+          
+          final colors = evs
+              .map((e) => cats.colorFor(e.categoriaNoticiaId) ?? Colors.grey)
+              .toList();
+
+          // Limite de 5 colores a mostrar
+          final show = colors.take(5).toList();
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: show
+                  .map((c) => Container(
+                        width: 7,
+                        height: 7,
+                        margin: const EdgeInsets.symmetric(horizontal: 1),
+                        decoration: BoxDecoration(
+                          color: c,
+                          shape: BoxShape.circle,
+                        ),
+                      ))
+                  .toList(),
+            ),
           );
         },
       ),
