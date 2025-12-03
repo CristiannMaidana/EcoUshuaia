@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar.dart';
@@ -122,10 +123,31 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
     _filterEntry = null;
   }
 
+  // Devuelve los eventos del día, filtrados por categorías seleccionadas
+  List<Calendarios> _eventsOfFiltered(BuildContext context, DateTime day) {
+    final calVm  = context.read<CalendarioViewmodel>();
+    final catsVm = context.read<CategoriaNoticiasViewmodel>();
+
+    final allEvents   = calVm.eventsOf(day);
+    final selectedIds = catsVm.selectedIds;
+
+    // Si no hay seleccionadas, nada
+    if (selectedIds.isEmpty) return [];
+
+    return allEvents
+        .where((e) => selectedIds.contains(e.categoriaNoticiaId))
+        .toList();
+  }
+
+  bool _hasEventsFiltered(BuildContext context, DateTime day) {
+    return _eventsOfFiltered(context, day).isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
-    final vm = context.watch<CalendarioViewmodel>();
+    final _      = context.watch<CategoriaNoticiasViewmodel>(); // Sirve para rebuild
+
     final titulo = DateFormat.yMMMM(locale).format(_focusedDay);
     
     return Stack(
@@ -182,8 +204,8 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                 onFormatChanged: (fmt) {
                   if (_format != fmt) setState(() => _format = fmt);
                 },
-                eventLoader: vm.eventsOf,
-                hasEvents: vm.hasEvents,
+                eventLoader: (day) => _eventsOfFiltered(context, day),
+                hasEvents:  (day) => _hasEventsFiltered(context, day),
               ),
             ),
           ],
