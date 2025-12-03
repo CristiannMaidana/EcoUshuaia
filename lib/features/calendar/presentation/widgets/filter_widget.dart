@@ -3,28 +3,12 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_toggle
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FilterWidget extends StatefulWidget {
+class FilterWidget extends StatelessWidget {
   const FilterWidget({super.key});
 
   @override
-  State<FilterWidget> createState() => _FilterWidgetState();
-}
-
-class _FilterWidgetState extends State<FilterWidget> {
-  final Set<String> _selected = {};
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final vm = context.read<CategoriaNoticiasViewmodel>();
-    if (_selected.isEmpty && vm.items.isNotEmpty) {
-      _selected.addAll(vm.items.map((e) => e.categoria));
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = context.watch<CategoriaNoticiasViewmodel>(); 
+    final vm = context.watch<CategoriaNoticiasViewmodel>();
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -39,22 +23,17 @@ class _FilterWidgetState extends State<FilterWidget> {
         spacing: 8,
         runSpacing: 8,
         children: vm.items.map((item) {
-          final label = item.categoria;
-          final color = _hexToColor(item.colorHex);
-          final isSelected = _selected.contains(label);
+          final label       = item.categoria;
+          final color       = _hexToColor(item.colorHex);
+          final idCategoria = item.idCategoriaNoticias;
+          final isSelected  = vm.isSelected(idCategoria);
 
           return FilterToggleButton(
             categoria: label,
             dotColor: color,
             selected: isSelected,
             onPressed: () {
-              setState(() {
-                if (isSelected) {
-                  _selected.remove(label);
-                } else {
-                  _selected.add(label);
-                }
-              });
+              vm.toggleCategoria(idCategoria);
             },
           );
         }).toList(),
