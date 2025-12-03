@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/categoria_noticias.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 
-class CategoriaNoticiasViewmodel extends ChangeNotifier{
+class CategoriaNoticiasViewmodel extends ChangeNotifier {
   final CategoriaNoticiasRepositories repo;
   
   CategoriaNoticiasViewmodel(this.repo);
@@ -22,6 +22,10 @@ class CategoriaNoticiasViewmodel extends ChangeNotifier{
   final Map<int, CategoriaNoticias> _byId = {};
   Map<int, CategoriaNoticias> get byId => _byId;
 
+  // IDs de categorías actualmente seleccionadas/visibles
+  final Set<int> _selectedIds = {};
+  Set<int> get selectedIds => _selectedIds;
+
   Future<void> load({Map<String, dynamic>? filtros}) async {
     if (_loading) return;
     _loading = true;
@@ -31,9 +35,16 @@ class CategoriaNoticiasViewmodel extends ChangeNotifier{
     try {
       final result = await repo.list(filtros: filtros);
       _items = result;
+
       _byId
         ..clear()
         ..addEntries(result.map((e) => MapEntry(e.idCategoriaNoticias, e)));
+
+      if (_selectedIds.isEmpty) {
+        _selectedIds.addAll(_byId.keys);
+      } else {
+        _selectedIds.removeWhere((id) => !_byId.containsKey(id));
+      }
 
       _loadedOnce = true;
     } catch (e) {
@@ -52,5 +63,16 @@ class CategoriaNoticiasViewmodel extends ChangeNotifier{
     var v = hex.replaceAll('#', '');
     if (v.length == 6) v = 'FF$v';
     return Color(int.parse(v, radix: 16));
+  }
+
+  bool isSelected(int id) => _selectedIds.contains(id);
+
+  void toggleCategoria(int id) {
+    if (_selectedIds.contains(id)) {
+      _selectedIds.remove(id);
+    } else {
+      _selectedIds.add(id);
+    }
+    notifyListeners();
   }
 }
