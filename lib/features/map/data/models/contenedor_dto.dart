@@ -44,8 +44,38 @@ class ContenedorDto {
     final geom = features['geometry'] as Map<String, dynamic>? ?? const {};
     final coords = (geom['coordinates'] as List?) ?? const [null, null];
 
+    DateTime? _toDate(dynamic v) =>
+      (v is String) ? DateTime.tryParse(v) : (v is DateTime) ? v : null;
+
+    ResiduoLite? _parseResiduo(dynamic r) {
+      if (r is Map<String, dynamic>) {
+        final id = r['id_residuo'] as int?;
+        final nombre = (r['nombre'] ?? '').toString();
+        final categoria = r['categoria'] as String?;
+        if (id != null) {
+          return ResiduoLite(id: id, nombre: nombre, categoria: categoria);
+        }
+      }
+      return null;
+    }
+
     return ContenedorDto(
       idContenedor: features['id'] as int,
+      nombreContenedor: props['nombre_contenedor'] as String?,
+      colorContenedor: props['color_contenedor'] as String?,
+      capacidadTotal: (props['capacidad_total'] as num?)?.toDouble(),
+      fechaInstalacion: _toDate(props['fecha_instalacion']),
+      ultimoVaciado: _toDate(props['ultimo_vaciado']),
+      descripcionUbicacion: props['descripcion_ubicacion'] as String?,
+      coordenada: (coords[1] != null && coords[0] != null)
+          ? Coordenada(
+              latitud: (coords[1] as num).toDouble(),
+              longitud: (coords[0] as num).toDouble(),
+            )
+          : null,
+      idZona: props['id_zona'] as int?,
+      idMapa: props['id_mapa'] as int?,
+      residuo: _parseResiduo(props['residuo']),
     );
   }
 
