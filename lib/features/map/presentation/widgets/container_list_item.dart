@@ -1,9 +1,12 @@
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:flutter/material.dart';
 
 class ContainerListItem extends StatefulWidget{
+  final Contenedor contenedor;
 
   ContainerListItem({ 
     Key? key,
+    required this.contenedor,
   }) : super(key: key);
 
   @override
@@ -31,14 +34,14 @@ class _CustomListaContenedoresState extends State<ContainerListItem> with Single
               Container(
                 width: 50,
                 margin: EdgeInsets.symmetric(horizontal: 10),
-                child: Text('id contenedor', style: Theme.of(context).textTheme.labelMedium,)
+                child: Text('${widget.contenedor.idContenedor}', style: Theme.of(context).textTheme.labelMedium,)
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Nombre personalizado', style: Theme.of(context).textTheme.labelMedium),
-                  Text('tipo residuo', style: Theme.of(context).textTheme.labelMedium),
+                  Text('${widget.contenedor.nombreContenedor}', style: Theme.of(context).textTheme.labelMedium),
+                  Text('${widget.contenedor.residuo?.categoria}', style: Theme.of(context).textTheme.labelMedium),
                 ],
               ),
               Row(
