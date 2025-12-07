@@ -8,14 +8,15 @@ class ContenedorRemoteDataSource {
 
   Future<List<ContenedorDto>> list({Map<String, dynamic>? filtros}) async {
     final data = await api.get('/contenedores/', query: filtros);
-    List<dynamic> list;
-    if (data is Map && data['results'] is List) {
-      list = data['results'] as List;
-    } else if (data is List){
-      list = data;
-    } else {
-      list = const [];
+
+    if (data is Map<String, dynamic> && data['features'] is List) {
+      final features = (data['features'] as List)
+          .whereType<Map>()
+          .map((e) => e.cast<String, dynamic>())
+          .toList();
+      return features.map(ContenedorDto.fromGeoJsonFeature).toList(growable: false);
     }
-    return list.whereType<Map>().map((e) => ContenedorDto.fromJson(e as Map<String, dynamic>)).toList();
+
+    return const <ContenedorDto>[];
   }
 }
