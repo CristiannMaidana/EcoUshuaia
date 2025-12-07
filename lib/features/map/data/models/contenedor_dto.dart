@@ -1,6 +1,16 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuo_lite.dart';
 
+class Coordenada {
+  final double latitud;
+  final double longitud;
+
+  Coordenada({
+    required this.latitud,
+    required this.longitud,
+  });
+}
+
 class ContenedorDto {
   final int idContenedor;
   final String? nombreContenedor;
