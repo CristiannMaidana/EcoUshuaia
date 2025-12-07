@@ -78,8 +78,8 @@ class _ContenedorPageState extends State<ContenedorPage> with SingleTickerProvid
             child: SingleChildScrollView(
               child: Column(
                 children: List.generate(
-                  30,
-                  (index) => ContainerListItem(),
+                  vm.items.length,
+                  (index) => ContainerListItem(contenedor: vm.items[index]),
                 ),
               ),
             ),
