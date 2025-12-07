@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuo_lite.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart' as domain_entities;
 
 class Coordenada {
   final double latitud;
@@ -38,31 +39,13 @@ class ContenedorDto {
     this.residuo,
   });
 
-  factory ContenedorDto.fromJson(Map<String, dynamic> json) {
-    ResiduoLite? parseResiduo(dynamic r) {
-      if (r is Map<String, dynamic>) {
-        final id = r['id'] is int ? r['id'] as int : int.tryParse('${r['id']}');
-        final nombre = (r['nombre'] ?? '').toString();
-        final categoria = r['categoria'] as String?;
-        if (id != null && nombre.isNotEmpty) {
-          return ResiduoLite(id: id, nombre: nombre, categoria: categoria);
-        }
-      }
-      return null;
-    }
+  factory ContenedorDto.fromGeoJsonFeature(Map<String, dynamic> features) {
+    final props = features['properties'] as Map<String, dynamic>? ?? const {};
+    final geom = features['geometry'] as Map<String, dynamic>? ?? const {};
+    final coords = (geom['coordinates'] as List?) ?? const [null, null];
 
     return ContenedorDto(
-      idContenedor: (json['id_contenedor']) as int,
-      nombreContenedor: (json['nombre_contenedor']) as String?,
-      colorContenedor: (json['color_contenedor']) as String?,
-      capacidadTotal: (json['capacidad_total']) as double?,
-      fechaInstalacion: (json['fecha_instalacion']) as DateTime?,
-      ultimoVaciado: (json['ultimo_vaciado']) as DateTime?,
-      descripcionUbicacion: (json['descripcion_ubicacion']) as String?,
-      idZona: (json['id_zona']) as int?,
-      idCoordenada: (json['id_coordenda']) as int?,
-      idMapa: (json['id_mapa']) as int?,
-      residuo: parseResiduo(json['residuo']),
+      idContenedor: features['id'] as int,
     );
   }
 
@@ -74,8 +57,13 @@ class ContenedorDto {
     fechaInstalacion: fechaInstalacion,
     ultimoVaciado: ultimoVaciado,
     descripcionUbicacion: descripcionUbicacion,
+    coordenada: coordenada != null
+        ? domain_entities.Coordenada(
+            latitud: coordenada!.latitud,
+            longitud: coordenada!.longitud,
+          )
+        : null,
     idZona: idZona,
-    idCoordenada: idCoordenada,
     idMapa: idMapa,
     residuo: residuo,
   );
