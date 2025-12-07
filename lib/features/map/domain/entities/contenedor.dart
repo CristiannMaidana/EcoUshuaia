@@ -18,8 +18,8 @@ class Contenedor {
   final DateTime? fechaInstalacion;
   final DateTime? ultimoVaciado;
   final String? descripcionUbicacion;
+  final Coordenada? coordenada;
   final int? idZona;
-  final int? idCoordenada;
   final int? idMapa;
   final ResiduoLite? residuo;
 
@@ -31,8 +31,8 @@ class Contenedor {
     this.fechaInstalacion, 
     this.ultimoVaciado, 
     this.descripcionUbicacion,
+    this.coordenada,
     this.idZona,
-    this.idCoordenada,
     this.idMapa,
     this.residuo,
   });
