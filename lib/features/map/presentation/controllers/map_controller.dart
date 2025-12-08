@@ -67,10 +67,7 @@ class MapController {
       case MapStyle.Terreno:
         await map!.style.setStyleURI(MapboxStyles.OUTDOORS);
         break;
-
-      default:
-        return;
-    }
+      }
   }
 
   void attach(MapboxMap map) {
@@ -86,10 +83,7 @@ class MapController {
     final map = _map;
     if (map == null) return;
 
-    if (_contenedorAnnotationManager == null) {
-      _contenedorAnnotationManager =
-          await map.annotations.createPointAnnotationManager();
-    }
+    _contenedorAnnotationManager ??= await map.annotations.createPointAnnotationManager();
   }
   
   // Cargar el icono del contenedor desde assets
