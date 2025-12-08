@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
@@ -5,6 +6,8 @@ import 'package:flutter/services.dart';
 
 class MapController {
   MapboxMap? _map;
+  PointAnnotationManager? _contenedorAnnotationManager;
+  Uint8List? _contenedorIcon;
 
   MapController(this._map);
 
