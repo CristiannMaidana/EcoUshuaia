@@ -91,4 +91,12 @@ class MapController {
           await map.annotations.createPointAnnotationManager();
     }
   }
+  
+  // Cargar el icono del contenedor desde assets
+  Future<void> _ensureContenedorIcon() async {
+    if (_contenedorIcon != null) return;
+
+    final byte = await rootBundle.load('assets/icons/mapa/container.png');
+    _contenedorIcon = byte.buffer.asUint8List();
+  }
 }
