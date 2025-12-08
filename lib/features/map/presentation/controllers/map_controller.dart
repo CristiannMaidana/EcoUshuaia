@@ -99,4 +99,26 @@ class MapController {
     final byte = await rootBundle.load('assets/icons/mapa/container.png');
     _contenedorIcon = byte.buffer.asUint8List();
   }
+
+  /// Agrega en el mapa una lista de contenedores.
+  Future<void> showContenedores(List<Contenedor> contenedores) async {
+    final map = _map;
+    if (map == null || contenedores.isEmpty) return;
+
+    await _ensureContenedorAnnotationManager();
+    await _ensureContenedorIcon();
+
+    if (_contenedorAnnotationManager == null || _contenedorIcon == null) return;
+
+    final List<PointAnnotationOptions> options = contenedores.map((c) {
+      return PointAnnotationOptions(
+        geometry: Point(
+          coordinates: Position(c.coordenada!.longitud, c.coordenada!.latitud),
+        ),
+        image: _contenedorIcon!,
+      );
+    }).toList();
+
+    await _contenedorAnnotationManager!.createMulti(options);
+  }
 }
