@@ -121,4 +121,33 @@ class MapController {
 
     await _contenedorAnnotationManager!.createMulti(options);
   }
+
+  /// Refresca los contenedores en el mapa.
+  Future<void> refreshContenedores(List<Contenedor> contenedores) async {
+    final map = _map;
+    if (map == null) return;
+
+    await _ensureContenedorAnnotationManager();
+    await _ensureContenedorIcon();
+
+    final mgr = _contenedorAnnotationManager;
+    if (mgr == null) return;
+
+    // limpiar anteriores para evitar duplicados
+    await mgr.deleteAll();
+
+    final options = contenedores.map((c) => PointAnnotationOptions(
+      geometry: Point(
+        coordinates: Position(
+          c.coordenada!.longitud,
+          c.coordenada!.latitud,
+        ),
+      ),
+      image: _contenedorIcon!,
+    )).toList();
+
+    if (options.isNotEmpty) {
+      await mgr.createMulti(options);
+    }
+  }
 }
