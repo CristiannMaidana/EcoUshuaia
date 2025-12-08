@@ -1,26 +1,52 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_widget.dart';
+import 'package:provider/provider.dart';
 
-class MapaScreen extends StatefulWidget {
+class MapaScreen extends StatelessWidget {
+  const MapaScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (ctx) => 
+        ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
+      child: MapaPage(),
+    );
+  }
+}
+
+class MapaPage extends StatefulWidget {
    
-  const MapaScreen({
+  const MapaPage({
     Key? key,
   }): super(key: key);
 
   @override
-  State<MapaScreen> createState() => _MapaScreenState();
+  State<MapaPage> createState() => _MapaScreenStatePage();
 }
 
-class _MapaScreenState extends State<MapaScreen> {
+class _MapaScreenStatePage extends State<MapaPage> {
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   MapController? _mapController;
   MapStyle _estiloActual = MapStyle.Estandar; 
+  
+  ContenedorViewModel? _vm;
+  //Actualiza los contenedores cuando cambia el VM
+  void _onVmChanged() {
+    final ctrl = _mapController;
+    final vm = _vm;
+    if (ctrl != null && vm != null) {
+      ctrl.refreshContenedores(vm.items);
+    }
+  }
 
   @override
   void initState() {
@@ -31,7 +57,10 @@ class _MapaScreenState extends State<MapaScreen> {
       setState(() => _hasLocationPermission = ok);
 
       if (ok && _mapController != null) {
-        _mapController!.enableUserPuck();
+        await _mapController!.enableUserPuck();
+
+        final vm = context.read<ContenedorViewModel>();
+        await _mapController!.showContenedores(vm.items);
       }
     });
   }
@@ -42,6 +71,9 @@ class _MapaScreenState extends State<MapaScreen> {
     setState(() => _hasLocationPermission = ok);
     if (ok && _mapController != null) {
       _mapController!.enableUserPuck();
+
+      final vm = context.read<ContenedorViewModel>();
+      await _mapController!.showContenedores(vm.items);
     }
   }
 
@@ -82,15 +114,29 @@ class _MapaScreenState extends State<MapaScreen> {
   }
 
   @override
+  void dispose() {
+    _vm?.removeListener(_onVmChanged);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         CustomMapa(
-          onMapReady: (controller) {
+          onMapReady: (controller) async {
             _mapController = controller;
             if (_hasLocationPermission) {
-              controller.enableUserPuck();
+              await controller.enableUserPuck();
             }
+
+            // engancha el VM y escucha cambios para refrescar marcadores
+            _vm?.removeListener(_onVmChanged);
+            _vm = context.read<ContenedorViewModel>();
+            _vm!.addListener(_onVmChanged);
+
+            // Carga los contenedores que ya están en el VM
+            await controller.refreshContenedores(_vm!.items);
           },
         ),
 
