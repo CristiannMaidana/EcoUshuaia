@@ -80,4 +80,15 @@ class MapController {
   void detach() {
     _map = null;
   }
+
+  // Asegura que el PointAnnotationManager para contenedores esté creado
+  Future<void> _ensureContenedorAnnotationManager() async {
+    final map = _map;
+    if (map == null) return;
+
+    if (_contenedorAnnotationManager == null) {
+      _contenedorAnnotationManager =
+          await map.annotations.createPointAnnotationManager();
+    }
+  }
 }
