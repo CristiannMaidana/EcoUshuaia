@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
@@ -23,10 +24,9 @@ class MapaScreen extends StatelessWidget {
 }
 
 class MapaPage extends StatefulWidget {
-   
   const MapaPage({
     Key? key,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   State<MapaPage> createState() => _MapaScreenStatePage();
@@ -36,10 +36,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   MapController? _mapController;
-  MapStyle _estiloActual = MapStyle.Estandar; 
-  
+  MapStyle _estiloActual = MapStyle.Estandar;
+
   ContenedorViewModel? _vm;
-  //Actualiza los contenedores cuando cambia el VM
+
+  Contenedor? _contenedorSeleccionado;
+
+  // Actualiza los contenedores cuando cambia el VM
   void _onVmChanged() {
     final ctrl = _mapController;
     final vm = _vm;
@@ -98,19 +101,19 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 Text('Elegi como queres ver el mapa.', style: Theme.of(context).textTheme.bodyLarge,),
                 MapStylePicker(
                   seleccionado: _estiloActual,
-                ), 
+                ),
               ],
             ),
           ),
         );
       },
     );
-    
+
     if (!mounted || estilo == null) return;
 
     setState(() => _estiloActual = estilo);
 
-    _mapController?.setStyle(estilo); 
+    _mapController?.setStyle(estilo);
   }
 
   @override
@@ -143,7 +146,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
         if (!_hasLocationPermission)
           Positioned.fill(
             child: DecoratedBox(
-              decoration: BoxDecoration(color: Colors.black54),
+              decoration: const BoxDecoration(color: Colors.black54),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -178,16 +181,16 @@ class _MapaScreenStatePage extends State<MapaPage> {
               FloatingActionButton(
                 onPressed: () => _mostrarOpciones(context),
                 backgroundColor: camarone500,
-                child: Image.asset('assets/icons/mapa/maps-style.png',),
+                child: Image.asset('assets/icons/mapa/maps-style.png'),
               ),
-              SizedBox(width: 20,),
+              const SizedBox(width: 20),
               FloatingActionButton(
                 onPressed: () async {
                   if (!_hasLocationPermission) {
                     await _retryPermission();
                     return;
                   }
-                  await _mapController?.centerOnUserOnce(); 
+                  await _mapController?.centerOnUserOnce();
                 },
                 backgroundColor: camarone500,
                 child: const Icon(Icons.my_location, color: Colors.black, size: 32,),
@@ -202,7 +205,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           child: Center(
             child: CustomNavegadorMapa(),
           ),
-        )
+        ),
       ],
     );
   }
