@@ -51,6 +51,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
+  // Callback que recibe el contenedor tocado desde MapController
+  void _onContenedorTap(Contenedor c) {
+    setState(() {
+      _contenedorSeleccionado = c;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
