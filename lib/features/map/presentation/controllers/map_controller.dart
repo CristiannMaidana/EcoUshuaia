@@ -83,6 +83,10 @@ class MapController {
 
   void detach() {
     _map = null;
+    _contenedorAnnotationManager = null;
+    _contenedorIcon = null;
+    _annotationToContenedor.clear();
+    onContenedorTap = null;
   }
 
   Future<void> _ensureContenedorAnnotationManager() async {
