@@ -11,6 +11,9 @@ class MapController {
 
   final Map<String, Contenedor> _annotationToContenedor = {};
 
+  /// Callback que la UI puede setear para reaccionar al contenedor tocado
+  void Function(Contenedor contenedor)? onContenedorTap;
+
   MapController(this._map);
 
   Future<void> enableUserPuck() async {
