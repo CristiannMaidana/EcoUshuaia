@@ -136,6 +136,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
         CustomMapa(
           onMapReady: (controller) async {
             _mapController = controller;
+
+            // Conectar callback de tap de contenedor
+            controller.onContenedorTap = _onContenedorTap;
+
             if (_hasLocationPermission) {
               await controller.enableUserPuck();
             }
