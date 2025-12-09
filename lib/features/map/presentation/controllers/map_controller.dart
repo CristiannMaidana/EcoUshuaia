@@ -51,23 +51,25 @@ class MapController {
 
   Future<void> setStyle(MapStyle style) async {
     final map = _map;
+    if (map == null) return;
+
     switch (style) {
       case MapStyle.Estandar:
-        await map!.style.setStyleURI(MapboxStyles.STANDARD);
+        await map.style.setStyleURI(MapboxStyles.STANDARD);
         break;
 
       case MapStyle.Satelite:
-        await map!.style.setStyleURI(MapboxStyles.SATELLITE_STREETS);
+        await map.style.setStyleURI(MapboxStyles.SATELLITE_STREETS);
         break;
 
       case MapStyle.Oscuro:
-        await map!.style.setStyleURI(MapboxStyles.DARK);
+        await map.style.setStyleURI(MapboxStyles.DARK);
         break;
 
       case MapStyle.Terreno:
-        await map!.style.setStyleURI(MapboxStyles.OUTDOORS);
+        await map.style.setStyleURI(MapboxStyles.OUTDOORS);
         break;
-      }
+    }
   }
 
   void attach(MapboxMap map) {
@@ -78,15 +80,13 @@ class MapController {
     _map = null;
   }
 
-  // Asegura que el PointAnnotationManager para contenedores esté creado
   Future<void> _ensureContenedorAnnotationManager() async {
     final map = _map;
     if (map == null) return;
 
     _contenedorAnnotationManager ??= await map.annotations.createPointAnnotationManager();
   }
-  
-  // Cargar el icono del contenedor desde assets
+
   Future<void> _ensureContenedorIcon() async {
     if (_contenedorIcon != null) return;
 
@@ -102,20 +102,29 @@ class MapController {
     await _ensureContenedorAnnotationManager();
     await _ensureContenedorIcon();
 
-    if (_contenedorAnnotationManager == null || _contenedorIcon == null) return;
+    final mgr = _contenedorAnnotationManager;
+    if (mgr == null || _contenedorIcon == null) return;
 
-    final List<PointAnnotationOptions> options = contenedores.map((c) {
-      return PointAnnotationOptions(
-        geometry: Point(
-          coordinates: Position(c.coordenada!.longitud, c.coordenada!.latitud),
-        ),
-        image: _contenedorIcon!,
-      );
-    }).toList();
+    final options = contenedores.where((c) => c.coordenada != null)
+        .map((c) {
+          final coord = c.coordenada!;
+          return PointAnnotationOptions(
+            geometry: Point(
+              coordinates: Position(
+                coord.longitud,
+                coord.latitud,
+              ),
+            ),
+            image: _contenedorIcon,
+          );
+        })
+        .toList();
 
-    await _contenedorAnnotationManager!.createMulti(options);
+    if (options.isEmpty) return;
+
+    await mgr.createMulti(options);
   }
-
+  
   /// Refresca los contenedores en el mapa.
   Future<void> refreshContenedores(List<Contenedor> contenedores) async {
     final map = _map;
@@ -129,19 +138,7 @@ class MapController {
 
     // limpiar anteriores para evitar duplicados
     await mgr.deleteAll();
-
-    final options = contenedores.map((c) => PointAnnotationOptions(
-      geometry: Point(
-        coordinates: Position(
-          c.coordenada!.longitud,
-          c.coordenada!.latitud,
-        ),
-      ),
-      image: _contenedorIcon!,
-    )).toList();
-
-    if (options.isNotEmpty) {
-      await mgr.createMulti(options);
-    }
+    // agregar de nuevo
+    await showContenedores(contenedores);
   }
 }
