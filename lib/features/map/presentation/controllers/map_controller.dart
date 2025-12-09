@@ -127,7 +127,13 @@ class MapController {
 
     if (options.isEmpty) return;
 
-    await mgr.createMulti(options);
+    final annotations = await mgr.createMulti(options);
+
+    //Cargo el mapa con Contenedor
+    _annotationToContenedor.clear();
+    for (var i = 0; i < annotations.length && i < contenedores.length; i++) {
+      _annotationToContenedor[annotations[i]! .id] = contenedores[i];
+    }
   }
   
   /// Refresca los contenedores en el mapa.
