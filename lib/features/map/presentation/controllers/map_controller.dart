@@ -9,6 +9,8 @@ class MapController {
   PointAnnotationManager? _contenedorAnnotationManager;
   Uint8List? _contenedorIcon;
 
+  final Map<String, Contenedor> _annotationToContenedor = {};
+
   MapController(this._map);
 
   Future<void> enableUserPuck() async {
