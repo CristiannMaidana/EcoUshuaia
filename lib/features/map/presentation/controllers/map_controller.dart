@@ -90,6 +90,14 @@ class MapController {
     if (map == null) return;
 
     _contenedorAnnotationManager ??= await map.annotations.createPointAnnotationManager();
+
+    if (_contenedorAnnotationManager != null) {
+      _contenedorAnnotationManager!.tapEvents(
+        onTap: (PointAnnotation tapped) async {
+          await _onContenedorTapped(tapped);
+        },
+      );
+    }
   }
 
   Future<void> _ensureContenedorIcon() async {
