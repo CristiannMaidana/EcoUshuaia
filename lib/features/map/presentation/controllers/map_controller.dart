@@ -146,4 +146,11 @@ class MapController {
     // agregar de nuevo
     await showContenedores(contenedores);
   }
+
+  ///Callback interno cuando se toca un contenedor
+  Future<void> _onContenedorTapped(PointAnnotation annotation) async {
+    final _contenedorSeleccionado = _annotationToContenedor[annotation.id];
+
+    onContenedorTap!(_contenedorSeleccionado!);
+  }
 }
