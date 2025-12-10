@@ -1,7 +1,8 @@
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:flutter/material.dart';
 
 class ContainerDetail extends StatefulWidget {
-  final Container container;
+  final Contenedor? container;
 
   const ContainerDetail({
     Key? key,
