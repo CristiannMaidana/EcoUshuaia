@@ -30,6 +30,19 @@ class _ContainerDetailState extends State<ContainerDetail> {
                     topRight: Radius.circular(16),
                     )
                 ),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 12, bottom: 8),
+                      width: 40,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
               )
             );
           },
