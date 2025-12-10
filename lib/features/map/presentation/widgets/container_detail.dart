@@ -16,6 +16,25 @@ class ContainerDetail extends StatefulWidget {
 class _ContainerDetailState extends State<ContainerDetail> {
   @override
   Widget build(BuildContext context) {
-    return Stack();
+    return Stack(
+      children: [
+        DraggableScrollableSheet(
+          builder: (context, scrollController) {
+            return SafeArea(
+              top: false,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                    )
+                ),
+              )
+            );
+          },
+        )
+      ],
+    );
   }
 }
