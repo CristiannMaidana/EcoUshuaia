@@ -107,6 +107,14 @@ class _ContainerDetailState extends State<ContainerDetail> {
                                   colorIcon: Colors.amber
                                 ),
                               ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: DataContainer(
+                                  contenido: (widget.container?.idContenedor ?? 'Codigo').toString(),
+                                  icon: Icons.my_library_books_outlined,
+                                  colorIcon: Colors.black
+                                ),
+                              ),
                             ]
                           ),
                         ],
