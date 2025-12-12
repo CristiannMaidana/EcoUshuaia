@@ -186,6 +186,18 @@ class _ContainerDetailState extends State<ContainerDetail> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.map_outlined, color: Colors.black, size: 24),
+                                    const SizedBox(width: 6),
+                                    Text('Navegar', style: Theme.of(context).textTheme.labelLarge),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ],
