@@ -19,6 +19,15 @@ class InfoStateContainer extends StatelessWidget{
         borderRadius: BorderRadius.circular(16),
       ),
       padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(titulo, style: Theme.of(context).textTheme.labelMedium),
+          SizedBox(height: 8),
+          Text(descripcion, style: Theme.of(context).textTheme.labelMedium),
+        ],
+      )
     );
   }
 }
