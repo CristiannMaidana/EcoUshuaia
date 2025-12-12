@@ -125,6 +125,11 @@ class _ContainerDetailState extends State<ContainerDetail> {
                               ),
                             ]
                           ),
+                          SizedBox(height: 16),
+                          //Informacion de estado de contenedor
+                          Row(
+                            children: []
+                          ),
                         ],
                       )
                     )
