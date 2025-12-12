@@ -115,6 +115,14 @@ class _ContainerDetailState extends State<ContainerDetail> {
                                   colorIcon: Colors.black
                                 ),
                               ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: DataContainer(
+                                  contenido: (widget.container?.residuo ?? '800 M').toString(),
+                                  icon: Icons.location_on_outlined,
+                                  colorIcon: Colors.black
+                                ),
+                              ),
                             ]
                           ),
                         ],
