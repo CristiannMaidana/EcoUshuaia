@@ -2,6 +2,7 @@ import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_search_bar.dart';
@@ -33,6 +34,7 @@ class MapaPage extends StatefulWidget {
 }
 
 class _MapaScreenStatePage extends State<MapaPage> {
+  final GlobalKey<ContainerDetailState> _detailKey = GlobalKey<ContainerDetailState>();
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   MapController? _mapController;
@@ -55,6 +57,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   void _onContenedorTap(Contenedor c) {
     setState(() {
       _contenedorSeleccionado = c;
+      _detailKey.currentState?.subirSheet();
     });
   }
 
@@ -217,6 +220,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
             child: CustomNavegadorMapa(),
           ),
         ),
+
+        if (_contenedorSeleccionado != null)
+          ContainerDetail(
+            key: _detailKey,
+            container: _contenedorSeleccionado!,
+          ),
       ],
     );
   }
