@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/info_state_container.dart';
 import 'package:flutter/material.dart';
 
 class ContainerDetail extends StatefulWidget {
@@ -128,7 +129,14 @@ class _ContainerDetailState extends State<ContainerDetail> {
                           SizedBox(height: 16),
                           //Informacion de estado de contenedor
                           Row(
-                            children: []
+                            children: [
+                              Expanded(
+                                child: InfoStateContainer(
+                                  titulo: 'Capacidad de vaciado',
+                                  descripcion: (widget.container?.capacidadTotal ?? 'Desconocido').toString(),
+                                ),
+                              ),
+                            ]
                           ),
                         ],
                       )
