@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
 import 'package:flutter/material.dart';
 
 class ContainerDetail extends StatefulWidget {
@@ -98,7 +99,15 @@ class _ContainerDetailState extends State<ContainerDetail> {
                           //Informacion de contenedores
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: []
+                            children: [
+                              Expanded(
+                                child: DataContainer(
+                                  contenido: (widget.container?.residuo ?? 'Plastico').toString(),
+                                  icon: Icons.circle,
+                                  colorIcon: Colors.amber
+                                ),
+                              ),
+                            ]
                           ),
                         ],
                       )
