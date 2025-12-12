@@ -14,6 +14,13 @@ class DataContainer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      key: key,
+      height: 40,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[400]!, width: 1),
+      ),
+    );
   }
 }
