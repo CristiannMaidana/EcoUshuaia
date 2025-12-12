@@ -94,6 +94,12 @@ class _ContainerDetailState extends State<ContainerDetail> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 16),
+                          //Informacion de contenedores
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: []
+                          ),
                         ],
                       )
                     )
