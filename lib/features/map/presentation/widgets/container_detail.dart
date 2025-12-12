@@ -19,6 +19,7 @@ class _ContainerDetailState extends State<ContainerDetail> {
     return Stack(
       children: [
         DraggableScrollableSheet(
+          initialChildSize: 0.55,
           builder: (context, scrollController) {
             return SafeArea(
               top: false,
@@ -33,7 +34,7 @@ class _ContainerDetailState extends State<ContainerDetail> {
                 child: Column(
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 12, bottom: 8),
+                      margin: const EdgeInsets.only(top: 12, bottom: 16),
                       width: 40,
                       height: 5,
                       decoration: BoxDecoration(
