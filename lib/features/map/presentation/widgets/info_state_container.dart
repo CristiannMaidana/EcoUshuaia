@@ -12,6 +12,13 @@ class InfoStateContainer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      height: 80,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[400]!, width: 1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+    );
   }
 }
