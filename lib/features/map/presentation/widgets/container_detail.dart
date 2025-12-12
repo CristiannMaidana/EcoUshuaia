@@ -49,7 +49,16 @@ class _ContainerDetailState extends State<ContainerDetail> {
                           //Titulo y acciones header
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [],
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.2),
+                                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                                ),
+                                child: Icon(Icons.location_on_outlined, size: 40, color: Colors.green,)
+                              ),
+                           ],
                           ),
                         ],
                       )
