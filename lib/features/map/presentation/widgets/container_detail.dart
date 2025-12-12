@@ -38,7 +38,7 @@ class _ContainerDetailState extends State<ContainerDetail> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(top: 12, bottom: 16),
-                      width: 40,
+                      width: 60,
                       height: 5,
                       decoration: BoxDecoration(
                         color: Colors.grey[400],
