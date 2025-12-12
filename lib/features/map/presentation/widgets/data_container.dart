@@ -21,6 +21,14 @@ class DataContainer extends StatelessWidget{
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey[400]!, width: 1),
       ),
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: colorIcon),
+          SizedBox(width: 8,),
+          Text(contenido, style: Theme.of(context).textTheme.labelMedium,),
+        ],
+      ),
     );
   }
 }
