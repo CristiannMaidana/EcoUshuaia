@@ -136,6 +136,13 @@ class _ContainerDetailState extends State<ContainerDetail> {
                                   descripcion: (widget.container?.capacidadTotal ?? 'Desconocido').toString(),
                                 ),
                               ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: InfoStateContainer(
+                                  titulo: 'Próx. recolección',
+                                  descripcion: (widget.container?.capacidadTotal ?? 'Desconocido').toString(),
+                                ),
+                              ),
                             ]
                           ),
                         ],
