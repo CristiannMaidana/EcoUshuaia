@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:flutter/material.dart';
 
@@ -80,6 +81,15 @@ class _ContainerDetailState extends State<ContainerDetail> {
                                     widget.container?.descripcionUbicacion ?? 'Dirección Desconocida',
                                     style: Theme.of(context).textTheme.bodyMedium,
                                   ),
+                                ],
+                              ),
+                              SizedBox(width: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  CircleIcon(icon: Icons.search, onPressed: () {}),
+                                  SizedBox(width: 8),
+                                  CircleIcon(icon: Icons.close, onPressed: () {}),
                                 ],
                               ),
                             ],
