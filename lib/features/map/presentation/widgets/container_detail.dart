@@ -45,7 +45,13 @@ class _ContainerDetailState extends State<ContainerDetail> {
                     Padding(
                       padding: const EdgeInsets.only(left: 14, right: 14, bottom: 8),
                       child: Column(
-                        children: [],
+                        children: [
+                          //Titulo y acciones header
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [],
+                          ),
+                        ],
                       )
                     )
                   ],
