@@ -58,7 +58,31 @@ class _ContainerDetailState extends State<ContainerDetail> {
                                 ),
                                 child: Icon(Icons.location_on_outlined, size: 40, color: Colors.green,)
                               ),
-                           ],
+                              SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        widget.container?.nombreContenedor ?? 'Contenedor numero',
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                      Text(' . ', style: Theme.of(context).textTheme.titleMedium),
+                                      Text(
+                                        (widget.container?.idZona ?? 'Zona ').toString(),
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                    ]
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    widget.container?.descripcionUbicacion ?? 'Dirección Desconocida',
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ],
                       )
