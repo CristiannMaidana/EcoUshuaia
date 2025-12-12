@@ -167,7 +167,26 @@ class _ContainerDetailState extends State<ContainerDetail> {
                           const SizedBox(height: 16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: [],
+                            children: [
+                              OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.grey),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  minimumSize: const Size(0, 52),
+                                ),
+                                onPressed: () {}, 
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.notifications_none, color: Colors.black, size: 24),
+                                    const SizedBox(width: 6),
+                                    Text('Recordarme', style: Theme.of(context).textTheme.labelLarge),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       )
