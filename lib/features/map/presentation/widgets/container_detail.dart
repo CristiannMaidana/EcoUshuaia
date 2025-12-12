@@ -17,11 +17,26 @@ class ContainerDetail extends StatefulWidget {
 }
 
 class _ContainerDetailState extends State<ContainerDetail> {
+  late DraggableScrollableController _draggableController;
+
+  @override
+  void initState() {
+    super.initState();
+    _draggableController = DraggableScrollableController();
+  }
+
+  @override
+  void dispose() {
+    _draggableController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         DraggableScrollableSheet(
+          controller: _draggableController,
           initialChildSize: 0.55,
           builder: (context, scrollController) {
             return SafeArea(
