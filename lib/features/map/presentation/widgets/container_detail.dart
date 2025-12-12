@@ -145,6 +145,10 @@ class _ContainerDetailState extends State<ContainerDetail> {
                               ),
                             ]
                           ),
+                          SizedBox(height: 16),
+                          Row(
+                            children: []
+                          ),
                         ],
                       )
                     )
