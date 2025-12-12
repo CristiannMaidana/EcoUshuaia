@@ -147,7 +147,14 @@ class _ContainerDetailState extends State<ContainerDetail> {
                           ),
                           SizedBox(height: 16),
                           Row(
-                            children: []
+                            children: [
+                              Expanded(
+                                child: InfoStateContainer(
+                                  titulo: 'Nivel de llenado',
+                                  descripcion: (widget.container?.capacidadTotal ?? 'Desconocido').toString(),
+                                ),
+                              ),
+                            ]
                           ),
                         ],
                       )
