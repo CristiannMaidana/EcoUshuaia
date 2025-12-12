@@ -42,6 +42,12 @@ class _ContainerDetailState extends State<ContainerDetail> {
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 14, right: 14, bottom: 8),
+                      child: Column(
+                        children: [],
+                      )
+                    )
                   ],
                 ),
               )
