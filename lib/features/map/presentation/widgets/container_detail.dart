@@ -163,6 +163,12 @@ class _ContainerDetailState extends State<ContainerDetail> {
                               ),
                             ]
                           ),
+                          //Botones de accion
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [],
+                          ),
                         ],
                       )
                     )
