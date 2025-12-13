@@ -15,8 +15,11 @@ class FilterTypeContainer extends StatefulWidget {
 }
 
 class _FilterPopoverAnchorState extends State<FilterTypeContainer>{
-  
+  final LayerLink _link = LayerLink();
+
   Widget build(BuildContext context) {
-    return Stack();
+    return CompositedTransformTarget(
+      link: _link
+    );
   }
 }
