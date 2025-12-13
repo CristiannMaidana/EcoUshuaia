@@ -19,7 +19,17 @@ class _FilterPopoverAnchorState extends State<FilterTypeContainer>{
 
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
-      link: _link
+      link: _link,
+      child: OutlinedButton(
+        onPressed: () {},
+        child: Row(
+          children: [
+            Icon(Icons.filter_list, color: Colors.black54),
+            SizedBox(width: 5),
+            Text('Filtros', style: Theme.of(context).textTheme.labelLarge),
+          ],
+        )
+      ),
     );
   }
 }
