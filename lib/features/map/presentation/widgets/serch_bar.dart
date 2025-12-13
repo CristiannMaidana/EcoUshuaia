@@ -21,6 +21,10 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
           borderRadius: BorderRadius.circular(28),
           border: Border.all(width: 1, color: Colors.black54),
         ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [],
+        ),
       ),
     );
   }
