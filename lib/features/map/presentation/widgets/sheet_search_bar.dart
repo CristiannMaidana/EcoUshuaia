@@ -44,6 +44,17 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
             child: ListView(
               controller: scrollController,
               children: [
+                //Barra
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),               
               ],
             ),
           );
