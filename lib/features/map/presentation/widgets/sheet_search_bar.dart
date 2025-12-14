@@ -14,6 +14,9 @@ class SheetSearchBar extends StatefulWidget{
 
 class _SheetSearchBarState extends State<SheetSearchBar>{
   late DraggableScrollableController _controller;
+  static const double _min = .096;
+  static const double _max = .80;
+  static const List<double> _snapPoints = [_min, .30, .55, _max]; 
 
   @override
   void initState() {
@@ -21,16 +24,49 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     _controller = DraggableScrollableController();
   }
 
+  // Manejo de altura desde incio
+  void _dragFromHeader(DragUpdateDetails d) {
+    final h = MediaQuery.of(context).size.height;
+    final next = (_controller.size - d.delta.dy / h).clamp(_min, _max);
+    _controller.jumpTo(next);
+  }
 
+    // Manejo de altura para arrastre
+  void _endDragFromHeader(DragEndDetails d) {
+    final v = d.primaryVelocity ?? 0.0;
+    const double vThresh = 900;
+    late double target;
+
+    if (v > vThresh) {
+      target = _min;                          // tirón hacia abajo -> colapsar
+    } else if (v < -vThresh) {
+      target = _max;                          // tirón hacia arriba -> expandir
+    } else {
+      // sin flick fuerte: snap al punto más cercano
+      final cur = _controller.size;
+      target = _snapPoints.reduce((a, b) =>
+        (cur - a).abs() < (cur - b).abs() ? a : b);
+    }
+
+    final dist = (target - _controller.size).abs();
+    final ms = (180 + 220 * dist).toInt();    // duración según distancia (≈180–400ms)
+
+    _controller.animateTo(
+      target,
+      duration: Duration(milliseconds: ms),
+      curve: Curves.easeOutCubic,
+    );
+  }
+    
   @override
   Widget build (BuildContext context){
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 20),
       child: DraggableScrollableSheet(
         controller: _controller,
-        initialChildSize: .096,
-        minChildSize: .096,
-        maxChildSize: .8,
+        initialChildSize: _min,
+        minChildSize: _min,
+        maxChildSize: _max,
         builder: (context, scrollController) {
           return Container(
             width: 400,
@@ -52,6 +88,13 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                ),
+                // Gestor de movimiento
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onVerticalDragUpdate: _dragFromHeader,
+                  onVerticalDragEnd: _endDragFromHeader,
+                  child: widget.nav_bar,
                 ),
               ]
             )
