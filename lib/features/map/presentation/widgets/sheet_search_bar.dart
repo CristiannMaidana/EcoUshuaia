@@ -54,7 +54,8 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                ),               
+                ),
+                widget.nav_bar,
               ],
             ),
           );
