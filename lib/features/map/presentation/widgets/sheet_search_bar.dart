@@ -32,7 +32,16 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
         minChildSize: .095,
         maxChildSize: .8,
         builder: (context, scrollController) {
-          return Container();
+          return Container(
+            height: 60,
+            width: 400,
+            padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(40),
+              border: Border.all(width: 1, color: Colors.black54),
+            ),
+          );
         }
       ),
     );  
