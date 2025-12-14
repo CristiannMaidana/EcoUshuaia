@@ -96,6 +96,11 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                   onVerticalDragEnd: _endDragFromHeader,
                   child: widget.nav_bar,
                 ),
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                  )
+                )
               ]
             )
           );
