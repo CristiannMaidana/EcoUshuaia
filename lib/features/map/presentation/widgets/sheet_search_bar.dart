@@ -41,6 +41,11 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
               borderRadius: BorderRadius.circular(40),
               border: Border.all(width: 1, color: Colors.black54),
             ),
+            child: ListView(
+              controller: scrollController,
+              children: [
+              ],
+            ),
           );
         }
       ),
