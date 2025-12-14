@@ -28,36 +28,23 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
       padding: EdgeInsets.fromLTRB(16, 0, 16, 20),
       child: DraggableScrollableSheet(
         controller: _controller,
-        initialChildSize: .095,
-        minChildSize: .095,
+        initialChildSize: .096,
+        minChildSize: .096,
         maxChildSize: .8,
         builder: (context, scrollController) {
           return Container(
-            height: 60,
             width: 400,
             padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(40),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(40), bottom: Radius.circular(40)),
               border: Border.all(width: 1, color: Colors.black54),
             ),
-            child: ListView(
-              controller: scrollController,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                //Barra
-                Center(
-                  child: Container(
-                    width: 50,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                widget.nav_bar,
-              ],
-            ),
+              ]
+            )
           );
         }
       ),
