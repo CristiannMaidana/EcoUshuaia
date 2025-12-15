@@ -17,6 +17,8 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
   static const double _min = .096;
   static const double _max = .80;
   static const List<double> _snapPoints = [_min, .30, .55, _max]; 
+  static const double _borde = 30;
+  static const double _bottom = 20;
 
   @override
   void initState() {
@@ -61,7 +63,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
   @override
   Widget build (BuildContext context){
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, 20),
+      padding: EdgeInsets.fromLTRB(16, 0, 16, _bottom),
       child: DraggableScrollableSheet(
         controller: _controller,
         initialChildSize: _min,
@@ -73,7 +75,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
             padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(40), bottom: Radius.circular(40)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(_borde)),
               border: Border.all(width: 1, color: Colors.black54),
             ),
             child: Column(
