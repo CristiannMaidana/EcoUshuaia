@@ -33,6 +33,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
 
   // Manejo de altura desde incio
   void _dragFromHeader(DragUpdateDetails d) {
+    if (!(_controller.isAttached)) return;
     final h = MediaQuery.of(context).size.height;
     final next = (_controller.size - d.delta.dy / h).clamp(_min, _max);
     _controller.jumpTo(next);
@@ -40,6 +41,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
 
     // Manejo de altura para arrastre
   void _endDragFromHeader(DragEndDetails d) {
+    if (!(_controller.isAttached)) return;
     final v = d.primaryVelocity ?? 0.0;
     const double vThresh = 900;
     late double target;
