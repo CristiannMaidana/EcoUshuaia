@@ -20,10 +20,15 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
   static const double _borde = 30;
   static const double _bottom = 20;
 
+  void _onSheetChange() {
+    if (!mounted) return;
+    setState(() {}); //Rebuild para reflejar el cambio de tamaño del controller
+  }
+
   @override
   void initState() {
     super.initState();
-    _controller = DraggableScrollableController();
+    _controller = DraggableScrollableController()..addListener(_onSheetChange);// Agregar listener para escuchar el cambio
   }
 
   // Manejo de altura desde incio
