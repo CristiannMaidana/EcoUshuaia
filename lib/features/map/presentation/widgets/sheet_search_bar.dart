@@ -20,6 +20,17 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
   static const double _borde = 30;
   static const double _bottom = 20;
 
+  // factor 0..1 según altura actual; si no está attachado, usá 0 (colapsado)
+  double get _t {
+    if (!(_controller.isAttached)) return 0.0;
+    final s = _controller.size;
+    final v = (s - _min) / (_max - _min);
+    return v.clamp(0.0, 1.0);
+  }
+
+  double _mix(double a, double b, double t) => a + (b - a) * t;
+
+
   void _onSheetChange() {
     if (!mounted) return;
     setState(() {}); //Rebuild para reflejar el cambio de tamaño del controller
