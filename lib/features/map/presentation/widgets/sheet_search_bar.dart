@@ -80,6 +80,9 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     
   @override
   Widget build (BuildContext context){
+    final double animatedBottom = _mix(_bottom, 0, _t);
+    final double animatedBorde  = _mix(_borde, 0, _t);
+
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, _bottom),
       child: DraggableScrollableSheet(
