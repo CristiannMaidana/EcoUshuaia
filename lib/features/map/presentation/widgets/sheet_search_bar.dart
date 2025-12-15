@@ -83,8 +83,10 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     final double animatedBottom = _mix(_bottom, 0, _t);
     final double animatedBorde  = _mix(_borde, 0, _t);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, _bottom),
+    return AnimatedPadding(
+      duration: Duration(milliseconds: 120),
+      curve: Curves.easeOutCubic,
+      padding: EdgeInsets.fromLTRB(16, 0, 16, animatedBottom),
       child: DraggableScrollableSheet(
         controller: _controller,
         initialChildSize: _min,
