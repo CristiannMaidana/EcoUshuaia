@@ -93,12 +93,14 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
         minChildSize: _min,
         maxChildSize: _max,
         builder: (context, scrollController) {
-          return Container(
+          return AnimatedContainer(
+            duration: Duration(milliseconds: 120),
+            curve: Curves.easeOutCubic,
             width: 400,
             padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(_borde)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
               border: Border.all(width: 1, color: Colors.black54),
             ),
             child: Column(
