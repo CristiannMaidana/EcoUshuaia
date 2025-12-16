@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:flutter/material.dart';
 
 class ExpansionTileCustom extends StatefulWidget {
@@ -64,6 +65,8 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
               ),
             ),
           ),
+
+          lineDivider(),
         ],
       ),
     );
