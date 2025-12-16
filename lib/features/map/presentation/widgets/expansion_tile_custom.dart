@@ -27,6 +27,10 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
         borderRadius: BorderRadius.circular(16),
         side: const BorderSide(color: Color(0xFFE7EDF1), width: 1),
       ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [],
+      ),
     );
   }
 }
