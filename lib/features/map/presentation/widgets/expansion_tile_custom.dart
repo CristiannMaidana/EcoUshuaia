@@ -47,6 +47,7 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       widget.title,
