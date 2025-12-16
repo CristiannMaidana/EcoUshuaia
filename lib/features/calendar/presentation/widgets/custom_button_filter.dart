@@ -35,7 +35,7 @@ class _CustomButtonFilterState extends State<CustomButtonFilter> {
   Widget build (BuildContext context){
 
     return OutlinedButton(
-      onPressed: () {}, 
+      onPressed: _setSelected, 
       child: Text(widget.label)
     );
   }
