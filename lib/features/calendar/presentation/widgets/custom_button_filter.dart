@@ -33,6 +33,8 @@ class _CustomButtonFilterState extends State<CustomButtonFilter> {
 
   @override
   Widget build (BuildContext context){
+    final bgColor = _selected ? Colors.white : const Color.fromARGB(255, 214, 255, 219);
+    final bgborde = _selected ? Colors.grey : const Color.fromARGB(255, 56, 67, 57);
 
     return OutlinedButton(
       onPressed: _setSelected, 
