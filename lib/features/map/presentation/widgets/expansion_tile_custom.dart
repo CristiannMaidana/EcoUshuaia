@@ -44,6 +44,12 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
             color: Colors.white,
             child: InkWell(
               onTap: _toggle,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [],
+                ),
+              ),
             ),
           ),
         ],
