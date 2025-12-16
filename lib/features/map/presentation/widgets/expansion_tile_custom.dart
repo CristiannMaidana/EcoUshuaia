@@ -17,7 +17,16 @@ class ExpansionTileCustom extends StatefulWidget {
 }
 
 class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerProviderStateMixin {
-  
+  late bool _open;
+
+  @override
+  void initState() {
+    super.initState();
+    _open = widget.initiallyOpen;
+  }
+
+  void _toggle() => setState(() => _open = !_open);
+
   @override
   Widget build(BuildContext context) {
     return Card(
