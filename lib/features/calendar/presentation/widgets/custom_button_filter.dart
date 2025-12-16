@@ -37,6 +37,11 @@ class _CustomButtonFilterState extends State<CustomButtonFilter> {
     final bgborde = _selected ? Colors.grey : const Color.fromARGB(255, 56, 67, 57);
 
     return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: bgColor,
+        foregroundColor: Colors.black,
+        side: BorderSide(width: 1, color: bgborde),
+      ),
       onPressed: _setSelected, 
       child: Text(widget.label)
     );
