@@ -67,6 +67,15 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
           ),
 
           lineDivider(),
+
+          // Parte que se abre, con hijo como contenido
+          ClipRect(
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeInOutCubic,
+              alignment: Alignment.topCenter,
+            ),
+          )
         ],
       ),
     );
