@@ -53,6 +53,12 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
                       widget.title,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
+                    AnimatedRotation(
+                      turns: _open ? 0.5 : 0.0,
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeOutCubic,
+                      child: const Icon(Icons.expand_more, color: Color(0xFF4B5563)),
+                    ),
                   ],
                 ),
               ),
