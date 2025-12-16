@@ -12,4 +12,14 @@ class ExpansionTileCustom extends StatefulWidget {
     this.initiallyOpen = false,
   });
 
+  @override
+  State<ExpansionTileCustom> createState() => ExpansionTileCustomState();
+}
+
+class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerProviderStateMixin {
+
+  @override
+  Widget build(BuildContext context) {
+    return Card();
+  }
 }
