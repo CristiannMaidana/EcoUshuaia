@@ -38,7 +38,15 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [],
+        children: [
+          // Header
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: _toggle,
+            ),
+          ),
+        ],
       ),
     );
   }
