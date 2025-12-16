@@ -74,6 +74,16 @@ class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerPro
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOutCubic,
               alignment: Alignment.topCenter,
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: _open ? 1.0 : 0.0,
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                  child: widget.child,
+                ),
+              ),
             ),
           )
         ],
