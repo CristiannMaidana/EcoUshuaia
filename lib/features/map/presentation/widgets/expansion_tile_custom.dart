@@ -17,9 +17,16 @@ class ExpansionTileCustom extends StatefulWidget {
 }
 
 class ExpansionTileCustomState extends State<ExpansionTileCustom> with TickerProviderStateMixin {
-
+  
   @override
   Widget build(BuildContext context) {
-    return Card();
+    return Card(
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE7EDF1), width: 1),
+      ),
+    );
   }
 }
