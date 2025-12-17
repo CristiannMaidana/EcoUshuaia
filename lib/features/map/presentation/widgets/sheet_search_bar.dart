@@ -159,6 +159,31 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                     },
                   ),
                 ),
+
+                // Contenido para cierre de filtros inamovible                
+                if (widget.cambio)
+                Container(
+                  height: 56,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
+                        Text('Ningun filtro activado'),
+                        // TODO: hacer que el metodo resete el tamaño y cambie la variable boolean y sincronice con el mapa para aplicar cambios 
+                        OutlinedButton(onPressed: () {}, child: Text('Cerrar'))
+                      ],
+                    ),
+                  ),
+                ),
               ]
             )
           );
