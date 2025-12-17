@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:flutter/material.dart';
 
 class SheetSearchBar extends StatefulWidget{
@@ -135,11 +136,25 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                   onVerticalDragEnd: _endDragFromHeader,
                   child: widget.nav_bar,
                 ),
+
                 Expanded(
-                  child: ListView(
-                    controller: scrollController,
-                  )
-                )
+                  child: LayoutBuilder(
+                    builder: (context, viewport) {
+                      return SingleChildScrollView(
+                        controller: scrollController,
+                        physics: ClampingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()
+                        ),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: viewport.maxHeight,
+                          ),
+                          child: ContentFilter(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ]
             )
           );
