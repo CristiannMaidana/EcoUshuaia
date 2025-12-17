@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:flutter/material.dart';
 
@@ -134,11 +135,14 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                   ),
                 ),
                 // Gestor de movimiento
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onVerticalDragUpdate: _dragFromHeader,
-                  onVerticalDragEnd: _endDragFromHeader,
-                  child: widget.nav_bar,
+                Padding(
+                  padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onVerticalDragUpdate: _dragFromHeader,
+                    onVerticalDragEnd: _endDragFromHeader,
+                    child: widget.cambio ? HeaderFilter() : widget.nav_bar,
+                  ),
                 ),
 
                 Expanded(
