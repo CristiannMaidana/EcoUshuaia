@@ -15,7 +15,11 @@ class HeaderFilter extends StatelessWidget{
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
-              children: [],
+              children: [
+                //Titulo
+                Text('Filtros', style: Theme.of(context).textTheme.titleLarge),
+                const Spacer(),
+              ],
             ),
           ),
         ),
