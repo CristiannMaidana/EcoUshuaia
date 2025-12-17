@@ -14,6 +14,8 @@ class ContentFilter extends StatefulWidget {
 class _ContentFilterState extends State<ContentFilter> {
   // TODO: cambiar variable para que no sobreescriba en todos los casos o borrar?
   bool filtroActivo = false;
+  // TODO: cambiar por lista de vm de DB
+  List<String> labels = ['Hoy', 'Mañana', 'Semana', 'Mañana', 'Tarde', 'Noche'];
   
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,6 @@ class _ContentFilterState extends State<ContentFilter> {
                     child: CustomButtonFilter(label: 'Operativo', selected: filtroActivo, onTap: () {
                       setState(() {
                         filtroActivo = !filtroActivo;
-                        print(filtroActivo);
                       });
                     },),
                   ),
@@ -65,8 +66,34 @@ class _ContentFilterState extends State<ContentFilter> {
               )
             ),
           ),
-          // TODO: padding con hijo ExpansionTileCustom para la seleccion de dias de recoleccion
 
+          // Seccion dias de recoleccion
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+            child: ExpansionTileCustom(
+              title: 'Recolección',
+              initiallyOpen: true,
+              child: SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  alignment: WrapAlignment.start,
+                  children: labels.map((label) {
+                    return CustomButtonFilter(
+                      label: label,
+                      selected: filtroActivo, 
+                      onTap: () {
+                        setState(() {
+                          filtroActivo = !filtroActivo;
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
           // TODO: padding con hijo ExpansionTileCustom para la seleccion de nivel de llenado del contenedor
         ],
       ),
