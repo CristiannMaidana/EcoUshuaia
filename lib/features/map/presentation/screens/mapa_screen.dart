@@ -5,6 +5,8 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_view
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_widget.dart';
@@ -220,7 +222,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
         ),
 
-        // TODO: agregar barra de navegacion y filtros
+        // Barra de navegacion del mapa
+        SheetSearchBar(
+          nav_bar: SerchBar(changeHeader: _changes),
+          cambio: _cambio
+        ),
 
         if (_contenedorSeleccionado != null)
           ContainerDetail(
