@@ -5,7 +5,6 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_view
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/map_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_widget.dart';
@@ -43,6 +42,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
   ContenedorViewModel? _vm;
 
   Contenedor? _contenedorSeleccionado;
+
+  bool _cambio = false;
+
 
   // Actualiza los contenedores cuando cambia el VM
   void _onVmChanged() {
@@ -213,13 +215,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
         ),
 
-        Positioned(
-          right: 20,
-          bottom: 100,
-          child: Center(
-            child: CustomNavegadorMapa(),
-          ),
-        ),
+        // TODO: agregar barra de navegacion y filtros
 
         if (_contenedorSeleccionado != null)
           ContainerDetail(
