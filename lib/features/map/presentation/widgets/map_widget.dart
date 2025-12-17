@@ -16,6 +16,7 @@ class CustomMapa extends StatefulWidget {
 
 class _CustomMapaState extends State<CustomMapa> {
   late final String accessToken;
+  // ignore: unused_field
   MapboxMap? _mapboxMap;
   final _controller = MapController(null);
 
