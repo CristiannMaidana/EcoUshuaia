@@ -74,6 +74,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   // Mostrar el panel de filtro debajo del botón
   void _showFilterBelow() {
     final overlay = Overlay.of(context);
+    // ignore: unnecessary_null_comparison
     if (overlay == null) return;
 
     // Posición del botón "Filtro"
