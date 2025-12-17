@@ -109,8 +109,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
           return AnimatedContainer(
             duration: Duration(milliseconds: 120),
             curve: Curves.easeOutCubic,
-            width: 400,
-            padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
+            padding: EdgeInsets.only(top: 5, bottom: _bottomNavBar),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
