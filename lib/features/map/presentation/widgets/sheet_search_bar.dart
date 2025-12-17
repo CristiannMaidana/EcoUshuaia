@@ -34,7 +34,18 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
 
   void _onSheetChange() {
     if (!mounted) return;
-    setState(() {}); //Rebuild para reflejar el cambio de tamaño del controller
+    setState(() {
+      _setBottom();
+    }); //Rebuild para reflejar el cambio de tamaño del controller
+  }
+
+  void _setBottom() {
+    if (_controller.size == _max) {
+      _bottomNavBar = 0;
+    }
+    if (_controller.size == _min){
+      _bottomNavBar = 10;
+    }
   }
 
   @override
