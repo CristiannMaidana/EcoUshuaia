@@ -45,6 +45,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   bool _cambio = false;
 
+  void _changes() {
+    setState(() {
+      _cambio = !_cambio;
+    });
+  }
 
   // Actualiza los contenedores cuando cambia el VM
   void _onVmChanged() {
