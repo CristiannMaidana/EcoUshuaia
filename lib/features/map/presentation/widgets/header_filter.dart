@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:flutter/material.dart';
 
 class HeaderFilter extends StatelessWidget{
@@ -48,6 +49,7 @@ class HeaderFilter extends StatelessWidget{
             ),
           ),
         ),
+        lineDivider(),
       ],
     );
   }
