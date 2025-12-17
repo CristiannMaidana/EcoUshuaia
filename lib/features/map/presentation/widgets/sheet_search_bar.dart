@@ -2,6 +2,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class SheetSearchBar extends StatefulWidget{
   final Widget nav_bar;
   bool cambio;
