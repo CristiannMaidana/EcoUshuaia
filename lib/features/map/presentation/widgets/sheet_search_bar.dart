@@ -153,7 +153,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                           constraints: BoxConstraints(
                             minHeight: viewport.maxHeight,
                           ),
-                          child: ContentFilter(),
+                          child: widget.cambio? ContentFilter() : SizedBox(),
                         ),
                       );
                     },
