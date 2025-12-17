@@ -94,7 +94,24 @@ class _ContentFilterState extends State<ContentFilter> {
               ),
             ),
           ),
-          // TODO: padding con hijo ExpansionTileCustom para la seleccion de nivel de llenado del contenedor
+
+          // Seccion nivel de llenado del contenedor
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+            child: ExpansionTileCustom(
+              title: 'Nivel de llenado',
+              initiallyOpen: true,
+              child: Row(
+                children: [
+                  Expanded(child: CustomButtonFilter(label: 'Bajo', selected: false, onTap: () {})),
+                  SizedBox(width: 8,),
+                  Expanded(child: CustomButtonFilter(label: 'Medio', selected: false, onTap: () {})),
+                  SizedBox(width: 8,),
+                  Expanded(child: CustomButtonFilter(label: 'Alto', selected: false, onTap: () {}))
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
