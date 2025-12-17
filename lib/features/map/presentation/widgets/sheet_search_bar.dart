@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 class SheetSearchBar extends StatefulWidget{
   final Widget nav_bar;
+  bool cambio;
 
   SheetSearchBar({
     Key? key,
     required this.nav_bar,
+    required this.cambio,
   }) :super(key: key);
 
   @override
