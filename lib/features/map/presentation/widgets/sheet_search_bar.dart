@@ -19,6 +19,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
   static const List<double> _snapPoints = [_min, .30, .55, _max]; 
   static const double _borde = 30;
   static const double _bottom = 20;
+  static double _bottomNavBar = 10;
 
   // factor 0..1 según altura actual; si no está attachado, usá 0 (colapsado)
   double get _t {
