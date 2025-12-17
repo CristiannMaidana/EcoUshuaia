@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/presentation/widgets/filter_button.dart';
 import 'package:flutter/material.dart';
 
 class SerchBar extends StatefulWidget{
@@ -44,7 +45,14 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
               ),
             ),
           ),
-          // TODO: Agregar boton de filtro de busqueda
+          SizedBox(width: 10),
+
+          //Boton filtro para abrir opciones de busqueda
+          FilterButton(
+            categorias: categories, 
+            onSelected:(value) {}, 
+            changes: widget.changeHeader,
+          )
         ],
       ),
     );
