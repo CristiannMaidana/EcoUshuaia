@@ -43,7 +43,7 @@ class _CustomButtonFilterState extends State<CustomButtonFilter> {
         side: BorderSide(width: 1, color: bgborde),
       ),
       onPressed: _setSelected, 
-      child: Text(widget.label)
+      child: Text(widget.label, style: TextStyle(fontSize: 13),)
     );
   }
 }
