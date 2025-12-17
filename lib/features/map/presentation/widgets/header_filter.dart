@@ -34,6 +34,16 @@ class HeaderFilter extends StatelessWidget{
                   ),
                 ),
                 const SizedBox(width: 8),
+                
+                //Boton aplicar filtros
+                SizedBox(
+                  height: 36, 
+                  width: 93,
+                  child: ElevatedButton(
+                    onPressed: () {}, // TODO: agregar metodo para cerrar el sheet asincronico para que se cargue el mapa
+                    child: const Text('Aplicar', style: TextStyle(fontSize: 13),)
+                  ),
+                ),
               ],
             ),
           ),
