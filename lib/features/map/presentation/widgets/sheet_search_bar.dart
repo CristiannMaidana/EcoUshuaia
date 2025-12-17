@@ -48,6 +48,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     }
     if (_controller.size == _min){
       _bottomNavBar = 10;
+      widget.cambio = false;
     }
   }
 
@@ -56,6 +57,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     super.initState();
     _controller = DraggableScrollableController()..addListener(_onSheetChange);// Agregar listener para escuchar el cambio
     _bottomNavBar = 10;
+    widget.cambio = false;
   }
 
   // Manejo de altura desde incio
