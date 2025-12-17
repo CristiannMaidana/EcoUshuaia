@@ -52,6 +52,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
   void initState() {
     super.initState();
     _controller = DraggableScrollableController()..addListener(_onSheetChange);// Agregar listener para escuchar el cambio
+    _bottomNavBar = 10;
   }
 
   // Manejo de altura desde incio
