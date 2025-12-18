@@ -43,7 +43,10 @@ class HeaderFilter extends StatelessWidget{
                   height: 36, 
                   width: 93,
                   child: ElevatedButton(
-                    onPressed: () {}, // TODO: agregar metodo para cerrar el sheet asincronico para que se cargue el mapa
+                    // TODO: agregar metodo asincronico para que se cargue el mapa los filtros
+                    onPressed: () {
+                      collapse();
+                    }, 
                     child: const Text('Aplicar', style: TextStyle(fontSize: 13),)
                   ),
                 ),
