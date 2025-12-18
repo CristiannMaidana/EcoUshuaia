@@ -166,7 +166,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                     behavior: HitTestBehavior.opaque,
                     onVerticalDragUpdate: _dragFromHeader,
                     onVerticalDragEnd: _endDragFromHeader,
-                    child: widget.cambio ? HeaderFilter() : widget.navBar,
+                    child: widget.cambio ? HeaderFilter(collapse: _collapse,) : widget.navBar,
                   ),
                 ),
 
