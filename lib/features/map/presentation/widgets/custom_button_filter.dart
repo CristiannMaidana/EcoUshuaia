@@ -23,7 +23,11 @@ class _CustomButtonFilterState extends State<CustomButtonFilter> {
     });
   }
 
-  // TODO: crear metodo para reiniciar estado del boton 
+  void resetBottom() {
+    setState(() {
+      _selected = false;
+    });
+  }
 
   @override
   Widget build (BuildContext context){
