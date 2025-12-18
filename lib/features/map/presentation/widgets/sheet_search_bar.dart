@@ -99,8 +99,16 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     );
   }
     
-  // TODO: crear metodo colapse
-  
+  Future<void> _collapse () async {
+    try {
+      await _controller.animateTo(
+        _min, 
+        duration: Duration(milliseconds: 300), 
+        curve: Curves.easeOut,
+        );
+    } catch (_) {}
+  } 
+
   @override
   Widget build (BuildContext context){
     final double animatedBottom = _mix(_bottom, 0, _t);
