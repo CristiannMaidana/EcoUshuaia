@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 class SheetSearchBar extends StatefulWidget{
   final Widget nav_bar;
   bool cambio;
+  final VoidCallback closeFilter;
 
   SheetSearchBar({
     Key? key,
     required this.nav_bar,
     required this.cambio,
+    required this.closeFilter,
   }) :super(key: key);
 
   @override
@@ -50,7 +52,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     }
     if (_controller.size == _min){
       _bottomNavBar = 10;
-      widget.cambio = false;
+      // TODO: agregar voidcallback 
     }
   }
 
@@ -59,7 +61,6 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     super.initState();
     _controller = DraggableScrollableController()..addListener(_onSheetChange);// Agregar listener para escuchar el cambio
     _bottomNavBar = 10;
-    widget.cambio = false;
   }
 
   // Manejo de altura desde incio
@@ -98,6 +99,8 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     );
   }
     
+  // TODO: crear metodo colapse
+  
   @override
   Widget build (BuildContext context){
     final double animatedBottom = _mix(_bottom, 0, _t);
