@@ -11,10 +11,10 @@ class CustomButtonFilter extends StatefulWidget{
   });
 
   @override
-  State<CustomButtonFilter> createState() => _CustomButtonFilterState();
+  State<CustomButtonFilter> createState() => CustomButtonFilterState();
 }
 
-class _CustomButtonFilterState extends State<CustomButtonFilter> {
+class CustomButtonFilterState extends State<CustomButtonFilter> {
   late bool _selected = false;
 
   void _setSelected() {
