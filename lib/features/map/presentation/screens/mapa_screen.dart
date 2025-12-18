@@ -47,6 +47,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   bool _cambio = false;
 
+  //Variable para manejar el tamaño del sheet
+  final GlobalKey<SheetSearchBarState> _filterKey = GlobalKey<SheetSearchBarState>();
+
   void _changes() {
     setState(() {
       _cambio = !_cambio;
