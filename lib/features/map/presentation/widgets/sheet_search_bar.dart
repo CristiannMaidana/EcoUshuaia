@@ -16,10 +16,10 @@ class SheetSearchBar extends StatefulWidget{
   }) :super(key: key);
 
   @override
-  State<SheetSearchBar> createState() => _SheetSearchBarState();
+  State<SheetSearchBar> createState() => SheetSearchBarState();
 }
 
-class _SheetSearchBarState extends State<SheetSearchBar>{
+class SheetSearchBarState extends State<SheetSearchBar>{
   late DraggableScrollableController _controller;
   static const double _min = .096;
   static const double _max = .80;
