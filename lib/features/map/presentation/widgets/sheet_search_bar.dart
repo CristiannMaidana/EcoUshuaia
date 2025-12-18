@@ -52,7 +52,10 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     }
     if (_controller.size == _min){
       _bottomNavBar = 10;
-      widget.closeFilter();
+      if (widget.cambio) {
+        // Si fue cerrado no usar el cambio de estado de variable
+        widget.closeFilter();
+      }
     }
   }
 
@@ -98,7 +101,8 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
       curve: Curves.easeOutCubic,
     );
   }
-    
+  
+  // Reseteo sheet a tamaño inicial
   Future<void> _collapse () async {
     try {
       await _controller.animateTo(
