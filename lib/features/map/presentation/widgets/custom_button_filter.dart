@@ -15,7 +15,7 @@ class CustomButtonFilter extends StatefulWidget{
 }
 
 class _CustomButtonFilterState extends State<CustomButtonFilter> {
-  late bool _selected;
+  late bool _selected = false;
 
   void _setSelected() {
     setState(() {
