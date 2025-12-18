@@ -186,8 +186,13 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                       children: [
                         // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
                         Text('Ningun filtro activado'),
-                        // TODO: hacer que el metodo resete el tamaño y cambie la variable boolean y sincronice con el mapa para aplicar cambios 
-                        OutlinedButton(onPressed: () {}, child: Text('Cerrar'))
+                        // Boton secundario cerrar
+                        OutlinedButton(
+                          onPressed: () {
+                            widget.closeFilter();
+                          }, 
+                          child: Text('Cerrar')
+                        )
                       ],
                     ),
                   ),
