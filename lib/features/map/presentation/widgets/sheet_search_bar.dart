@@ -113,6 +113,15 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     } catch (_) {}
   } 
 
+  // Agrando el sheet a su tamaño maximo
+  void expand() {
+    _controller.animateTo(
+      _max,
+      duration: Duration(milliseconds: 300), 
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   Widget build (BuildContext context){
     final double animatedBottom = _mix(_bottom, 0, _t);
