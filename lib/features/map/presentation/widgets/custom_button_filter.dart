@@ -17,17 +17,13 @@ class CustomButtonFilter extends StatefulWidget{
 class _CustomButtonFilterState extends State<CustomButtonFilter> {
   late bool _selected;
 
-  @override
-  void initState() {
-    super.initState();
-    _selected = false;
-  }
-
   void _setSelected() {
     setState(() {
       _selected = !_selected;
     });
   }
+
+  // TODO: crear metodo para reiniciar estado del boton 
 
   @override
   Widget build (BuildContext context){
