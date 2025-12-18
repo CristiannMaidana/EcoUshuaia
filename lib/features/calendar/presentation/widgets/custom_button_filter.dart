@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomButtonFilter extends StatefulWidget{
   final String label;
-  final bool selected;
   final VoidCallback onTap;
 
   const CustomButtonFilter({
     super.key,
     required this.label,
-    required this.selected,
     required this.onTap,
   });
 
@@ -22,7 +20,7 @@ class _CustomButtonFilterState extends State<CustomButtonFilter> {
   @override
   void initState() {
     super.initState();
-    _selected = widget.selected;
+    _selected = false;
   }
 
   void _setSelected() {
