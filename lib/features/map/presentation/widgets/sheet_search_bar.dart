@@ -198,6 +198,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                         OutlinedButton(
                           onPressed: () {
                             widget.closeFilter();
+                            _collapse();
                           }, 
                           child: Text('Cerrar')
                         )
