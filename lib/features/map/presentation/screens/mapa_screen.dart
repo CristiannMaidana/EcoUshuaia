@@ -224,7 +224,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         // Barra de navegacion del mapa
         SheetSearchBar(
-          nav_bar: SerchBar(changeHeader: _changes),
+          navBar: SerchBar(changeHeader: _changes),
           cambio: _cambio
         ),
 
