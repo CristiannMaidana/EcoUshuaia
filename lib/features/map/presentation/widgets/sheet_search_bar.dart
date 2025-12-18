@@ -52,7 +52,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
     }
     if (_controller.size == _min){
       _bottomNavBar = 10;
-      // TODO: agregar voidcallback 
+      widget.closeFilter();
     }
   }
 
