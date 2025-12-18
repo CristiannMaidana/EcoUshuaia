@@ -2,9 +2,11 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.
 import 'package:flutter/material.dart';
 
 class HeaderFilter extends StatelessWidget{
+  final VoidCallback collapse;
   
   const HeaderFilter ({
     super.key,
+    required this.collapse,
   });
 
   @override
