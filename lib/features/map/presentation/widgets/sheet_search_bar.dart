@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class SheetSearchBar extends StatefulWidget{
-  final Widget nav_bar;
+  final Widget navBar;
   bool cambio;
   final VoidCallback closeFilter;
 
   SheetSearchBar({
     Key? key,
-    required this.nav_bar,
+    required this.navBar,
     required this.cambio,
     required this.closeFilter,
   }) :super(key: key);
@@ -145,7 +145,7 @@ class _SheetSearchBarState extends State<SheetSearchBar>{
                     behavior: HitTestBehavior.opaque,
                     onVerticalDragUpdate: _dragFromHeader,
                     onVerticalDragEnd: _endDragFromHeader,
-                    child: widget.cambio ? HeaderFilter() : widget.nav_bar,
+                    child: widget.cambio ? HeaderFilter() : widget.navBar,
                   ),
                 ),
 
