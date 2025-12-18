@@ -53,6 +53,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
   void _changes() {
     setState(() {
       _cambio = !_cambio;
+      if (_cambio)
+        _filterKey.currentState?.expand();
     });
   }
 
