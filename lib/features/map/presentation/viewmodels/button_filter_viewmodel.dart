@@ -6,7 +6,8 @@ class ButtonFilterViewmodel extends ChangeNotifier{
   // Metodo para obtener el elemento
   Set<String> get selected => _selected;
 
-  // TODO: crear metodo par obtener el valor boolean para cambiar el color del estado del boton
+  // Obtener el valor boolean para cambiar el color del estado del boton
+  bool isSelected(String boton) => _selected.contains(boton);
 
   // TODO: crear metodo para agrega o quita el boton seleccionado para actualizar el estado
 
