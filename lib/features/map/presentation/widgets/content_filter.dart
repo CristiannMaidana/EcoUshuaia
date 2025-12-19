@@ -15,7 +15,7 @@ class _ContentFilterState extends State<ContentFilter> {
   // TODO: cambiar variable para que no sobreescriba en todos los casos o borrar?
   bool filtroActivo = false;
   // TODO: cambiar por lista de vm de DB
-  List<String> labels = ['Hoy', 'Mañana', 'Semana', 'Mañana', 'Tarde', 'Noche'];
+  List<String> labels = ['Hoy', 'Mañana', 'Semana', '00:00 - 06:00', '06:00 - 12:00', '12:00 - 19:00', '19:00 - 24:00'];
   
   @override
   Widget build(BuildContext context) {
