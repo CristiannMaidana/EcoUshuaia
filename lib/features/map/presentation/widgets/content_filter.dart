@@ -48,19 +48,11 @@ class _ContentFilterState extends State<ContentFilter> {
               child: Row(
                 children: [
                   Expanded(
-                    child: CustomButtonFilter(label: 'Operativo', onTap: () {
-                      setState(() {
-                        filtroActivo = !filtroActivo;
-                      });
-                    },),
+                    child: CustomButtonFilter(label: 'Operativo'),
                   ),
                   SizedBox(width: 8),
                   Expanded(
-                    child: CustomButtonFilter(label: 'En mantenimiento', onTap: () {
-                      setState(() {
-                        filtroActivo = !filtroActivo;
-                      });
-                    },),
+                    child: CustomButtonFilter(label: 'En mantenimiento'),
                   ),
                 ],
               )
@@ -82,11 +74,6 @@ class _ContentFilterState extends State<ContentFilter> {
                   children: labels.map((label) {
                     return CustomButtonFilter(
                       label: label,
-                      onTap: () {
-                        setState(() {
-                          filtroActivo = !filtroActivo;
-                        });
-                      },
                     );
                   }).toList(),
                 ),
@@ -102,11 +89,11 @@ class _ContentFilterState extends State<ContentFilter> {
               initiallyOpen: true,
               child: Row(
                 children: [
-                  Expanded(child: CustomButtonFilter(label: 'Bajo', onTap: () {})),
+                  Expanded(child: CustomButtonFilter(label: 'Bajo')),
                   SizedBox(width: 8,),
-                  Expanded(child: CustomButtonFilter(label: 'Medio', onTap: () {})),
+                  Expanded(child: CustomButtonFilter(label: 'Medio')),
                   SizedBox(width: 8,),
-                  Expanded(child: CustomButtonFilter(label: 'Alto', onTap: () {}))
+                  Expanded(child: CustomButtonFilter(label: 'Alto'))
                 ],
               ),
             ),
