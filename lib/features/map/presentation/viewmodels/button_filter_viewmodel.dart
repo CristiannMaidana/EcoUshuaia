@@ -20,5 +20,9 @@ class ButtonFilterViewmodel extends ChangeNotifier{
     notifyListeners();
   }
 
-  // TODO: crear metodo para limpiar todos los filtros
+  // Metodo para limpiar todos los filtros y actualizar el estado
+  void clean(){
+    _selected.clear();
+    notifyListeners();
+  }
 }
