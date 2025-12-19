@@ -71,6 +71,13 @@ class SheetSearchBarState extends State<SheetSearchBar>{
     _filterViewmodel = ButtonFilterViewmodel();
   }
 
+  @override
+  void dispose() {
+    _controller.removeListener(_onSheetChange);
+    _filterViewmodel.dispose();
+    super.dispose();
+  }
+
   // Manejo de altura desde incio
   void _dragFromHeader(DragUpdateDetails d) {
     if (!(_controller.isAttached)) return;
