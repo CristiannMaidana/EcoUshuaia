@@ -1,5 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/custom_button_filter.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/filter_container.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +48,7 @@ class _ContentFilterState extends State<ContentFilter> {
               child: Row(
                 children: [
                   Expanded(
-                    child: CustomButtonFilter(label: 'Operativo', selected: filtroActivo, onTap: () {
+                    child: CustomButtonFilter(label: 'Operativo', onTap: () {
                       setState(() {
                         filtroActivo = !filtroActivo;
                       });
@@ -56,7 +56,7 @@ class _ContentFilterState extends State<ContentFilter> {
                   ),
                   SizedBox(width: 8),
                   Expanded(
-                    child: CustomButtonFilter(label: 'En mantenimiento', selected: filtroActivo, onTap: () {
+                    child: CustomButtonFilter(label: 'En mantenimiento', onTap: () {
                       setState(() {
                         filtroActivo = !filtroActivo;
                       });
@@ -82,7 +82,6 @@ class _ContentFilterState extends State<ContentFilter> {
                   children: labels.map((label) {
                     return CustomButtonFilter(
                       label: label,
-                      selected: filtroActivo, 
                       onTap: () {
                         setState(() {
                           filtroActivo = !filtroActivo;
@@ -103,11 +102,11 @@ class _ContentFilterState extends State<ContentFilter> {
               initiallyOpen: true,
               child: Row(
                 children: [
-                  Expanded(child: CustomButtonFilter(label: 'Bajo', selected: false, onTap: () {})),
+                  Expanded(child: CustomButtonFilter(label: 'Bajo', onTap: () {})),
                   SizedBox(width: 8,),
-                  Expanded(child: CustomButtonFilter(label: 'Medio', selected: false, onTap: () {})),
+                  Expanded(child: CustomButtonFilter(label: 'Medio', onTap: () {})),
                   SizedBox(width: 8,),
-                  Expanded(child: CustomButtonFilter(label: 'Alto', selected: false, onTap: () {}))
+                  Expanded(child: CustomButtonFilter(label: 'Alto', onTap: () {}))
                 ],
               ),
             ),
