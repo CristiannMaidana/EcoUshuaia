@@ -2,6 +2,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_v
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class SheetSearchBar extends StatefulWidget{
@@ -143,98 +144,101 @@ class SheetSearchBarState extends State<SheetSearchBar>{
       duration: Duration(milliseconds: 120),
       curve: Curves.easeOutCubic,
       padding: EdgeInsets.fromLTRB(16, 0, 16, animatedBottom),
-      child: DraggableScrollableSheet(
-        controller: _controller,
-        initialChildSize: _min,
-        minChildSize: _min,
-        maxChildSize: _max,
-        builder: (context, scrollController) {
-          return AnimatedContainer(
-            duration: Duration(milliseconds: 120),
-            curve: Curves.easeOutCubic,
-            padding: EdgeInsets.only(top: 5, bottom: _bottomNavBar),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
-              border: Border.all(width: 1, color: Colors.black54),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Barra
-                Center(
-                  child: Container(
-                    width: 50, height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
+      child: ChangeNotifierProvider<ButtonFilterViewmodel>.value(
+        value: _filterViewmodel,
+        child: DraggableScrollableSheet(
+          controller: _controller,
+          initialChildSize: _min,
+          minChildSize: _min,
+          maxChildSize: _max,
+          builder: (context, scrollController) {
+            return AnimatedContainer(
+              duration: Duration(milliseconds: 120),
+              curve: Curves.easeOutCubic,
+              padding: EdgeInsets.only(top: 5, bottom: _bottomNavBar),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
+                border: Border.all(width: 1, color: Colors.black54),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Barra
+                  Center(
+                    child: Container(
+                      width: 50, height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
-                ),
-                // Gestor de movimiento
-                Padding(
-                  padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onVerticalDragUpdate: _dragFromHeader,
-                    onVerticalDragEnd: _endDragFromHeader,
-                    child: widget.cambio ? HeaderFilter(collapse: _collapse,) : widget.navBar,
+                  // Gestor de movimiento
+                  Padding(
+                    padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onVerticalDragUpdate: _dragFromHeader,
+                      onVerticalDragEnd: _endDragFromHeader,
+                      child: widget.cambio ? HeaderFilter(collapse: _collapse,) : widget.navBar,
+                    ),
                   ),
-                ),
-
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, viewport) {
-                      return SingleChildScrollView(
-                        controller: scrollController,
-                        physics: ClampingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics()
-                        ),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: viewport.maxHeight,
+        
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, viewport) {
+                        return SingleChildScrollView(
+                          controller: scrollController,
+                          physics: ClampingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()
                           ),
-                          child: widget.cambio? ContentFilter() : SizedBox(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                // Contenido para cierre de filtros inamovible                
-                if (widget.cambio)
-                Container(
-                  height: 56,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: viewport.maxHeight,
+                            ),
+                            child: widget.cambio? ContentFilter() : SizedBox(),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
-                        Text('Ningun filtro activado'),
-                        // Boton secundario cerrar
-                        OutlinedButton(
-                          onPressed: () {
-                            widget.closeFilter();
-                            _collapse();
-                          }, 
-                          child: Text('Cerrar')
-                        )
-                      ],
+        
+                  // Contenido para cierre de filtros inamovible                
+                  if (widget.cambio)
+                  Container(
+                    height: 56,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
+                          Text('Ningun filtro activado'),
+                          // Boton secundario cerrar
+                          OutlinedButton(
+                            onPressed: () {
+                              widget.closeFilter();
+                              _collapse();
+                            }, 
+                            child: Text('Cerrar')
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ]
-            )
-          );
-        }
+                ]
+              )
+            );
+          }
+        ),
       ),
     );  
   }
