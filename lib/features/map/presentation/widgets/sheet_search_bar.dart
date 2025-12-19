@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,9 @@ class SheetSearchBar extends StatefulWidget{
 
 class SheetSearchBarState extends State<SheetSearchBar>{
   late DraggableScrollableController _controller;
+  
+  late final ButtonFilterViewmodel _filterViewmodel;
+
   static const double _min = .096;
   static const double _max = .80;
   static const List<double> _snapPoints = [_min, .30, .55, _max]; 
