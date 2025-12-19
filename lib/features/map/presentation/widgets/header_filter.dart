@@ -1,5 +1,7 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HeaderFilter extends StatelessWidget{
   final VoidCallback collapse;
@@ -32,7 +34,9 @@ class HeaderFilter extends StatelessWidget{
                       foregroundColor: Colors.black,
                       side: BorderSide(color: Colors.grey)
                     ),
-                    onPressed: () {}, // TODO: agregar metodo reseteador de filtros 
+                    onPressed: () {
+                      context.read<ButtonFilterViewmodel>().clean();
+                    },
                     child: const Text('Limpiar', style: TextStyle(fontSize: 13))
                   ),
                 ),
