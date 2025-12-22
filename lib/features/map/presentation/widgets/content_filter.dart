@@ -16,7 +16,9 @@ class _ContentFilterState extends State<ContentFilter> {
   bool filtroActivo = false;
   // TODO: cambiar por lista de vm de DB
   List<String> labels = ['Hoy', 'Mañana', 'Semana', '00:00 - 06:00', '06:00 - 12:00', '12:00 - 19:00', '19:00 - 24:00'];
-  
+  // TODO: cambiar por lista de base de datos
+  List<String> categorias = ['Todos','Plastico','Papel y carton','Vidrio','Metales','Organico','Electronicos','Textiles',];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,13 +31,14 @@ class _ContentFilterState extends State<ContentFilter> {
             child: ExpansionTileCustom(
               title: 'Tipos de residuo',
               initiallyOpen: true,
-              child: FilterContainer(
-                // TODO: Cambiar por lista de vm
-                categorias: const [
-                  'Todos','Plastico','Papel y carton','Vidrio','Metales',
-                  'Organico','Electronicos','Textiles',
-                ],
-              ),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.start,
+                children: categorias.map((categoria){
+                  return CustomButtonFilter(label: categoria, icon: Icon(Icons.circle, size: 12, color: Colors.blue,),);
+                }).toList(),
+              )
             ),
           ),
 
