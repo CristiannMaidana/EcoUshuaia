@@ -7,13 +7,13 @@ class Residuos {
   final String? descripcion;
   final int idCategoriaResiduo;
 
-  Residuos(
-    this.idResiduo,
-    this.nombre,
-    this.imagen,
-    this.peso,
-    this.instruccionReciclado,
-    this.descripcion,
-    this.idCategoriaResiduo,
-  );
+  Residuos({
+    required this.idResiduo,
+    required this.nombre,
+    required this.imagen,
+    required this.peso,
+    required this.instruccionReciclado,
+    required this.descripcion,
+    required this.idCategoriaResiduo,
+  });
 }
