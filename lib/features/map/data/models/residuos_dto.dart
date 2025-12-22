@@ -1,3 +1,5 @@
+import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
+
 class ResiduosDto {
   final int idResiduo;
   final String nombre;
@@ -28,4 +30,14 @@ class ResiduosDto {
       idCategoriaResiduo: json['id_categoria_residuos'],
     );
   }
+
+  Residuos toEntity() => Residuos(
+    idResiduo: idResiduo,
+    nombre: nombre,
+    imagen: imagen,
+    peso: peso,
+    instruccionReciclado: instruccionReciclado,
+    descripcion: descripcion,
+    idCategoriaResiduo: idCategoriaResiduo,
+  );
 }
