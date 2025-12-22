@@ -16,4 +16,16 @@ class ResiduosDto {
     required this.descripcion,
     required this.idCategoriaResiduo,}
   );
+
+  factory ResiduosDto.fromJson(Map<String, dynamic> json){
+    return ResiduosDto(
+      idResiduo: json['id_residuo'], 
+      nombre: json['nombre'], 
+      imagen: json['imagen'], 
+      peso: json['peso'], 
+      instruccionReciclado: json['instruccion_reciclado'], 
+      descripcion: json['descripcion'], 
+      idCategoriaResiduo: json['id_categoria_residuos'],
+    );
+  }
 }
