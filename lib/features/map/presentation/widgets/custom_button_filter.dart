@@ -6,14 +6,12 @@ class CustomButtonFilter extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final Icon? icon;
-  final Colors? color;
 
   const CustomButtonFilter({
     super.key,
     required this.label,
     this.onTap,
     this.icon,
-    this.color
   });
 
   @override
