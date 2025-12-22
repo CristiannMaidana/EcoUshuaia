@@ -26,7 +26,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
   
   late final ButtonFilterViewmodel _filterViewmodel;
 
-  static const double _min = .096;
+  static const double _min = .083;
   static const double _max = .80;
   static const List<double> _snapPoints = [_min, .30, .55, _max]; 
   static const double _borde = 30;
@@ -184,7 +184,8 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                       child: widget.cambio ? HeaderFilter(collapse: _collapse,) : widget.navBar,
                     ),
                   ),
-        
+
+                  // Contenido cambiable del sheet cuando expande
                   Expanded(
                     child: LayoutBuilder(
                       builder: (context, viewport) {
@@ -197,6 +198,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                             constraints: BoxConstraints(
                               minHeight: viewport.maxHeight,
                             ),
+                            // TODO: cambiar SizedBox por el contenido de busqueda
                             child: widget.cambio? ContentFilter() : SizedBox(),
                           ),
                         );
