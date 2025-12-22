@@ -150,7 +150,8 @@ class ContainerDetailState extends State<ContainerDetail> {
                                     children: [
                                       Expanded(
                                         child: DataContainer(
-                                          contenido: (widget.container?.residuo ?? 'Plastico').toString(),
+                                          // TODO: cambiar idResiduo por el nombre del residuo que coincide con la fk
+                                          contenido: (widget.container?.idResiduo ?? 'Residuo').toString(),
                                           icon: Icons.circle,
                                           colorIcon: Colors.amber
                                         ),
@@ -166,7 +167,8 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       SizedBox(width: 8),
                                       Expanded(
                                         child: DataContainer(
-                                          contenido: (widget.container?.residuo ?? '800 M').toString(),
+                                          // TODO: cambiar idResiduo, por la distancia correspondiente
+                                          contenido: (widget.container?.idResiduo ?? '800 M').toString(),
                                           icon: Icons.location_on_outlined,
                                           colorIcon: Colors.black
                                         ),
