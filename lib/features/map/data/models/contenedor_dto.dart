@@ -23,7 +23,7 @@ class ContenedorDto {
   final Coordenada? coordenada;
   final int? idZona;
   final int? idMapa;
-  final ResiduoLite? residuo;
+  final int? idResiduo;
 
   ContenedorDto({
     required this.idContenedor,
@@ -36,7 +36,7 @@ class ContenedorDto {
     this.coordenada,
     this.idZona,
     this.idMapa,
-    this.residuo,
+    this.idResiduo,
   });
 
   factory ContenedorDto.fromGeoJsonFeature(Map<String, dynamic> features) {
@@ -46,18 +46,6 @@ class ContenedorDto {
 
     DateTime? _toDate(dynamic v) =>
       (v is String) ? DateTime.tryParse(v) : (v is DateTime) ? v : null;
-
-    ResiduoLite? _parseResiduo(dynamic r) {
-      if (r is Map<String, dynamic>) {
-        final id = r['id_residuo'] as int?;
-        final nombre = (r['nombre'] ?? '').toString();
-        final categoria = r['categoria'] as String?;
-        if (id != null) {
-          return ResiduoLite(id: id, nombre: nombre, categoria: categoria);
-        }
-      }
-      return null;
-    }
 
     return ContenedorDto(
       idContenedor: features['id'] as int,
@@ -75,7 +63,7 @@ class ContenedorDto {
           : null,
       idZona: props['id_zona'] as int?,
       idMapa: props['id_mapa'] as int?,
-      residuo: _parseResiduo(props['residuo']),
+      idResiduo: props['id_residuo'] as int?,
     );
   }
 
@@ -95,6 +83,6 @@ class ContenedorDto {
         : null,
     idZona: idZona,
     idMapa: idMapa,
-    residuo: residuo,
+    idResiduo: idResiduo
   );
 }
