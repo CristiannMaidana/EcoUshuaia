@@ -1,3 +1,5 @@
+import 'package:eco_ushuaia/features/map/domain/entities/categoria_residuos.dart';
+
 class CategoriaResiduosDto {
   final int idCategoriaResiduos;
   final String categoria;
@@ -16,4 +18,10 @@ class CategoriaResiduosDto {
       colorHex: json['color_hex']
     );
   }
+
+  CategoriaResiduos toEntity() => CategoriaResiduos(
+    idCategoriaResiduos: idCategoriaResiduos, 
+    categoria: categoria, 
+    colorHex: colorHex
+  );
 }
