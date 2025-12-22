@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
-import 'package:eco_ushuaia/features/map/domain/entities/residuo_lite.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart' as domain_entities;
 
 class Coordenada {
