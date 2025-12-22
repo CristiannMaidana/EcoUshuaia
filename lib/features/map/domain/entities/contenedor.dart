@@ -1,5 +1,3 @@
-import 'package:eco_ushuaia/features/map/domain/entities/residuo_lite.dart';
-
 class Coordenada {
   final double latitud;
   final double longitud;
@@ -21,7 +19,7 @@ class Contenedor {
   final Coordenada? coordenada;
   final int? idZona;
   final int? idMapa;
-  final ResiduoLite? residuo;
+  final int? idResiduo;
 
   Contenedor({
     required this.idContenedor,
@@ -34,6 +32,6 @@ class Contenedor {
     this.coordenada,
     this.idZona,
     this.idMapa,
-    this.residuo,
+    this.idResiduo,
   });
 }
