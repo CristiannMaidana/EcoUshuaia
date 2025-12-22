@@ -13,7 +13,7 @@ class CategoriaResiduosDto {
 
   factory CategoriaResiduosDto.fromJson(Map<String, dynamic> json) {
     return CategoriaResiduosDto(
-      idCategoriaResiduos: json['id_categoria_residuos'],
+      idCategoriaResiduos: json['id_categoria_residuo'],
       categoria: json['categoria'],
       colorHex: json['color_hex']
     );
