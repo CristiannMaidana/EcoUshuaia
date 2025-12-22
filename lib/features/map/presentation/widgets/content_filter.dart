@@ -1,7 +1,6 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/filter_container.dart';
 import 'package:flutter/material.dart';
 
 class ContentFilter extends StatefulWidget {
