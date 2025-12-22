@@ -36,7 +36,15 @@ class CustomButtonFilter extends StatelessWidget {
             vm.toggle(label);
             // TODO: metodo asincronico para actualizar filtros en mapa
           },
-          child: Text(label, style: const TextStyle(fontSize: 13)),
+          child: icon != null? 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              icon!,
+              Text(label, style: const TextStyle(fontSize: 13)),
+            ],
+          ) : 
+          Text(label, style: const TextStyle(fontSize: 13)),
         );
       },
     );
