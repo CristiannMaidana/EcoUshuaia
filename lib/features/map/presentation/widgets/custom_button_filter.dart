@@ -36,9 +36,10 @@ class CustomButtonFilter extends StatelessWidget {
           },
           child: icon != null? 
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
             children: [
               icon!,
+              SizedBox(width: 10,),
               Text(label, style: const TextStyle(fontSize: 13)),
             ],
           ) : 
