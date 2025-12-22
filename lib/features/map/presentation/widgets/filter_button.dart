@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/features/map/presentation/widgets/filter_container.dart';
 import 'package:flutter/material.dart';
 
 class FilterButton extends StatefulWidget {
@@ -24,7 +23,7 @@ class _FilterButtonState extends State<FilterButton>{
     return CompositedTransformTarget(
       link: _link,
       child: OutlinedButton(
-        onPressed: () {FilterContainer(categorias: widget.categorias); widget.changes(); },
+        onPressed: () {widget.changes(); },
         child: Row(
           children: [
             Icon(Icons.filter_list, color: Colors.black54),
