@@ -8,8 +8,11 @@ import 'package:eco_ushuaia/features/calendar/data/sources/categoria_noticias_re
 import 'package:eco_ushuaia/features/calendar/domain/repositories/calendario_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/data/repositories/categoria_residuos_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
+import 'package:eco_ushuaia/features/map/data/sources/remote/categoria_residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/waste/data/repositories/residuo_repository_imp.dart';
 import 'package:eco_ushuaia/features/waste/domain/repositories/residuo_repository.dart';
@@ -80,6 +83,15 @@ List<SingleChildWidget> _categoriaNoticiasProviders() => [
   ),
 ];
 
+List<SingleChildWidget> _categoriaResiduosProviders() => [
+  ProxyProvider<ApiClient, CategoriaResiduosRemoteDataSource>(
+    update: (_, api, __) => CategoriaResiduosRemoteDataSource(api,)
+  ),
+  ProxyProvider<CategoriaResiduosRemoteDataSource, CategoriaResiduosRepository>(
+    update: (_, ds, __) => CategoriaResiduosRepositoryImp(ds),
+  ),
+];
+
 List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
@@ -87,4 +99,5 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._usuariosProviders(),
   ..._calendarioProviders(),
   ..._categoriaNoticiasProviders(),
+  ..._categoriaResiduosProviders(),
 ];
