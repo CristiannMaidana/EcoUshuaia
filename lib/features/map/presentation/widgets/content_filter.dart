@@ -1,7 +1,9 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ContentFilter extends StatefulWidget {
   const ContentFilter({super.key});
@@ -20,6 +22,8 @@ class _ContentFilterState extends State<ContentFilter> {
 
   @override
   Widget build(BuildContext context) {
+    final vmResiduos = context.watch<ResiduoViewmodel>();
+    
     return Container(
       color: camarone100,
       child: Column(
@@ -34,8 +38,8 @@ class _ContentFilterState extends State<ContentFilter> {
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.start,
-                children: categorias.map((categoria){
-                  return CustomButtonFilter(label: categoria, icon: Icon(Icons.circle, size: 12, color: Colors.blue,),);
+                children: vmResiduos.items.map((residuo){
+                  return CustomButtonFilter(label: residuo.nombre, icon: Icon(Icons.circle, size: 12, color: Colors.blue,),);
                 }).toList(),
               )
             ),
