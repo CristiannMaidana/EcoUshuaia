@@ -1,7 +1,7 @@
 class Residuos {
   final int idResiduo;
   final String nombre;
-  final String? imagen;
+  final String colorHex;
   final double? peso;
   final String? instruccionReciclado;
   final String? descripcion;
@@ -10,7 +10,7 @@ class Residuos {
   Residuos({
     required this.idResiduo,
     required this.nombre,
-    this.imagen,
+    required this.colorHex,
     this.peso,
     this.instruccionReciclado,
     this.descripcion,
