@@ -10,10 +10,10 @@ class Residuos {
   Residuos({
     required this.idResiduo,
     required this.nombre,
-    required this.imagen,
-    required this.peso,
-    required this.instruccionReciclado,
-    required this.descripcion,
+    this.imagen,
+    this.peso,
+    this.instruccionReciclado,
+    this.descripcion,
     required this.idCategoriaResiduo,
   });
 }
