@@ -41,7 +41,7 @@ class _CustomListaContenedoresState extends State<ContainerListItem> with Single
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('${widget.contenedor.nombreContenedor}', style: Theme.of(context).textTheme.labelMedium),
-                  Text('${widget.contenedor.residuo?.categoria}', style: Theme.of(context).textTheme.labelMedium),
+                  Text('${widget.contenedor.idResiduo}', style: Theme.of(context).textTheme.labelMedium),
                 ],
               ),
               Row(
