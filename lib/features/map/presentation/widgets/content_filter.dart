@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
@@ -17,8 +18,6 @@ class _ContentFilterState extends State<ContentFilter> {
   bool filtroActivo = false;
   // TODO: cambiar por lista de vm de DB
   List<String> labels = ['Hoy', 'Mañana', 'Semana', '00:00 - 06:00', '06:00 - 12:00', '12:00 - 19:00', '19:00 - 24:00'];
-  // TODO: cambiar por lista de base de datos
-  List<String> categorias = ['Todos','Plastico','Papel y carton','Vidrio','Metales','Organico','Electronicos','Textiles',];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,10 @@ class _ContentFilterState extends State<ContentFilter> {
                 runSpacing: 8,
                 alignment: WrapAlignment.start,
                 children: vmResiduos.items.map((residuo){
-                  return CustomButtonFilter(label: residuo.nombre, icon: Icon(Icons.circle, size: 12, color: Colors.blue,),);
+                  return CustomButtonFilter(
+                    label: residuo.nombre, 
+                    icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
+                  );
                 }).toList(),
               )
             ),
