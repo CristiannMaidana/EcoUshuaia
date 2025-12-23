@@ -3,7 +3,7 @@ import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
 class ResiduosDto {
   final int idResiduo;
   final String nombre;
-  final String? imagen;
+  final String colorHex;
   final double? peso;
   final String? instruccionReciclado;
   final String? descripcion;
@@ -12,7 +12,7 @@ class ResiduosDto {
   ResiduosDto({
     required this.idResiduo,
     required this.nombre,
-    this.imagen,
+    required this.colorHex,
     this.peso,
     this.instruccionReciclado,
     this.descripcion,
@@ -30,7 +30,7 @@ class ResiduosDto {
     return ResiduosDto(
       idResiduo: json['id_residuo'], 
       nombre: json['nombre'], 
-      imagen: json['imagen'], 
+      colorHex: json['color_hex'], 
       peso: parseDouble(json['peso']),
       instruccionReciclado: json['instruccion_reciclado'], 
       descripcion: json['descripcion'], 
@@ -41,7 +41,7 @@ class ResiduosDto {
   Residuos toEntity() => Residuos(
     idResiduo: idResiduo,
     nombre: nombre,
-    imagen: imagen,
+    colorHex: colorHex,
     peso: peso,
     instruccionReciclado: instruccionReciclado,
     descripcion: descripcion,
