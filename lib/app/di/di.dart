@@ -10,18 +10,18 @@ import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noti
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/categoria_residuos_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
+import 'package:eco_ushuaia/features/map/data/repositories/residuo_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/categoria_residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
+import 'package:eco_ushuaia/features/map/data/sources/remote/residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
-import 'package:eco_ushuaia/features/waste/data/repositories/residuo_repository_imp.dart';
-import 'package:eco_ushuaia/features/waste/domain/repositories/residuo_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../../core/network/http_client.dart';
-import '../../features/waste/data/sources/residuos_remote_data_source.dart';
 
 List<SingleChildWidget> _coreProviders() => [
   Provider<http.Client>(
@@ -37,8 +37,8 @@ List<SingleChildWidget> _residuosProviders() => [
   ProxyProvider<ApiClient, ResiduosRemoteDataSource>(
     update: (_, api, __) => ResiduosRemoteDataSource(api),
   ),
-  ProxyProvider<ResiduosRemoteDataSource, ResiduosRepository>(
-    update: (_, ds, __) => ResiduosRepositoryImpl(ds),
+  ProxyProvider<ResiduosRemoteDataSource, ResiduoRepository>(
+    update: (_, ds, __) => ResiduoRepositoryImp(ds),
   ),
 ];
 
