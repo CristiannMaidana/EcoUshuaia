@@ -201,7 +201,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                               minHeight: viewport.maxHeight,
                             ),
                             // TODO: cambiar SizedBox por el contenido de busqueda
-                            child: widget.cambio? ContentFilter(filtros: widget.aplicarFiltros,) : SizedBox(),
+                            child: widget.cambio? ContentFilter(aplicarFiltros: widget.aplicarFiltros,) : SizedBox(),
                           ),
                         );
                       },
