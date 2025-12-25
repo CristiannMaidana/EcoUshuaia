@@ -33,15 +33,22 @@ class CustomButtonFilter extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
           onPressed: () {
-            context.read<ButtonFilterViewmodel>().toggle(label);
-
-            // Carga la lista de contenedores en base a idResiduo
-            if (idResiduo != null) {
-              context.read<ContenedorViewModel>().filterResiduos(idResiduo!);
+            if (selected){
+              context.read<ButtonFilterViewmodel>().toggle(label);
+              context.read<ContenedorViewModel>().clearFilter(idResiduo!);
+              onTap?.call();
             }
+            else {
+              context.read<ButtonFilterViewmodel>().toggle(label);
 
-            // Aplicar filtros con el metodo del padre
-            onTap?.call();
+              // Carga la lista de contenedores en base a idResiduo
+              if (idResiduo != null) {
+                context.read<ContenedorViewModel>().filterResiduos(idResiduo!);
+              }
+
+              // Aplicar filtros con el metodo del padre
+              onTap?.call();
+            }
           },
           child: icon != null? 
           Row(
