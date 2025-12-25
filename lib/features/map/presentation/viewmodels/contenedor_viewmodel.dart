@@ -29,7 +29,14 @@ class ContenedorViewModel extends ChangeNotifier {
     try {
       _items = await repo.list(filtros: filtros);
 
-      // TODO: Cargar la lista de contenedores en base a idResiduo
+      // Cargar la lista de contenedores en base a idResiduo
+      _byResiduo.clear();
+      for (final c in _items) {
+        final id = c.idResiduo;
+        if (id != null) {
+          (_byResiduo[id] ??= <Contenedor>[]).add(c);
+        }
+      }
 
       // TODO: Sin filtros activos al cargar
     } catch (e) {
