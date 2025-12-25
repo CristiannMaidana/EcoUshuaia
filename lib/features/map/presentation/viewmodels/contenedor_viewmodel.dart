@@ -60,7 +60,7 @@ class ContenedorViewModel extends ChangeNotifier {
   }
 
   // Limpia contendores filtrados
-  void clearFilter() {
+  void clearAllFilter() {
     _contenedorFiltrado = const [];
     notifyListeners();
   }
