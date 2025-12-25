@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class FilterButton extends StatefulWidget {
-  final List<String> categorias;
   final ValueChanged<String> onSelected;
   final VoidCallback changes; // Para notificar el cambio de estado de contenido
 
   const FilterButton({
     super.key,
-    required this.categorias,
     required this.onSelected,
     required this.changes,
   });
