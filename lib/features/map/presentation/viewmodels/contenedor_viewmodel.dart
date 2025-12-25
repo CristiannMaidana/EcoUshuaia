@@ -15,12 +15,21 @@ class ContenedorViewModel extends ChangeNotifier {
   String? get error => _error;
   List<Contenedor> get items => _items;
 
-  Future<void> load({Map <String, dynamic>? filtros}) async {
+  // Map de contenedores filtrados
+  final Map<int, List<Contenedor>> _byResiduo = {};
+
+  // TODO: Lista de contenedores filtrados
+
+  Future<void> load({Map<String, dynamic>? filtros}) async {
     _loading = true;
     _error = null;
     notifyListeners();
     try {
       _items = await repo.list(filtros: filtros);
+
+      // TODO: Cargar la lista de contenedores en base a idResiduo
+
+      // TODO: Sin filtros activos al cargar
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -28,4 +37,8 @@ class ContenedorViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // TODO: Filtra por un idResiduo específico todos los contenedores y actualiza el estado del VM
+
+  // TODO:Limpia filtros y vuelve a mostrar todos
 }
