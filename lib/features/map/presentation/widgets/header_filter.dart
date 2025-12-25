@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +37,7 @@ class HeaderFilter extends StatelessWidget{
                     ),
                     onPressed: () {
                       context.read<ButtonFilterViewmodel>().clean();
+                      context.read<ContenedorViewModel>().clearFilter();
                     },
                     child: const Text('Limpiar', style: TextStyle(fontSize: 13))
                   ),
