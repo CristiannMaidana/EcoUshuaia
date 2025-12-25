@@ -38,7 +38,8 @@ class ContenedorViewModel extends ChangeNotifier {
         }
       }
 
-      // TODO: Sin filtros activos al cargar
+      // Sin filtros activos al cargar
+      _contenedorFiltrado = const [];
     } catch (e) {
       _error = e.toString();
     } finally {
