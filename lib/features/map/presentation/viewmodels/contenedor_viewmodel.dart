@@ -18,7 +18,9 @@ class ContenedorViewModel extends ChangeNotifier {
   // Map de contenedores filtrados
   final Map<int, List<Contenedor>> _byResiduo = {};
 
-  // TODO: Lista de contenedores filtrados
+  // Lista de contenedores filtrados para mostrar en el mapa
+  List<Contenedor> _contenedorFiltrado = const [];
+  List<Contenedor> get contenedorFiltrado => _contenedorFiltrado;
 
   Future<void> load({Map<String, dynamic>? filtros}) async {
     _loading = true;
