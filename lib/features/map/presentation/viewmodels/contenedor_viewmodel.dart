@@ -48,7 +48,11 @@ class ContenedorViewModel extends ChangeNotifier {
     }
   }
 
-  // TODO: Filtra por un idResiduo específico todos los contenedores y actualiza el estado del VM
+  // Cargar por idResiduo todos los contenedores de la lista
+  void filterResiduos(int idResiduo) {
+    _contenedorFiltrado = List.unmodifiable(_byResiduo[idResiduo] ?? const []);
+    notifyListeners();
+  }
 
   // TODO:Limpia filtros y vuelve a mostrar todos
 }
