@@ -7,7 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ContentFilter extends StatefulWidget {
-  const ContentFilter({super.key});
+  final VoidCallback aplicarFiltros;
+
+  const ContentFilter({
+    super.key,
+    required this.aplicarFiltros,
+  });
 
   @override
   State<ContentFilter> createState() => _ContentFilterState();
@@ -41,6 +46,7 @@ class _ContentFilterState extends State<ContentFilter> {
                   return CustomButtonFilter(
                     label: residuo.nombre, 
                     icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
+                    //TODO: agregarle metodo para actualizacion de filtros en mapa y agregar id para obtener el tipo de filtros
                   );
                 }).toList(),
               )
