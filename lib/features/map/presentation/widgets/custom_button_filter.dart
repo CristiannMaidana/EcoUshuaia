@@ -6,12 +6,14 @@ class CustomButtonFilter extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final Icon? icon;
+  final int? idResiduo;
 
   const CustomButtonFilter({
     super.key,
     required this.label,
     this.onTap,
     this.icon,
+    this.idResiduo,
   });
 
   @override
@@ -30,9 +32,9 @@ class CustomButtonFilter extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
           onPressed: () {
-            final vm = context.read<ButtonFilterViewmodel>();
-            vm.toggle(label);
-            // TODO: metodo asincronico para actualizar filtros en mapa
+            context.read<ButtonFilterViewmodel>().toggle(label);
+
+            // TODO: carga la lista de contenedores en base a idResiduo
           },
           child: icon != null? 
           Row(
