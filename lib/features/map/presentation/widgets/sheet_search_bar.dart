@@ -9,12 +9,14 @@ class SheetSearchBar extends StatefulWidget{
   final Widget navBar;
   bool cambio;
   final VoidCallback closeFilter;
+  final VoidCallback aplicarFiltros;
 
   SheetSearchBar({
     Key? key,
     required this.navBar,
     required this.cambio,
     required this.closeFilter,
+    required this.aplicarFiltros,
   }) :super(key: key);
 
   @override
@@ -199,6 +201,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                               minHeight: viewport.maxHeight,
                             ),
                             // TODO: cambiar SizedBox por el contenido de busqueda
+                            // TODO: agregar propiedad aplicarFiltros en widget ContentFilter
                             child: widget.cambio? ContentFilter() : SizedBox(),
                           ),
                         );
