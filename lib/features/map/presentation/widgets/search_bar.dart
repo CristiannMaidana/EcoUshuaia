@@ -14,9 +14,6 @@ class SerchBar extends StatefulWidget{
 }
 
 class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
-  // TODO: cambiar por lista de vm de tipos de residuos
-  final categories = const ['Todos', 'Plastico', 'Papel y carton', 'Vidrio', 'Metales', 'Organico', 'Residuos electronicos', 'Textiles', 'Residuos peligrosos', 'Residuos voluminosos', 'Residuos de construccion y demolicion', 'Residuos sanitarios'];
-
   @override
   Widget build (BuildContext context) {
     return GestureDetector(
@@ -49,7 +46,6 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
 
           //Boton filtro para abrir opciones de busqueda
           FilterButton(
-            categorias: categories, 
             onSelected:(value) {}, 
             changes: widget.changeHeader,
           )
