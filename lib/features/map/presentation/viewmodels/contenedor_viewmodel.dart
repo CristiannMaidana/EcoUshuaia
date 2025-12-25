@@ -50,7 +50,12 @@ class ContenedorViewModel extends ChangeNotifier {
 
   // Cargar por idResiduo todos los contenedores de la lista
   void filterResiduos(int idResiduo) {
-    _contenedorFiltrado = List.unmodifiable(_byResiduo[idResiduo] ?? const []);
+    if (contenedorFiltrado.isEmpty){
+      _contenedorFiltrado = List<Contenedor>.from(_byResiduo[idResiduo]!);
+    }
+    else {
+      _contenedorFiltrado.addAll(_byResiduo[idResiduo]!);
+    }
     notifyListeners();
   }
 
@@ -59,4 +64,7 @@ class ContenedorViewModel extends ChangeNotifier {
     _contenedorFiltrado = const [];
     notifyListeners();
   }
+
+  // TODO: crear un metodo para limpiar los contendores que fueron filtrados, mediante un id
+  // por si tengo mas de un filtro limpio solo el filtro seleccionado
 }
