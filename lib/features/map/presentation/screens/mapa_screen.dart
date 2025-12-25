@@ -261,7 +261,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           navBar: SerchBar(changeHeader: _changes),
           cambio: _cambio,
           closeFilter: _changes,
-          //TODO: Crear otro voidcall para darle el metodo de actualizacion de filtros
+          aplicarFiltros: _applyFilters,
         ),
 
         if (_contenedorSeleccionado != null)
