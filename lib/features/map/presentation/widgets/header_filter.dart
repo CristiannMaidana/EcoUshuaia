@@ -37,7 +37,7 @@ class HeaderFilter extends StatelessWidget{
                     ),
                     onPressed: () {
                       context.read<ButtonFilterViewmodel>().clean();
-                      context.read<ContenedorViewModel>().clearFilter();
+                      context.read<ContenedorViewModel>().clearAllFilter();
                     },
                     child: const Text('Limpiar', style: TextStyle(fontSize: 13))
                   ),
