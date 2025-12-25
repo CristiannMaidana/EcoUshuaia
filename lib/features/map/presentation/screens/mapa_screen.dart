@@ -93,7 +93,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
     });
   }
 
-  // TODO: Crear metodo para cargar los contenedores filtrados en mapa
+  // Cargar los contenedores filtrados en mapa
+  void _applyFilters() {
+    final vm = _vm;
+    final ctrl = _mapController;
+    if (vm == null || ctrl == null) return;
+
+    final data = vm.contenedorFiltrado.isNotEmpty ? vm.contenedorFiltrado : vm.items;
+    ctrl.applyFilter(data);
+  }
 
   @override
   void initState() {
