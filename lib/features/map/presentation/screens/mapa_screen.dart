@@ -79,7 +79,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final ctrl = _mapController;
     final vm = _vm;
     if (ctrl != null && vm != null) {
-      ctrl.refreshContenedores(vm.items);
+      // Si hay filtro activo, cargar los contenedores filtrados, si no con todos
+      final data = vm.contenedorFiltrado.isNotEmpty ? vm.contenedorFiltrado : vm.items;
+      ctrl.refreshContenedores(data);
     }
   }
 
@@ -90,6 +92,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _detailKey.currentState?.subirSheet();
     });
   }
+
+  // TODO: Crear metodo para cargar los contenedores filtrados en mapa
 
   @override
   void initState() {
@@ -249,6 +253,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           navBar: SerchBar(changeHeader: _changes),
           cambio: _cambio,
           closeFilter: _changes,
+          //TODO: Crear otro voidcall para darle el metodo de actualizacion de filtros
         ),
 
         if (_contenedorSeleccionado != null)
