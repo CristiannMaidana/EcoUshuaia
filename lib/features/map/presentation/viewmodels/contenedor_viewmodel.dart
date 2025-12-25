@@ -65,6 +65,12 @@ class ContenedorViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: crear un metodo para limpiar los contendores que fueron filtrados, mediante un id
-  // por si tengo mas de un filtro limpio solo el filtro seleccionado
+  // Limpiar los filtros que fueron deseleccionados
+  void clearFilter(int idResiduoBorrar) {
+    if (_contenedorFiltrado.isEmpty) return;
+    _contenedorFiltrado = _contenedorFiltrado
+        .where((c) => c.idResiduo != idResiduoBorrar)
+        .toList();
+    notifyListeners();
+  }
 }
