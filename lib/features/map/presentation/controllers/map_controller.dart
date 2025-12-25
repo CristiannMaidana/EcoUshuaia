@@ -171,4 +171,9 @@ class MapController {
 
     onContenedorTap!(_contenedorSeleccionado!);
   }
+
+  // Cargar los contenedores filtrados por opciones de filtros
+  Future<void> applyFilter(List<Contenedor> filtroContenedor) async {
+    await refreshContenedores(filtroContenedor);
+  }
 }
