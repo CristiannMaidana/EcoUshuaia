@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,10 @@ class CustomButtonFilter extends StatelessWidget {
           onPressed: () {
             context.read<ButtonFilterViewmodel>().toggle(label);
 
-            // TODO: carga la lista de contenedores en base a idResiduo
+            // Carga la lista de contenedores en base a idResiduo
+            if (idResiduo != null) {
+              context.read<ContenedorViewModel>().filterResiduos(idResiduo!);
+            }
           },
           child: icon != null? 
           Row(
