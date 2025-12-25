@@ -36,7 +36,6 @@ class CustomButtonFilter extends StatelessWidget {
             if (selected){
               context.read<ButtonFilterViewmodel>().toggle(label);
               context.read<ContenedorViewModel>().clearFilter(idResiduo!);
-              onTap?.call();
             }
             else {
               context.read<ButtonFilterViewmodel>().toggle(label);
@@ -45,9 +44,6 @@ class CustomButtonFilter extends StatelessWidget {
               if (idResiduo != null) {
                 context.read<ContenedorViewModel>().filterResiduos(idResiduo!);
               }
-
-              // Aplicar filtros con el metodo del padre
-              onTap?.call();
             }
           },
           child: icon != null? 
