@@ -6,10 +6,12 @@ import 'package:provider/provider.dart';
 
 class HeaderFilter extends StatelessWidget{
   final VoidCallback collapse;
+  final VoidCallback aplicarFiltros;
   
   const HeaderFilter ({
     super.key,
     required this.collapse,
+    required this.aplicarFiltros,
   });
 
   @override
@@ -38,6 +40,7 @@ class HeaderFilter extends StatelessWidget{
                     onPressed: () {
                       context.read<ButtonFilterViewmodel>().clean();
                       context.read<ContenedorViewModel>().clearAllFilter();
+                      aplicarFiltros();
                     },
                     child: const Text('Limpiar', style: TextStyle(fontSize: 13))
                   ),
@@ -52,6 +55,7 @@ class HeaderFilter extends StatelessWidget{
                     // TODO: agregar metodo asincronico para que se cargue el mapa los filtros
                     onPressed: () {
                       collapse();
+                      aplicarFiltros();
                     }, 
                     child: const Text('Aplicar', style: TextStyle(fontSize: 13),)
                   ),
