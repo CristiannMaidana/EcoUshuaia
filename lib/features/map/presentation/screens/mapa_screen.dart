@@ -189,13 +189,21 @@ class _MapaScreenStatePage extends State<MapaPage> {
               await controller.enableUserPuck();
             }
 
-            // engancha el VM y escucha cambios para refrescar marcadores
-            _vm?.removeListener(_onVmChanged);
             _vm = context.read<ContenedorViewModel>();
-            _vm!.addListener(_onVmChanged);
 
-            // Carga los contenedores que ya están en el VM
-            await controller.refreshContenedores(_vm!.items);
+            // Si cargaron contenedores cargo
+            if (_vm!.items.isNotEmpty) {
+              await controller.refreshContenedores(_vm!.items);
+            } else {
+              // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
+              void once() async {
+                if (!_vm!.loading) {
+                  _vm!.removeListener(once);
+                  await _mapController?.refreshContenedores(_vm!.items);
+                }
+              }
+              _vm!.addListener(once);
+            }
           },
         ),
 
