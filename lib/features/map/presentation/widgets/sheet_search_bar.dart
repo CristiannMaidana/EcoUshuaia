@@ -45,7 +45,6 @@ class SheetSearchBarState extends State<SheetSearchBar>{
 
   double _mix(double a, double b, double t) => a + (b - a) * t;
 
-
   void _onSheetChange() {
     if (!mounted) return;
     setState(() {
@@ -183,7 +182,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                       behavior: HitTestBehavior.opaque,
                       onVerticalDragUpdate: _dragFromHeader,
                       onVerticalDragEnd: _endDragFromHeader,
-                      child: widget.cambio ? HeaderFilter(collapse: _collapse,) : widget.navBar,
+                      child: widget.cambio ? HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) : widget.navBar,
                     ),
                   ),
 
