@@ -1,3 +1,5 @@
+import 'package:eco_ushuaia/features/map/domain/entities/horario_recoleccion_filtros.dart';
+
 class HorarioRecoleccionFiltrosDto {
   final int idCategoriaResiduos;
   final String? horaInicio;
@@ -19,4 +21,11 @@ class HorarioRecoleccionFiltrosDto {
       idZona: json['id_zona']!,
     );
   }
+
+  HorarioRecoleccionFiltros toEntity() => HorarioRecoleccionFiltros(
+    idCategoriaResiduos: idCategoriaResiduos,
+    horaInicio: horaInicio!,
+    diaSemana: diaSemana!,
+    idZona: idZona!,
+  );
 }
