@@ -26,6 +26,12 @@ class HorarioRecoleccionFiltrosRemoteDataSources {
     return _toDtoList(data);
   }
 
+  Future<List<HorarioRecoleccionFiltrosDto>> semanaDesdeDiaZona({
+    required int desdeDia, required int zona}) async {
+    final data = await api.get('$_url/semana/$desdeDia/zona/$zona');
+    return _toDtoList(data);
+  }
+  
   Future<List<HorarioRecoleccionFiltrosDto>> _toDtoList(dynamic data) async {
     List<dynamic> list;
     if (data is Map && data['results'] is List) {
