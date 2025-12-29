@@ -1,8 +1,8 @@
 import 'package:eco_ushuaia/features/map/domain/entities/horario_recoleccion_filtros.dart';
 
 abstract class HorarioRecoleccionFiltrosRepository {  
-  Future<List<HorarioRecoleccionFiltros>> porHoraDiaZona({
-    required String hhmmss, required int dia, required int zona});
+  Future<List<HorarioRecoleccionFiltros>> porHora({
+    required String hhmmss});
 
   Future<List<HorarioRecoleccionFiltros>> porDiaZona({
     required int dia, required int zona});
