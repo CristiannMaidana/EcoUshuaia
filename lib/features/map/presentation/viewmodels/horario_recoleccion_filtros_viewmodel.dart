@@ -46,7 +46,7 @@ class HorarioRecoleccionFiltrosViewModel extends ChangeNotifier {
   // Carga las variantes en paralelo y deja cada una en su lista
   Future<void> loadAll({required String hhmmss, required int dia, required int mannana, required int zona, required int desdeDia,}) async {
     await _run(() async {final results = await Future.wait<List<HorarioRecoleccionFiltros>>([
-      repo.porHoraDiaZona(hhmmss: hhmmss, dia: dia, zona: zona),
+      repo.porHora(hhmmss: hhmmss),
       repo.porDiaZona(dia: 1, zona: 1),
       repo.porHoraMannanaZona(hhmmss: hhmmss, mannana: mannana, zona: zona),
       repo.semanaDesdeDiaZona(desdeDia: desdeDia, zona: zona),
