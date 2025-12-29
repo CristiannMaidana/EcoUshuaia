@@ -1,5 +1,7 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/horario_recoleccion_filtros.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
@@ -24,6 +26,37 @@ class _ContentFilterState extends State<ContentFilter> {
   // TODO: cambiar por lista de vm de DB
   List<String> labels = ['Hoy', 'Mañana', 'Semana', '00:00 - 06:00', '06:00 - 12:00', '12:00 - 19:00', '19:00 - 24:00'];
 
+  // Cargo los items del vm
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      // ignore: use_build_context_synchronously
+      context.read<HorarioRecoleccionFiltrosViewModel>().loadHoras();
+    });
+  }
+  
+  // Helper para cargar la lista de ids desde vm
+  List<int> _idsForIndex(int i) {
+      final hvm = context.read<HorarioRecoleccionFiltrosViewModel>();
+
+    // Mapea lista con ids de categoria
+    List<int> idsOf(List<HorarioRecoleccionFiltros> xs) =>
+        xs.map((e) => e.idCategoriaResiduos).toSet().toList();
+
+    switch (i) {
+      case 0: return idsOf(hvm.itemsDiaZona);
+      case 1: return idsOf(hvm.itemsHoraMannanaZona);
+      case 2: return idsOf(hvm.itemsSemanaDesdeDiaZona);
+      case 3: return idsOf(hvm.itemsHoraUno);
+      case 4: return idsOf(hvm.itemsHoraDos);
+      case 5: return idsOf(hvm.itemsHoraTres);
+      case 6: return idsOf(hvm.itemsHoraCuatro);
+      default: return const [];
+    }
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     final vmResiduos = context.watch<ResiduoViewmodel>();
@@ -43,11 +76,12 @@ class _ContentFilterState extends State<ContentFilter> {
                 runSpacing: 8,
                 alignment: WrapAlignment.start,
                 children: vmResiduos.items.map((residuo){
+                  final ids = <int>[residuo.idResiduo]; // lista de int con un único id
                   return CustomButtonFilter(
                     label: residuo.nombre, 
                     icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
                     onTap: widget.aplicarFiltros,
-                    idResiduo: residuo.idResiduo,
+                    idResiduo: ids,
                   );
                 }).toList(),
               )
@@ -86,11 +120,15 @@ class _ContentFilterState extends State<ContentFilter> {
                   spacing: 8.0,
                   runSpacing: 8.0,
                   alignment: WrapAlignment.start,
-                  children: labels.map((label) {
+                  children: List.generate(labels.length, (i) {
+                    final label = labels[i];
+                    final ids   = _idsForIndex(i);
                     return CustomButtonFilter(
                       label: label,
+                      idResiduo: ids,
+                      onTap: widget.aplicarFiltros,
                     );
-                  }).toList(),
+                  }),
                 ),
               ),
             ),
