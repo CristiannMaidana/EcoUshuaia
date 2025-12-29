@@ -2,7 +2,7 @@ import 'package:eco_ushuaia/features/map/domain/entities/horario_recoleccion_fil
 
 abstract class HorarioRecoleccionFiltrosRepository {  
   Future<List<HorarioRecoleccionFiltros>> porHora({
-    required String hhmmss});
+    required String horaInicio, required String horaFin});
 
   Future<List<HorarioRecoleccionFiltros>> porDiaZona({
     required int dia, required int zona});
