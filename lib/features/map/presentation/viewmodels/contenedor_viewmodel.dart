@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:flutter/widgets.dart';
 
 class ContenedorViewModel extends ChangeNotifier {
@@ -19,7 +20,7 @@ class ContenedorViewModel extends ChangeNotifier {
   final Map<int, List<Contenedor>> _byResiduo = {};
 
   // Lista de contenedores filtrados para mostrar en el mapa
-  List<Contenedor> _contenedorFiltrado = const [];
+  List<Contenedor> _contenedorFiltrado = [];
   List<Contenedor> get contenedorFiltrado => _contenedorFiltrado;
 
   Future<void> load({Map<String, dynamic>? filtros}) async {
@@ -61,7 +62,7 @@ class ContenedorViewModel extends ChangeNotifier {
 
   // Limpia contendores filtrados
   void clearAllFilter() {
-    _contenedorFiltrado = const [];
+    _contenedorFiltrado.clear();
     notifyListeners();
   }
 
@@ -73,4 +74,23 @@ class ContenedorViewModel extends ChangeNotifier {
         .toList();
     notifyListeners();
   }
+
+  // Filtro para horario de recoleccion
+  void filterHorarioRecoleccion(List<int> categoriaIds, ResiduoViewmodel vmResiduos) {
+    final idResiduos = vmResiduos.idSegunCategoria(categoriaIds);
+    if (idResiduos.isEmpty) return;
+
+    final nuevos = <Contenedor>[];
+    for (final idRes in idResiduos) {
+      final lista = _byResiduo[idRes];
+      if (lista != null) nuevos.addAll(lista);
+    }
+
+    if (_contenedorFiltrado.isEmpty) {
+      _contenedorFiltrado = List<Contenedor>.from(nuevos);
+    } else {
+      _contenedorFiltrado.addAll(nuevos);
+    }
+    notifyListeners();
+  } 
 }
