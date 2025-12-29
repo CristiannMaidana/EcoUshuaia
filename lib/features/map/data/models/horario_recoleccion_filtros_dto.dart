@@ -13,19 +13,19 @@ class HorarioRecoleccionFiltrosDto {
     this.idZona
   });
 
-  factory HorarioRecoleccionFiltrosDto.fromJson(Map<String, dynamic> json){
+  factory HorarioRecoleccionFiltrosDto.fromJson(Map<String, dynamic> json) {
     return HorarioRecoleccionFiltrosDto(
-      idCategoriaResiduos: json['id_categoria_residuo'],
-      horaInicio: json['hora_inicio']!,
-      diaSemana: json['dia_semana']!,
-      idZona: json['id_zona']!,
+      idCategoriaResiduos: json['id_categoria_residuo'] as int,
+      horaInicio: json['hora_inicio'] as String?,
+      diaSemana: json['dia_semana'] as int?,
+      idZona: json['id_zona'] as int?,
     );
   }
 
   HorarioRecoleccionFiltros toEntity() => HorarioRecoleccionFiltros(
     idCategoriaResiduos: idCategoriaResiduos,
-    horaInicio: horaInicio!,
-    diaSemana: diaSemana!,
-    idZona: idZona!,
+    horaInicio: horaInicio,
+    diaSemana: diaSemana,
+    idZona: idZona,
   );
 }
