@@ -8,9 +8,8 @@ class HorarioRecoleccionFiltrosRemoteDataSources {
 
   static const String _url = '/horario_recoleccion';
 
-  Future<List<HorarioRecoleccionFiltrosDto>> porHoraDiaZona({
-    required String hhmmss, required int dia, required int zona}) async {
-    final data = await api.get('$_url/horario_inicio/$hhmmss/dia_semana/$dia/zona_id/$zona');
+  Future<List<HorarioRecoleccionFiltrosDto>> porHora({required String hhmmss}) async {
+    final data = await api.get('$_url/horario_inicio/$hhmmss');
     return _toDtoList(data);
   }
 
