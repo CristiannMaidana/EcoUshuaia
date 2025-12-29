@@ -10,12 +10,15 @@ import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noti
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/categoria_residuos_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
+import 'package:eco_ushuaia/features/map/data/repositories/horario_recoleccion_filtros_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/residuo_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/categoria_residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
+import 'package:eco_ushuaia/features/map/data/sources/remote/horario_recoleccion_filtros_remote_data_sources.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -92,6 +95,15 @@ List<SingleChildWidget> _categoriaResiduosProviders() => [
   ),
 ];
 
+List<SingleChildWidget> _horarioRecoleccionFiltrosProviders() => [
+  ProxyProvider<ApiClient, HorarioRecoleccionFiltrosRemoteDataSources>(
+    update: (_, api, _) => HorarioRecoleccionFiltrosRemoteDataSources(api),
+  ),
+  ProxyProvider<HorarioRecoleccionFiltrosRemoteDataSources, HorarioRecoleccionFiltrosRepository>(
+    update: (_, ds, _) => HorarioRecoleccionFiltrosRepositoryImp(ds),
+  ),
+];
+
 List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
@@ -100,4 +112,5 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._calendarioProviders(),
   ..._categoriaNoticiasProviders(),
   ..._categoriaResiduosProviders(),
+  ..._horarioRecoleccionFiltrosProviders(),
 ];
