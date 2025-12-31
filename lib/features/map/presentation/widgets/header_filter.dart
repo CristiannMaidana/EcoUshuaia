@@ -16,6 +16,9 @@ class HeaderFilter extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    final vmButtonFilter = context.read<ButtonFilterViewmodel>();
+    final vmContenedor = context.read<ContenedorViewModel>();
+
     return Column(
       children: [
         Container(
@@ -38,8 +41,8 @@ class HeaderFilter extends StatelessWidget{
                       side: BorderSide(color: Colors.grey)
                     ),
                     onPressed: () {
-                      context.read<ButtonFilterViewmodel>().clean();
-                      context.read<ContenedorViewModel>().clearAllFilter();
+                      vmButtonFilter.clean();
+                      vmContenedor.clearAllFilter();
                       aplicarFiltros();
                     },
                     child: const Text('Limpiar', style: TextStyle(fontSize: 13))
@@ -52,9 +55,9 @@ class HeaderFilter extends StatelessWidget{
                   height: 36, 
                   width: 93,
                   child: ElevatedButton(
-                    // TODO: agregar metodo asincronico para que se cargue el mapa los filtros
-                    onPressed: () {
+                    onPressed: () async{
                       collapse();
+                      await vmContenedor.applyFilter(vmButtonFilter.filtros);
                       aplicarFiltros();
                     }, 
                     child: const Text('Aplicar', style: TextStyle(fontSize: 13),)
