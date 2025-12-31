@@ -56,7 +56,6 @@ class _ContentFilterState extends State<ContentFilter> {
     }
   }
   
-  
   @override
   Widget build(BuildContext context) {
     final vmResiduos = context.watch<ResiduoViewmodel>();
@@ -76,12 +75,14 @@ class _ContentFilterState extends State<ContentFilter> {
                 runSpacing: 8,
                 alignment: WrapAlignment.start,
                 children: vmResiduos.items.map((residuo){
-                  final ids = <int>[residuo.idResiduo]; // lista de int con un único id
+                  final List<int> id = [];
+                  id.add(residuo.idResiduo);
                   return CustomButtonFilter(
+                    tipoDeBoton: 1,
                     label: residuo.nombre, 
                     icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
                     onTap: widget.aplicarFiltros,
-                    idResiduo: ids,
+                    idEntidades: id,
                   );
                 }).toList(),
               )
@@ -89,24 +90,24 @@ class _ContentFilterState extends State<ContentFilter> {
           ),
 
           // Seccion estado del contenedor
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            child: ExpansionTileCustom(
-              title: 'Estado',
-              initiallyOpen: true,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CustomButtonFilter(label: 'Operativo'),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: CustomButtonFilter(label: 'En mantenimiento'),
-                  ),
-                ],
-              )
-            ),
-          ),
+          //Padding(
+            //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+            //child: ExpansionTileCustom(
+              //title: 'Estado',
+              //initiallyOpen: true,
+              //child: Row(
+                //children: [
+                  //Expanded(
+                    //child: CustomButtonFilter(label: 'Operativo'),
+                  //),
+                  //SizedBox(width: 8),
+                  //Expanded(
+                    //child: CustomButtonFilter(label: 'En mantenimiento'),
+                  //),
+                //],
+              //)
+            //),
+          //),
 
           // Seccion dias de recoleccion
           Padding(
@@ -125,8 +126,9 @@ class _ContentFilterState extends State<ContentFilter> {
                     final ids   = _idsForIndex(i);
                     return CustomButtonFilter(
                       label: label,
-                      idResiduo: ids,
                       onTap: widget.aplicarFiltros,
+                      tipoDeBoton: 'H_$i',
+                      idEntidades: ids,
                     );
                   }),
                 ),
@@ -135,22 +137,22 @@ class _ContentFilterState extends State<ContentFilter> {
           ),
 
           // Seccion nivel de llenado del contenedor
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            child: ExpansionTileCustom(
-              title: 'Nivel de llenado',
-              initiallyOpen: true,
-              child: Row(
-                children: [
-                  Expanded(child: CustomButtonFilter(label: 'Bajo')),
-                  SizedBox(width: 8,),
-                  Expanded(child: CustomButtonFilter(label: 'Medio')),
-                  SizedBox(width: 8,),
-                  Expanded(child: CustomButtonFilter(label: 'Alto'))
-                ],
-              ),
-            ),
-          ),
+          //Padding(
+            //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+            //child: ExpansionTileCustom(
+              //title: 'Nivel de llenado',
+              //initiallyOpen: true,
+              //child: Row(
+                //children: [
+                  //Expanded(child: CustomButtonFilter(label: 'Bajo')),
+                  //SizedBox(width: 8,),
+                  //Expanded(child: CustomButtonFilter(label: 'Medio')),
+                  //SizedBox(width: 8,),
+                  //Expanded(child: CustomButtonFilter(label: 'Alto'))
+                //],
+              //),
+            //),
+          //),
         ],
       ),
     );
