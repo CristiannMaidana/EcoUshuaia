@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 class CustomButtonFilter extends StatelessWidget {
   final String label;
-  final int tipoDeBoton;
+  final dynamic tipoDeBoton;
   final VoidCallback? onTap;
   final Icon? icon;
-  final int? idResiduo;
+  final List<int>? idEntidades;
 
   const CustomButtonFilter({
     super.key,
@@ -15,7 +15,7 @@ class CustomButtonFilter extends StatelessWidget {
     required this.tipoDeBoton,
     this.onTap,
     this.icon,
-    this.idResiduo,
+    this.idEntidades,
   });
 
   @override
@@ -34,15 +34,15 @@ class CustomButtonFilter extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
          onPressed: () {
-            final btnVm = context.read<ButtonFilterViewmodel>();
+          final btnVm = context.read<ButtonFilterViewmodel>();
 
-            if (selected) {
-              btnVm.toggle(label, tipoDeBoton, idResiduo!);
-            } else {
-              btnVm.toggle(label, tipoDeBoton, idResiduo!);
-            }
-          },
-          child: icon != null? 
+          if (selected) {
+            btnVm.toggle(label, tipoDeBoton, idEntidades!);
+          } else {
+            btnVm.toggle(label, tipoDeBoton, idEntidades!);
+          }
+         },
+         child: icon != null? 
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
