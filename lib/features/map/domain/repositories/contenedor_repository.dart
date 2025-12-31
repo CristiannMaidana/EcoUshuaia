@@ -4,4 +4,6 @@ abstract class ContenedorRepository {
   Future<List<Contenedor>> list({Map<String, dynamic>? filtros});
 
   Future<List<Contenedor>> filtrosResiduos(List<int> ids);
+
+  Future<List<Contenedor>> filtrosRangoHorario(List<int> ids);
 }
