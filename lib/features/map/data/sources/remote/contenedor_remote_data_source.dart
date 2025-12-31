@@ -32,7 +32,7 @@ class ContenedorRemoteDataSource {
           .whereType<Map>()
           .map((e) => e.cast<String, dynamic>())
           .toList();
-      return features.map(ContenedorDto.fromGeoJsonFeature).toList(growable: false);
+      return features.map(ContenedorDto.fromGeoJsonFeature).toList();
     }
     
     return const <ContenedorDto>[];
