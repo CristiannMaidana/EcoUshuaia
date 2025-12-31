@@ -65,5 +65,12 @@ class ContenedorViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO: metodo para actualizar la lista de contenedores visibles desde backend
+  // Metodo para actualizar la lista de contenedores visibles desde backend
+  Future<void> applyFilter(Map<int, List<int>> idMap) async{
+    List<int> idsTipo1 = idMap[1] ?? [];
+
+    _contenedorFiltrado = await repo.filtrosResiduos(idsTipo1);
+    
+    notifyListeners();
+  }
 }
