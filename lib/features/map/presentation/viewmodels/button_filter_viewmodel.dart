@@ -6,6 +6,11 @@ class ButtonFilterViewmodel extends ChangeNotifier{
   // Metodo para obtener el elemento
   Set<String> get selected => _selected;
 
+  // Map de ids de botones filtros
+  final Map<int, List<int>> _filtros = {};
+  Map<int, List<int>> get filtros => _filtros;
+
+
   // Obtener el valor boolean para cambiar el color del estado del boton
   bool isSelected(String boton) => _selected.contains(boton);
 
@@ -25,4 +30,8 @@ class ButtonFilterViewmodel extends ChangeNotifier{
     _selected.clear();
     notifyListeners();
   }
+
+  //TODO: crear metodo con id de boton mas ids de filtros, agrega en un case de a 1 el add
+
+  //TODO: crear metodo para eliminar ids de botones seleccionados
 }
