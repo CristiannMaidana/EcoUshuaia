@@ -1,10 +1,10 @@
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CustomButtonFilter extends StatelessWidget {
   final String label;
+  final int tipoDeBoton;
   final VoidCallback? onTap;
   final Icon? icon;
   final int? idResiduo;
@@ -12,6 +12,7 @@ class CustomButtonFilter extends StatelessWidget {
   const CustomButtonFilter({
     super.key,
     required this.label,
+    required this.tipoDeBoton,
     this.onTap,
     this.icon,
     this.idResiduo,
@@ -32,18 +33,13 @@ class CustomButtonFilter extends StatelessWidget {
             side: BorderSide(width: 1, color: brColor),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
-          onPressed: () {
-            if (selected){
-              context.read<ButtonFilterViewmodel>().toggle(label);
-              context.read<ContenedorViewModel>().clearFilter(idResiduo!);
-            }
-            else {
-              context.read<ButtonFilterViewmodel>().toggle(label);
+         onPressed: () {
+            final btnVm = context.read<ButtonFilterViewmodel>();
 
-              // Carga la lista de contenedores en base a idResiduo
-              if (idResiduo != null) {
-                context.read<ContenedorViewModel>().filterResiduos(idResiduo!);
-              }
+            if (selected) {
+              btnVm.toggle(label, tipoDeBoton, idResiduo!);
+            } else {
+              btnVm.toggle(label, tipoDeBoton, idResiduo!);
             }
           },
           child: icon != null? 
