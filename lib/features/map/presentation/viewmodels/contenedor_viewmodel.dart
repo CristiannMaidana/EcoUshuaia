@@ -67,10 +67,20 @@ class ContenedorViewModel extends ChangeNotifier {
 
   // Metodo para actualizar la lista de contenedores visibles desde backend
   Future<void> applyFilter(Map<dynamic, List<int>> idMap) async{
-    List<int> idsTipo1 = idMap[1] ?? [];
-    //TODO: deberia analizar el map, y en base a eso hacer convinaciones, si solo 1 esta activo ir a 1 si 2 y 1 ir a opcion para cargar ambas listas etc
-    _contenedorFiltrado = await repo.filtrosResiduos(idsTipo1);
+    List<Contenedor> result = [];
     
+    switch(idMap){
+      case {1: var idsTipo1} when idMap.length == 1:
+      result = await repo.filtrosResiduos(idsTipo1);
+      break;
+      case {'H_4': var idsH1} when idMap.length == 1:
+        result = await repo.filtrosRangoHorario(idsH1);
+        break;
+          default:
+      result = _items;
+    }
+    
+    _contenedorFiltrado = result;
     notifyListeners();
   }
 }
