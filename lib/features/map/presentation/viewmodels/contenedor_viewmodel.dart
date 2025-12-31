@@ -1,6 +1,5 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:flutter/widgets.dart';
 
 class ContenedorViewModel extends ChangeNotifier {
@@ -66,31 +65,5 @@ class ContenedorViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Limpiar los filtros que fueron deseleccionados
-  void clearFilter(int idResiduoBorrar) {
-    if (_contenedorFiltrado.isEmpty) return;
-    _contenedorFiltrado = _contenedorFiltrado
-        .where((c) => c.idResiduo != idResiduoBorrar)
-        .toList();
-    notifyListeners();
-  }
-
-  // Filtro para horario de recoleccion
-  void filterHorarioRecoleccion(List<int> categoriaIds, ResiduoViewmodel vmResiduos) {
-    final idResiduos = vmResiduos.idSegunCategoria(categoriaIds);
-    if (idResiduos.isEmpty) return;
-
-    final nuevos = <Contenedor>[];
-    for (final idRes in idResiduos) {
-      final lista = _byResiduo[idRes];
-      if (lista != null) nuevos.addAll(lista);
-    }
-
-    if (_contenedorFiltrado.isEmpty) {
-      _contenedorFiltrado = List<Contenedor>.from(nuevos);
-    } else {
-      _contenedorFiltrado.addAll(nuevos);
-    }
-    notifyListeners();
-  } 
+  //TODO: metodo para actualizar la lista de contenedores visibles desde backend
 }
