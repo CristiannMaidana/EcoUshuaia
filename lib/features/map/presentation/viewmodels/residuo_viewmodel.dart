@@ -29,15 +29,4 @@ class ResiduoViewmodel extends ChangeNotifier {
     }
   }
 
-  // Metodo para obtener ids, en base a la categorias en parametro
-  List<int> idSegunCategoria(List<int> idCategoria) {
-    if (_items.isEmpty || idCategoria.isEmpty) return const [];
-    final set = <int>{};
-    for (final catId in idCategoria) {
-      for (final r in _items) {
-        if (r.idCategoriaResiduo == catId) set.add(r.idResiduo);
-      }
-    }
-    return set.toList();
-  }
 }
