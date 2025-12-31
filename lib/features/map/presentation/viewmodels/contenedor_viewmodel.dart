@@ -61,14 +61,14 @@ class ContenedorViewModel extends ChangeNotifier {
 
   // Limpia contendores filtrados
   void clearAllFilter() {
-    _contenedorFiltrado.clear();
+    _contenedorFiltrado = [];
     notifyListeners();
   }
 
   // Metodo para actualizar la lista de contenedores visibles desde backend
   Future<void> applyFilter(Map<int, List<int>> idMap) async{
     List<int> idsTipo1 = idMap[1] ?? [];
-
+    //TODO: deberia analizar el map, y en base a eso hacer convinaciones, si solo 1 esta activo ir a 1 si 2 y 1 ir a opcion para cargar ambas listas etc
     _contenedorFiltrado = await repo.filtrosResiduos(idsTipo1);
     
     notifyListeners();
