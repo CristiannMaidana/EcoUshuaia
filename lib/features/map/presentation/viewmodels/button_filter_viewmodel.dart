@@ -31,7 +31,12 @@ class ButtonFilterViewmodel extends ChangeNotifier{
     notifyListeners();
   }
 
-  //TODO: crear metodo con id de boton mas ids de filtros, agrega en un case de a 1 el add
+  //Metodo con id caracteristico de boton mas ids de filtros, agrega en un case de a 1 el add
+  void addIdsFilter(int tipoBoton, int ids){
+    if (tipoBoton >= 1 && tipoBoton <= 4) {
+      filtros.putIfAbsent(tipoBoton, () => []).add(ids);
+    }
+  }
 
   //TODO: crear metodo para eliminar ids de botones seleccionados
 }
