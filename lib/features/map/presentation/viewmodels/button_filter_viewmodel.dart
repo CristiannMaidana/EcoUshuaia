@@ -15,12 +15,14 @@ class ButtonFilterViewmodel extends ChangeNotifier{
   bool isSelected(String boton) => _selected.contains(boton);
 
   // Metodo para agrega o quita el boton seleccionado y actualizar el estado
-  void toggle(String boton){
+  void toggle(String boton, int tipoBoton, int ids){
     if (_selected.contains(boton)){
       _selected.remove(boton);
+      removeIdFilter(tipoBoton, ids);
     }
     else {
       _selected.add(boton);
+      addIdsFilter(tipoBoton, ids);
     }
     notifyListeners();
   }
