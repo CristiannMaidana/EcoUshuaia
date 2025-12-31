@@ -37,4 +37,22 @@ class ContenedorRemoteDataSource {
     
     return const <ContenedorDto>[];
   }
+
+  //Filtra contenedores por id de horario de recoleccion
+  Future<List<ContenedorDto>> filtrosRangoHorario(List<int> ids) async {
+    //Elimina espacios y deja comas
+    final idStrings = ids.join(',');
+
+    final data = await api.get('/contenedores/por-categorias/?categorias=$idStrings');
+
+    if (data is Map<String, dynamic> && data['features'] is List) {
+      final features = (data['features'] as List)
+          .whereType<Map>()
+          .map((e) => e.cast<String, dynamic>())
+          .toList();
+      return features.map(ContenedorDto.fromGeoJsonFeature).toList();
+    }
+    
+    return const <ContenedorDto>[];
+  }
 }
