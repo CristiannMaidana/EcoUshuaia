@@ -31,5 +31,9 @@ class ContenedorRepositoryImp implements ContenedorRepository{
     return dtos.map((e) => e.toEntity()).toList(growable: false);
   }
 
-  //TODO: crear implementacion del metodo filtrosMannanaHorario 
+  @override
+  Future<List<Contenedor>> filtrosMannanaHorario(List<int> ids) async {
+    final dtos = await remote.filtrosDiaHorario(ids);
+    return dtos.map((e) => e.toEntity()).toList(growable: false);
+  }
 }
