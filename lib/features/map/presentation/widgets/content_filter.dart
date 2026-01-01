@@ -33,6 +33,8 @@ class _ContentFilterState extends State<ContentFilter> {
     Future.microtask(() {
       // ignore: use_build_context_synchronously
       context.read<HorarioRecoleccionFiltrosViewModel>().loadHoras();
+      context.read<HorarioRecoleccionFiltrosViewModel>().loadDia();
+      context.read<HorarioRecoleccionFiltrosViewModel>().loadMannana();
     });
   }
   
