@@ -6,4 +6,8 @@ abstract class ContenedorRepository {
   Future<List<Contenedor>> filtrosResiduos(List<int> ids);
 
   Future<List<Contenedor>> filtrosRangoHorario(List<int> ids);
+
+  Future<List<Contenedor>> filtrosDiaHorario(List<int> ids);
+
+  // TODO: Crear metodo abstracto para los filtros del dia de mañana
 }
