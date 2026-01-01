@@ -18,12 +18,6 @@ class HorarioRecoleccionFiltrosRemoteDataSources {
     final data = await api.get('$_url/dia/$dia/zona/$zona');
     return _toDtoList(data);
   }
-  
-  Future<List<HorarioRecoleccionFiltrosDto>> porHoraMannanaZona({
-    required String hhmmss, required int mannana, required int zona,}) async {
-    final data = await api.get('$_url/horario_inicio/$hhmmss/dia_mannana/$mannana/zona_id/$zona');
-    return _toDtoList(data);
-  }
 
   Future<List<HorarioRecoleccionFiltrosDto>> semanaDesdeDiaZona({
     required int desdeDia, required int zona}) async {
