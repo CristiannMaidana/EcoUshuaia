@@ -24,20 +24,6 @@ class HorarioRecoleccionFiltrosRepositoryImp extends HorarioRecoleccionFiltrosRe
   }
 
   @override
-  Future<List<HorarioRecoleccionFiltros>> porHoraMannanaZona({
-    required String hhmmss,
-    required int mannana,
-    required int zona,
-  }) async {
-    final data = await remote.porHoraMannanaZona(
-      hhmmss: hhmmss,
-      mannana: mannana,
-      zona: zona,
-    );
-    return _map(data);
-  }
-
-  @override
   Future<List<HorarioRecoleccionFiltros>> semanaDesdeDiaZona({
     required int desdeDia,
     required int zona,
