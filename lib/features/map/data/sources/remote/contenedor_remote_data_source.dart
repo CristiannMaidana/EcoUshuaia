@@ -74,5 +74,21 @@ class ContenedorRemoteDataSource {
     return const <ContenedorDto>[];
   }
 
-  //TODO: crear metodo para filtrar contenedores para el dia siguiente al que este ubicado
+  //Filtra contenedores por lista ids, del dia de mañana de recoleccion
+  Future<List<ContenedorDto>> filtrosMannanaHorario(List<int> ids) async {
+    //Elimina espacios y deja comas
+    final idStrings = ids.join(',');
+
+    final data = await api.get('/contenedores/por-mannana/?mannana=$idStrings');
+
+    if (data is Map<String, dynamic> && data['features'] is List) {
+      final features = (data['features'] as List)
+          .whereType<Map>()
+          .map((e) => e.cast<String, dynamic>())
+          .toList();
+      return features.map(ContenedorDto.fromGeoJsonFeature).toList();
+    }
+    
+    return const <ContenedorDto>[];
+  }
 }
