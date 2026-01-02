@@ -30,23 +30,31 @@ class ButtonFilterViewmodel extends ChangeNotifier{
   // Metodo para limpiar todos los filtros y actualizar el estado
   void clean(){
     _selected.clear();
-    filtros.clear();
+    _filtros.clear();
     notifyListeners();
   }
 
   // Metodo con id caracteristico de boton mas ids de filtros, agrega en un case de a 1 el add
   void addIdsFilter(dynamic tipoBoton, List<int> ids){
       for(int id in ids){
-        filtros.putIfAbsent(tipoBoton, () => []).add(id);
+        _filtros.putIfAbsent(tipoBoton, () => []).add(id);
       }
   }
 
   // Metodo para eliminar ids de botones seleccionados
   void removeIdFilter(dynamic tipoBoton, List<int> idAEliminar) {
-    if (filtros.containsKey(tipoBoton)) {
-      for(int id in idAEliminar){
-        filtros[tipoBoton]?.remove(id);
-      }
+    final list = _filtros[tipoBoton];
+    if (list == null) return;
+
+    if (idAEliminar.isEmpty) {
+      list.clear();
+    } else {
+      final removeSet = idAEliminar.toSet();
+      list.removeWhere(removeSet.contains);
+    }
+
+    if (list.isEmpty) {
+      _filtros.remove(tipoBoton);
     }
   }
 }
