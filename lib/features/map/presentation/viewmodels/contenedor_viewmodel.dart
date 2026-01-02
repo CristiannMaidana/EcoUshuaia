@@ -77,7 +77,7 @@ class ContenedorViewModel extends ChangeNotifier {
         result = await repo.filtrosDiaHorario(idsH1);
         break;
       case {'H_1': var idsH2} when idMap.length == 1:
-        //result = await repo.filtrosMannanaHorario(idsH2);
+        result = await repo.filtrosMannanaHorario(idsH2);
         break;
       case {'H_2': var idsH3} when idMap.length == 1:
         //result = await repo.filtrosSemanaHorario(idsH3);
