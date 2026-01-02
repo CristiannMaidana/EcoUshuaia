@@ -21,7 +21,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   final DateTime _firstDay = DateTime.utc(2024, 1, 1);
-  final DateTime _lastDay = DateTime.utc(2026, 1, 1);
+  final DateTime _lastDay = DateTime.utc(2027, 1, 1);
 
   bool _monthSeleceted = false;
   late int _yearSelected;
