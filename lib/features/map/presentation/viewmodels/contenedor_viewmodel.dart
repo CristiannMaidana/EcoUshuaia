@@ -88,6 +88,14 @@ class ContenedorViewModel extends ChangeNotifier {
       case {'H_4': var idsH4} when idMap.length == 1:
         result = await repo.filtrosRangoHorario(idsH4);
         break;
+      case {1: var idsTipo1, 'H_0': var idsH0}:
+        final porRes = await repo.filtrosResiduos(idsTipo1);
+        final porHoy = await repo.filtrosDiaHorario(idsH0);
+        
+        //Filtro interseccion para que unicamente me de la convinacion entre los dos
+        final idsHoy = porHoy.map((c) => c.idContenedor).toSet();
+        result = porRes.where((c) => idsHoy.contains(c.idContenedor)).toList();        
+        break;
       default:
       result = _items;
     }
