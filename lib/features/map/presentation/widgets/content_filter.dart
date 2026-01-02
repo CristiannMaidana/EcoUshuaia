@@ -32,9 +32,7 @@ class _ContentFilterState extends State<ContentFilter> {
     super.initState();
     Future.microtask(() {
       // ignore: use_build_context_synchronously
-      context.read<HorarioRecoleccionFiltrosViewModel>().loadHoras();
-      context.read<HorarioRecoleccionFiltrosViewModel>().loadDia();
-      context.read<HorarioRecoleccionFiltrosViewModel>().loadMannana();
+      context.read<HorarioRecoleccionFiltrosViewModel>().initAll();
     });
   }
   
@@ -49,11 +47,9 @@ class _ContentFilterState extends State<ContentFilter> {
     switch (i) {
       case 0: return idsOf(hvm.itemsDiaZona);
       case 1: return idsOf(hvm.itemsHoraMannanaZona);
-      case 2: return idsOf(hvm.itemsSemanaDesdeDiaZona);
-      case 3: return idsOf(hvm.itemsHoraUno);
-      case 4: return idsOf(hvm.itemsHoraDos);
-      case 5: return idsOf(hvm.itemsHoraTres);
-      case 6: return idsOf(hvm.itemsHoraCuatro);
+      case 2: return idsOf(hvm.itemsHoraUno);
+      case 3: return idsOf(hvm.itemsHoraDos);
+      case 4: return idsOf(hvm.itemsHoraTres);
       default: return const [];
     }
   }
