@@ -10,6 +10,4 @@ abstract class ContenedorRepository {
   Future<List<Contenedor>> filtrosDiaHorario(List<int> ids);
   
   Future<List<Contenedor>> filtrosMannanaHorario(List<int> ids);
-  
- // TODO: crear metodo para el filtro de toda la semana
 }
