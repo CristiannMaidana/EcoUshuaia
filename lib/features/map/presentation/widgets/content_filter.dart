@@ -24,7 +24,7 @@ class _ContentFilterState extends State<ContentFilter> {
   // TODO: cambiar variable para que no sobreescriba en todos los casos o borrar?
   bool filtroActivo = false;
   // TODO: cambiar por lista de vm de DB
-  List<String> labels = ['Hoy', 'Mañana', 'Semana', '00:00 - 06:00', '06:00 - 12:00', '12:00 - 19:00', '19:00 - 24:00'];
+  List<String> labels = ['Hoy', 'Mañana', '06:00 - 12:00', '12:00 - 18:00', '18:00 - 24:00'];
 
   // Cargo los items del vm
   @override
@@ -119,25 +119,48 @@ class _ContentFilterState extends State<ContentFilter> {
               initiallyOpen: true,
               child: SizedBox(
                 width: double.infinity,
-                child: Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  alignment: WrapAlignment.start,
-                  children: List.generate(labels.length, (i) {
-                    final label = labels[i];
-                    final ids   = _idsForIndex(i);
-                    return CustomButtonFilter(
-                      label: label,
-                      onTap: widget.aplicarFiltros,
-                      tipoDeBoton: 'H_$i',
-                      idEntidades: ids,
-                    );
-                  }),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Boton hoy y mañana
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      alignment: WrapAlignment.start,
+                      children: List.generate(2, (i) {
+                        final label = labels[i];
+                        final ids   = _idsForIndex(i);
+                        return CustomButtonFilter(
+                          label: label,
+                          onTap: widget.aplicarFiltros,
+                          tipoDeBoton: 'H_$i',
+                          idEntidades: ids,
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 8),
+
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      alignment: WrapAlignment.start,
+                      children: List.generate(labels.length - 2, (j) {
+                        final i     = j + 2;
+                        final label = labels[i];
+                        final ids   = _idsForIndex(i);
+                        return CustomButtonFilter(
+                          label: label,
+                          onTap: widget.aplicarFiltros,
+                          tipoDeBoton: 'H_$i',
+                          idEntidades: ids,
+                        );
+                      }),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-
+          )
           // Seccion nivel de llenado del contenedor
           //Padding(
             //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
