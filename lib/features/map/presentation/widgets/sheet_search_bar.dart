@@ -34,6 +34,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
   static const double _borde = 30;
   static const double _bottom = 20;
   static double _bottomNavBar = 10;
+  static const double _ancho = 16;
 
   // factor 0..1 según altura actual; si no está attachado, usá 0 (colapsado)
   double get _t {
@@ -140,11 +141,12 @@ class SheetSearchBarState extends State<SheetSearchBar>{
   Widget build (BuildContext context){
     final double animatedBottom = _mix(_bottom, 0, _t);
     final double animatedBorde  = _mix(_borde, 0, _t);
+    final double animatedAncho = _mix(_ancho, 0, _t);
 
     return AnimatedPadding(
       duration: Duration(milliseconds: 120),
       curve: Curves.easeOutCubic,
-      padding: EdgeInsets.fromLTRB(16, 0, 16, animatedBottom),
+      padding: EdgeInsets.fromLTRB(animatedAncho, 0, animatedAncho, animatedBottom),
       child: ChangeNotifierProvider<ButtonFilterViewmodel>.value(
         value: _filterViewmodel,
         child: DraggableScrollableSheet(
