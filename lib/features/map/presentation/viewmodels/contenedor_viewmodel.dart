@@ -73,26 +73,20 @@ class ContenedorViewModel extends ChangeNotifier {
       case {1: var idsTipo1} when idMap.length == 1:
       result = await repo.filtrosResiduos(idsTipo1);
       break;
-      case {'H_0': var idsH1} when idMap.length == 1:
-        result = await repo.filtrosDiaHorario(idsH1);
+      case {'H_0': var idsH0} when idMap.length == 1:
+        result = await repo.filtrosDiaHorario(idsH0);
         break;
-      case {'H_1': var idsH2} when idMap.length == 1:
-        result = await repo.filtrosMannanaHorario(idsH2);
+      case {'H_1': var idsH1} when idMap.length == 1:
+        result = await repo.filtrosMannanaHorario(idsH1);
         break;
-      case {'H_2': var idsH3} when idMap.length == 1:
-        //result = await repo.filtrosSemanaHorario(idsH3);
+      case {'H_2': var idsH2} when idMap.length == 1:
+        result = await repo.filtrosRangoHorario(idsH2);
         break;
-      case {'H_3': var idsH4} when idMap.length == 1:
+      case {'H_3': var idsH3} when idMap.length == 1:
+        result = await repo.filtrosRangoHorario(idsH3);
+        break;
+      case {'H_4': var idsH4} when idMap.length == 1:
         result = await repo.filtrosRangoHorario(idsH4);
-        break;
-      case {'H_4': var idsH5} when idMap.length == 1:
-        result = await repo.filtrosRangoHorario(idsH5);
-        break;
-      case {'H_5': var idsH6} when idMap.length == 1:
-        result = await repo.filtrosRangoHorario(idsH6);
-        break;
-      case {'H_6': var idsH7} when idMap.length == 1:
-        result = await repo.filtrosRangoHorario(idsH7);
         break;
       default:
       result = _items;
