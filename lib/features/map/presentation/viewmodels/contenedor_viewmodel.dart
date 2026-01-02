@@ -66,40 +66,57 @@ class ContenedorViewModel extends ChangeNotifier {
   }
 
   // Metodo para actualizar la lista de contenedores visibles en base a lo que esta cargado
-  Future<void> applyFilter(Map<dynamic, List<int>> idMap) async{
+  Future<void> applyFilter(Map<dynamic, List<int>> idMap) async {
     List<Contenedor> result = [];
-    
-    switch(idMap){
-      case {1: var idsTipo1} when idMap.length == 1:
-      result = await repo.filtrosResiduos(idsTipo1);
-      break;
-      case {'H_0': var idsH0} when idMap.length == 1:
-        result = await repo.filtrosDiaHorario(idsH0);
-        break;
-      case {'H_1': var idsH1} when idMap.length == 1:
-        result = await repo.filtrosMannanaHorario(idsH1);
-        break;
-      case {'H_2': var idsH2} when idMap.length == 1:
-        result = await repo.filtrosRangoHorario(idsH2);
-        break;
-      case {'H_3': var idsH3} when idMap.length == 1:
-        result = await repo.filtrosRangoHorario(idsH3);
-        break;
-      case {'H_4': var idsH4} when idMap.length == 1:
-        result = await repo.filtrosRangoHorario(idsH4);
-        break;
-      case {1: var idsTipo1, 'H_0': var idsH0}:
-        final porRes = await repo.filtrosResiduos(idsTipo1);
-        final porHoy = await repo.filtrosDiaHorario(idsH0);
-        
-        //Filtro interseccion para que unicamente me de la convinacion entre los dos
-        final idsHoy = porHoy.map((c) => c.idContenedor).toSet();
-        result = porRes.where((c) => idsHoy.contains(c.idContenedor)).toList();        
-        break;
-      default:
-      result = _items;
+
+    // --- separar grupos ---
+    final idsResiduos = idMap[1]; // puede ser null/empty
+    final hEntries = idMap.entries
+        .where((e) => e.key is String && (e.key as String).startsWith('H_'))
+        .where((e) => (e.value).isNotEmpty)
+        .toList();
+
+    // filtros rango horarios
+    Future<List<Contenedor>> _fetchForH(String k, List<int> ids) {
+      switch (k) {
+        case 'H_0': return repo.filtrosDiaHorario(ids);       // Hoy
+        case 'H_1': return repo.filtrosMannanaHorario(ids);   // Mañana
+        case 'H_2':
+        case 'H_3':
+        case 'H_4': return repo.filtrosRangoHorario(ids);     // Rangos horarios
+        default:   return Future.value(const []);
+      }
     }
-    
+
+    // Unir todos los H seleccionados
+    List<Contenedor> unionH = [];
+    if (hEntries.isNotEmpty) {
+      final lists = await Future.wait(
+        hEntries.map((e) => _fetchForH(e.key as String, e.value)),
+      );
+      final seen = <int>{};
+      for (final lst in lists) {
+        for (final c in lst) {
+          final id = c.idContenedor;
+          if (id != null && seen.add(id)) unionH.add(c);
+        }
+      }
+    }
+
+    // Combinar con residuos haciendo interseccion
+    if (idsResiduos != null && idsResiduos.isNotEmpty) {
+      final porRes = await repo.filtrosResiduos(idsResiduos);
+      if (unionH.isEmpty) {
+        result = porRes; // solo residuos
+      } else {
+        final setH = unionH.map((c) => c.idContenedor).whereType<int>().toSet();
+        result = porRes.where((c) => setH.contains(c.idContenedor)).toList();
+      }
+    } else {
+      // solo H, o nada seleccionado
+      result = unionH.isNotEmpty ? unionH : _items;
+    }
+
     _contenedorFiltrado = result;
     notifyListeners();
   }
