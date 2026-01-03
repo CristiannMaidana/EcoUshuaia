@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +20,8 @@ class ContentSearchState extends State<ContentSearch>{
           padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 10),
           child: ExpansionTileCustom(
             title: 'Favoritos',
-            // TODO: reemplazar Container agregar widget card y generador de contenedores favoritos
-            child: Container(color: Colors.green,),
+            // TODO: generador de contenedores favoritos, en base a la base de datos
+            child: CartaDetallesRecientes(),
           ),
         )
       ],
