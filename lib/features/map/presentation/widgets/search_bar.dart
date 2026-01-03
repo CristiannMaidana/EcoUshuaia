@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/map/presentation/widgets/filter_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SerchBar extends StatefulWidget{
@@ -29,17 +30,11 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(width: 1, color: Colors.black54),
               ),
-              child: Row(
-                children: [
-                  SizedBox(width: 10),
-                  Icon(Icons.search, color: Colors.black54),
-                  SizedBox(width: 10),
-                  Expanded(
-                    // TODO: cambiar por un textFiled para ingresas y comprobar texto de direcciones
-                    child: Text('Ingrese una dirección', style: Theme.of(context).textTheme.labelLarge),
-                  ),
-                ],
-              ),
+              child: CupertinoSearchTextField(
+                placeholder: 'Buscar dirección o lugar',
+                borderRadius: BorderRadius.circular(28),
+                onChanged: (value) {},
+              )
             ),
           ),
           SizedBox(width: 10),
