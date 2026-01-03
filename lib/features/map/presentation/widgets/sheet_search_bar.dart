@@ -144,110 +144,119 @@ class SheetSearchBarState extends State<SheetSearchBar>{
     final double animatedBorde  = _mix(_borde, 0, _t);
     final double animatedAncho = _mix(_ancho, 0, _t);
 
-    return AnimatedPadding(
-      duration: Duration(milliseconds: 120),
-      curve: Curves.easeOutCubic,
-      padding: EdgeInsets.fromLTRB(animatedAncho, 0, animatedAncho, animatedBottom),
-      child: ChangeNotifierProvider<ButtonFilterViewmodel>.value(
-        value: _filterViewmodel,
-        child: DraggableScrollableSheet(
-          controller: _controller,
-          initialChildSize: _min,
-          minChildSize: _min,
-          maxChildSize: _max,
-          builder: (context, scrollController) {
-            return AnimatedContainer(
-              duration: Duration(milliseconds: 120),
-              curve: Curves.easeOutCubic,
-              padding: EdgeInsets.only(top: 5, bottom: _bottomNavBar),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
-                border: Border.all(width: 1, color: Colors.black54),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Barra
-                  Center(
-                    child: Container(
-                      width: 50, height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  // Gestor de movimiento
-                  Padding(
-                    padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onVerticalDragUpdate: _dragFromHeader,
-                      onVerticalDragEnd: _endDragFromHeader,
-                      child: widget.cambio ? 
-                            HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) :
-                            SerchBar(key: _keySearchBar, changeHeader: widget.closeFilter, expandir: expand),
-                    ),
-                  ),
-
-                  // Contenido cambiable del sheet cuando expande
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, viewport) {
-                        return SingleChildScrollView(
-                          controller: scrollController,
-                          physics: ClampingScrollPhysics(
-                            parent: AlwaysScrollableScrollPhysics()
-                          ),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: viewport.maxHeight,
-                            ),
-                            // TODO: cambiar SizedBox por el contenido de busqueda
-                            child: widget.cambio? ContentFilter(aplicarFiltros: widget.aplicarFiltros,) : SizedBox(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Crear detector para cerrar el sheet cuando toque fuera de el
+        GestureDetector(onTap: _collapse),
         
-                  // Contenido para cierre de filtros inamovible                
-                  if (widget.cambio)
-                  Container(
-                    height: 56,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
-                          Text('Ningun filtro activado'),
-                          // Boton secundario cerrar
-                          OutlinedButton(
-                            onPressed: () {
-                              widget.closeFilter();
-                              _collapse();
-                            }, 
-                            child: Text('Cerrar')
-                          )
-                        ],
-                      ),
-                    ),
+        // Sheet
+        AnimatedPadding(
+          duration: Duration(milliseconds: 120),
+          curve: Curves.easeOutCubic,
+          padding: EdgeInsets.fromLTRB(animatedAncho, 0, animatedAncho, animatedBottom),
+          child: ChangeNotifierProvider<ButtonFilterViewmodel>.value(
+            value: _filterViewmodel,
+            child: DraggableScrollableSheet(
+              controller: _controller,
+              initialChildSize: _min,
+              minChildSize: _min,
+              maxChildSize: _max,
+              builder: (context, scrollController) {
+                return AnimatedContainer(
+                  duration: Duration(milliseconds: 120),
+                  curve: Curves.easeOutCubic,
+                  padding: EdgeInsets.only(top: 5, bottom: _bottomNavBar),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
+                    border: Border.all(width: 1, color: Colors.black54),
                   ),
-                ]
-              )
-            );
-          }
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Barra
+                      Center(
+                        child: Container(
+                          width: 50, height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      // Gestor de movimiento
+                      Padding(
+                        padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onVerticalDragUpdate: _dragFromHeader,
+                          onVerticalDragEnd: _endDragFromHeader,
+                          child: widget.cambio ? 
+                                HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) :
+                                SerchBar(key: _keySearchBar, changeHeader: widget.closeFilter, expandir: expand),
+                        ),
+                      ),
+        
+                      // Contenido cambiable del sheet cuando expande
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, viewport) {
+                            return SingleChildScrollView(
+                              controller: scrollController,
+                              physics: ClampingScrollPhysics(
+                                parent: AlwaysScrollableScrollPhysics()
+                              ),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: viewport.maxHeight,
+                                ),
+                                // TODO: cambiar SizedBox por el contenido de busqueda
+                                child: widget.cambio? ContentFilter(aplicarFiltros: widget.aplicarFiltros,) : SizedBox(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+            
+                      // Contenido para cierre de filtros inamovible                
+                      if (widget.cambio)
+                      Container(
+                        height: 56,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
+                              Text('Ningun filtro activado'),
+                              // Boton secundario cerrar
+                              OutlinedButton(
+                                onPressed: () {
+                                  widget.closeFilter();
+                                  _collapse();
+                                }, 
+                                child: Text('Cerrar')
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ]
+                  )
+                );
+              }
+            ),
+          ),
         ),
-      ),
+      ]
     );  
   }
 }
