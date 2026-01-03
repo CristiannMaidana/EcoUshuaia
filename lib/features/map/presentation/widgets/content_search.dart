@@ -22,6 +22,7 @@ class ContentSearchState extends State<ContentSearch>{
             title: 'Favoritos',
             // TODO: generador de contenedores favoritos, en base a la base de datos
             child: CartaDetallesRecientes(),
+            initiallyOpen: true,
           ),
         )
       ],
