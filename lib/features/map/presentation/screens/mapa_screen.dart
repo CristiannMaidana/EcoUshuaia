@@ -11,7 +11,6 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
@@ -184,34 +183,34 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CustomMapa(
-          onMapReady: (controller) async {
-            _mapController = controller;
+        //CustomMapa(
+          //onMapReady: (controller) async {
+            //_mapController = controller;
 
             // Conectar callback de tap de contenedor
-            controller.onContenedorTap = _onContenedorTap;
+            //controller.onContenedorTap = _onContenedorTap;
 
-            if (_hasLocationPermission) {
-              await controller.enableUserPuck();
-            }
+            //if (_hasLocationPermission) {
+              //await controller.enableUserPuck();
+            //}
 
-            _vm = context.read<ContenedorViewModel>();
+            //_vm = context.read<ContenedorViewModel>();
 
             // Si cargaron contenedores cargo
-            if (_vm!.items.isNotEmpty) {
-              await controller.refreshContenedores(_vm!.items);
-            } else {
+            //if (_vm!.items.isNotEmpty) {
+              //await controller.refreshContenedores(_vm!.items);
+            //} else {
               // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
-              void once() async {
-                if (!_vm!.loading) {
-                  _vm!.removeListener(once);
-                  await _mapController?.refreshContenedores(_vm!.items);
-                }
-              }
-              _vm!.addListener(once);
-            }
-          },
-        ),
+              //void once() async {
+                //if (!_vm!.loading) {
+                  //_vm!.removeListener(once);
+                  //await _mapController?.refreshContenedores(_vm!.items);
+                //}
+              //}
+              //_vm!.addListener(once);
+            //}
+          //},
+        //),
 
         if (!_hasLocationPermission)
           Positioned.fill(
@@ -272,7 +271,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
         // Barra de navegacion del mapa
         SheetSearchBar(
           key: _filterKey,
-          navBar: SerchBar(changeHeader: _changes),
           cambio: _cambio,
           closeFilter: _changes,
           aplicarFiltros: _applyFilters,
