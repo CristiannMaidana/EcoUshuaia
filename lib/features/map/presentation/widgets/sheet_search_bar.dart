@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/content_search.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
@@ -211,8 +212,9 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                                 constraints: BoxConstraints(
                                   minHeight: viewport.maxHeight,
                                 ),
-                                // TODO: cambiar SizedBox por el contenido de busqueda
-                                child: widget.cambio? ContentFilter(aplicarFiltros: widget.aplicarFiltros,) : SizedBox(),
+                                child: widget.cambio? 
+                                  ContentFilter(aplicarFiltros: widget.aplicarFiltros,) : 
+                                  ContentSearch(),
                               ),
                             );
                           },
