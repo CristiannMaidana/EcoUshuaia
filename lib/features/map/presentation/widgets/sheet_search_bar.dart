@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -182,7 +183,9 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                       behavior: HitTestBehavior.opaque,
                       onVerticalDragUpdate: _dragFromHeader,
                       onVerticalDragEnd: _endDragFromHeader,
-                      child: widget.cambio ? HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) : widget.navBar,
+                      child: widget.cambio ? 
+                            HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) :
+                            SerchBar(changeHeader: widget.closeFilter, expandir: expand),
                     ),
                   ),
 
