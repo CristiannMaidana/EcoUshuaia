@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 
 class ContentSearch extends StatefulWidget{
@@ -11,6 +12,18 @@ class ContentSearch extends StatefulWidget{
 class ContentSearchState extends State<ContentSearch>{
   @override
   Widget build (BuildContext context){
-    return Column();
+    return Column(
+      children: [
+        // Seccion de favoritos
+        Padding(
+          padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 10),
+          child: ExpansionTileCustom(
+            title: 'Favoritos',
+            // TODO: reemplazar Container agregar widget card y generador de contenedores favoritos
+            child: Container(color: Colors.green,),
+          ),
+        )
+      ],
+    );
   }
 }
