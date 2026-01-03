@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class SerchBar extends StatefulWidget{
   final VoidCallback changeHeader;
+  final VoidCallback expandir;
 
   const SerchBar({
     super.key,
     required this.changeHeader,
+    required this.expandir
   });
 
   @override
@@ -15,7 +17,6 @@ class SerchBar extends StatefulWidget{
 }
 
 class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
-  bool _desactivado = true;
   @override
   Widget build (BuildContext context) {
     return GestureDetector(
@@ -31,14 +32,11 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(width: 1, color: Colors.black54),
               ),
-              child: AbsorbPointer(
-                absorbing: _desactivado,
-                child: CupertinoSearchTextField(
-                  placeholder: 'Buscar dirección o lugar',
-                  borderRadius: BorderRadius.circular(28),
-                  onChanged: (value) {},
-                ),
-              )
+              child: CupertinoSearchTextField(
+                placeholder: 'Buscar dirección o lugar',
+                borderRadius: BorderRadius.circular(28),
+                onTap: widget.expandir,
+              ),
             ),
           ),
           SizedBox(width: 10),
