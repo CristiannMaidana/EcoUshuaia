@@ -6,14 +6,12 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class SheetSearchBar extends StatefulWidget{
-  final Widget navBar;
   bool cambio;
   final VoidCallback closeFilter;
   final VoidCallback aplicarFiltros;
 
   SheetSearchBar({
     Key? key,
-    required this.navBar,
     required this.cambio,
     required this.closeFilter,
     required this.aplicarFiltros,
