@@ -13,10 +13,26 @@ class SerchBar extends StatefulWidget{
   });
 
   @override
-  State<SerchBar> createState() => _SerchBarState();
+  State<SerchBar> createState() => SerchBarState();
 }
 
-class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
+class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
+  final _controller = TextEditingController();
+  final _focus = FocusNode();
+
+  // Metodo para resetear el estado del searchFiled
+  void resetToBase() {
+    _controller.clear();
+    _focus.unfocus(); 
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build (BuildContext context) {
     return GestureDetector(
@@ -33,6 +49,8 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
                 border: Border.all(width: 1, color: Colors.black54),
               ),
               child: CupertinoSearchTextField(
+                controller: _controller,
+                focusNode: _focus,
                 placeholder: 'Buscar dirección o lugar',
                 borderRadius: BorderRadius.circular(28),
                 onTap: widget.expandir,
