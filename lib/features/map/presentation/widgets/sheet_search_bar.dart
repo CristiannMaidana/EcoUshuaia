@@ -35,6 +35,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
   static double _bottomNavBar = 10;
   static const double _ancho = 16;
 
+  final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
   // factor 0..1 según altura actual; si no está attachado, usá 0 (colapsado)
   double get _t {
     if (!(_controller.isAttached)) return 0.0;
@@ -57,6 +58,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
       _bottomNavBar = 0;
     }
     if (_controller.size == _min){
+      _keySearchBar.currentState?.resetToBase();
       _bottomNavBar = 10;
       if (widget.cambio) {
         // Si fue cerrado no usar el cambio de estado de variable
@@ -185,7 +187,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                       onVerticalDragEnd: _endDragFromHeader,
                       child: widget.cambio ? 
                             HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) :
-                            SerchBar(changeHeader: widget.closeFilter, expandir: expand),
+                            SerchBar(key: _keySearchBar, changeHeader: widget.closeFilter, expandir: expand),
                     ),
                   ),
 
