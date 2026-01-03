@@ -15,6 +15,7 @@ class SerchBar extends StatefulWidget{
 }
 
 class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
+  bool _desactivado = true;
   @override
   Widget build (BuildContext context) {
     return GestureDetector(
@@ -30,10 +31,13 @@ class _SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(width: 1, color: Colors.black54),
               ),
-              child: CupertinoSearchTextField(
-                placeholder: 'Buscar dirección o lugar',
-                borderRadius: BorderRadius.circular(28),
-                onChanged: (value) {},
+              child: AbsorbPointer(
+                absorbing: _desactivado,
+                child: CupertinoSearchTextField(
+                  placeholder: 'Buscar dirección o lugar',
+                  borderRadius: BorderRadius.circular(28),
+                  onChanged: (value) {},
+                ),
               )
             ),
           ),
