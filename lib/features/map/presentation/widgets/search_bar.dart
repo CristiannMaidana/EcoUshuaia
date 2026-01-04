@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 class SerchBar extends StatefulWidget{
   final VoidCallback changeHeader;
   final VoidCallback expandir;
+  final Future<void> Function(String) onSubmitted;
 
   const SerchBar({
     super.key,
     required this.changeHeader,
-    required this.expandir
+    required this.expandir,
+    required this.onSubmitted,
   });
 
   @override
@@ -20,7 +22,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
   final _controller = TextEditingController();
   final _focus = FocusNode();
 
-  // Metodo para resetear el estado del searchFiled
+  // Metodo para resetear el estado del searchFiled usado desde el widget padre
   void resetToBase() {
     _controller.clear();
     _focus.unfocus(); 
@@ -54,6 +56,10 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                 placeholder: 'Buscar dirección o lugar',
                 borderRadius: BorderRadius.circular(28),
                 onTap: widget.expandir,
+                onSubmitted: (value) async {
+                  await widget.onSubmitted(value);
+                  resetToBase();
+                },
               ),
             ),
           ),
