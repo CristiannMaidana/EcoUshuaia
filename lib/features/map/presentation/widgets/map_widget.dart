@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:mapbox_search/mapbox_search.dart';
 
 class CustomMapa extends StatefulWidget {
   final void Function(MapController controller) onMapReady;
@@ -25,6 +26,7 @@ class _CustomMapaState extends State<CustomMapa> {
     super.initState();
     accessToken = const String.fromEnvironment("ACCESS_TOKEN");
     MapboxOptions.setAccessToken(accessToken);
+    MapBoxSearch.init(accessToken);
   }
   
   void _onMapCreated(MapboxMap map) {
