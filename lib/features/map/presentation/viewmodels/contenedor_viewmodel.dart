@@ -98,6 +98,7 @@ class ContenedorViewModel extends ChangeNotifier {
       for (final lst in lists) {
         for (final c in lst) {
           final id = c.idContenedor;
+          // ignore: unnecessary_null_comparison
           if (id != null && seen.add(id)) unionH.add(c);
         }
       }
