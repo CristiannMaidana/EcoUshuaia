@@ -11,13 +11,15 @@ class SheetSearchBar extends StatefulWidget{
   bool cambio;
   final VoidCallback closeFilter;
   final VoidCallback aplicarFiltros;
+  final Future<void> Function(String) buscarDireccion;
 
   SheetSearchBar({
-    Key? key,
+    super.key,
     required this.cambio,
     required this.closeFilter,
     required this.aplicarFiltros,
-  }) :super(key: key);
+    required this.buscarDireccion,
+  });
 
   @override
   State<SheetSearchBar> createState() => SheetSearchBarState();
@@ -65,6 +67,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
       _bottomNavBar = 0;
     }
     if (_controller.size == _min){
+      // Reseteo el texto del searchBar al cerrarse el sheet
       _keySearchBar.currentState?.resetToBase();
       _bottomNavBar = 10;
       if (widget.cambio) {
@@ -202,7 +205,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                           onVerticalDragEnd: _endDragFromHeader,
                           child: widget.cambio ? 
                                 HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) :
-                                SerchBar(key: _keySearchBar, changeHeader: widget.closeFilter, expandir: expand),
+                                SerchBar(key: _keySearchBar, changeHeader: widget.closeFilter, expandir: expand, onSubmitted: widget.buscarDireccion),
                         ),
                       ),
         
