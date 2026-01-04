@@ -184,13 +184,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
     super.dispose();
   }
 
-  // Metodo para buscar direccion desde el viewmodel de busqueda
-  Future<void> _buscarDireccion(String query) async {
-    final vm = context.read<MapSearchViewModel>();
-    final place = await vm.searchFirst(query);
-    if (place != null) {
-      await _mapController?.centerOnAddress(lat: place.lat, lon: place.lon);
-    }
+  // Metodo para buscar direccion desde parametros
+  Future<void> _buscarDireccion(double lat, double lon) async {
+    await _mapController?.centerOnAddress(lat: lat, lon: lon);
   }
 
   @override
