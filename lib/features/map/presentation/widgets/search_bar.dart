@@ -60,13 +60,15 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                 placeholder: 'Buscar dirección o lugar',
                 borderRadius: BorderRadius.circular(28),
                 onTap: widget.expandir,
+                onChanged: (q) => context.read<MapSearchViewModel>().onQueryChanged(q), // Sugerencias mientras escribe
                 onSubmitted: (value) async {
                   final vm = context.read<MapSearchViewModel>();
                   final place = await vm.searchFirst(value);
                   if (place != null) {
-                    widget.onSubmitted(place.lat, place.lon);
+                    await widget.onSubmitted(place.lat, place.lon);
                   }
-                  widget.cerrar();
+                  vm.clearSuggestions(); // Limpiar sugerencias al enviar
+                  widget.cerrar(); // Cerrar el sheet
                 },
               ),
             ),
