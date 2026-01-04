@@ -11,7 +11,7 @@ class SheetSearchBar extends StatefulWidget{
   bool cambio;
   final VoidCallback closeFilter;
   final VoidCallback aplicarFiltros;
-  final Future<void> Function(String) buscarDireccion;
+  final Future<void> Function(double lat, double lon) buscarDireccion;
 
   SheetSearchBar({
     super.key,
@@ -196,7 +196,7 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                           ),
                         ),
                       ),
-                      // Gestor de movimiento
+                      // Barra de busqueda o header de filtros
                       Padding(
                         padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
                         child: GestureDetector(
@@ -204,8 +204,17 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                           onVerticalDragUpdate: _dragFromHeader,
                           onVerticalDragEnd: _endDragFromHeader,
                           child: widget.cambio ? 
-                                HeaderFilter(collapse: _collapse, aplicarFiltros: widget.aplicarFiltros) :
-                                SerchBar(key: _keySearchBar, changeHeader: widget.closeFilter, expandir: expand, onSubmitted: widget.buscarDireccion),
+                                HeaderFilter(
+                                  collapse: _collapse, 
+                                  aplicarFiltros: widget.aplicarFiltros
+                                ) :
+                                SerchBar(
+                                  key: _keySearchBar, 
+                                  changeHeader: widget.closeFilter, 
+                                  expandir: expand, onSubmitted: 
+                                  widget.buscarDireccion, 
+                                  cerrar: _collapse
+                                ),
                         ),
                       ),
         
