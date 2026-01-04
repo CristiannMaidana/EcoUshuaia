@@ -176,4 +176,15 @@ class MapController {
   Future<void> applyFilter(List<Contenedor> filtroContenedor) async {
     await refreshContenedores(filtroContenedor);
   }
+
+  // Centrar el mapa en la dirección buscada
+  Future<void> centerOnAddress({required double lat, required double lon, double zoom = 15}) async {
+    if (_map == null) return;
+    await _map!.setCamera(
+      CameraOptions(
+        center: Point(coordinates: Position(lon, lat)), 
+        zoom: zoom
+      )
+    );
+  }
 }
