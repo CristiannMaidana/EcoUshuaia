@@ -4,7 +4,8 @@ import 'package:mapbox_search/mapbox_search.dart';
 class MapboxSearchService {
   // Instancia de GeoCodingApi de mapbox_search
   final GeoCodingApi _geo = GeoCodingApi(
-    limit: 5,
+    country: "AR",  // Restringir busquedas a Argentina
+    limit: 10,      // Limitar resultados a 10
     language: 'es',
     types: const [PlaceType.address, PlaceType.place],
   );
