@@ -4,9 +4,11 @@ import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
@@ -39,6 +41,9 @@ class MapaScreen extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) =>
           HorarioRecoleccionFiltrosViewModel(ctx.read<HorarioRecoleccionFiltrosRepository>())
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MapSearchViewModel(MapboxSearchService()),
         ),
       ],
       child: MapaPage(),
@@ -179,38 +184,47 @@ class _MapaScreenStatePage extends State<MapaPage> {
     super.dispose();
   }
 
+  // Metodo para buscar direccion desde el viewmodel de busqueda
+  Future<void> _buscarDireccion(String query) async {
+    final vm = context.read<MapSearchViewModel>();
+    final place = await vm.searchFirst(query);
+    if (place != null) {
+      await _mapController?.centerOnAddress(lat: place.lat, lon: place.lon);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        //CustomMapa(
-          //onMapReady: (controller) async {
-            //_mapController = controller;
+        CustomMapa(
+          onMapReady: (controller) async {
+            _mapController = controller;
 
             // Conectar callback de tap de contenedor
-            //controller.onContenedorTap = _onContenedorTap;
+            controller.onContenedorTap = _onContenedorTap;
 
-            //if (_hasLocationPermission) {
-              //await controller.enableUserPuck();
-            //}
+            if (_hasLocationPermission) {
+              await controller.enableUserPuck();
+            }
 
-            //_vm = context.read<ContenedorViewModel>();
+            _vm = context.read<ContenedorViewModel>();
 
             // Si cargaron contenedores cargo
-            //if (_vm!.items.isNotEmpty) {
-              //await controller.refreshContenedores(_vm!.items);
-            //} else {
+            if (_vm!.items.isNotEmpty) {
+              await controller.refreshContenedores(_vm!.items);
+            } else {
               // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
-              //void once() async {
-                //if (!_vm!.loading) {
-                  //_vm!.removeListener(once);
-                  //await _mapController?.refreshContenedores(_vm!.items);
-                //}
-              //}
-              //_vm!.addListener(once);
-            //}
-          //},
-        //),
+              void once() async {
+                if (!_vm!.loading) {
+                  _vm!.removeListener(once);
+                  await _mapController?.refreshContenedores(_vm!.items);
+                }
+              }
+              _vm!.addListener(once);
+            }
+          },
+        ),
 
         if (!_hasLocationPermission)
           Positioned.fill(
@@ -274,6 +288,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           cambio: _cambio,
           closeFilter: _changes,
           aplicarFiltros: _applyFilters,
+          buscarDireccion: _buscarDireccion,
         ),
 
         if (_contenedorSeleccionado != null)
