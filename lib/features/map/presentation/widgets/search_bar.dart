@@ -1,17 +1,21 @@
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/filter_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SerchBar extends StatefulWidget{
   final VoidCallback changeHeader;
   final VoidCallback expandir;
-  final Future<void> Function(String) onSubmitted;
+  final Future<void> Function(double lat, double lon) onSubmitted;
+  final VoidCallback cerrar;
 
   const SerchBar({
     super.key,
     required this.changeHeader,
     required this.expandir,
     required this.onSubmitted,
+    required this.cerrar,
   });
 
   @override
@@ -57,8 +61,12 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                 borderRadius: BorderRadius.circular(28),
                 onTap: widget.expandir,
                 onSubmitted: (value) async {
-                  await widget.onSubmitted(value);
-                  resetToBase();
+                  final vm = context.read<MapSearchViewModel>();
+                  final place = await vm.searchFirst(value);
+                  if (place != null) {
+                    widget.onSubmitted(place.lat, place.lon);
+                  }
+                  widget.cerrar();
                 },
               ),
             ),
