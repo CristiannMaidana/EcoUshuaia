@@ -47,6 +47,12 @@ class SheetSearchBarState extends State<SheetSearchBar>{
 
   double _mix(double a, double b, double t) => a + (b - a) * t;
 
+  // Para saber si esta expandido el sheet
+  bool get _isExpanded {
+    if (!(_controller.isAttached)) return false;
+    return _controller.size > _min + 0.001;
+  }
+  
   void _onSheetChange() {
     if (!mounted) return;
     setState(() {
@@ -148,8 +154,9 @@ class SheetSearchBarState extends State<SheetSearchBar>{
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Crear detector para cerrar el sheet cuando toque fuera de el
-        GestureDetector(onTap: _collapse),
+        // Crear detector que cierra el sheet cuando toque fuera de el
+        if(_isExpanded)
+          GestureDetector(onTap: _collapse),
         
         // Sheet
         AnimatedPadding(
