@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FilterButton extends StatefulWidget {
-  final ValueChanged<String> onSelected;
+  final VoidCallback onSelected;
   final VoidCallback changes; // Para notificar el cambio de estado de contenido
 
   const FilterButton({
@@ -21,7 +21,10 @@ class _FilterButtonState extends State<FilterButton>{
     return CompositedTransformTarget(
       link: _link,
       child: OutlinedButton(
-        onPressed: () {widget.changes(); },
+        onPressed: () {
+          widget.onSelected(); 
+          widget.changes(); 
+        },
         child: Row(
           children: [
             Icon(Icons.filter_list, color: Colors.black54),
