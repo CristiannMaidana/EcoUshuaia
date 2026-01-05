@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/filter_button.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,9 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
   final _controller = TextEditingController();
   final _focus = FocusNode();
 
+  // Getter para acceder al valor del controller desde el widget padre
+  ValueListenable<TextEditingValue> get queryListenable => _controller;
+
   // Metodo para resetear el estado del searchFiled usado desde el widget padre
   void resetToBase() {
     _controller.clear();
@@ -38,6 +42,9 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
     _focus.dispose();
     super.dispose();
   }
+
+  // Metodo para saber si el searchField tiene texto usado desde el widget padre
+  bool tieneTexto() => _controller.text.isNotEmpty;
 
   @override
   Widget build (BuildContext context) {
@@ -77,7 +84,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
 
           //Boton filtro para abrir opciones de busqueda
           FilterButton(
-            onSelected:(value) {}, 
+            onSelected: resetToBase,
             changes: widget.changeHeader,
           )
         ],
