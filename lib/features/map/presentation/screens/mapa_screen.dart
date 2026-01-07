@@ -13,6 +13,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
@@ -75,6 +76,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   //Variable para manejar el tamaño del sheet
   final GlobalKey<SheetSearchBarState> _filterKey = GlobalKey<SheetSearchBarState>();
+
+  //Key global de SheetAddress
+  final GlobalKey<SheetAddressState> _addressKey = GlobalKey<SheetAddressState>();
+  
 
   void _changes() {
     setState(() {
@@ -189,6 +194,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
     await _mapController?.centerOnAddress(lat: lat, lon: lon);
   }
 
+  void _abrirDetalleDireccion() {
+    _addressKey.currentState?.expand();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -285,6 +294,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           closeFilter: _changes,
           aplicarFiltros: _applyFilters,
           buscarDireccion: _buscarDireccion,
+          abrirDetalleDireccion: _abrirDetalleDireccion
         ),
 
         if (_contenedorSeleccionado != null)
@@ -292,6 +302,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
             key: _detailKey,
             container: _contenedorSeleccionado!,
           ),
+        // Sheet de direccion
+        SheetAddress(
+          key: _addressKey,
+        ),
       ],
     );
   }
