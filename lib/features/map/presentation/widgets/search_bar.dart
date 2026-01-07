@@ -10,6 +10,7 @@ class SerchBar extends StatefulWidget{
   final VoidCallback expandir;
   final Future<void> Function(double lat, double lon) onSubmitted;
   final VoidCallback cerrar;
+  final VoidCallback detalleDireccion;
 
   const SerchBar({
     super.key,
@@ -17,6 +18,7 @@ class SerchBar extends StatefulWidget{
     required this.expandir,
     required this.onSubmitted,
     required this.cerrar,
+    required this.detalleDireccion,
   });
 
   @override
@@ -76,6 +78,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                   }
                   vm.clearSuggestions(); // Limpiar sugerencias al enviar
                   widget.cerrar(); // Cerrar el sheet
+                  widget.detalleDireccion(); // Abrir detalle de direccion
                 },
               ),
             ),
