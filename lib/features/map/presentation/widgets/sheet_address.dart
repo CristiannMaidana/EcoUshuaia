@@ -2,25 +2,21 @@ import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/prueba.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SheetAddress extends StatefulWidget {
-  const SheetAddress({
-    super.key,
-  });
+  const SheetAddress({super.key});
 
   @override
   State<SheetAddress> createState() => SheetAddressState();
 }
 
 class SheetAddressState extends State<SheetAddress> {
-  late final DraggableScrollableController _draggableController;
-  //==== Configuraciones del DraggableScrollableSheet ====//
-  final double initialChildSize = 0;
-  final double minChildSize = 0;
-  final double maxChildSize = .9;
+  FlotanteSheetState? get _sheet =>
+      context.findAncestorStateOfType<FlotanteSheetState>();
 
   bool botonPrincipal = true;
   static const int _minRadiusM = 100;
@@ -28,7 +24,18 @@ class SheetAddressState extends State<SheetAddress> {
   double _radiusM = 500;
   bool botonSeleccionado = true;
 
-  final List<int> _mockDistancesM = const [120, 220, 310, 450, 520, 650, 800, 1200, 1600, 1900];
+  final List<int> _mockDistancesM = const [
+    120,
+    220,
+    310,
+    450,
+    520,
+    650,
+    800,
+    1200,
+    1600,
+    1900,
+  ];
   final List<String> _addresses = <String>[
     'Intendente Miguel Torelli 723',
     'San Martín 123',
@@ -39,7 +46,9 @@ class SheetAddressState extends State<SheetAddress> {
   int _counter = 0;
 
   /// Mantiene SIEMPRE el orden de los strings
-  final ValueNotifier<List<String>> orderStrings = ValueNotifier<List<String>>(<String>[]);
+  final ValueNotifier<List<String>> orderStrings = ValueNotifier<List<String>>(
+    <String>[],
+  );
 
   //==== Sincroniza el ValueNotifier con la lista actual ====//
   void _syncOrder() {
@@ -61,67 +70,35 @@ class SheetAddressState extends State<SheetAddress> {
       _syncOrder();
     });
   }
-  
+
   void _onDismiss(String text) {
     setState(() {
       _addresses.remove(text);
       _syncOrder();
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Eliminado: $text')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Eliminado: $text')));
   }
 
- //==== Dragging para el header ====//
+  //==== Dragging para el header ====//
+  // Actualiza la posición del sheet al arrastrar desde el header con el metodo del padre 
   void _dragFromHeader(DragUpdateDetails d) {
-    if (!(_draggableController.isAttached)) return;
-    final h = MediaQuery.of(context).size.height;
-    final next = (_draggableController.size - d.delta.dy / h)
-        .clamp(minChildSize, maxChildSize);
-    _draggableController.jumpTo(next);
+    _sheet?.dragFromHeader(d);
   }
 
   void _endDragFromHeader(DragEndDetails d) {
-    if (!(_draggableController.isAttached)) return;
-    final v = d.primaryVelocity ?? 0.0;
-    const double vThresh = 900;
-
-    final min = minChildSize;
-    final mid = initialChildSize.clamp(min, maxChildSize);
-    final max = maxChildSize;
-
-    late double target;
-    if (v > vThresh) {
-      target = min;
-    } else if (v < -vThresh) {
-      target = max;
-    } else {
-      final cur = _draggableController.size;
-      final snaps = <double>{min, mid, max}.toList()..sort();
-      target = snaps.reduce((a, b) => (cur - a).abs() < (cur - b).abs() ? a : b);
-    }
-
-    final dist = (target - _draggableController.size).abs();
-    final ms = (180 + 220 * dist).toInt();
-    _draggableController.animateTo(
-      target,
-      duration: Duration(milliseconds: ms),
-      curve: Curves.easeOutCubic,
-    );
+    _sheet?.endDragFromHeader(d);
   }
 
   Future<void> expand() async {
-    await _draggableController.animateTo(
-      maxChildSize,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOutCubic,
-    );
+    final sheet = _sheet;
+    sheet?.showSecondChild();
   }
 
   @override
   void initState() {
     super.initState();
-    _draggableController = DraggableScrollableController();
     _syncOrder();
 
     orderStrings.addListener(() {
@@ -131,7 +108,6 @@ class SheetAddressState extends State<SheetAddress> {
 
   @override
   void dispose() {
-    _draggableController.dispose();
     orderStrings.dispose();
     super.dispose();
   }
@@ -139,6 +115,7 @@ class SheetAddressState extends State<SheetAddress> {
   @override
   Widget build(BuildContext context) {
     final visibleCount = _mockDistancesM.where((d) => d <= _radiusM).length;
+    final scrollController = PrimaryScrollController.of(context);
 
     final outlineBtnStyle = OutlinedButton.styleFrom(
       shape: const StadiumBorder(),
@@ -154,290 +131,286 @@ class SheetAddressState extends State<SheetAddress> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        DraggableScrollableSheet(
-          controller: _draggableController,
-          initialChildSize: initialChildSize,
-          minChildSize: minChildSize,
-          maxChildSize: maxChildSize,
-          builder: (context, scrollController) {
-            return SafeArea(
-              top: false,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Column(
-                  children: [
-                    // ===== Header =====
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onVerticalDragUpdate: _dragFromHeader,
-                      onVerticalDragEnd: _endDragFromHeader,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+    return SafeArea(
+      top: false,
+      child: Column(
+        children: [
+          // ===== Header =====
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onVerticalDragUpdate: _dragFromHeader,
+            onVerticalDragEnd: _endDragFromHeader,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Barra de agarre
+                  BarraAgarre(),
+
+                  // Header con titulo y boton principal
+                  Row(
+                    children: [
+                      // TODO: Cambiar por datos reales de la dirección seleccionada desde vm
+                      //Texto informacion de direccion seleccionada
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Barra de agarre
-                            BarraAgarre(),
-                            
-                            // Header con titulo y boton principal
-                            Row(
-                              children: [
-                                // TODO: Cambiar por datos reales de la dirección seleccionada desde vm
-                                //Texto informacion de direccion seleccionada
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Dirección Ejemplo',
-                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        'Calle Falsa 123, Ciudad, País',
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                ElevatedButton(
-                                  style: primaryCTAStyle,
-                                  onPressed: () {
-                                    setState(() {
-                                      botonPrincipal = !botonPrincipal;
-                                    });
-                                  },
-                                  child: botonPrincipal ? const Text('Ir a esta direccion') : 
-                                  const Text('Ver contenedores'),
-                                ),
-                              ],
+                            Text(
+                              'Dirección Ejemplo',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Calle Falsa 123, Ciudad, País',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: Colors.grey.shade600),
                             ),
                           ],
                         ),
                       ),
-                    ),
-
-                    // Separador fino
-                    SizedBox(width: double.infinity, child: lineDivider()),
-
-                    // ===== Controles secundarios =====
-                    // MODO “Ver contenedores”: Radio primero
-                    if (botonPrincipal)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Contenedores cercanos:', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Text('Radio', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey.shade700)),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: CupertinoSlider(
-                                    value: _radiusM,
-                                    min: _minRadiusM.toDouble(),
-                                    max: _maxRadiusM.toDouble(),
-                                    onChanged: (v) => setState(() => _radiusM = v),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                SizedBox(
-                                  width: 72,
-                                  child: Text(
-                                    '${(_radiusM / 1000).toStringAsFixed(2)} km',
-                                    textAlign: TextAlign.right,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey.shade700),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    // MODO “Ir”: selector de modo
-                    else
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                padding: const EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  border: Border.all(width: 1, color: Colors.grey.shade300),
-                                  color: Colors.grey.shade100,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          botonSeleccionado = !botonSeleccionado;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.directions_car),
-                                      color: botonSeleccionado ? Colors.black : Colors.blue.shade300,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.directions_bike),
-                                      color: Colors.grey.shade700,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.directions_walk),
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              style: primaryCTAStyle,
-                              onPressed: _addAddress,
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.add_circle),
-                                  SizedBox(width: 8),
-                                  Text('Parada'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        style: primaryCTAStyle,
+                        onPressed: () {
+                          setState(() {
+                            botonPrincipal = !botonPrincipal;
+                          });
+                        },
+                        child: botonPrincipal
+                            ? const Text('Ir a esta direccion')
+                            : const Text('Ver contenedores'),
                       ),
-
-                    // ===== Contenido scroll =====
-                    // Lista de contenedores
-                    if (botonPrincipal)
-                      Expanded(
-                        child: ListView.builder(
-                          // Se ira cargando según el radio seleccionado y el vm
-                          controller: scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                          itemCount: visibleCount,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: CartaDetallesRecientes(),
-                            );
-                          },
-                        ),
-                      )
-                    else
-                    // Lista de paradas
-                      Expanded(
-                        child: ReorderableListView.builder(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          scrollController: scrollController,
-                          itemCount: _addresses.length,
-                          onReorder: _onReorder,
-                          buildDefaultDragHandles: false,
-                          itemBuilder: (context, index) {
-                            final text = _addresses[index];
-                            return Dismissible(
-                              key: ValueKey('dismiss_$text'),
-                              direction: DismissDirection.horizontal,
-                              background: _dismissBg(Alignment.centerLeft),
-                              secondaryBackground: _dismissBg(Alignment.centerRight),
-                              onDismissed: (_) => _onDismiss(text),
-                              child: AddressListItem(
-                                key: ValueKey(text),
-                                title: text,
-                                dragHandle: ReorderableDragStartListener(
-                                  index: index,
-                                  child: const _HandleIcon(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-                    // ===== Detalle de ruta (solo en modo “Ir”) =====
-                    if (!botonPrincipal)
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
-                        child: DetalleRuta(),
-                      ),
-
-                    // ===== Botones fijos =====
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      child: SafeArea(
-                        top: false,
-                        child: Row(
-                          children: [
-                            OutlinedButton(
-                              style: outlineBtnStyle,
-                              onPressed: () {
-                                //TODO: Cancelar action y vuelve a ubicion donde esta el usuario
-                              },
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.cancel),
-                                  SizedBox(width: 8),
-                                  Text('Cancelar'),
-                                ],
-                              ),
-                            ),
-                            const Spacer(),
-                            if (botonPrincipal)
-                              OutlinedButton(
-                                style: outlineBtnStyle,
-                                onPressed: () {},
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.favorite),
-                                    SizedBox(width: 8),
-                                    Text('Guardar'),
-                                  ],
-                                ),
-                              ),
-                            if (botonPrincipal) const SizedBox(width: 10),
-                            if (botonPrincipal)
-                              OutlinedButton(
-                                style: outlineBtnStyle,
-                                onPressed: () {},
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.report),
-                                    SizedBox(width: 8),
-                                    Text('Reportar'),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          ),
+
+          // Separador fino
+          SizedBox(width: double.infinity, child: lineDivider()),
+
+          // ===== Controles secundarios =====
+          // MODO “Ver contenedores”: Radio primero
+          if (botonPrincipal)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Contenedores cercanos:',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text(
+                        'Radio',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: CupertinoSlider(
+                          value: _radiusM,
+                          min: _minRadiusM.toDouble(),
+                          max: _maxRadiusM.toDouble(),
+                          onChanged: (v) => setState(() => _radiusM = v),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      SizedBox(
+                        width: 72,
+                        child: Text(
+                          '${(_radiusM / 1000).toStringAsFixed(2)} km',
+                          textAlign: TextAlign.right,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey.shade700),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          // MODO “Ir”: selector de modo
+          else
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          width: 1,
+                          color: Colors.grey.shade300,
+                        ),
+                        color: Colors.grey.shade100,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                botonSeleccionado = !botonSeleccionado;
+                              });
+                            },
+                            icon: const Icon(Icons.directions_car),
+                            color: botonSeleccionado
+                                ? Colors.black
+                                : Colors.blue.shade300,
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.directions_bike),
+                            color: Colors.grey.shade700,
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.directions_walk),
+                            color: Colors.grey.shade700,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: primaryCTAStyle,
+                    onPressed: _addAddress,
+                    child: const Row(
+                      children: [
+                        Icon(Icons.add_circle),
+                        SizedBox(width: 8),
+                        Text('Agregar'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // ===== Contenedores cercano / Lista de direcciones =====
+          if (botonPrincipal)
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: visibleCount,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: CartaDetallesRecientes(),
+                  );
+                },
+              ),
+            )
+          else
+            Expanded(
+              child: ReorderableListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                scrollController: scrollController,
+                itemCount: _addresses.length,
+                onReorder: _onReorder,
+                buildDefaultDragHandles: false,
+                itemBuilder: (context, index) {
+                  final text = _addresses[index];
+                  return Dismissible(
+                    key: ValueKey('dismiss_$text'),
+                    direction: DismissDirection.horizontal,
+                    background: _dismissBg(Alignment.centerLeft),
+                    secondaryBackground: _dismissBg(Alignment.centerRight),
+                    onDismissed: (_) => _onDismiss(text),
+                    child: AddressListItem(
+                      key: ValueKey(text),
+                      title: text,
+                      dragHandle: ReorderableDragStartListener(
+                        index: index,
+                        child: const _HandleIcon(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+          // ===== Detalle de ruta (solo en modo “Ir”) =====
+          if (!botonPrincipal)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
+              child: DetalleRuta(),
+            ),
+
+          // ===== Botones fijos =====
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey.shade300)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: SafeArea(
+              top: false,
+              child: Row(
+                children: [
+                  OutlinedButton(
+                    style: outlineBtnStyle,
+                    onPressed: () {
+                      _sheet?.showFirstChild();
+                      _sheet?.collapseSheet();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.cancel),
+                        SizedBox(width: 8),
+                        Text('Cancelar'),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  if (botonPrincipal)
+                    OutlinedButton(
+                      style: outlineBtnStyle,
+                      onPressed: () {},
+                      child: const Row(
+                        children: [
+                          Icon(Icons.favorite),
+                          SizedBox(width: 8),
+                          Text('Guardar'),
+                        ],
+                      ),
+                    ),
+                  if (botonPrincipal) const SizedBox(width: 10),
+                  if (botonPrincipal)
+                    OutlinedButton(
+                      style: outlineBtnStyle,
+                      onPressed: () {},
+                      child: const Row(
+                        children: [
+                          Icon(Icons.report),
+                          SizedBox(width: 8),
+                          Text('Reportar'),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
