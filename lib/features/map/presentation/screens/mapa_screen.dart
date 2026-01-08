@@ -13,6 +13,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -26,22 +27,25 @@ class MapaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers:[
+      providers: [
         ChangeNotifierProvider(
-          create: (ctx) => 
-            ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
+          create: (ctx) =>
+              ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => 
-          CategoriaResiduosViewmodel(ctx.read<CategoriaResiduosRepository>())..load(),
+          create: (ctx) => CategoriaResiduosViewmodel(
+            ctx.read<CategoriaResiduosRepository>(),
+          )..load(),
         ),
         ChangeNotifierProvider(
           create: (ctx) =>
-          ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
+              ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
         ),
         ChangeNotifierProvider(
           create: (ctx) =>
-          HorarioRecoleccionFiltrosViewModel(ctx.read<HorarioRecoleccionFiltrosRepository>())
+          HorarioRecoleccionFiltrosViewModel(
+            ctx.read<HorarioRecoleccionFiltrosRepository>(),
+          )..initAll(),
         ),
         ChangeNotifierProvider(
           create: (_) => MapSearchViewModel(MapboxSearchService()),
@@ -53,9 +57,7 @@ class MapaScreen extends StatelessWidget {
 }
 
 class MapaPage extends StatefulWidget {
-  const MapaPage({
-    Key? key,
-  }) : super(key: key);
+  const MapaPage({Key? key}) : super(key: key);
 
   @override
   State<MapaPage> createState() => _MapaScreenStatePage();
@@ -77,15 +79,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
   //Variable para manejar el tamaño del sheet
   final GlobalKey<SheetSearchBarState> _filterKey = GlobalKey<SheetSearchBarState>();
 
-  //Key global de SheetAddress
-  final GlobalKey<SheetAddressState> _addressKey = GlobalKey<SheetAddressState>();
-  
+  final GlobalKey<FlotanteSheetState> _flotanteKey = GlobalKey<FlotanteSheetState>();
 
   void _changes() {
     setState(() {
       _cambio = !_cambio;
-      if (_cambio)
-        _filterKey.currentState?.expand();
+      if (_cambio) _filterKey.currentState?.expand();
     });
   }
 
@@ -164,11 +163,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Estilo de mapa', style: Theme.of(context).textTheme.headlineLarge,),
-                Text('Elegi como queres ver el mapa.', style: Theme.of(context).textTheme.bodyLarge,),
-                MapStylePicker(
-                  seleccionado: _estiloActual,
+                Text(
+                  'Estilo de mapa',
+                  style: Theme.of(context).textTheme.headlineLarge,
                 ),
+                Text(
+                  'Elegi como queres ver el mapa.',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                MapStylePicker(seleccionado: _estiloActual),
               ],
             ),
           ),
@@ -195,7 +198,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
   }
 
   void _abrirDetalleDireccion() {
-    _addressKey.currentState?.expand();
+    final sheet = _flotanteKey.currentState;
+    sheet?.showSecondChild();
   }
 
   @override
@@ -226,6 +230,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   await _mapController?.refreshContenedores(_vm!.items);
                 }
               }
+
               _vm!.addListener(once);
             }
           },
@@ -281,31 +286,45 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   await _mapController?.centerOnUserOnce();
                 },
                 backgroundColor: camarone500,
-                child: const Icon(Icons.my_location, color: Colors.black, size: 32,),
+                child: const Icon(
+                  Icons.my_location,
+                  color: Colors.black,
+                  size: 32,
+                ),
               ),
             ],
           ),
         ),
 
         // Barra de navegacion del mapa
-        SheetSearchBar(
-          key: _filterKey,
-          cambio: _cambio,
-          closeFilter: _changes,
-          aplicarFiltros: _applyFilters,
-          buscarDireccion: _buscarDireccion,
-          abrirDetalleDireccion: _abrirDetalleDireccion
+        FlotanteSheet(
+          key: _flotanteKey,
+          minChildSize: .083,
+          maxChildSize: .80,
+          maxChildSize2: .80,
+          snapPoints: const [.083, .30, .55, .80],
+          snapPoints2: const [.083, .30, .55, .80],
+          onCollapsed: () {
+            final isSecond =
+                _flotanteKey.currentState?.isShowingSecondChild ?? false;
+            if (!isSecond) {
+              _filterKey.currentState?.onSheetCollapsed();
+            }
+          },
+          // ignore: sort_child_properties_last
+          child: SheetSearchBar(
+            key: _filterKey,
+            cambio: _cambio,
+            closeFilter: _changes,
+            aplicarFiltros: _applyFilters,
+            buscarDireccion: _buscarDireccion,
+            abrirDetalleDireccion: _abrirDetalleDireccion,
+          ),
+          child2: const SheetAddress(),
         ),
 
         if (_contenedorSeleccionado != null)
-          ContainerDetail(
-            key: _detailKey,
-            container: _contenedorSeleccionado!,
-          ),
-        // Sheet de direccion
-        SheetAddress(
-          key: _addressKey,
-        ),
+          ContainerDetail(key: _detailKey, container: _contenedorSeleccionado!),
       ],
     );
   }
