@@ -34,7 +34,7 @@ class HorarioRecoleccionFiltrosViewModel extends ChangeNotifier {
         final r = await Future.wait<List<HorarioRecoleccionFiltros>>([
           repo.porHora(horaInicio: '06:00:00', horaFin: '12:00:00'),
           repo.porHora(horaInicio: '12:00:00', horaFin: '18:00:00'),
-          repo.porHora(horaInicio: '18:00:00', horaFin: '24:00:00'),
+          repo.porHora(horaInicio: '18:00:00', horaFin: '23:59:59'),
         ]);
         itemsHoraUno  = r[0];
         itemsHoraDos  = r[1];
@@ -48,14 +48,27 @@ class HorarioRecoleccionFiltrosViewModel extends ChangeNotifier {
       _loadDiaBase(offset: 1, assign: (x) => itemsHoraMannanaZona = x, zona: zona);
 
   // Cargo lista desde repo
-  Future<void> initAll({int zona = 1}) => _withLoading(() async {
+  Future<void> initAll({int zona = 1}) {
+    if (_loading || _loadedOnce) return Future.value();
+    return _withLoading(() async {
+        Future<List<HorarioRecoleccionFiltros>> safe(
+          Future<List<HorarioRecoleccionFiltros>> Function() fetch,
+        ) async {
+          try {
+            return await fetch();
+          } catch (e) {
+            _error ??= e.toString();
+            return const [];
+          }
+        }
+
         final d = today();
         final r = await Future.wait<List<HorarioRecoleccionFiltros>>([
-          repo.porHora(horaInicio: '06:00:00', horaFin: '12:00:00'),  // 0
-          repo.porHora(horaInicio: '12:00:00', horaFin: '18:00:00'),  // 1
-          repo.porHora(horaInicio: '18:00:00', horaFin: '24:00:00'),  // 2
-          repo.porDiaZona(dia: d, zona: zona),                        // 3 (hoy)
-          repo.porDiaZona(dia: (d + 1) % 7, zona: zona),              // 4 (mañana)
+          safe(() => repo.porHora(horaInicio: '06:00:00', horaFin: '12:00:00')), // 0
+          safe(() => repo.porHora(horaInicio: '12:00:00', horaFin: '18:00:00')), // 1
+          safe(() => repo.porHora(horaInicio: '18:00:00', horaFin: '23:59:59')), // 2
+          safe(() => repo.porDiaZona(dia: d, zona: zona)),                       // 3 (hoy)
+          safe(() => repo.porDiaZona(dia: (d + 1) % 7, zona: zona)),             // 4 (mañana)
         ]);
 
         itemsHoraUno          = r[0];
@@ -67,6 +80,7 @@ class HorarioRecoleccionFiltrosViewModel extends ChangeNotifier {
         // Items es la unión de todo
         _items = r.expand((e) => e).toList();
       });
+  }
 
   // Metodo para limpiar todos los items
   void clear() {
