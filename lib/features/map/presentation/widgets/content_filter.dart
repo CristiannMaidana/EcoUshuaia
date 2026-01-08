@@ -21,24 +21,11 @@ class ContentFilter extends StatefulWidget {
 }
 
 class _ContentFilterState extends State<ContentFilter> {
-  // TODO: cambiar variable para que no sobreescriba en todos los casos o borrar?
-  bool filtroActivo = false;
-  // TODO: cambiar por lista de vm de DB
   List<String> labels = ['Hoy', 'Mañana', '06:00 - 12:00', '12:00 - 18:00', '18:00 - 24:00'];
 
-  // Cargo los items del vm
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      // ignore: use_build_context_synchronously
-      context.read<HorarioRecoleccionFiltrosViewModel>().initAll();
-    });
-  }
-  
   // Helper para cargar la lista de ids desde vm
   List<int> _idsForIndex(int i) {
-      final hvm = context.read<HorarioRecoleccionFiltrosViewModel>();
+    final hvm = context.read<HorarioRecoleccionFiltrosViewModel>();
 
     // Mapea lista con ids de categoria
     List<int> idsOf(List<HorarioRecoleccionFiltros> xs) =>
@@ -136,6 +123,7 @@ class _ContentFilterState extends State<ContentFilter> {
                     ),
                     const SizedBox(height: 8),
 
+                    // Botones franjas horarias
                     Wrap(
                       spacing: 8.0,
                       runSpacing: 8.0,
