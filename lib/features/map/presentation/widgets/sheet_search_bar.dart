@@ -1,14 +1,16 @@
+import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_search.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class SheetSearchBar extends StatefulWidget{
+class SheetSearchBar extends StatefulWidget {
   bool cambio;
   final VoidCallback closeFilter;
   final VoidCallback aplicarFiltros;
@@ -28,142 +30,68 @@ class SheetSearchBar extends StatefulWidget{
   State<SheetSearchBar> createState() => SheetSearchBarState();
 }
 
-class SheetSearchBarState extends State<SheetSearchBar>{
-  late DraggableScrollableController _controller;
-  
+class SheetSearchBarState extends State<SheetSearchBar> {
   late final ButtonFilterViewmodel _filterViewmodel;
-  // Link para la posicion del searchBar
+  // Link para tener la posicion del searchBar
   final LayerLink _searchBarLink = LayerLink();
 
-  static const double _min = .083;
-  static const double _max = .80;
-  static const List<double> _snapPoints = [_min, .30, .55, _max]; 
-  static const double _borde = 30;
-  static const double _bottom = 20;
-  static double _bottomNavBar = 10;
-  static const double _ancho = 16;
-
   final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
-  // factor 0..1 según altura actual; si no está attachado, usá 0 (colapsado)
-  double get _t {
-    if (!(_controller.isAttached)) return 0.0;
-    final s = _controller.size;
-    final v = (s - _min) / (_max - _min);
-    return v.clamp(0.0, 1.0);
-  }
-
-  double _mix(double a, double b, double t) => a + (b - a) * t;
-
-  // Para saber si esta expandido el sheet
-  bool get _isExpanded {
-    if (!(_controller.isAttached)) return false;
-    return _controller.size > _min + 0.001;
-  }
-  
-  void _onSheetChange() {
-    if (!mounted) return;
-    setState(() {
-      _setBottom();
-    }); //Rebuild para reflejar el cambio de tamaño del controller
-  }
-
-  void _setBottom() {
-    if (_controller.size == _max) {
-      _bottomNavBar = 0;
-    }
-    if (_controller.size == _min){
-      // Reseteo el texto del searchBar al cerrarse el sheet
-      _keySearchBar.currentState?.resetToBase();
-      _bottomNavBar = 10;
-      if (widget.cambio) {
-        // Si fue cerrado no usar el cambio de estado de variable
-        widget.closeFilter();
-      }
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    _controller = DraggableScrollableController()..addListener(_onSheetChange);// Agregar listener para escuchar el cambio
-    _bottomNavBar = 10;
     _filterViewmodel = ButtonFilterViewmodel();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onSheetChange);
     _filterViewmodel.dispose();
     super.dispose();
   }
 
+  FlotanteSheetState? get _sheet =>
+      context.findAncestorStateOfType<FlotanteSheetState>();
+
+  void onSheetCollapsed() {
+    _keySearchBar.currentState?.resetToBase();
+    if (widget.cambio) {
+      widget.closeFilter();
+    }
+  }
+
   // Manejo de altura desde incio
   void _dragFromHeader(DragUpdateDetails d) {
-    if (!(_controller.isAttached)) return;
-    final h = MediaQuery.of(context).size.height;
-    final next = (_controller.size - d.delta.dy / h).clamp(_min, _max);
-    _controller.jumpTo(next);
+    _sheet?.dragFromHeader(d);
   }
 
-    // Manejo de altura para arrastre
+  // Manejo de altura para arrastre
   void _endDragFromHeader(DragEndDetails d) {
-    if (!(_controller.isAttached)) return;
-    final v = d.primaryVelocity ?? 0.0;
-    const double vThresh = 900;
-    late double target;
-
-    if (v > vThresh) {
-      target = _min;                          // tirón hacia abajo -> colapsar
-    } else if (v < -vThresh) {
-      target = _max;                          // tirón hacia arriba -> expandir
-    } else {
-      // sin flick fuerte: snap al punto más cercano
-      final cur = _controller.size;
-      target = _snapPoints.reduce((a, b) =>
-        (cur - a).abs() < (cur - b).abs() ? a : b);
-    }
-
-    final dist = (target - _controller.size).abs();
-    final ms = (180 + 220 * dist).toInt();    // duración según distancia (≈180–400ms)
-
-    _controller.animateTo(
-      target,
-      duration: Duration(milliseconds: ms),
-      curve: Curves.easeOutCubic,
-    );
+    _sheet?.endDragFromHeader(d);
   }
-  
+
   // Reseteo sheet a tamaño inicial
-  Future<void> _collapse () async {
-    try {
-      await _controller.animateTo(
-        _min, 
-        duration: Duration(milliseconds: 300), 
-        curve: Curves.easeOut,
-        );
-    } catch (_) {}
-  } 
+  Future<void> _collapse() async {
+    await _sheet?.collapseSheet();
+  }
 
   // Agrando el sheet a su tamaño maximo
   void expand() {
-    _controller.animateTo(
-      _max,
-      duration: Duration(milliseconds: 300), 
-      curve: Curves.easeInOut,
-    );
+    final sheet = _sheet;
+    sheet?.showFirstChild();
+    sheet?.expandSheet();
   }
 
   // Construye la lista de sugerencias de direcciones
   Widget _buildSuggestions() {
     final sb = _keySearchBar.currentState;
     if (sb == null) return const SizedBox.shrink();
-    
+
     return ValueListenableBuilder<TextEditingValue>(
-      valueListenable: sb.queryListenable,   
+      valueListenable: sb.queryListenable,
       builder: (context, value, _) {
         final hasText = value.text.isNotEmpty;
         if (!hasText) return const SizedBox.shrink();
-       
+
         final vm = context.watch<MapSearchViewModel>();
         final sugs = vm.suggestions;
 
@@ -188,19 +116,28 @@ class SheetSearchBarState extends State<SheetSearchBar>{
                   itemCount: sugs.length,
                   itemBuilder: (_, i) {
                     final s = sugs[i];
-                    final title   = s.name ?? 'Resultado';
+                    final title = s.name ?? 'Resultado';
                     final address = s.address ?? '';
                     return ListTile(
                       dense: true,
-                      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      title: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       subtitle: address.isNotEmpty
-                          ? Text(address, maxLines: 2, overflow: TextOverflow.ellipsis)
+                          ? Text(
+                              address,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            )
                           : null,
                       onTap: () async {
                         await widget.buscarDireccion(s.lat, s.lon);
                         vm.clearSuggestions();
-                        _keySearchBar.currentState?.resetToBase(); // limpia campo
-                        _collapse();                                // colapsa sheet
+                        _keySearchBar.currentState
+                            ?.resetToBase(); // limpia campo
+                        _collapse(); // colapsa sheet
                       },
                     );
                   },
@@ -212,149 +149,114 @@ class SheetSearchBarState extends State<SheetSearchBar>{
       },
     );
   }
-    
+
   @override
-  Widget build (BuildContext context){
-    final double animatedBottom = _mix(_bottom, 0, _t);
-    final double animatedBorde  = _mix(_borde, 0, _t);
-    final double animatedAncho = _mix(_ancho, 0, _t);
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ButtonFilterViewmodel>.value(
+      value: _filterViewmodel,
+      child: Stack(
+        clipBehavior: Clip.none, // para que las sugerencias puedan superponerse
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Barra
+              BarraAgarre(),
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // Crear detector que cierra el sheet cuando toque fuera de el
-        if(_isExpanded) GestureDetector(onTap: _collapse),
-        
-        // Sheet
-        AnimatedPadding(
-          duration: Duration(milliseconds: 120),
-          curve: Curves.easeOutCubic,
-          padding: EdgeInsets.fromLTRB(animatedAncho, 0, animatedAncho, animatedBottom),
-          child: ChangeNotifierProvider<ButtonFilterViewmodel>.value(
-            value: _filterViewmodel,
-            child: DraggableScrollableSheet(
-              controller: _controller,
-              initialChildSize: _min,
-              minChildSize: _min,
-              maxChildSize: _max,
-              builder: (context, scrollController) {
-                return AnimatedContainer(
-                  duration: Duration(milliseconds: 120),
-                  curve: Curves.easeOutCubic,
-                  padding: EdgeInsets.only(top: 5, bottom: _bottomNavBar),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(30), bottom: Radius.circular(animatedBorde)),
-                    border: Border.all(width: 1, color: Colors.black54),
+              // Barra de busqueda o header de filtros
+              CompositedTransformTarget(
+                link: _searchBarLink,
+                child: Padding(
+                  padding: widget.cambio
+                      ? EdgeInsets.only(top: 15)
+                      : EdgeInsets.symmetric(horizontal: 10),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onVerticalDragUpdate: _dragFromHeader,
+                    onVerticalDragEnd: _endDragFromHeader,
+                    child: widget.cambio
+                        ? HeaderFilter(
+                            collapse: _collapse,
+                            aplicarFiltros: widget.aplicarFiltros,
+                          )
+                        : SerchBar(
+                            key: _keySearchBar,
+                            changeHeader: widget.closeFilter,
+                            expandir: expand,
+                            onSubmitted: widget.buscarDireccion,
+                            cerrar: _collapse,
+                            detalleDireccion: widget.abrirDetalleDireccion,
+                          ),
                   ),
-                  child: Stack(
-                    clipBehavior: Clip.none, // para que las sugerencias puedan superponerse
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Barra
-                          Center(
-                            child: Container(
-                              width: 50, height: 5,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          
-                          // Barra de busqueda o header de filtros
-                          CompositedTransformTarget(
-                            link: _searchBarLink,
-                            child: Padding(
-                              padding: widget.cambio ? EdgeInsets.only(top: 15) : EdgeInsets.symmetric(horizontal: 10) ,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onVerticalDragUpdate: _dragFromHeader,
-                                onVerticalDragEnd: _endDragFromHeader,
-                                child: widget.cambio ? 
-                                      HeaderFilter(
-                                        collapse: _collapse, 
-                                        aplicarFiltros: widget.aplicarFiltros
-                                      ) :
-                                      SerchBar(
-                                        key: _keySearchBar, 
-                                        changeHeader: widget.closeFilter, 
-                                        expandir: expand, 
-                                        onSubmitted: widget.buscarDireccion, 
-                                        cerrar: _collapse,
-                                        detalleDireccion: widget.abrirDetalleDireccion,
-                                      ),
-                              ),
-                            ),
-                          ),
-                          
-                          // Contenido cambiable del sheet cuando se expande
-                          Expanded(
-                            child: LayoutBuilder(
-                              builder: (context, viewport) {
-                                return SingleChildScrollView(
-                                  controller: scrollController,
-                                  physics: ClampingScrollPhysics(
-                                    parent: AlwaysScrollableScrollPhysics()
-                                  ),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      minHeight: viewport.maxHeight,
-                                    ),
-                                    child: widget.cambio? 
-                                      ContentFilter(aplicarFiltros: widget.aplicarFiltros,) : 
-                                      ContentSearch(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                
-                          // Contenido para cierre de filtros inamovible                
-                          if (widget.cambio)
-                          Container(
-                            height: 56,
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
-                                  Text('Ningun filtro activado'),
-                                  // Boton secundario cerrar
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      widget.closeFilter();
-                                      _collapse();
-                                    }, 
-                                    child: Text('Cerrar')
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ]
-                      ),
+                ),
+              ),
 
-                      // Drop bar sugerencias de busqueda (superpuesto)
-                      _buildSuggestions(),
-                    ],
-                  )
-                );
-              }
-            ),
+              // Contenido cambiable del sheet cuando se expande
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, viewport) {
+                    // Viene del padre
+                    final scrollController = PrimaryScrollController.of(context);
+                    return SingleChildScrollView(
+                      controller: scrollController,
+                      physics: ClampingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: viewport.maxHeight,
+                        ),
+                        child: widget.cambio
+                            ? ContentFilter(
+                                aplicarFiltros: widget.aplicarFiltros,
+                              )
+                            : ContentSearch(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Contenido para cierre de filtros inamovible inferior
+              if (widget.cambio)
+                Container(
+                  height: 56,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
+                        Text('Ningun filtro activado'),
+                        // Boton secundario cerrar
+                        OutlinedButton(
+                          onPressed: () {
+                            widget.closeFilter();
+                            _collapse();
+                          },
+                          child: Text('Cerrar'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
           ),
-        ),
-      ]
-    );  
+
+          // Drop bar sugerencias de busqueda (superpuesto)
+          _buildSuggestions(),
+        ],
+      ),
+    );
   }
 }
