@@ -9,6 +9,10 @@ class MapController {
   PointAnnotationManager? _contenedorAnnotationManager;
   Uint8List? _contenedorIcon;
 
+  // Icon de la ubicacion a buscar y punto
+  PointAnnotationManager? _direccionAnnotationManager;
+  Uint8List? _searchIcon;
+
   final Map<String, Contenedor> _annotationToContenedor = {};
 
   /// Callback que la UI puede setear para reaccionar al contenedor tocado
@@ -87,6 +91,9 @@ class MapController {
     _contenedorIcon = null;
     _annotationToContenedor.clear();
     onContenedorTap = null;
+
+    _direccionAnnotationManager = null;
+    _searchIcon = null;
   }
 
   Future<void> _ensureContenedorAnnotationManager() async {
@@ -177,6 +184,25 @@ class MapController {
     await refreshContenedores(filtroContenedor);
   }
 
+
+  //==== Metodos de generacion de direccion a buscar ===
+  // Inicializo el punto que muestra la direccion destino
+  Future<void> _ensureDireccionAnnotationManager() async {
+    final map = _map;
+    if (map == null) return;
+
+    _direccionAnnotationManager ??=
+        await map.annotations.createPointAnnotationManager();
+  }
+
+  // Inicializo el icon para el punto que muestra la direccion destino
+  Future<void> _ensureDireccionIcon() async {
+    if (_searchIcon != null) return;
+
+    final byte = await rootBundle.load('assets/icons/mapa/map_pin.png');
+    _searchIcon = byte.buffer.asUint8List();
+  }
+
   // Centrar el mapa en la dirección buscada
   Future<void> centerOnAddress({required double lat, required double lon, double zoom = 15}) async {
     if (_map == null) return;
@@ -186,5 +212,23 @@ class MapController {
         zoom: zoom
       )
     );
+
+    // Inicializo y creo icon para el punto de la direccion
+    await _ensureDireccionAnnotationManager();
+    await _ensureDireccionIcon();
+
+    final mgr = _direccionAnnotationManager;
+    if (mgr == null || _searchIcon == null) return;
+
+    // Borra cualquier pin previo de búsqueda
+    await mgr.deleteAll();
+
+    // Crear el nuevo pin en la dirección buscada
+    final options = PointAnnotationOptions(
+      geometry: Point(coordinates: Position(lon, lat)),
+      image: _searchIcon!,
+    );
+
+    await mgr.create(options);
   }
 }
