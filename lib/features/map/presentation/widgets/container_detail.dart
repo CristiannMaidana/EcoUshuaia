@@ -67,8 +67,9 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<ResiduoViewmodel>();
-    final Residuos? residuo = vm.getResiduo(widget.container!.idResiduo!);
+    final vm = context.watch<ResiduoViewmodel>();
+    final idResiduo = widget.container?.idResiduo;
+    final Residuos? residuo = (idResiduo == null) ? null : vm.getResiduo(idResiduo);
 
     return Stack(
       fit: StackFit.expand,
@@ -154,37 +155,38 @@ class ContainerDetailState extends State<ContainerDetail> {
                                                 style: Theme.of(context).textTheme.bodyMedium,
                                               ),
                                             ],
-                                          ),                                  
+                                          ),
                                         ],
                                       ),
                                       CircleIcon(icon: Icons.close, onPressed: _bajarSheet), 
                                     ],
                                   ),
                                   SizedBox(height: 16),
+                                  
                                   //Informacion de contenedores
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Expanded(
                                         child: DataContainer(
-                                          contenido: (residuo?.nombre).toString(),
+                                          contenido: residuo?.nombre ?? 'Desconocido',
                                           icon: Icons.circle,
-                                          colorIcon: residuo!.colorHex.toColor(),
+                                          colorIcon: residuo == null ? Colors.grey : residuo.colorHex.toColor(),
                                         ),
                                       ),
                                       SizedBox(width: 8),
-                                      Expanded(
+                                      SizedBox(
                                         child: DataContainer(
-                                          contenido: (widget.container?.idContenedor ?? 'Codigo').toString(),
+                                          contenido: (widget.container?.idContenedor).toString(),
                                           icon: Icons.my_library_books_outlined,
                                           colorIcon: Colors.black
                                         ),
                                       ),
                                       SizedBox(width: 8),
-                                      Expanded(
+                                      SizedBox(
                                         child: DataContainer(
-                                          // TODO: cambiar idResiduo, por la distancia correspondiente
-                                          contenido: (widget.container?.idResiduo ?? '800 M').toString(),
+                                          // TODO: cambiar por la distancia correspondiente
+                                          contenido: '800 M',
                                           icon: Icons.location_on_outlined,
                                           colorIcon: Colors.black
                                         ),
