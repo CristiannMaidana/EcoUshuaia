@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
@@ -57,7 +58,7 @@ class ContainerDetailState extends State<ContainerDetail> {
           controller: _draggableController,
           initialChildSize: 0.0,
           minChildSize: 0.0,
-          maxChildSize: 0.57,
+          maxChildSize: 0.49,
           builder: (context, scrollController) {
             return SafeArea(
               top: false,
@@ -69,7 +70,6 @@ class ContainerDetailState extends State<ContainerDetail> {
                 ),
                 child: ListView(
                   controller: scrollController,
-                  physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.all(8),
                   children: [
                     Center(
@@ -84,63 +84,53 @@ class ContainerDetailState extends State<ContainerDetail> {
                         child: Column(
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(top: 12, bottom: 16),
-                              width: 55,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[400],
-                                borderRadius: BorderRadius.circular(4),
-                              ),
+                              margin: const EdgeInsets.all(10),
+                              child: BarraAgarre(),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 14, right: 14, bottom: 8),
                               child: Column(
                                 children: [
-                                  //Titulo y acciones header
+                                  //Titulo detalle simple de contenedor
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Container(
-                                        padding: EdgeInsets.all(7),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.2),
-                                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                                        ),
-                                        child: Icon(Icons.location_on_outlined, size: 40, color: Colors.green,)
-                                      ),
-                                      SizedBox(width: 8),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                widget.container?.nombreContenedor ?? 'Contenedor numero',
-                                                style: Theme.of(context).textTheme.titleMedium,
-                                              ),
-                                              Text(' . ', style: Theme.of(context).textTheme.titleMedium),
-                                              Text(
-                                                (widget.container?.idZona ?? 'Zona ').toString(),
-                                                style: Theme.of(context).textTheme.titleMedium,
-                                              ),
-                                            ]
-                                          ),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            widget.container?.descripcionUbicacion ?? 'Dirección Desconocida',
-                                            style: Theme.of(context).textTheme.bodyMedium,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(width: 8),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          CircleIcon(icon: Icons.search, onPressed: () {}),
+                                          Container(
+                                            padding: EdgeInsets.all(7),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green.withOpacity(0.2),
+                                              borderRadius: BorderRadius.all(Radius.circular(16)),
+                                            ),
+                                            child: Icon(Icons.location_on_outlined, size: 40, color: Colors.green,)
+                                          ),
                                           SizedBox(width: 8),
-                                          CircleIcon(icon: Icons.close, onPressed: _bajarSheet),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    widget.container?.nombreContenedor ?? 'Contenedor numero',
+                                                    style: Theme.of(context).textTheme.titleMedium,
+                                                  ),
+                                                  Text(' . ', style: Theme.of(context).textTheme.titleMedium),
+                                                  Text((widget.container?.idZona ?? 'Zona ').toString(),
+                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                  ),
+                                                ]
+                                              ),
+                                              SizedBox(height: 4),
+                                              Text(
+                                                widget.container?.descripcionUbicacion ?? 'Dirección Desconocida',
+                                                style: Theme.of(context).textTheme.bodyMedium,
+                                              ),
+                                            ],
+                                          ),                                  
                                         ],
                                       ),
+                                      CircleIcon(icon: Icons.close, onPressed: _bajarSheet), 
                                     ],
                                   ),
                                   SizedBox(height: 16),
