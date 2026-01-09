@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//==== Widget para mostrar datos simples del contenedor ====
 class DataContainer extends StatelessWidget{
   final String contenido;
   final IconData icon;
@@ -16,7 +17,7 @@ class DataContainer extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       key: key,
-      height: 40,
+      constraints: BoxConstraints(minHeight: 40, maxWidth: 100),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey[400]!, width: 1),
@@ -26,7 +27,15 @@ class DataContainer extends StatelessWidget{
         children: [
           Icon(icon, size: 20, color: colorIcon),
           SizedBox(width: 8,),
-          Text(contenido, style: Theme.of(context).textTheme.labelMedium,),
+          Expanded(
+            child: Text(
+              contenido,
+              style: Theme.of(context).textTheme.labelMedium,
+              softWrap: true,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
