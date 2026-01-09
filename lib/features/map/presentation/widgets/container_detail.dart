@@ -1,9 +1,13 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/info_state_container.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class ContainerDetail extends StatefulWidget {
@@ -63,6 +67,9 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.read<ResiduoViewmodel>();
+    final Residuos? residuo = vm.getResiduo(widget.container!.idResiduo!);
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -160,10 +167,9 @@ class ContainerDetailState extends State<ContainerDetail> {
                                     children: [
                                       Expanded(
                                         child: DataContainer(
-                                          // TODO: cambiar idResiduo por el nombre del residuo que coincide con la fk
-                                          contenido: (widget.container?.idResiduo ?? 'Residuo').toString(),
+                                          contenido: (residuo?.nombre).toString(),
                                           icon: Icons.circle,
-                                          colorIcon: Colors.amber
+                                          colorIcon: residuo!.colorHex.toColor(),
                                         ),
                                       ),
                                       SizedBox(width: 8),
