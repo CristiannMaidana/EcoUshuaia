@@ -13,10 +13,12 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class ContainerDetail extends StatefulWidget {
   Contenedor? container;
+  final Future<double>? Function(double lat, double lon)? distancia;
 
   ContainerDetail({
     Key? key,
     required this.container,
+    this.distancia,
   }) : super(key: key);
 
   @override
@@ -25,11 +27,42 @@ class ContainerDetail extends StatefulWidget {
 
 class ContainerDetailState extends State<ContainerDetail> {
   late DraggableScrollableController _draggableController;
+  Future<double>? _metrosFuture;
 
   @override
   void initState() {
     super.initState();
     _draggableController = DraggableScrollableController()..addListener(_onSheetChange);
+    _updateMetrosFuture();
+  }
+
+  @override
+  void didUpdateWidget(covariant ContainerDetail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final oldCoord = oldWidget.container?.coordenada;
+    final newCoord = widget.container?.coordenada;
+    final coordsChanged = oldCoord?.latitud != newCoord?.latitud ||
+        oldCoord?.longitud != newCoord?.longitud;
+    if (coordsChanged || oldWidget.distancia != widget.distancia) {
+      _updateMetrosFuture();
+    }
+  }
+
+  void _updateMetrosFuture() {
+    final fn = widget.distancia;
+    final coord = widget.container?.coordenada;
+    if (fn == null || coord == null) {
+      _metrosFuture = null;
+      return;
+    }
+    _metrosFuture = fn(coord.latitud, coord.longitud);
+  }
+
+  String _formatDistance(double meters) {
+    if (meters.isNaN || meters.isInfinite) return '';
+    if (meters < 1000) return '${meters.round()} M';
+    final km = meters / 1000;
+    return '${km.toStringAsFixed(1)} KM';
   }
 
   // Listener para el cambio de tamaño del sheet
@@ -156,10 +189,10 @@ class ContainerDetailState extends State<ContainerDetail> {
                                                 ]
                                               ),
                                               SizedBox(height: 4),
-                                              Text(
-                                                'Dirección: $direccion' ?? 'Dirección Desconocida',
-                                                style: Theme.of(context).textTheme.bodyMedium,
-                                              ),
+                                              // Text(
+                                              //   'Dirección: $direccion',
+                                              //   style: Theme.of(context).textTheme.bodyMedium,
+                                              // ),
                                             ],
                                           ),
                                         ],
@@ -190,11 +223,18 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       ),
                                       SizedBox(width: 8),
                                       SizedBox(
-                                        child: DataContainer(
-                                          // TODO: cambiar por la distancia correspondiente
-                                          contenido: '800 M',
-                                          icon: Icons.location_on_outlined,
-                                          colorIcon: Colors.black
+                                        child: FutureBuilder<double>(
+                                          future: _metrosFuture,
+                                          builder: (context, snap) {
+                                            final text = snap.hasData
+                                                ? _formatDistance(snap.data!)
+                                                : '';
+                                            return DataContainer(
+                                              contenido: text,
+                                              icon: Icons.location_on_outlined,
+                                              colorIcon: Colors.black,
+                                            );
+                                          },
                                         ),
                                       ),
                                     ]
