@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:flutter/services.dart';
@@ -12,6 +16,9 @@ class MapController {
   // Icon de la ubicacion a buscar y punto
   PointAnnotationManager? _direccionAnnotationManager;
   Uint8List? _searchIcon;
+
+  // Marca la ruta desde la posicion al destino
+  PolylineAnnotationManager? _routeAnnotationManager;
 
   final Map<String, Contenedor> _annotationToContenedor = {};
 
@@ -184,7 +191,18 @@ class MapController {
     await refreshContenedores(filtroContenedor);
   }
 
-
+  // Metodo para obtener la distancia entre dos puntos
+  Future<double> getMetros(double lon, double lat) async{
+    final pos = await geo.Geolocator.getCurrentPosition(
+      desiredAccuracy: geo.LocationAccuracy.high,
+    );
+    
+    return geo.Geolocator.distanceBetween(
+      pos.latitude, pos.longitude,
+      lat, lon
+    );
+  } 
+  
   //==== Metodos de generacion de direccion a buscar ===
   // Inicializo el punto que muestra la direccion destino
   Future<void> _ensureDireccionAnnotationManager() async {
