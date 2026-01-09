@@ -29,4 +29,25 @@ class ResiduoViewmodel extends ChangeNotifier {
     }
   }
 
+// Metodo de busqueda de item por id, O(n) binario
+  Residuos? getResiduo(int id) {
+    if (_items.isEmpty) return null;
+
+    int low = 0;
+    int high = _items.length - 1;
+
+    while (low <= high) {
+      final mid = low + ((high - low) >> 1);
+      final midId = _items[mid].idResiduo;
+
+      if (midId == id) return _items[mid];
+      if (midId < id) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    return null;
+  }
 }
