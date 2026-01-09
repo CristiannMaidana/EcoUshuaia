@@ -24,11 +24,18 @@ class ContainerDetailState extends State<ContainerDetail> {
   @override
   void initState() {
     super.initState();
-    _draggableController = DraggableScrollableController();
+    _draggableController = DraggableScrollableController()..addListener(_onSheetChange);
+  }
+
+  // Listener para el cambio de tamaño del sheet
+  void _onSheetChange() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   @override
   void dispose() {
+    _draggableController.removeListener(_onSheetChange);
     _draggableController.dispose();
     super.dispose();
   }
@@ -43,10 +50,15 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   void subirSheet() {
     _draggableController.animateTo(
-      0.57,
+      0.49,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  bool get isExpanded {
+    if (!_draggableController.isAttached) return false;
+    return _draggableController.size > 0 + 0.001;
   }
 
   @override
@@ -54,6 +66,14 @@ class ContainerDetailState extends State<ContainerDetail> {
     return Stack(
       fit: StackFit.expand,
       children: [
+        // Para cerrar el sheet si toca afuera 
+        if (isExpanded)
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: _bajarSheet,
+            child: const SizedBox.expand(),
+          ),
+
         DraggableScrollableSheet(
           controller: _draggableController,
           initialChildSize: 0.0,
