@@ -3,6 +3,7 @@ import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/info_state_container.dart';
@@ -68,9 +69,14 @@ class ContainerDetailState extends State<ContainerDetail> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ResiduoViewmodel>();
+    final vmMap = context.watch<MapSearchViewModel>();
+
     final idResiduo = widget.container?.idResiduo;
     final Residuos? residuo = (idResiduo == null) ? null : vm.getResiduo(idResiduo);
-
+    final String direccion = vmMap.getDireccionFromPoint(
+      widget.container?.coordenada?.latitud,
+      widget.container?.coordenada?.longitud,);
+      
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -151,7 +157,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                               ),
                                               SizedBox(height: 4),
                                               Text(
-                                                widget.container?.descripcionUbicacion ?? 'Dirección Desconocida',
+                                                'Dirección: $direccion' ?? 'Dirección Desconocida',
                                                 style: Theme.of(context).textTheme.bodyMedium,
                                               ),
                                             ],
