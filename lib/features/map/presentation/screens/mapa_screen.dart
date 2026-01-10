@@ -202,6 +202,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
     sheet?.showSecondChild();
   }
 
+  Future<double>? _getMetros (double lat, double lon){
+    return _mapController?.getMetros(lon, lat);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -324,7 +329,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
         ),
 
         if (_contenedorSeleccionado != null)
-          ContainerDetail(key: _detailKey, container: _contenedorSeleccionado!),
+          ContainerDetail(
+            key: _detailKey, 
+            container: _contenedorSeleccionado!, 
+            distancia: _getMetros
+          ),
       ],
     );
   }
