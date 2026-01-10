@@ -36,4 +36,10 @@ class ContenedorRepositoryImp implements ContenedorRepository{
     final dtos = await remote.filtrosDiaHorario(ids);
     return dtos.map((e) => e.toEntity()).toList(growable: false);
   }
+
+  @override
+  Future<List<Contenedor>> filtrosContenedoresCercanos(double lon, double lat, int metros) async {
+    final dtos = await remote.filtrosContenedoresCercanos(lon, lat, metros);
+    return dtos.map((e) => e.toEntity()).toList();
+  }
 }
