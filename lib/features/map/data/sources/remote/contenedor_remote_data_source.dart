@@ -91,4 +91,18 @@ class ContenedorRemoteDataSource {
     
     return const <ContenedorDto>[];
   }
+
+  Future<List<ContenedorDto>> filtrosContenedoresCercanos(double lon, double lat, int metros) async {
+    final data = await api.get('/contenedores/cerca/$lon,$lat/$metros');
+
+    if (data is Map<String, dynamic> && data['features'] is List) {
+      final features = (data['features'] as List)
+          .whereType<Map>()
+          .map((e) => e.cast<String, dynamic>())
+          .toList();
+      return features.map(ContenedorDto.fromGeoJsonFeature).toList();
+    }
+
+    return const <ContenedorDto>[];
+  }
 }
