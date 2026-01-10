@@ -1,8 +1,13 @@
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:flutter/material.dart';
 
 class CartaDetallesRecientes extends StatelessWidget{
+  final Contenedor? contenedor;
   //TODO: crear propiedades, (entidad, para tener los textos, id, y favorito de usuario), obtener elementos de icons
-  CartaDetallesRecientes({super.key});
+  CartaDetallesRecientes({
+    super.key,
+    this.contenedor,
+  });
 
   @override
   Widget build (BuildContext context){
