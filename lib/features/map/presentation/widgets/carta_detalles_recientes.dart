@@ -27,25 +27,27 @@ class CartaDetallesRecientes extends StatelessWidget{
       ),
       padding: EdgeInsets.all(10),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Icon del boton
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1, color: Colors.grey),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            //TODO: cambia el icon en base a las propiedades del constructor
-            child: Icon(Icons.circle, size: 20, color: residuo?.colorHex.toColor(),),
-          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon del boton
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.grey),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                //TODO: cambia el icon en base a las propiedades del constructor
+                child: Icon(Icons.circle, size: 20, color: residuo?.colorHex.toColor(),),
+              ),
 
-          SizedBox(width: 12),
+              SizedBox(width: 12),
 
-          //Texto de datos contenedor
-          Expanded(
-            child: Center(
-              child: Column(
+              //Texto de datos contenedor
+              Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -53,7 +55,7 @@ class CartaDetallesRecientes extends StatelessWidget{
                   Text('distancia - Recoleccion: hoy', textAlign: TextAlign.center),
                 ],
               ),
-            ),
+            ],
           ),
           
           // Botones para interactar con el contenedor
