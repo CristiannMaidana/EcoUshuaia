@@ -23,14 +23,14 @@ class CartaDetallesRecientes extends StatelessWidget{
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.grey),
-        borderRadius: BorderRadius.circular(16) 
+        borderRadius: BorderRadius.circular(22) 
       ),
       padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Icon del boton
               SizedBox(
@@ -47,11 +47,11 @@ class CartaDetallesRecientes extends StatelessWidget{
 
               //Texto de datos contenedor
               Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${contenedor?.nombreContenedor} - ${residuo?.nombre}', textAlign: TextAlign.center),
-                  Text('distancia - Recoleccion: hoy', textAlign: TextAlign.center),
+                  Text('${contenedor?.nombreContenedor}', style: Theme.of(context).textTheme.labelLarge,),
+                  Text('Residuo: ${residuo?.nombre}',),
+                  Text('40 m - Recoleccion: hoy',),
                 ],
               ),
             ],
