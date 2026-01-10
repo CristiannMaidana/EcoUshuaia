@@ -1,5 +1,9 @@
+import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartaDetallesRecientes extends StatelessWidget{
   final Contenedor? contenedor;
@@ -11,6 +15,11 @@ class CartaDetallesRecientes extends StatelessWidget{
 
   @override
   Widget build (BuildContext context){
+    final vmResiduos = context.watch<ResiduoViewmodel>();
+    final Residuos? residuo = (contenedor != null && contenedor!.idResiduo != null)
+        ? vmResiduos.getResiduo(contenedor!.idResiduo!)
+        : null;
+    
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.grey),
@@ -28,7 +37,7 @@ class CartaDetallesRecientes extends StatelessWidget{
               borderRadius: BorderRadius.circular(12),
             ),
             //TODO: cambia el icon en base a las propiedades del constructor
-            child: Icon(Icons.circle, size: 20,),
+            child: Icon(Icons.circle, size: 20, color: residuo?.colorHex.toColor(),),
           ),
 
           SizedBox(width: 12),
@@ -40,7 +49,7 @@ class CartaDetallesRecientes extends StatelessWidget{
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('${contenedor?.nombreContenedor} - residuo', textAlign: TextAlign.center),
+                  Text('${contenedor?.nombreContenedor} - ${residuo?.nombre}', textAlign: TextAlign.center),
                   Text('distancia - Recoleccion: hoy', textAlign: TextAlign.center),
                 ],
               ),
