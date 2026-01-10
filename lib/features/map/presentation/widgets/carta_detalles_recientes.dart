@@ -33,15 +33,14 @@ class CartaDetallesRecientes extends StatelessWidget{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Icon del boton
-              Container(
+              SizedBox(
                 width: 40,
                 height: 40,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.grey),
-                  borderRadius: BorderRadius.circular(12),
+                child: Icon(
+                  Icons.circle, 
+                  size: 20, 
+                  color: residuo?.colorHex.toColor(),
                 ),
-                //TODO: cambia el icon en base a las propiedades del constructor
-                child: Icon(Icons.circle, size: 20, color: residuo?.colorHex.toColor(),),
               ),
 
               SizedBox(width: 12),
@@ -64,7 +63,7 @@ class CartaDetallesRecientes extends StatelessWidget{
             children: [
               IconButton(
                 onPressed: (){}, 
-                icon: Icon(Icons.star, color: Colors.yellow.shade600),
+                icon: Icon(Icons.favorite, color: Colors.yellow.shade600),
                 style: IconButton.styleFrom(
                   side: BorderSide(width: 1, color: Colors.grey),
                   shape: RoundedRectangleBorder(
