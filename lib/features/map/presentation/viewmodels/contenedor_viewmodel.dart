@@ -22,6 +22,11 @@ class ContenedorViewModel extends ChangeNotifier {
   List<Contenedor> _contenedorFiltrado = [];
   List<Contenedor> get contenedorFiltrado => _contenedorFiltrado;
 
+  // Lista de contenedores filtrados por un radio
+  List<Contenedor> _contenedorCercanos = [];
+  List<Contenedor> get contenedorCercanos => _contenedorCercanos;
+
+
   Future<void> load({Map<String, dynamic>? filtros}) async {
     _loading = true;
     _error = null;
@@ -121,4 +126,19 @@ class ContenedorViewModel extends ChangeNotifier {
     _contenedorFiltrado = result;
     notifyListeners();
   }
+
+  Future<void> loadCercanos (double lon, double lat, int metros) async {
+    _loading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      _contenedorCercanos = await repo.filtrosContenedoresCercanos(lon, lat, metros);
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
 }
