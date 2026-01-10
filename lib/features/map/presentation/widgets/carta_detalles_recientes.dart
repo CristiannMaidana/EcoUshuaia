@@ -40,7 +40,7 @@ class CartaDetallesRecientes extends StatelessWidget{
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('nombre contenedor - residuo', textAlign: TextAlign.center),
+                  Text('${contenedor?.nombreContenedor} - residuo', textAlign: TextAlign.center),
                   Text('distancia - Recoleccion: hoy', textAlign: TextAlign.center),
                 ],
               ),
