@@ -1,11 +1,13 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/slider_custom.dart';
 import 'package:eco_ushuaia/features/prueba.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SheetAddress extends StatefulWidget {
   const SheetAddress({super.key});
@@ -19,23 +21,10 @@ class SheetAddressState extends State<SheetAddress> {
       context.findAncestorStateOfType<FlotanteSheetState>();
 
   bool botonPrincipal = true;
-  static const int _minRadiusM = 100;
-  static const int _maxRadiusM = 2000;
-  double _radiusM = 500;
   bool botonSeleccionado = true;
-
-  final List<int> _mockDistancesM = const [
-    120,
-    220,
-    310,
-    450,
-    520,
-    650,
-    800,
-    1200,
-    1600,
-    1900,
-  ];
+  //TODO: cambiar por un metodo para obtener las coordendas de la direccion buscada
+  static const double _addressLon = -68.33839;
+  static const double _addressLat = -54.82707;
   final List<String> _addresses = <String>[
     'Intendente Miguel Torelli 723',
     'San Martín 123',
@@ -114,8 +103,9 @@ class SheetAddressState extends State<SheetAddress> {
 
   @override
   Widget build(BuildContext context) {
-    final visibleCount = _mockDistancesM.where((d) => d <= _radiusM).length;
     final scrollController = PrimaryScrollController.of(context);
+    final vmContenedores = context.watch<ContenedorViewModel>();
+    final contenedoresCercanos = vmContenedores.contenedorCercanos;
 
     final outlineBtnStyle = OutlinedButton.styleFrom(
       shape: const StadiumBorder(),
@@ -195,49 +185,9 @@ class SheetAddressState extends State<SheetAddress> {
           // ===== Controles secundarios =====
           // MODO “Ver contenedores”: Radio primero
           if (botonPrincipal)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Contenedores cercanos:',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text(
-                        'Radio',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: CupertinoSlider(
-                          value: _radiusM,
-                          min: _minRadiusM.toDouble(),
-                          max: _maxRadiusM.toDouble(),
-                          onChanged: (v) => setState(() => _radiusM = v),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      SizedBox(
-                        width: 72,
-                        child: Text(
-                          '${(_radiusM / 1000).toStringAsFixed(2)} km',
-                          textAlign: TextAlign.right,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: Colors.grey.shade700),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            const SliderCustom(
+              lon: _addressLon,
+              lat: _addressLat,
             )
           // MODO “Ir”: selector de modo
           else
@@ -304,17 +254,24 @@ class SheetAddressState extends State<SheetAddress> {
           // ===== Contenedores cercano / Lista de direcciones =====
           if (botonPrincipal)
             Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                itemCount: visibleCount,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: CartaDetallesRecientes(),
-                  );
-                },
-              ),
+              child: vmContenedores.loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : (vmContenedores.error != null)
+                      ? Center(child: Text(vmContenedores.error!))
+                      : ListView.builder(
+                          controller: scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          itemCount: contenedoresCercanos.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: CartaDetallesRecientes(
+                                contenedor: contenedoresCercanos[index],
+                              ),
+                            );
+                          },
+                        ),
             )
           else
             Expanded(
