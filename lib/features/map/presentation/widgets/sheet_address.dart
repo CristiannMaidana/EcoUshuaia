@@ -173,7 +173,6 @@ class SheetAddressState extends State<SheetAddress> {
                       ),
                       const SizedBox(width: 12),
                       ElevatedButton(
-                        style: primaryCTAStyle,
                         onPressed: () {
                           setState(() {
                             botonPrincipal = !botonPrincipal;
@@ -359,6 +358,7 @@ class SheetAddressState extends State<SheetAddress> {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(top: BorderSide(color: Colors.grey.shade300)),
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16))
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: SafeArea(
@@ -371,11 +371,11 @@ class SheetAddressState extends State<SheetAddress> {
                       _sheet?.showFirstChild();
                       _sheet?.collapseSheet();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.cancel),
+                        Icon(Icons.cancel, color: Colors.black,),
                         SizedBox(width: 8),
-                        Text('Cancelar'),
+                        Text('Cancelar', style: Theme.of(context).textTheme.labelLarge,),
                       ],
                     ),
                   ),
@@ -384,11 +384,11 @@ class SheetAddressState extends State<SheetAddress> {
                     OutlinedButton(
                       style: outlineBtnStyle,
                       onPressed: () {},
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.favorite),
-                          SizedBox(width: 8),
-                          Text('Guardar'),
+                          const Icon(Icons.favorite, color: Colors.black,),
+                          const SizedBox(width: 8),
+                          Text('Guardar', style: Theme.of(context).textTheme.labelLarge,),
                         ],
                       ),
                     ),
@@ -397,11 +397,11 @@ class SheetAddressState extends State<SheetAddress> {
                     OutlinedButton(
                       style: outlineBtnStyle,
                       onPressed: () {},
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.report),
+                          Icon(Icons.report, color: Colors.black,),
                           SizedBox(width: 8),
-                          Text('Reportar'),
+                          Text('Reportar', style: Theme.of(context).textTheme.labelLarge,),
                         ],
                       ),
                     ),
