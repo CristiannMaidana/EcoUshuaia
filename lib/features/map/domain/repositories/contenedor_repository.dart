@@ -10,4 +10,6 @@ abstract class ContenedorRepository {
   Future<List<Contenedor>> filtrosDiaHorario(List<int> ids);
   
   Future<List<Contenedor>> filtrosMannanaHorario(List<int> ids);
+
+  Future<List<Contenedor>> filtrosContenedoresCercanos(double lon, double lat, int metros);
 }
