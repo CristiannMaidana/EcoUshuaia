@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/slider_custom.dart';
@@ -12,7 +13,7 @@ class SheetAddContainer extends StatefulWidget {
   final double minChildSize;
   final double maxChildSize;
   final VoidCallback? onClosed;
-  final VoidCallback add;
+  final ValueChanged<Contenedor> add;
 
   const SheetAddContainer({
     super.key,
