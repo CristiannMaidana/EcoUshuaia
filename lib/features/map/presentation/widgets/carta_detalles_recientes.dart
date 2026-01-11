@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class CartaDetallesRecientes extends StatelessWidget{
     final Residuos? residuo = (contenedor != null && contenedor!.idResiduo != null)
         ? vmResiduos.getResiduo(contenedor!.idResiduo!)
         : null;
+    final vmContenedores = context.watch<ContenedorViewModel>();
     
     return Container(
       decoration: BoxDecoration(
@@ -74,8 +76,11 @@ class CartaDetallesRecientes extends StatelessWidget{
                 ),
               ),
               IconButton(
-                //TODO: tiene que ser un metodo para agregar valores, (nombre de contenedor - posicion), luego este contenedor tiene que ser eliminado de la lista filtrada de contenedores del provider
-                onPressed: ir,
+                //TODO: el metodo ir para agregar valores, (nombre de contenedor - posicion)
+                onPressed: (){
+                  ir!();
+                  vmContenedores.removeCercanoById(contenedor!.idContenedor);
+                },
                 icon: Icon(Icons.arrow_forward),
                 style: IconButton.styleFrom(
                   side: BorderSide(width: 1, color: Colors.grey),
