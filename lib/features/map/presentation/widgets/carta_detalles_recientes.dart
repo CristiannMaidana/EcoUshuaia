@@ -7,10 +7,12 @@ import 'package:provider/provider.dart';
 
 class CartaDetallesRecientes extends StatelessWidget{
   final Contenedor? contenedor;
+  final VoidCallback? ir;
   //TODO: crear propiedades, (entidad, para tener los textos, id, y favorito de usuario), obtener elementos de icons
   CartaDetallesRecientes({
     super.key,
     this.contenedor,
+    this.ir,
   });
 
   @override
@@ -72,9 +74,8 @@ class CartaDetallesRecientes extends StatelessWidget{
                 ),
               ),
               IconButton(
-                onPressed: (){
-                  // TODO: enviar id y generar ruta para ir
-                }, 
+                //TODO: tiene que ser un metodo para agregar valores, (nombre de contenedor - posicion), luego este contenedor tiene que ser eliminado de la lista filtrada de contenedores del provider
+                onPressed: ir,
                 icon: Icon(Icons.arrow_forward),
                 style: IconButton.styleFrom(
                   side: BorderSide(width: 1, color: Colors.grey),
