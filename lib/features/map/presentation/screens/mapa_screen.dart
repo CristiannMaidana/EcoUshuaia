@@ -83,9 +83,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<FlotanteSheetState> _flotanteKey = GlobalKey<FlotanteSheetState>();
 
   //=== Variable y metodos para el SheetAddContainer ===
-  //TODO: cambiar por un metodo para obtener las coordendas de la direccion buscada
-  static const double _addressLon = -68.33839;
-  static const double _addressLat = -54.82707;
+  double _addressLon = 0;
+  double _addressLat = 0;
   
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey = GlobalKey<SheetAddContainerState>();
       
@@ -95,12 +94,14 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool openSheetAddContainer = false;
 
   // Metodo para abrir el sheetAddContainer
-  void _abrirSheetAddContainer() {
-    if (openSheetAddContainer) return;
-    setState(() => openSheetAddContainer = true);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _addContainerSheetKey.currentState?.expand();
-    });
+    Future<void> _abrirSheetAddContainer() async {
+      if (openSheetAddContainer) return;
+      await _getCoordenates();
+      if (!mounted) return;
+      setState(() => openSheetAddContainer = true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _addContainerSheetKey.currentState?.expand();
+      });
   }
 
   // Metodo para cerrar el sheetAddContainer
@@ -116,6 +117,26 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   void _agregarDireccionNueva() {
     _sheetAddressKey.currentState?.addAddress();
+  }
+
+  Future<void> _getCoordenates() async {
+    final ok = _hasLocationPermission || await _perms.ensureWhenInUsePermission(context);
+    if (!mounted || !ok) return;
+    if (!_hasLocationPermission) setState(() => _hasLocationPermission = ok);
+
+    final ctrl = _mapController ?? MapController(null);
+    Map<String, double> puntos;
+    try {
+      puntos = await ctrl.getPoint();
+    } catch (_) {
+      return;
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _addressLon = puntos['lon'] ?? _addressLon;
+      _addressLat = puntos['lat'] ?? _addressLat;
+    });
   }
 
 
