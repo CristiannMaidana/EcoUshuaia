@@ -12,6 +12,7 @@ class SheetAddContainer extends StatefulWidget {
   final double minChildSize;
   final double maxChildSize;
   final VoidCallback? onClosed;
+  final VoidCallback add;
 
   const SheetAddContainer({
     super.key,
@@ -21,6 +22,7 @@ class SheetAddContainer extends StatefulWidget {
     this.minChildSize = 0.0,
     this.maxChildSize = .89,
     this.onClosed,
+    required this.add,
   });
 
   @override
@@ -198,6 +200,7 @@ class SheetAddContainerState extends State<SheetAddContainer> {
                                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                                       child: CartaDetallesRecientes(
                                         contenedor: contenedoresCercanos[index],
+                                        ir: widget.add,
                                       ),
                                     );
                                   },
