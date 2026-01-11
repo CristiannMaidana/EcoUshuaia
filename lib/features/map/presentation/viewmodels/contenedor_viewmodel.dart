@@ -26,6 +26,8 @@ class ContenedorViewModel extends ChangeNotifier {
   List<Contenedor> _contenedorCercanos = [];
   List<Contenedor> get contenedorCercanos => _contenedorCercanos;
 
+  // Ids de contenedores ya removidos de lista cercanos
+  final Set<int> _contenedorCercanosEliminadosIds = <int>{};
 
   Future<void> load({Map<String, dynamic>? filtros}) async {
     _loading = true;
@@ -132,7 +134,14 @@ class ContenedorViewModel extends ChangeNotifier {
     _error = null;
     notifyListeners();
     try {
-      _contenedorCercanos = await repo.filtrosContenedoresCercanos(lon, lat, metros);
+      final fetched = await repo.filtrosContenedoresCercanos(lon, lat, metros);
+      if (_contenedorCercanosEliminadosIds.isEmpty) {
+        _contenedorCercanos = fetched;
+      } else {
+        _contenedorCercanos = fetched
+            .where((c) => !_contenedorCercanosEliminadosIds.contains(c.idContenedor))
+            .toList();
+      }
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -141,4 +150,11 @@ class ContenedorViewModel extends ChangeNotifier {
     }
   }
 
+  void removeCercanoById(int idContenedor) {
+    _contenedorCercanosEliminadosIds.add(idContenedor);
+    final index = _contenedorCercanos.indexWhere((c) => c.idContenedor == idContenedor);
+    if (index < 0) return;
+    _contenedorCercanos.removeAt(index);
+    notifyListeners();
+  }
 }
