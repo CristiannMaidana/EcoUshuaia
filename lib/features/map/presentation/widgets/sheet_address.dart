@@ -23,6 +23,7 @@ class SheetAddressState extends State<SheetAddress> {
   bool _addContainerOpen = false;
   bool _showBottomActions = true;
   bool botonSeleccionado = true;
+  bool generarRuta = false;
   //TODO: cambiar por un metodo para obtener las coordendas de la direccion buscada
   static const double _addressLon = -68.33839;
   static const double _addressLat = -54.82707;
@@ -234,6 +235,7 @@ class SheetAddressState extends State<SheetAddress> {
                                 setState(() {
                                   _showBottomActions = false;
                                   botonSeleccionado = !botonSeleccionado;
+                                  generarRuta = !generarRuta;
                                 });
                               },
                               icon: const Icon(Icons.directions_car),
@@ -243,14 +245,20 @@ class SheetAddressState extends State<SheetAddress> {
                             ),
                             IconButton(
                               onPressed: () {
-                                setState(() => _showBottomActions = false);
+                                setState((){
+                                  _showBottomActions = false;
+                                  generarRuta = !generarRuta;
+                                });
                               },
                               icon: const Icon(Icons.directions_bike),
                               color: Colors.grey.shade700,
                             ),
                             IconButton(
                               onPressed: () {
-                                setState(() => _showBottomActions = false);
+                                setState(() {
+                                  _showBottomActions = false;
+                                  generarRuta = !generarRuta;
+                                });
                               },
                               icon: const Icon(Icons.directions_walk),
                               color: Colors.grey.shade700,
@@ -308,6 +316,7 @@ class SheetAddressState extends State<SheetAddress> {
               ),
 
               // ===== Detalle de ruta =====
+              if (generarRuta)
               const Padding(
                 padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
                 child: DetalleRuta(),
