@@ -142,14 +142,6 @@ class SheetAddressState extends State<SheetAddress> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     );
 
-    final primaryCTAStyle = ElevatedButton.styleFrom(
-      elevation: 0,
-      backgroundColor: Colors.black,
-      foregroundColor: Colors.white,
-      shape: const StadiumBorder(),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    );
-
     return SafeArea(
       top: false,
       child: Stack(
@@ -267,21 +259,6 @@ class SheetAddressState extends State<SheetAddress> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: primaryCTAStyle,
-                      onPressed: () {
-                        setState(() => _showBottomActions = false);
-                        _addAddress();
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.add_circle),
-                          SizedBox(width: 8),
-                          Text('Agregar'),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -395,6 +372,11 @@ class SheetAddressState extends State<SheetAddress> {
             onClosed: () {
               if (!mounted) return;
               setState(() => _addContainerOpen = false);
+            },
+            add: () {
+              //TODO: agregar la direccion del contenedor seleccionado, nombre y datos de la ruta del contenedor
+              setState(() => _showBottomActions = false);
+              _addAddress();
             },
           ),
         ],
