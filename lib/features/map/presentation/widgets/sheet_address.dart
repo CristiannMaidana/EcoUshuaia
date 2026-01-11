@@ -2,31 +2,28 @@ import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/prueba.dart';
 import 'package:flutter/material.dart';
 
 class SheetAddress extends StatefulWidget {
-  const SheetAddress({super.key});
+  final VoidCallback openOptionContainer;
+
+  const SheetAddress({
+    super.key,
+    required this.openOptionContainer,
+  });
 
   @override
   State<SheetAddress> createState() => SheetAddressState();
 }
 
 class SheetAddressState extends State<SheetAddress> {
-  FlotanteSheetState? get _sheet =>
-      context.findAncestorStateOfType<FlotanteSheetState>();
+  FlotanteSheetState? get _sheet => context.findAncestorStateOfType<FlotanteSheetState>();
 
-  final GlobalKey<SheetAddContainerState> _addContainerSheetKey =
-      GlobalKey<SheetAddContainerState>();
-
-  bool _addContainerOpen = false;
   bool _showBottomActions = true;
   bool botonSeleccionado = true;
   bool generarRuta = false;
-  //TODO: cambiar por un metodo para obtener las coordendas de la direccion buscada
-  static const double _addressLon = -68.33839;
-  static const double _addressLat = -54.82707;
+
   final List<String> _addresses = <String>[
     'Intendente Miguel Torelli 723',
     'San Martín 123',
@@ -46,7 +43,7 @@ class SheetAddressState extends State<SheetAddress> {
     orderStrings.value = List.unmodifiable(_addresses);
   }
 
-  void _addAddress() {
+  void addAddress() {
     setState(() {
       _addresses.add('Nueva dirección ${++_counter}');
       _syncOrder();
@@ -82,34 +79,6 @@ class SheetAddressState extends State<SheetAddress> {
     _sheet?.endDragFromHeader(d);
   }
 
-  Future<void> _toggleAddContainerSheet() async {
-    if (_addContainerOpen) {
-      await _addContainerSheetKey.currentState?.collapse();
-      return;
-    }
-
-    setState(() {
-      _addContainerOpen = true;
-      _showBottomActions = true;
-    });
-    await _addContainerSheetKey.currentState?.expand();
-  }
-
-  void _closeAddContainerIfOuterCollapsed() {
-    final outerExpanded = _sheet?.isExpanded ?? false;
-    if (outerExpanded || !_addContainerOpen) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      final stillOuterCollapsed = !(_sheet?.isExpanded ?? false);
-      if (!stillOuterCollapsed || !_addContainerOpen) return;
-
-      await _addContainerSheetKey.currentState?.collapse();
-      if (!mounted) return;
-      setState(() => _addContainerOpen = false);
-    });
-  }
-
   Future<void> expand() async {
     final sheet = _sheet;
     sheet?.showSecondChild();
@@ -134,7 +103,6 @@ class SheetAddressState extends State<SheetAddress> {
   @override
   Widget build(BuildContext context) {
     final scrollController = PrimaryScrollController.of(context);
-    _closeAddContainerIfOuterCollapsed();
 
     final outlineBtnStyle = OutlinedButton.styleFrom(
       shape: const StadiumBorder(),
@@ -186,7 +154,7 @@ class SheetAddressState extends State<SheetAddress> {
                           ),
                           const SizedBox(width: 12),
                           ElevatedButton(
-                            onPressed: _toggleAddContainerSheet,
+                            onPressed: widget.openOptionContainer,
                             child: Row(
                               children: [
                                 Icon(Icons.add_circle),
@@ -363,21 +331,6 @@ class SheetAddressState extends State<SheetAddress> {
                 ),
               ),
             ],
-          ),
-          // Sheet de opciones de parada
-          SheetAddContainer(
-            key: _addContainerSheetKey,
-            lon: _addressLon,
-            lat: _addressLat,
-            onClosed: () {
-              if (!mounted) return;
-              setState(() => _addContainerOpen = false);
-            },
-            add: () {
-              //TODO: agregar la direccion del contenedor seleccionado, nombre y datos de la ruta del contenedor
-              setState(() => _showBottomActions = false);
-              _addAddress();
-            },
           ),
         ],
       ),
