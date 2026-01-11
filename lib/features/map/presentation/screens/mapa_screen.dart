@@ -82,6 +82,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   final GlobalKey<FlotanteSheetState> _flotanteKey = GlobalKey<FlotanteSheetState>();
 
+
+
   //=== Variable y metodos para el SheetAddContainer ===
   double _addressLon = 0;
   double _addressLat = 0;
@@ -94,14 +96,14 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool openSheetAddContainer = false;
 
   // Metodo para abrir el sheetAddContainer
-    Future<void> _abrirSheetAddContainer() async {
-      if (openSheetAddContainer) return;
-      await _getCoordenates();
-      if (!mounted) return;
-      setState(() => openSheetAddContainer = true);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _addContainerSheetKey.currentState?.expand();
-      });
+  Future<void> _abrirSheetAddContainer() async {
+    if (openSheetAddContainer) return;
+    await _getCoordenates();
+    if (!mounted) return;
+    setState(() => openSheetAddContainer = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addContainerSheetKey.currentState?.expand();
+    });
   }
 
   // Metodo para cerrar el sheetAddContainer
@@ -400,23 +402,30 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         //Sheet para agregar contenedores a la ruta
         if (openSheetAddContainer)
-          Positioned(
-            child: GestureDetector(
-              onTap: _cerrarSheetAddContainer,
-              child: Container(
-                color: Colors.transparent,
-                child: SheetAddContainer(
-                  key: _addContainerSheetKey,
-                  lon: _addressLon,
-                  lat: _addressLat,
-                  onClosed:  () {
-                    if (!mounted) return;
-                    setState(() => openSheetAddContainer = false);
-                  },
-                  add: _agregarDireccionNueva,
-                )
-              ),
-            )
+          Positioned.fill(
+            child: Stack(
+              children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _cerrarSheetAddContainer,
+                  child: const SizedBox.expand(),
+                ),
+
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SheetAddContainer(
+                    key: _addContainerSheetKey,
+                    lon: _addressLon,
+                    lat: _addressLat,
+                    onClosed: () {
+                      if (!mounted) return;
+                      setState(() => openSheetAddContainer = false);
+                    },
+                    add: _agregarDireccionNueva,
+                  ),
+                ),
+              ],
+            ),
           ),
       ],
     );
