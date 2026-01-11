@@ -206,40 +206,39 @@ class _MapaScreenStatePage extends State<MapaPage> {
     return _mapController?.getMetros(lon, lat);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CustomMapa(
-          onMapReady: (controller) async {
-            _mapController = controller;
+        // CustomMapa(
+        //   onMapReady: (controller) async {
+        //     _mapController = controller;
 
-            // Conectar callback de tap de contenedor
-            controller.onContenedorTap = _onContenedorTap;
+        //     // Conectar callback de tap de contenedor
+        //     controller.onContenedorTap = _onContenedorTap;
 
-            if (_hasLocationPermission) {
-              await controller.enableUserPuck();
-            }
+        //     if (_hasLocationPermission) {
+        //       await controller.enableUserPuck();
+        //     }
 
-            _vm = context.read<ContenedorViewModel>();
+        //     _vm = context.read<ContenedorViewModel>();
 
-            // Si cargaron contenedores cargo
-            if (_vm!.items.isNotEmpty) {
-              await controller.refreshContenedores(_vm!.items);
-            } else {
-              // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
-              void once() async {
-                if (!_vm!.loading) {
-                  _vm!.removeListener(once);
-                  await _mapController?.refreshContenedores(_vm!.items);
-                }
-              }
+        //     // Si cargaron contenedores cargo
+        //     if (_vm!.items.isNotEmpty) {
+        //       await controller.refreshContenedores(_vm!.items);
+        //     } else {
+        //       // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
+        //       void once() async {
+        //         if (!_vm!.loading) {
+        //           _vm!.removeListener(once);
+        //           await _mapController?.refreshContenedores(_vm!.items);
+        //         }
+        //       }
 
-              _vm!.addListener(once);
-            }
-          },
-        ),
+        //       _vm!.addListener(once);
+        //     }
+        //   },
+        // ),
 
         if (!_hasLocationPermission)
           Positioned.fill(
@@ -327,7 +326,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
           child2: const SheetAddress(),
         ),
-
+        
+        //Sheet de detalles de contenedor seleccionado
         if (_contenedorSeleccionado != null)
           ContainerDetail(
             key: _detailKey, 
