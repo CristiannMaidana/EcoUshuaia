@@ -233,7 +233,7 @@ class SheetAddressState extends State<SheetAddress> {
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _showBottomActions = false;
+                                  _showBottomActions = !_showBottomActions;
                                   botonSeleccionado = !botonSeleccionado;
                                   generarRuta = !generarRuta;
                                 });
@@ -246,7 +246,7 @@ class SheetAddressState extends State<SheetAddress> {
                             IconButton(
                               onPressed: () {
                                 setState((){
-                                  _showBottomActions = false;
+                                  _showBottomActions = !_showBottomActions;
                                   generarRuta = !generarRuta;
                                 });
                               },
@@ -256,7 +256,7 @@ class SheetAddressState extends State<SheetAddress> {
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _showBottomActions = false;
+                                  _showBottomActions = !_showBottomActions;
                                   generarRuta = !generarRuta;
                                 });
                               },
