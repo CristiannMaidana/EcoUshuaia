@@ -20,7 +20,7 @@ class SheetAddContainer extends StatefulWidget {
     required this.lat,
     this.initialChildSize = 0.0,
     this.minChildSize = 0.0,
-    this.maxChildSize = .89,
+    this.maxChildSize = .7,
     this.onClosed,
     required this.add,
   });
