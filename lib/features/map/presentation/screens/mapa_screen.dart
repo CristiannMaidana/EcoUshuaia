@@ -14,6 +14,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.d
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,44 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetSearchBarState> _filterKey = GlobalKey<SheetSearchBarState>();
 
   final GlobalKey<FlotanteSheetState> _flotanteKey = GlobalKey<FlotanteSheetState>();
+
+  //=== Variable y metodos para el SheetAddContainer ===
+  //TODO: cambiar por un metodo para obtener las coordendas de la direccion buscada
+  static const double _addressLon = -68.33839;
+  static const double _addressLat = -54.82707;
+  
+  final GlobalKey<SheetAddContainerState> _addContainerSheetKey = GlobalKey<SheetAddContainerState>();
+      
+  final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
+
+  // Condicion para mostrar el sheet
+  bool openSheetAddContainer = false;
+
+  // Metodo para abrir el sheetAddContainer
+  void _abrirSheetAddContainer() {
+    if (openSheetAddContainer) return;
+    setState(() => openSheetAddContainer = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addContainerSheetKey.currentState?.expand();
+    });
+  }
+
+  // Metodo para cerrar el sheetAddContainer
+  void _cerrarSheetAddContainer() {
+    if (!openSheetAddContainer) return;
+    final sheetState = _addContainerSheetKey.currentState;
+    if (sheetState == null) {
+      setState(() => openSheetAddContainer = false);
+      return;
+    }
+    sheetState.collapse();
+  }
+
+  void _agregarDireccionNueva() {
+    _sheetAddressKey.currentState?.addAddress();
+  }
+
+
 
   void _changes() {
     setState(() {
@@ -213,16 +252,16 @@ class _MapaScreenStatePage extends State<MapaPage> {
         // CustomMapa(
         //   onMapReady: (controller) async {
         //     _mapController = controller;
-
+//
         //     // Conectar callback de tap de contenedor
         //     controller.onContenedorTap = _onContenedorTap;
-
+//
         //     if (_hasLocationPermission) {
         //       await controller.enableUserPuck();
         //     }
-
+//
         //     _vm = context.read<ContenedorViewModel>();
-
+//
         //     // Si cargaron contenedores cargo
         //     if (_vm!.items.isNotEmpty) {
         //       await controller.refreshContenedores(_vm!.items);
@@ -234,7 +273,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
         //           await _mapController?.refreshContenedores(_vm!.items);
         //         }
         //       }
-
+//
         //       _vm!.addListener(once);
         //     }
         //   },
@@ -324,7 +363,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
             buscarDireccion: _buscarDireccion,
             abrirDetalleDireccion: _abrirDetalleDireccion,
           ),
-          child2: const SheetAddress(),
+          child2: SheetAddress(
+            key: _sheetAddressKey, 
+            openOptionContainer: _abrirSheetAddContainer
+          ),
         ),
         
         //Sheet de detalles de contenedor seleccionado
@@ -333,6 +375,27 @@ class _MapaScreenStatePage extends State<MapaPage> {
             key: _detailKey, 
             container: _contenedorSeleccionado!, 
             distancia: _getMetros
+          ),
+
+        //Sheet para agregar contenedores a la ruta
+        if (openSheetAddContainer)
+          Positioned(
+            child: GestureDetector(
+              onTap: _cerrarSheetAddContainer,
+              child: Container(
+                color: Colors.transparent,
+                child: SheetAddContainer(
+                  key: _addContainerSheetKey,
+                  lon: _addressLon,
+                  lat: _addressLat,
+                  onClosed:  () {
+                    if (!mounted) return;
+                    setState(() => openSheetAddContainer = false);
+                  },
+                  add: _agregarDireccionNueva,
+                )
+              ),
+            )
           ),
       ],
     );
