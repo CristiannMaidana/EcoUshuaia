@@ -157,4 +157,8 @@ class ContenedorViewModel extends ChangeNotifier {
     _contenedorCercanos.removeAt(index);
     notifyListeners();
   }
+
+  void restoreCercanoById(int idContenedor) {
+    _contenedorCercanosEliminadosIds.remove(idContenedor);
+  }
 }
