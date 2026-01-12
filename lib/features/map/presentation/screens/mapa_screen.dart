@@ -87,6 +87,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   //=== Variable y metodos para el SheetAddContainer ===
   double _addressLon = 0;
   double _addressLat = 0;
+  Map<String, double> _userPoint = const <String, double>{'lon': 0, 'lat': 0};
   
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey = GlobalKey<SheetAddContainerState>();
       
@@ -136,8 +137,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (!mounted) return;
 
     setState(() {
-      _addressLon = puntos['lon'] ?? _addressLon;
-      _addressLat = puntos['lat'] ?? _addressLat;
+      final lon = puntos['lon'] ?? _addressLon;
+      final lat = puntos['lat'] ?? _addressLat;
+      _addressLon = lon;
+      _addressLat = lat;
+      _userPoint = <String, double>{'lon': lon, 'lat': lat};
     });
   }
 
@@ -193,6 +197,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
         final vm = context.read<ContenedorViewModel>();
         await _mapController!.showContenedores(vm.items);
       }
+
+      if (ok) {
+        await _getCoordenates();
+      }
     });
   }
 
@@ -205,6 +213,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
       final vm = context.read<ContenedorViewModel>();
       await _mapController!.showContenedores(vm.items);
+    }
+    if (ok) {
+      await _getCoordenates();
     }
   }
 
@@ -272,35 +283,35 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // CustomMapa(
-        //   onMapReady: (controller) async {
-        //     _mapController = controller;
-//
-        //     // Conectar callback de tap de contenedor
-        //     controller.onContenedorTap = _onContenedorTap;
-//
-        //     if (_hasLocationPermission) {
-        //       await controller.enableUserPuck();
-        //     }
-//
-        //     _vm = context.read<ContenedorViewModel>();
-//
-        //     // Si cargaron contenedores cargo
-        //     if (_vm!.items.isNotEmpty) {
-        //       await controller.refreshContenedores(_vm!.items);
-        //     } else {
-        //       // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
-        //       void once() async {
-        //         if (!_vm!.loading) {
-        //           _vm!.removeListener(once);
-        //           await _mapController?.refreshContenedores(_vm!.items);
-        //         }
-        //       }
-//
-        //       _vm!.addListener(once);
-        //     }
-        //   },
-        // ),
+        CustomMapa(
+          onMapReady: (controller) async {
+            _mapController = controller;
+
+            // Conectar callback de tap de contenedor
+            controller.onContenedorTap = _onContenedorTap;
+
+            if (_hasLocationPermission) {
+              await controller.enableUserPuck();
+            }
+
+            _vm = context.read<ContenedorViewModel>();
+
+            // Si cargaron contenedores cargo
+            if (_vm!.items.isNotEmpty) {
+              await controller.refreshContenedores(_vm!.items);
+            } else {
+              // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
+              void once() async {
+                if (!_vm!.loading) {
+                  _vm!.removeListener(once);
+                  await _mapController?.refreshContenedores(_vm!.items);
+                }
+              }
+
+              _vm!.addListener(once);
+            }
+          },
+        ),
 
         if (!_hasLocationPermission)
           Positioned.fill(
@@ -388,7 +399,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
           child2: SheetAddress(
             key: _sheetAddressKey, 
-            openOptionContainer: _abrirSheetAddContainer
+            openOptionContainer: _abrirSheetAddContainer,
+            tuUbicacion: 'Tu ubicación',
+            direccion: 'Dirección seleccionada',
+            userPoint: _userPoint,
           ),
         ),
         
