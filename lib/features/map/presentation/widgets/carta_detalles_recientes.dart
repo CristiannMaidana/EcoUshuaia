@@ -8,9 +8,10 @@ import 'package:provider/provider.dart';
 
 class CartaDetallesRecientes extends StatelessWidget{
   final Contenedor? contenedor;
-  final VoidCallback? ir;
+  final ValueChanged<Contenedor>? ir;
+
   //TODO: crear propiedades, (entidad, para tener los textos, id, y favorito de usuario), obtener elementos de icons
-  CartaDetallesRecientes({
+  const CartaDetallesRecientes({
     super.key,
     this.contenedor,
     this.ir,
@@ -76,11 +77,13 @@ class CartaDetallesRecientes extends StatelessWidget{
                 ),
               ),
               IconButton(
-                //TODO: el metodo ir para agregar valores, (nombre de contenedor - posicion)
-                onPressed: (){
-                  ir!();
-                  vmContenedores.removeCercanoById(contenedor!.idContenedor);
-                },
+                onPressed: (contenedor == null || ir == null)
+                    ? null
+                    : () {
+                        final current = contenedor!;
+                        ir!(current);
+                        vmContenedores.removeCercanoById(current.idContenedor);
+                      },
                 icon: Icon(Icons.arrow_forward),
                 style: IconButton.styleFrom(
                   side: BorderSide(width: 1, color: Colors.grey),
