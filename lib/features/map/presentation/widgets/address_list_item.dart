@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class AddressListItem extends StatelessWidget {
   final String title;
-  final Widget? dragHandle;
+  final String direccion;
+  final Widget dragHandle;
 
   const AddressListItem({
     super.key,
     required this.title,
-    this.dragHandle,
+    required this.dragHandle,
+    required this.direccion,
   });
 
   @override
@@ -28,11 +30,17 @@ class AddressListItem extends StatelessWidget {
           backgroundColor: Colors.green.shade100,
           child: const Icon(Icons.place, color: Colors.green),
         ),
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(direccion, style: Theme.of(context).textTheme.titleSmall,)
+          ],
         ),
         trailing: dragHandle,
       ),
