@@ -1,9 +1,12 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/prueba.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SheetAddress extends StatefulWidget {
   final VoidCallback openOptionContainer;
@@ -24,14 +27,8 @@ class SheetAddressState extends State<SheetAddress> {
   bool botonSeleccionado = true;
   bool generarRuta = false;
 
-  final List<String> _addresses = <String>[
-    'Intendente Miguel Torelli 723',
-    'San Martín 123',
-    'Av. Maipú 1001',
-    'Héroes de Malvinas 2500',
-  ];
-
-  int _counter = 0;
+  final List<Contenedor> _contenedoresRuta = <Contenedor>[];
+  final Set<int> _contenedoresRutaIds = <int>{};
 
   /// Mantiene SIEMPRE el orden de los strings
   final ValueNotifier<List<String>> orderStrings = ValueNotifier<List<String>>(
@@ -40,12 +37,17 @@ class SheetAddressState extends State<SheetAddress> {
 
   //==== Sincroniza el ValueNotifier con la lista actual ====//
   void _syncOrder() {
-    orderStrings.value = List.unmodifiable(_addresses);
+    orderStrings.value = List.unmodifiable(
+      _contenedoresRuta
+          .map((c) => c.nombreContenedor ?? 'Contenedor ${c.idContenedor}')
+          .toList(),
+    );
   }
 
-  void addAddress() {
+  void addContenedor(Contenedor contenedor) {
+    if (!_contenedoresRutaIds.add(contenedor.idContenedor)) return;
     setState(() {
-      _addresses.add('Nueva dirección ${++_counter}');
+      _contenedoresRuta.add(contenedor);
       _syncOrder();
     });
   }
@@ -53,20 +55,28 @@ class SheetAddressState extends State<SheetAddress> {
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
       if (newIndex > oldIndex) newIndex -= 1;
-      final item = _addresses.removeAt(oldIndex);
-      _addresses.insert(newIndex, item);
+      final item = _contenedoresRuta.removeAt(oldIndex);
+      _contenedoresRuta.insert(newIndex, item);
       _syncOrder();
     });
   }
 
-  void _onDismiss(String text) {
+  void _onDismiss(Contenedor contenedor) {
+    context.read<ContenedorViewModel>().restoreCercanoById(contenedor.idContenedor);
     setState(() {
-      _addresses.remove(text);
+      _contenedoresRuta.removeWhere((c) => c.idContenedor == contenedor.idContenedor);
+      _contenedoresRutaIds.remove(contenedor.idContenedor);
       _syncOrder();
     });
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text('Eliminado: $text')));
+    ).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Eliminado: ${contenedor.nombreContenedor ?? 'Contenedor ${contenedor.idContenedor}'}',
+        ),
+      ),
+    );
   }
 
   //==== Dragging para el header ====//
@@ -236,20 +246,21 @@ class SheetAddressState extends State<SheetAddress> {
                 child: ReorderableListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   scrollController: scrollController,
-                  itemCount: _addresses.length,
+                  itemCount: _contenedoresRuta.length,
                   onReorder: _onReorder,
                   buildDefaultDragHandles: false,
                   itemBuilder: (context, index) {
-                    final text = _addresses[index];
+                    final contenedor = _contenedoresRuta[index];
+                    final title = contenedor.nombreContenedor ?? 'Contenedor ${contenedor.idContenedor}';
                     return Dismissible(
-                      key: ValueKey('dismiss_$text'),
+                      key: ValueKey('dismiss_${contenedor.idContenedor}'),
                       direction: DismissDirection.horizontal,
                       background: _dismissBg(Alignment.centerLeft),
                       secondaryBackground: _dismissBg(Alignment.centerRight),
-                      onDismissed: (_) => _onDismiss(text),
+                      onDismissed: (_) => _onDismiss(contenedor),
                       child: AddressListItem(
-                        key: ValueKey(text),
-                        title: text,
+                        key: ValueKey(contenedor.idContenedor),
+                        title: title,
                         dragHandle: ReorderableDragStartListener(
                           index: index,
                           child: const _HandleIcon(),
