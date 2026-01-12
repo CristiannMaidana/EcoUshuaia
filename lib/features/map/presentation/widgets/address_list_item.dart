@@ -17,24 +17,24 @@ class AddressListItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: Colors.grey.shade300),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
 
-        leading: dragHandle,
+        leading: CircleAvatar(
+          radius: 18,
+          backgroundColor: Colors.green.shade100,
+          child: const Icon(Icons.place, color: Colors.green),
+        ),
         title: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: CircleAvatar(
-          radius: 16,
-          backgroundColor: Colors.blueGrey.shade50,
-          child: const Icon(Icons.place, color: Colors.black87, size: 18),
-        ),
+        trailing: dragHandle,
       ),
     );
   }
