@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:flutter/services.dart';
@@ -12,6 +16,9 @@ class MapController {
   // Icon de la ubicacion a buscar y punto
   PointAnnotationManager? _direccionAnnotationManager;
   Uint8List? _searchIcon;
+
+  // Marca la ruta desde la posicion al destino
+  PolylineAnnotationManager? _routeAnnotationManager;
 
   final Map<String, Contenedor> _annotationToContenedor = {};
 
@@ -248,5 +255,99 @@ class MapController {
     );
 
     await mgr.create(options);
+  }
+
+
+  //==== Marca la ruta desde la ubicacion del usuario a la direccion ====
+   Future<void> addRoute({required double lat, required double lon}) async {
+    final map = _map;
+    if (map == null) return;
+
+    // Posición actual
+    final posUser = await geo.Geolocator.getCurrentPosition(
+      desiredAccuracy: geo.LocationAccuracy.high,
+    );
+    final uLat = posUser.latitude;
+    final uLon = posUser.longitude;
+
+    // Llamada Directions
+    final token = const String.fromEnvironment('ACCESS_TOKEN');
+    final uri = Uri.parse(
+      'https://api.mapbox.com/directions/v5/mapbox/driving/'
+      '$uLon,$uLat;$lon,$lat'
+      '?alternatives=false&geometries=polyline6&overview=full&steps=false'
+      '&access_token=$token',
+    );
+
+    final resp = await http.get(uri);
+    if (resp.statusCode != 200) {
+      return;
+    }
+
+    final data = json.decode(resp.body) as Map<String, dynamic>;
+    final routes = (data['routes'] as List?) ?? const [];
+    if (routes.isEmpty) return;
+
+    final geometry = routes.first['geometry'] as String?;
+    if (geometry == null || geometry.isEmpty) return;
+
+    // lista de Position
+    final positions = _decodePolyline6(geometry);
+    if (positions.length < 2) return;
+
+    // Reemplazamos ruta previa
+    await _ensureRouteAnnotationManager();
+    final mgr = _routeAnnotationManager;
+    if (mgr == null) return;
+
+    await mgr.deleteAll(); // limpiar ruta previa
+
+    await mgr.create(
+      PolylineAnnotationOptions(
+        geometry: LineString(coordinates: positions),
+        lineWidth: 4.0,
+        lineOpacity: 1.0,
+        lineColor: Colors.blue.value,
+      ),
+    );
+}
+
+  Future<void> _ensureRouteAnnotationManager() async {
+    final map = _map;
+    if (map == null) return;
+    _routeAnnotationManager ??=
+        await map.annotations.createPolylineAnnotationManager();
+  }
+
+  /// Decodifica polyline 
+  List<Position> _decodePolyline6(String polyline) {
+    final List<Position> coords = [];
+    int index = 0, lat = 0, lon = 0;
+
+    while (index < polyline.length) {
+      int b, shift = 0, result = 0;
+      do {
+        b = polyline.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      final dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = polyline.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      final dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lon += dlng;
+
+      coords.add(
+        Position(lon / 1e6, lat / 1e6),
+      );
+    }
+    return coords;
   }
 }
