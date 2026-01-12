@@ -2,9 +2,9 @@ import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/address_list_item.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
-import 'package:eco_ushuaia/features/prueba.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
