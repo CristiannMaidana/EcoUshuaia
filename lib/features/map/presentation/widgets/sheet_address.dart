@@ -2,6 +2,7 @@ import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_list_item.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
@@ -12,12 +13,14 @@ class SheetAddress extends StatefulWidget {
   final VoidCallback openOptionContainer;
   final String tuUbicacion;
   final String direccion;
+  final Map<String, double> userPoint;
 
   const SheetAddress({
     super.key,
     required this.openOptionContainer,
     required this.tuUbicacion,
     required this.direccion,
+    required this.userPoint,
   });
 
   @override
@@ -45,6 +48,25 @@ class SheetAddressState extends State<SheetAddress> {
     orderStrings.value = List.unmodifiable(
       _rutaItems.map((item) => item.title).toList(),
     );
+  }
+
+  String _getDireccionFromContenedor(MapSearchViewModel vmMapSearch, Contenedor? contenedor) {
+    final coord = contenedor?.coordenada;
+    if (coord == null) return contenedor?.descripcionUbicacion ?? '';
+    final direccion = vmMapSearch.getDireccionFromPoint(
+      coord.latitud,
+      coord.longitud,
+    );
+    if (direccion.isNotEmpty) return direccion;
+    return contenedor?.descripcionUbicacion ?? '';
+  }
+
+  String _getDireccionFromUserPoint(MapSearchViewModel vmMapSearch) {
+    final lat = widget.userPoint['lat'];
+    final lon = widget.userPoint['lon'];
+    if (lat == null || lon == null) return '';
+    if (lat == 0 && lon == 0) return '';
+    return vmMapSearch.getDireccionFromPoint(lat, lon);
   }
 
   void addContenedor(Contenedor contenedor) {
@@ -147,6 +169,7 @@ class SheetAddressState extends State<SheetAddress> {
   @override
   Widget build(BuildContext context) {
     final scrollController = PrimaryScrollController.of(context);
+    MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
 
     final outlineBtnStyle = OutlinedButton.styleFrom(
       shape: const StadiumBorder(),
@@ -285,9 +308,19 @@ class SheetAddressState extends State<SheetAddress> {
                   buildDefaultDragHandles: false,
                   itemBuilder: (context, index) {
                     final item = _rutaItems[index];
+                    final direccion = item.id == _RutaItemId.tuUbicacion
+                        ? (vmMapSearch == null ? '' : _getDireccionFromUserPoint(vmMapSearch))
+                        : item.id == _RutaItemId.direccion
+                            ? item.title
+                            : item.contenedor == null
+                                ? ''
+                                : (vmMapSearch == null
+                                    ? (item.contenedor?.descripcionUbicacion ?? '')
+                                    : _getDireccionFromContenedor(vmMapSearch, item.contenedor));
                     final child = AddressListItem(
                       key: ValueKey(item.id),
                       title: item.title,
+                      direccion: direccion,
                       dragHandle: ReorderableDragStartListener(
                         index: index,
                         child: const _HandleIcon(),
