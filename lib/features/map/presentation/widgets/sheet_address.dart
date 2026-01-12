@@ -10,10 +10,14 @@ import 'package:provider/provider.dart';
 
 class SheetAddress extends StatefulWidget {
   final VoidCallback openOptionContainer;
+  final String tuUbicacion;
+  final String direccion;
 
   const SheetAddress({
     super.key,
     required this.openOptionContainer,
+    required this.tuUbicacion,
+    required this.direccion,
   });
 
   @override
@@ -27,8 +31,9 @@ class SheetAddressState extends State<SheetAddress> {
   bool botonSeleccionado = true;
   bool generarRuta = false;
 
-  final List<Contenedor> _contenedoresRuta = <Contenedor>[];
   final Set<int> _contenedoresRutaIds = <int>{};
+
+  late final List<_RutaItem> _rutaItems;
 
   /// Mantiene SIEMPRE el orden de los strings
   final ValueNotifier<List<String>> orderStrings = ValueNotifier<List<String>>(
@@ -38,16 +43,14 @@ class SheetAddressState extends State<SheetAddress> {
   //==== Sincroniza el ValueNotifier con la lista actual ====//
   void _syncOrder() {
     orderStrings.value = List.unmodifiable(
-      _contenedoresRuta
-          .map((c) => c.nombreContenedor ?? 'Contenedor ${c.idContenedor}')
-          .toList(),
+      _rutaItems.map((item) => item.title).toList(),
     );
   }
 
   void addContenedor(Contenedor contenedor) {
     if (!_contenedoresRutaIds.add(contenedor.idContenedor)) return;
     setState(() {
-      _contenedoresRuta.add(contenedor);
+      _rutaItems.add(_RutaItem.contenedor(contenedor));
       _syncOrder();
     });
   }
@@ -55,16 +58,18 @@ class SheetAddressState extends State<SheetAddress> {
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
       if (newIndex > oldIndex) newIndex -= 1;
-      final item = _contenedoresRuta.removeAt(oldIndex);
-      _contenedoresRuta.insert(newIndex, item);
+      final item = _rutaItems.removeAt(oldIndex);
+      _rutaItems.insert(newIndex, item);
       _syncOrder();
     });
   }
 
-  void _onDismiss(Contenedor contenedor) {
+  void _onDismiss(_RutaItem item) {
+    if (!item.isDismissible) return;
+    final contenedor = item.contenedor!;
     context.read<ContenedorViewModel>().restoreCercanoById(contenedor.idContenedor);
     setState(() {
-      _contenedoresRuta.removeWhere((c) => c.idContenedor == contenedor.idContenedor);
+      _rutaItems.removeWhere((it) => it.id == item.id);
       _contenedoresRutaIds.remove(contenedor.idContenedor);
       _syncOrder();
     });
@@ -73,7 +78,7 @@ class SheetAddressState extends State<SheetAddress> {
     ).showSnackBar(
       SnackBar(
         content: Text(
-          'Eliminado: ${contenedor.nombreContenedor ?? 'Contenedor ${contenedor.idContenedor}'}',
+          'Eliminado: ${item.title}',
         ),
       ),
     );
@@ -97,10 +102,39 @@ class SheetAddressState extends State<SheetAddress> {
   @override
   void initState() {
     super.initState();
+    _rutaItems = <_RutaItem>[
+      _RutaItem.fixed(
+        id: _RutaItemId.tuUbicacion,
+        title: widget.tuUbicacion,
+      ),
+      _RutaItem.fixed(
+        id: _RutaItemId.direccion,
+        title: widget.direccion,
+      ),
+    ];
     _syncOrder();
 
     orderStrings.addListener(() {
       debugPrint('Orden actualizado: ${orderStrings.value}');
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant SheetAddress oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tuUbicacion == widget.tuUbicacion &&
+        oldWidget.direccion == widget.direccion) {
+      return;
+    }
+    setState(() {
+      for (final item in _rutaItems) {
+        if (item.id == _RutaItemId.tuUbicacion) {
+          item.title = widget.tuUbicacion;
+        } else if (item.id == _RutaItemId.direccion) {
+          item.title = widget.direccion;
+        }
+      }
+      _syncOrder();
     });
   }
 
@@ -246,26 +280,29 @@ class SheetAddressState extends State<SheetAddress> {
                 child: ReorderableListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   scrollController: scrollController,
-                  itemCount: _contenedoresRuta.length,
+                  itemCount: _rutaItems.length,
                   onReorder: _onReorder,
                   buildDefaultDragHandles: false,
                   itemBuilder: (context, index) {
-                    final contenedor = _contenedoresRuta[index];
-                    final title = contenedor.nombreContenedor ?? 'Contenedor ${contenedor.idContenedor}';
+                    final item = _rutaItems[index];
+                    final child = AddressListItem(
+                      key: ValueKey(item.id),
+                      title: item.title,
+                      dragHandle: ReorderableDragStartListener(
+                        index: index,
+                        child: const _HandleIcon(),
+                      ),
+                    );
+
+                    if (!item.isDismissible) return child;
+
                     return Dismissible(
-                      key: ValueKey('dismiss_${contenedor.idContenedor}'),
+                      key: ValueKey('dismiss_${item.id}'),
                       direction: DismissDirection.horizontal,
                       background: _dismissBg(Alignment.centerLeft),
                       secondaryBackground: _dismissBg(Alignment.centerRight),
-                      onDismissed: (_) => _onDismiss(contenedor),
-                      child: AddressListItem(
-                        key: ValueKey(contenedor.idContenedor),
-                        title: title,
-                        dragHandle: ReorderableDragStartListener(
-                          index: index,
-                          child: const _HandleIcon(),
-                        ),
-                      ),
+                      onDismissed: (_) => _onDismiss(item),
+                      child: child,
                     );
                   },
                 ),
@@ -369,6 +406,46 @@ class _HandleIcon extends StatelessWidget {
     return const Padding(
       padding: EdgeInsets.only(left: 8),
       child: Icon(Icons.drag_handle, color: Colors.grey),
+    );
+  }
+}
+
+abstract final class _RutaItemId {
+  static const String tuUbicacion = 'tu_ubicacion';
+  static const String direccion = 'direccion';
+}
+// Mapea y une Strings con contenedores
+class _RutaItem {
+  final String id;
+  String title;
+  final Contenedor? contenedor;
+  final bool isDismissible;
+
+  _RutaItem._({
+    required this.id,
+    required this.title,
+    required this.contenedor,
+    required this.isDismissible,
+  });
+
+  factory _RutaItem.fixed({
+    required String id,
+    required String title,
+  }) {
+    return _RutaItem._(
+      id: id,
+      title: title,
+      contenedor: null,
+      isDismissible: false,
+    );
+  }
+
+  factory _RutaItem.contenedor(Contenedor contenedor) {
+    return _RutaItem._(
+      id: 'contenedor_${contenedor.idContenedor}',
+      title: contenedor.nombreContenedor ?? 'Contenedor ${contenedor.idContenedor}',
+      contenedor: contenedor,
+      isDismissible: true,
     );
   }
 }
