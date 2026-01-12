@@ -117,8 +117,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
     sheetState.collapse();
   }
 
-  void _agregarDireccionNueva() {
-    _sheetAddressKey.currentState?.addAddress();
+  void _agregarDireccionNueva(Contenedor contenedor) {
+    _sheetAddressKey.currentState?.addContenedor(contenedor);
   }
 
   Future<void> _getCoordenates() async {
