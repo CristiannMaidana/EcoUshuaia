@@ -6,6 +6,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_view
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_list_item.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,10 +45,25 @@ class SheetAddressState extends State<SheetAddress> {
   );
 
   //==== Sincroniza el ValueNotifier con la lista actual ====//
-  void _syncOrder() {
-    orderStrings.value = List.unmodifiable(
-      _rutaItems.map((item) => item.title).toList(),
+  void _syncOrder([MapSearchViewModel? vmMapSearch]) {
+    final next = List<String>.unmodifiable(
+      _rutaItems.map((item) => _direccionForItem(vmMapSearch, item)).toList(),
     );
+    if (!listEquals(orderStrings.value, next)) orderStrings.value = next;
+  }
+
+  // Obtiene direcciones y en base al elemento en parametro
+  String _direccionForItem(MapSearchViewModel? vmMapSearch, _RutaItem item) {
+    if (item.id == _RutaItemId.tuUbicacion) {
+      if (vmMapSearch == null) return '';
+      return _getDireccionFromUserPoint(vmMapSearch);
+    }
+    if (item.id == _RutaItemId.direccion) {
+      return item.title;
+    }
+    if (item.contenedor == null) return '';
+    if (vmMapSearch == null) return item.contenedor?.descripcionUbicacion ?? '';
+    return _getDireccionFromContenedor(vmMapSearch, item.contenedor);
   }
 
   String _getDireccionFromContenedor(MapSearchViewModel vmMapSearch, Contenedor? contenedor) {
@@ -95,15 +111,6 @@ class SheetAddressState extends State<SheetAddress> {
       _contenedoresRutaIds.remove(contenedor.idContenedor);
       _syncOrder();
     });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Eliminado: ${item.title}',
-        ),
-      ),
-    );
   }
 
   //==== Dragging para el header ====//
@@ -170,6 +177,7 @@ class SheetAddressState extends State<SheetAddress> {
   Widget build(BuildContext context) {
     final scrollController = PrimaryScrollController.of(context);
     MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
+    _syncOrder(vmMapSearch);
 
     final outlineBtnStyle = OutlinedButton.styleFrom(
       shape: const StadiumBorder(),
@@ -308,15 +316,7 @@ class SheetAddressState extends State<SheetAddress> {
                   buildDefaultDragHandles: false,
                   itemBuilder: (context, index) {
                     final item = _rutaItems[index];
-                    final direccion = item.id == _RutaItemId.tuUbicacion
-                        ? (vmMapSearch == null ? '' : _getDireccionFromUserPoint(vmMapSearch))
-                        : item.id == _RutaItemId.direccion
-                            ? item.title
-                            : item.contenedor == null
-                                ? ''
-                                : (vmMapSearch == null
-                                    ? (item.contenedor?.descripcionUbicacion ?? '')
-                                    : _getDireccionFromContenedor(vmMapSearch, item.contenedor));
+                    final direccion = _direccionForItem(vmMapSearch, item);
                     final child = AddressListItem(
                       key: ValueKey(item.id),
                       title: item.title,
