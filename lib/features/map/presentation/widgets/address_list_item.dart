@@ -39,7 +39,7 @@ class AddressListItem extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            Text(direccion, style: Theme.of(context).textTheme.titleSmall,)
+            Text('Direccion: $direccion', style: Theme.of(context).textTheme.titleSmall,)
           ],
         ),
         trailing: dragHandle,
