@@ -184,9 +184,9 @@ class ContainerDetailState extends State<ContainerDetail> {
                                                     widget.container?.nombreContenedor ?? 'Contenedor numero',
                                                     style: Theme.of(context).textTheme.titleMedium,
                                                   ),
-                                                  Text(' . ', style: Theme.of(context).textTheme.titleMedium),
-                                                  Text((widget.container?.idZona ?? 'Zona ').toString(),
-                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                  Text(
+                                                    'Zona: ${widget.container?.idZona}' ?? 'Zona ',
+                                                    style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                 ]
                                               ),
