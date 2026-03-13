@@ -246,8 +246,8 @@ class ContainerDetailState extends State<ContainerDetail> {
                                     children: [
                                       Expanded(
                                         child: InfoStateContainer(
-                                          titulo: 'Capacidad de vaciado',
-                                          descripcion: (widget.container?.capacidadTotal ?? 'Desconocido').toString(),
+                                          titulo: 'Direccion:',
+                                          descripcion: 'direccion', // TODO: obtener direccion a partir de coordenadas
                                         ),
                                       ),
                                       SizedBox(width: 8),
@@ -277,6 +277,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       ),
                                     ]
                                   ),
+                                  
                                   //Botones de accion
                                   const SizedBox(height: 16),
                                   Row(
