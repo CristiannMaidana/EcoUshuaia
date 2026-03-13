@@ -178,18 +178,21 @@ class ContainerDetailState extends State<ContainerDetail> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    'Zona: ${widget.container?.idZona}',
-                                                    style: Theme.of(context).textTheme.titleMedium,
-                                                  ),
-                                                  Text(
-                                                    widget.container?.nombreContenedor ?? 'Contenedor numero',
-                                                    style: Theme.of(context).textTheme.titleMedium,
-                                                  ),
-                                                ]
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 10),
+                                                child: Text(
+                                                  'Zona: ${widget.container?.idZona}',
+                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                ),
                                               ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 10),
+                                                child: Text(
+                                                  widget.container?.nombreContenedor ?? 'Contenedor numero',
+                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                ),
+                                              ),
+                                      
                                               SizedBox(height: 4),
                                               // Text(
                                               //   'Dirección: $direccion',
