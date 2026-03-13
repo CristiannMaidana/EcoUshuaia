@@ -178,7 +178,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Row(
+                                              Column(
                                                 children: [
                                                   Text(
                                                     widget.container?.nombreContenedor ?? 'Contenedor numero',
