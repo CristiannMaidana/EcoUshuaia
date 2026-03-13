@@ -158,13 +158,13 @@ class ContainerDetailState extends State<ContainerDetail> {
                               padding: const EdgeInsets.only(left: 14, right: 14, bottom: 8),
                               child: Column(
                                 children: [
-                                  //Titulo detalle simple de contenedor
+                                  
+                                  //Header del widget (Icon - Texto - Boton cerrar)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
-
                                           // Icono location del contenedor
                                           Container(
                                             padding: EdgeInsets.all(7),
@@ -175,6 +175,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                             child: Icon(Icons.location_on_outlined, size: 40, color: Colors.green,)
                                           ),
                                           SizedBox(width: 8),
+                                          // Informacion basica del contenedor (Zona y nombre)
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
