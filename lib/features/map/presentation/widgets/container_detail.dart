@@ -189,7 +189,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                                 padding: const EdgeInsets.only(left: 10),
                                                 child: Text(
                                                   widget.container?.nombreContenedor ?? 'Contenedor numero',
-                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                  style: Theme.of(context).textTheme.bodyMedium,
                                                 ),
                                               ),
                                       
