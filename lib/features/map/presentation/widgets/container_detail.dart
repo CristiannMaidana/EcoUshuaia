@@ -192,12 +192,6 @@ class ContainerDetailState extends State<ContainerDetail> {
                                                   style: Theme.of(context).textTheme.bodyMedium,
                                                 ),
                                               ),
-                                      
-                                              SizedBox(height: 4),
-                                              // Text(
-                                              //   'Dirección: $direccion',
-                                              //   style: Theme.of(context).textTheme.bodyMedium,
-                                              // ),
                                             ],
                                           ),
                                         ],
