@@ -181,11 +181,11 @@ class ContainerDetailState extends State<ContainerDetail> {
                                               Column(
                                                 children: [
                                                   Text(
-                                                    widget.container?.nombreContenedor ?? 'Contenedor numero',
+                                                    'Zona: ${widget.container?.idZona}',
                                                     style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                   Text(
-                                                    'Zona: ${widget.container?.idZona}' ?? 'Zona ',
+                                                    widget.container?.nombreContenedor ?? 'Contenedor numero',
                                                     style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                 ]
