@@ -202,7 +202,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                   ),
                                   SizedBox(height: 16),
                                   
-                                  //Informacion de contenedores
+                                  //Informacion de contenedores ( Tipo de residuo, id del contenedor, distancia)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
@@ -240,6 +240,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                     ]
                                   ),
                                   SizedBox(height: 16),
+                                  
                                   //Informacion de estado de contenedor
                                   Row(
                                     children: [
