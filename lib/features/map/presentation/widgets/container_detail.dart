@@ -164,6 +164,8 @@ class ContainerDetailState extends State<ContainerDetail> {
                                     children: [
                                       Row(
                                         children: [
+
+                                          // Icono location del contenedor
                                           Container(
                                             padding: EdgeInsets.all(7),
                                             decoration: BoxDecoration(
