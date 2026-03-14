@@ -16,10 +16,10 @@ class ContainerDetail extends StatefulWidget {
   final Future<double>? Function(double lat, double lon)? distancia;
 
   ContainerDetail({
-    Key? key,
+    super.key,
     required this.container,
     this.distancia,
-  }) : super(key: key);
+  });
 
   @override
   State<ContainerDetail> createState() => ContainerDetailState();
@@ -28,7 +28,8 @@ class ContainerDetail extends StatefulWidget {
 class ContainerDetailState extends State<ContainerDetail> {
   late DraggableScrollableController _draggableController;
   Future<double>? _metrosFuture;
-
+  bool _closingByDrag = false;
+  
   @override
   void initState() {
     super.initState();
@@ -67,7 +68,28 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   // Listener para el cambio de tamaño del sheet
   void _onSheetChange() {
-    if (!mounted) return;
+    if (!mounted || !_draggableController.isAttached) return;
+
+    final size = _draggableController.size;
+
+    // Si empezó a bajar apenas desde abierto, cerralo completo
+    if (!_closingByDrag && size < 0.44) {
+      _closingByDrag = true;
+      _draggableController
+          .animateTo(
+            0.0,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+          )
+          .whenComplete(() {
+            if (mounted) {
+              setState(() {
+                _closingByDrag = false;
+              });
+            }
+          });
+      return;
+    }
     setState(() {});
   }
 
