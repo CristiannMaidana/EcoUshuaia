@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
@@ -175,6 +176,7 @@ class SheetAddressState extends State<SheetAddress> {
 
   @override
   Widget build(BuildContext context) {
+    final sheet = _sheet!;
     final scrollController = PrimaryScrollController.of(context);
     MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
     _syncOrder(vmMapSearch);
@@ -189,229 +191,273 @@ class SheetAddressState extends State<SheetAddress> {
       top: false,
       child: Stack(
         children: [
-          Column(
-            children: [
-              // ===== Header =====
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onVerticalDragUpdate: _dragFromHeader,
-                onVerticalDragEnd: _endDragFromHeader,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Barra de agarre
-                      BarraAgarre(),
-
-                      // Header con titulo y boton principal
-                      Row(
+          ValueListenableBuilder<double>(
+            valueListenable: sheet.sheetSizeListenable,
+            builder: (context, _, __) => Column(
+              children: [
+                if(sheet.isExpanded || sheet.isFullyExpanded)...[
+                  // ===== Header =====
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onVerticalDragUpdate: _dragFromHeader,
+                    onVerticalDragEnd: _endDragFromHeader,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // TODO: Cambiar por datos reales de la dirección seleccionada desde vm
-                          //Texto informacion de direccion seleccionada
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Dirección Ejemplo',
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.w700),
+                          // Barra de agarre
+                          BarraAgarre(),
+
+                          // Header con titulo y boton principal
+                          Row(
+                            children: [
+                              // TODO: Cambiar por datos reales de la dirección seleccionada desde vm
+                              //Texto informacion de direccion seleccionada
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Dirección Ejemplo',
+                                      style: Theme.of(context).textTheme.titleMedium
+                                          ?.copyWith(fontWeight: FontWeight.w700),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      'Calle Falsa 123, Ciudad, País',
+                                      style: Theme.of(context).textTheme.bodySmall
+                                          ?.copyWith(color: Colors.grey.shade600),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Calle Falsa 123, Ciudad, País',
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(color: Colors.grey.shade600),
+                              ),
+                              const SizedBox(width: 12),
+                              ElevatedButton(
+                                onPressed: widget.openOptionContainer,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.add_circle),
+                                    SizedBox(width: 8),
+                                    Text('Parada'),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          ElevatedButton(
-                            onPressed: widget.openOptionContainer,
-                            child: Row(
-                              children: [
-                                Icon(Icons.add_circle),
-                                SizedBox(width: 8),
-                                Text('Parada'),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
 
-              // Separador fino
-              SizedBox(width: double.infinity, child: lineDivider()),
+                  // Separador fino
+                  SizedBox(width: double.infinity, child: lineDivider()),
 
-              // ===== Controles de navegacion =====
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(width: 1, color: Colors.grey.shade300,),
-                          color: Colors.grey.shade100,
+                  // ===== Controles de navegacion =====
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(width: 1, color: Colors.grey.shade300,),
+                              color: Colors.grey.shade100,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _showBottomActions = !_showBottomActions;
+                                      botonSeleccionado = !botonSeleccionado;
+                                      generarRuta = !generarRuta;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.directions_car),
+                                  color: botonSeleccionado
+                                      ? Colors.black
+                                      : Colors.blue.shade300,
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState((){
+                                      _showBottomActions = !_showBottomActions;
+                                      generarRuta = !generarRuta;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.directions_bike),
+                                  color: Colors.grey.shade700,
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _showBottomActions = !_showBottomActions;
+                                      generarRuta = !generarRuta;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.directions_walk),
+                                  color: Colors.grey.shade700,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _showBottomActions = !_showBottomActions;
-                                  botonSeleccionado = !botonSeleccionado;
-                                  generarRuta = !generarRuta;
-                                });
-                              },
-                              icon: const Icon(Icons.directions_car),
-                              color: botonSeleccionado
-                                  ? Colors.black
-                                  : Colors.blue.shade300,
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState((){
-                                  _showBottomActions = !_showBottomActions;
-                                  generarRuta = !generarRuta;
-                                });
-                              },
-                              icon: const Icon(Icons.directions_bike),
-                              color: Colors.grey.shade700,
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _showBottomActions = !_showBottomActions;
-                                  generarRuta = !generarRuta;
-                                });
-                              },
-                              icon: const Icon(Icons.directions_walk),
-                              color: Colors.grey.shade700,
-                            ),
-                          ],
-                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ===== Lista de direcciones =====
+                  Expanded(
+                    child: ReorderableListView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      scrollController: scrollController,
+                      itemCount: _rutaItems.length,
+                      onReorder: _onReorder,
+                      buildDefaultDragHandles: false,
+                      itemBuilder: (context, index) {
+                        final item = _rutaItems[index];
+                        final direccion = _direccionForItem(vmMapSearch, item);
+                        final child = AddressListItem(
+                          key: ValueKey(item.id),
+                          title: item.title,
+                          direccion: direccion,
+                          dragHandle: ReorderableDragStartListener(
+                            index: index,
+                            child: const _HandleIcon(),
+                          ),
+                        );
+
+                        if (!item.isDismissible) return child;
+
+                        return Dismissible(
+                          key: ValueKey('dismiss_${item.id}'),
+                          direction: DismissDirection.horizontal,
+                          background: _dismissBg(Alignment.centerLeft),
+                          secondaryBackground: _dismissBg(Alignment.centerRight),
+                          onDismissed: (_) => _onDismiss(item),
+                          child: child,
+                        );
+                      },
+                    ),
+                  ),
+
+                  // ===== Detalle de ruta =====
+                  if (generarRuta)
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
+                    child: DetalleRuta(),
+                  ),
+
+                  // ===== Botones fijos =====
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              // ===== Lista de direcciones =====
-              Expanded(
-                child: ReorderableListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  scrollController: scrollController,
-                  itemCount: _rutaItems.length,
-                  onReorder: _onReorder,
-                  buildDefaultDragHandles: false,
-                  itemBuilder: (context, index) {
-                    final item = _rutaItems[index];
-                    final direccion = _direccionForItem(vmMapSearch, item);
-                    final child = AddressListItem(
-                      key: ValueKey(item.id),
-                      title: item.title,
-                      direccion: direccion,
-                      dragHandle: ReorderableDragStartListener(
-                        index: index,
-                        child: const _HandleIcon(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      child: Row(
+                        children: [
+                          OutlinedButton(
+                            style: outlineBtnStyle,
+                            onPressed: () {
+                              _sheet?.showFirstChild();
+                              _sheet?.collapseSheet();
+                            },
+                            child: Row(
+                              children: [
+                                const Icon(Icons.cancel, color: Colors.black),
+                                const SizedBox(width: 8),
+                                Text('Cancelar', style: Theme.of(context).textTheme.labelLarge,),
+                              ],
+                            ),
+                          ),
+                          const Spacer(),
+                          if (_showBottomActions)
+                            OutlinedButton(
+                              style: outlineBtnStyle,
+                              onPressed: () {},
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.favorite, color: Colors.black),
+                                  const SizedBox(width: 8),
+                                  Text('Guardar', style: Theme.of(context).textTheme.labelLarge,),
+                                ],
+                              ),
+                            ),
+                          if (_showBottomActions) const SizedBox(width: 10),
+                          if (_showBottomActions)
+                            OutlinedButton(
+                              style: outlineBtnStyle,
+                              onPressed: () {},
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.report, color: Colors.black),
+                                  const SizedBox(width: 8),
+                                  Text('Reportar', style: Theme.of(context).textTheme.labelLarge),
+                                ],
+                              ),
+                            ),
+                        ],
                       ),
-                    );
-
-                    if (!item.isDismissible) return child;
-
-                    return Dismissible(
-                      key: ValueKey('dismiss_${item.id}'),
-                      direction: DismissDirection.horizontal,
-                      background: _dismissBg(Alignment.centerLeft),
-                      secondaryBackground: _dismissBg(Alignment.centerRight),
-                      onDismissed: (_) => _onDismiss(item),
-                      child: child,
-                    );
-                  },
-                ),
-              ),
-
-              // ===== Detalle de ruta =====
-              if (generarRuta)
-              const Padding(
-                padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
-                child: DetalleRuta(),
-              ),
-
-              // ===== Botones fijos =====
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
+                    ),
                   ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: SafeArea(
-                  top: false,
-                  child: Row(
-                    children: [
-                      OutlinedButton(
-                        style: outlineBtnStyle,
-                        onPressed: () {
-                          _sheet?.showFirstChild();
-                          _sheet?.collapseSheet();
-                        },
-                        child: Row(
-                          children: [
-                            const Icon(Icons.cancel, color: Colors.black),
-                            const SizedBox(width: 8),
-                            Text('Cancelar', style: Theme.of(context).textTheme.labelLarge,),
-                          ],
-                        ),
-                      ),
-                      const Spacer(),
-                      if (_showBottomActions)
-                        OutlinedButton(
-                          style: outlineBtnStyle,
-                          onPressed: () {},
-                          child: Row(
+                ]
+                else...[
+                  // Solo header minimalista cuando el sheet no esta expandido
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onVerticalDragUpdate: _dragFromHeader,
+                    onVerticalDragEnd: _endDragFromHeader,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 27, vertical: 4.5),
+                      child: Column(
+                        children: [
+                          BarraAgarre(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Icon(Icons.favorite, color: Colors.black),
-                              const SizedBox(width: 8),
-                              Text('Guardar', style: Theme.of(context).textTheme.labelLarge,),
+                              Text('Dirección Ejemplo'),
+                              CircleIcon(
+                                icon: Icons.close,
+                                onPressed: () {},
+                              ),
                             ],
                           ),
-                        ),
-                      if (_showBottomActions) const SizedBox(width: 10),
-                      if (_showBottomActions)
-                        OutlinedButton(
-                          style: outlineBtnStyle,
-                          onPressed: () {},
-                          child: Row(
-                            children: [
-                              const Icon(Icons.report, color: Colors.black),
-                              const SizedBox(width: 8),
-                              Text('Reportar', style: Theme.of(context).textTheme.labelLarge),
-                            ],
-                          ),
-                        ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
+
+                  Expanded(
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      slivers: const [
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: SizedBox.expand(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),
