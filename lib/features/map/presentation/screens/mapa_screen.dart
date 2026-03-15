@@ -376,7 +376,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
         // Barra de navegacion del mapa
         FlotanteSheet(
           key: _flotanteKey,
-          minChildSize: .083,
+          minChildSize: .096,
           maxChildSize: .80,
           maxChildSize2: .80,
           snapPoints: const [.083, .30, .55, .80],
