@@ -161,7 +161,10 @@ class SheetSearchBarState extends State<SheetSearchBar> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Barra
-              BarraAgarre(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.5),
+                child: BarraAgarre(),
+              ),
 
               // Barra de busqueda o header de filtros
               CompositedTransformTarget(
@@ -169,7 +172,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                 child: Padding(
                   padding: widget.cambio
                       ? EdgeInsets.only(top: 15)
-                      : EdgeInsets.symmetric(horizontal: 10),
+                      : EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onVerticalDragUpdate: _dragFromHeader,
