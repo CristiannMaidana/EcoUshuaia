@@ -67,10 +67,46 @@ class FlotanteSheet extends StatefulWidget {
 
 class FlotanteSheetState extends State<FlotanteSheet> {
   late final DraggableScrollableController _controller;
+  final ValueNotifier<double> _sheetSizeNotifier = ValueNotifier<double>(0);
   double _innerBottomPadding = 10;
   bool _showSecondChild = false;
+  double? _previousSheetSize;
+  double? _currentSheetSize;
 
   bool get isShowingSecondChild => _showSecondChild;
+  ValueNotifier<double> get sheetSizeListenable => _sheetSizeNotifier;
+  double get currentSheetSize => _currentSheetSize ?? widget.minChildSize;
+  
+  // Getters para estados del sheet
+  bool get isCollapsed {
+    if (!_controller.isAttached) return true;
+    final size = _currentSheetSize ?? _controller.size;
+    return _near(size, widget.minChildSize);
+  }
+
+  bool get isCollapsing {
+    if (!_controller.isAttached ||
+        _previousSheetSize == null ||
+        _currentSheetSize == null) {
+      return false;
+    }
+    return _currentSheetSize! < _previousSheetSize! && !isCollapsed;
+  }
+
+  bool get isExpanding {
+    if (!_controller.isAttached ||
+        _previousSheetSize == null ||
+        _currentSheetSize == null) {
+      return false;
+    }
+    return _currentSheetSize! > _previousSheetSize! && !isFullyExpanded;
+  }
+
+  bool get isFullyExpanded {
+    if (!_controller.isAttached) return false;
+    final size = _currentSheetSize ?? _controller.size;
+    return _near(size, _currentMaxChildSize);
+  }
 
   double get _secondChildInitialSize {
     final min = widget.minChildSize;
@@ -161,6 +197,11 @@ class FlotanteSheetState extends State<FlotanteSheet> {
 
   void _onSheetChange() {
     if (!mounted) return;
+    if (_controller.isAttached) {
+      _previousSheetSize = _currentSheetSize;
+      _currentSheetSize = _controller.size;
+      _sheetSizeNotifier.value = _controller.size;
+    }
     setState(_syncInnerBottomPaddingAndCallbacks);
   }
 
@@ -175,6 +216,7 @@ class FlotanteSheetState extends State<FlotanteSheet> {
   void dispose() {
     _controller.removeListener(_onSheetChange);
     _controller.dispose();
+    _sheetSizeNotifier.dispose();
     super.dispose();
   }
 
