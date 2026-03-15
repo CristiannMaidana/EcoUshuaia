@@ -72,6 +72,7 @@ class FlotanteSheetState extends State<FlotanteSheet> {
   bool _showSecondChild = false;
   double? _previousSheetSize;
   double? _currentSheetSize;
+  double _lastHeaderDragDeltaDy = 0;
 
   bool get isShowingSecondChild => _showSecondChild;
   ValueNotifier<double> get sheetSizeListenable => _sheetSizeNotifier;
@@ -223,6 +224,7 @@ class FlotanteSheetState extends State<FlotanteSheet> {
   //==== Manejo de altura desde Header ====
   void dragFromHeader(DragUpdateDetails details) {
     if (!_controller.isAttached) return;
+    _lastHeaderDragDeltaDy = details.delta.dy;
     final height = MediaQuery.of(context).size.height;
     final next = (_controller.size - details.delta.dy / height).clamp(
       widget.minChildSize,
@@ -244,13 +246,27 @@ class FlotanteSheetState extends State<FlotanteSheet> {
       target = _currentMaxChildSize;
     } else {
       final cur = _controller.size;
-      target = _currentSnapPoints.reduce(
-        (a, b) => (cur - a).abs() < (cur - b).abs() ? a : b,
-      );
+      final snapPoints = List<double>.of(_currentSnapPoints)..sort();
+      if (_lastHeaderDragDeltaDy > 0) {
+        target = snapPoints.lastWhere(
+          (point) => point < cur - 0.0005,
+          orElse: () => widget.minChildSize,
+        );
+      } else if (_lastHeaderDragDeltaDy < 0) {
+        target = snapPoints.firstWhere(
+          (point) => point > cur + 0.0005,
+          orElse: () => _currentMaxChildSize,
+        );
+      } else {
+        target = snapPoints.reduce(
+          (a, b) => (cur - a).abs() < (cur - b).abs() ? a : b,
+        );
+      }
     }
 
     final dist = (target - _controller.size).abs();
     final ms = (180 + 220 * dist).toInt();
+    _lastHeaderDragDeltaDy = 0;
 
     _controller.animateTo(
       target,
