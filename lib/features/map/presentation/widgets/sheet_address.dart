@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
@@ -7,6 +6,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_view
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_list_item.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/header_for_addres_is_close.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -193,271 +193,303 @@ class SheetAddressState extends State<SheetAddress> {
         children: [
           ValueListenableBuilder<double>(
             valueListenable: sheet.sheetSizeListenable,
-            builder: (context, _, __) => Column(
-              children: [
-                if(sheet.isExpanded || sheet.isFullyExpanded)...[
-                  // ===== Header =====
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onVerticalDragUpdate: _dragFromHeader,
-                    onVerticalDragEnd: _endDragFromHeader,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Barra de agarre
-                          BarraAgarre(),
+            builder: (context, _, __) {
+              final snapPoints = List<double>.of(sheet.widget.snapPoints)..sort();
+              final contentHiddenThreshold = sheet.widget.minChildSize;
+              final contentFadeStartThreshold = snapPoints.length > 2
+                  ? snapPoints[2]
+                  : sheet.widget.maxChildSize;
+              final fadeRange = contentFadeStartThreshold > contentHiddenThreshold
+                  ? contentFadeStartThreshold - contentHiddenThreshold
+                  : 0.0001;
+              final transitionProgress =((sheet.currentSheetSize - contentHiddenThreshold) / fadeRange).clamp(0.0, 1.0);
+              final expandedHeaderOpacity = transitionProgress;
+              final collapsedHeaderOpacity = 1.0 - transitionProgress;
+              final contentOpacity = transitionProgress.clamp(0.0, 1.0);
 
-                          // Header con titulo y boton principal
-                          Row(
-                            children: [
-                              // TODO: Cambiar por datos reales de la dirección seleccionada desde vm
-                              //Texto informacion de direccion seleccionada
-                              Expanded(
+              return Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      // Header colapsado
+                      IgnorePointer(
+                        ignoring: collapsedHeaderOpacity <= 0.01,
+                        child: Opacity(
+                          opacity: collapsedHeaderOpacity,
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            heightFactor: collapsedHeaderOpacity,
+                            child: HeaderForAddressIsClose(
+                              onVerticalDragUpdateFromFather: _dragFromHeader, 
+                              onVerticalDragEndFromFather: _endDragFromHeader,
+                              address: widget.direccion,
+                              onPressedClose: () {
+                                _sheet?.showFirstChild();
+                                _sheet?.expandSheet(); // Falta arreglar
+                              },
+                            )
+                          ),
+                        ),
+                      ),
+                      
+                      // Header expandido
+                      IgnorePointer(
+                        ignoring: expandedHeaderOpacity <= 0.01,
+                        child: Opacity(
+                          opacity: expandedHeaderOpacity,
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            heightFactor: expandedHeaderOpacity,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onVerticalDragUpdate: _dragFromHeader,
+                              onVerticalDragEnd: _endDragFromHeader,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 4.5, 20, 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Dirección Ejemplo',
-                                      style: Theme.of(context).textTheme.titleMedium
-                                          ?.copyWith(fontWeight: FontWeight.w700),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      'Calle Falsa 123, Ciudad, País',
-                                      style: Theme.of(context).textTheme.bodySmall
-                                          ?.copyWith(color: Colors.grey.shade600),
+                                    BarraAgarre(),
+                                    
+                                    SizedBox(height: 12),
+
+                                    //Header con direccion y boton de agregar parada
+                                    Row(
+                                      children: [
+                                        // Contenedor para direccion con estilo de tarjeta
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Dirección Ejemplo',
+                                                style: Theme.of(context).textTheme.titleMedium
+                                                    ?.copyWith(fontWeight: FontWeight.w700),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                'Calle Falsa 123, Ciudad, País',
+                                                style: Theme.of(context).textTheme.bodySmall
+                                                    ?.copyWith(color: Colors.grey.shade600),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+
+                                        // Boton para agregar parada
+                                        ElevatedButton(
+                                          onPressed: widget.openOptionContainer,
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.add_circle),
+                                              SizedBox(width: 8),
+                                              Text('Parada'),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              ElevatedButton(
-                                onPressed: widget.openOptionContainer,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add_circle),
-                                    SizedBox(width: 8),
-                                    Text('Parada'),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Separador fino
-                  SizedBox(width: double.infinity, child: lineDivider()),
-
-                  // ===== Controles de navegacion =====
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(width: 1, color: Colors.grey.shade300,),
-                              color: Colors.grey.shade100,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _showBottomActions = !_showBottomActions;
-                                      botonSeleccionado = !botonSeleccionado;
-                                      generarRuta = !generarRuta;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.directions_car),
-                                  color: botonSeleccionado
-                                      ? Colors.black
-                                      : Colors.blue.shade300,
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState((){
-                                      _showBottomActions = !_showBottomActions;
-                                      generarRuta = !generarRuta;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.directions_bike),
-                                  color: Colors.grey.shade700,
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _showBottomActions = !_showBottomActions;
-                                      generarRuta = !generarRuta;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.directions_walk),
-                                  color: Colors.grey.shade700,
-                                ),
-                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-
-                  // ===== Lista de direcciones =====
+                  // Contenido del sheet
                   Expanded(
-                    child: ReorderableListView.builder(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      scrollController: scrollController,
-                      itemCount: _rutaItems.length,
-                      onReorder: _onReorder,
-                      buildDefaultDragHandles: false,
-                      itemBuilder: (context, index) {
-                        final item = _rutaItems[index];
-                        final direccion = _direccionForItem(vmMapSearch, item);
-                        final child = AddressListItem(
-                          key: ValueKey(item.id),
-                          title: item.title,
-                          direccion: direccion,
-                          dragHandle: ReorderableDragStartListener(
-                            index: index,
-                            child: const _HandleIcon(),
-                          ),
-                        );
-
-                        if (!item.isDismissible) return child;
-
-                        return Dismissible(
-                          key: ValueKey('dismiss_${item.id}'),
-                          direction: DismissDirection.horizontal,
-                          background: _dismissBg(Alignment.centerLeft),
-                          secondaryBackground: _dismissBg(Alignment.centerRight),
-                          onDismissed: (_) => _onDismiss(item),
-                          child: child,
-                        );
-                      },
-                    ),
-                  ),
-
-                  // ===== Detalle de ruta =====
-                  if (generarRuta)
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
-                    child: DetalleRuta(),
-                  ),
-
-                  // ===== Botones fijos =====
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: SafeArea(
-                      top: false,
-                      child: Row(
-                        children: [
-                          OutlinedButton(
-                            style: outlineBtnStyle,
-                            onPressed: () {
-                              _sheet?.showFirstChild();
-                              _sheet?.collapseSheet();
-                            },
-                            child: Row(
-                              children: [
-                                const Icon(Icons.cancel, color: Colors.black),
-                                const SizedBox(width: 8),
-                                Text('Cancelar', style: Theme.of(context).textTheme.labelLarge,),
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                          if (_showBottomActions)
-                            OutlinedButton(
-                              style: outlineBtnStyle,
-                              onPressed: () {},
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.favorite, color: Colors.black),
-                                  const SizedBox(width: 8),
-                                  Text('Guardar', style: Theme.of(context).textTheme.labelLarge,),
-                                ],
-                              ),
-                            ),
-                          if (_showBottomActions) const SizedBox(width: 10),
-                          if (_showBottomActions)
-                            OutlinedButton(
-                              style: outlineBtnStyle,
-                              onPressed: () {},
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.report, color: Colors.black),
-                                  const SizedBox(width: 8),
-                                  Text('Reportar', style: Theme.of(context).textTheme.labelLarge),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ]
-                else...[
-                  // Solo header minimalista cuando el sheet no esta expandido
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onVerticalDragUpdate: _dragFromHeader,
-                    onVerticalDragEnd: _endDragFromHeader,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 27, vertical: 4.5),
-                      child: Column(
-                        children: [
-                          BarraAgarre(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Dirección Ejemplo'),
-                              CircleIcon(
-                                icon: Icons.close,
-                                onPressed: () {},
+                    child: sheet.isCollapsed
+                        ? CustomScrollView(
+                            controller: scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            slivers: const [
+                              SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: SizedBox.expand(),
                               ),
                             ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                          )
+                        : IgnorePointer(
+                            ignoring: contentOpacity < 0.2,
+                            child: Opacity(
+                              opacity: contentOpacity,
+                              child: Column(
+                                children: [
+                                  SizedBox(width: double.infinity, child: lineDivider()),
+                                  // Acciones para elegir tipo de ruta
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            margin: const EdgeInsets.only(top: 8),
+                                            padding: const EdgeInsets.all(2),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(24),
+                                              border: Border.all(width: 1, color: Colors.grey.shade300,),
+                                              color: Colors.grey.shade100,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _showBottomActions = !_showBottomActions;
+                                                      botonSeleccionado = !botonSeleccionado;
+                                                      generarRuta = !generarRuta;
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.directions_car),
+                                                  color: botonSeleccionado
+                                                      ? Colors.black
+                                                      : Colors.blue.shade300,
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    setState((){
+                                                      _showBottomActions = !_showBottomActions;
+                                                      generarRuta = !generarRuta;
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.directions_bike),
+                                                  color: Colors.grey.shade700,
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _showBottomActions = !_showBottomActions;
+                                                      generarRuta = !generarRuta;
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.directions_walk),
+                                                  color: Colors.grey.shade700,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                  // Lista de paradas agregadas a la ruta
+                                  Expanded(
+                                    child: ReorderableListView.builder(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      scrollController: scrollController,
+                                      itemCount: _rutaItems.length,
+                                      onReorder: _onReorder,
+                                      buildDefaultDragHandles: false,
+                                      itemBuilder: (context, index) {
+                                        final item = _rutaItems[index];
+                                        final direccion = _direccionForItem(vmMapSearch, item);
+                                        final child = AddressListItem(
+                                          key: ValueKey(item.id),
+                                          title: item.title,
+                                          direccion: direccion,
+                                          dragHandle: ReorderableDragStartListener(
+                                            index: index,
+                                            child: const _HandleIcon(),
+                                          ),
+                                        );
 
-                  Expanded(
-                    child: CustomScrollView(
-                      controller: scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      slivers: const [
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: SizedBox.expand(),
-                        ),
-                      ],
-                    ),
+                                        if (!item.isDismissible) return child;
+
+                                        return Dismissible(
+                                          key: ValueKey('dismiss_${item.id}'),
+                                          direction: DismissDirection.horizontal,
+                                          background: _dismissBg(Alignment.centerLeft),
+                                          secondaryBackground: _dismissBg(Alignment.centerRight),
+                                          onDismissed: (_) => _onDismiss(item),
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  
+                                  if (generarRuta)
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
+                                    child: DetalleRuta(),
+                                  ),
+                                  
+                                  // Acciones para cancelar, guardar o reportar la ruta
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                                      borderRadius: const BorderRadius.only(
+                                        bottomLeft: Radius.circular(16),
+                                        bottomRight: Radius.circular(16),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    child: SafeArea(
+                                      top: false,
+                                      child: Row(
+                                        children: [
+                                          OutlinedButton(
+                                            style: outlineBtnStyle,
+                                            onPressed: () {
+                                              _sheet?.showFirstChild();
+                                              _sheet?.collapseSheet();
+                                            },
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.cancel, color: Colors.black),
+                                                const SizedBox(width: 8),
+                                                Text('Cancelar', style: Theme.of(context).textTheme.labelLarge,),
+                                              ],
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          if (_showBottomActions)
+                                            OutlinedButton(
+                                              style: outlineBtnStyle,
+                                              onPressed: () {},
+                                              child: Row(
+                                                children: [
+                                                  const Icon(Icons.favorite, color: Colors.black),
+                                                  const SizedBox(width: 8),
+                                                  Text('Guardar', style: Theme.of(context).textTheme.labelLarge,),
+                                                ],
+                                              ),
+                                            ),
+                                          if (_showBottomActions) const SizedBox(width: 10),
+                                          if (_showBottomActions)
+                                            OutlinedButton(
+                                              style: outlineBtnStyle,
+                                              onPressed: () {},
+                                              child: Row(
+                                                children: [
+                                                  const Icon(Icons.report, color: Colors.black),
+                                                  const SizedBox(width: 8),
+                                                  Text('Reportar', style: Theme.of(context).textTheme.labelLarge),
+                                                ],
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                   ),
                 ],
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),
