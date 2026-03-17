@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               maxHeight: 650,
           ),
           width: 600,
-          padding:EdgeInsets.all(25),// Add padding to the container
+          padding:EdgeInsets.all(15),// Add padding to the container
           
           //Para que los hijos tengan la misma altura que su padre.
           child: IntrinsicHeight(
