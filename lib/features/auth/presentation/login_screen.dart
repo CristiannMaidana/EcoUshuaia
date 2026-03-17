@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),),
       body: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(25), // Add padding to the body
+        padding: EdgeInsets.all(20), // Add padding to the body
         
         child: Container(
           decoration: containerInputsLogin,
