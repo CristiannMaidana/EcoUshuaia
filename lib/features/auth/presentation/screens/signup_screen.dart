@@ -154,7 +154,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       espacioVerticalMediano,
 
-                                      Text('Email', style: Theme.of(context).textTheme.bodyLarge,),
+                                      Text('Correo electrónico', style: Theme.of(context).textTheme.bodyLarge,),
                                       SizedBox(
                                         child: TextFormField(
                                           key: _emailFieldKey,
