@@ -102,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     )              
                   ),
+                  espacioVerticalMediano,
                   //Texto debajo del input.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
