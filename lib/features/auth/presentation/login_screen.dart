@@ -51,6 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('Iniciar sesión', style: Theme.of(context).textTheme.displaySmall),
+                  SizedBox(height: 20),
+                  Text('¡Bienvenido de nuevo! Por favor, ingresa tus credenciales para continuar.', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center,),
                   espacioVerticalMediano,
                   // Form for email 
                   Form(
