@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(vertical: 45), 
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('Iniciar sesión', style: Theme.of(context).textTheme.headlineLarge),
                   espacioVerticalMediano,
