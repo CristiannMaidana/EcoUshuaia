@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: IntrinsicHeight(
             //Para que pueda deslizarse
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: 45), 
+              padding: EdgeInsets.symmetric(vertical: 20), 
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
