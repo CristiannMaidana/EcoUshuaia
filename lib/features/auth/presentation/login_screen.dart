@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('Ingrese a su cuenta', style: Theme.of(context).textTheme.headlineLarge),
+                  Text('Iniciar sesión', style: Theme.of(context).textTheme.headlineLarge),
                   espacioVerticalMediano,
                   // Form for email 
                   Form(
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                             }
                           ),
-                          Text('Recuerdame', style: Theme.of(context).textTheme.labelMedium,),
+                          Text('Recordarme', style: Theme.of(context).textTheme.labelMedium,),
                         ],
                       ),
                       //Texto para mandarlo a la pagina de recordar contraseña
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
+                      IconButton(onPressed: null, icon: Icon(Icons.search), iconSize: 70),
                       IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
                       IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70)
                     ],
