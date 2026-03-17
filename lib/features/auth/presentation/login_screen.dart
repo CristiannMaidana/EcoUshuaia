@@ -56,7 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     //TextField for email
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text('Correo electrónico', style: Theme.of(context).textTheme.labelLarge),
                         TextFormField(
                           focusNode: _emailFocusNode,
                           style: Theme.of(context).textTheme.labelMedium,
@@ -72,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           validator: validarEmail,
                         ),
                         espacioVerticalMediano,
+                        Text('Contraseña', style: Theme.of(context).textTheme.labelLarge),
                         TextFormField(
                           style: Theme.of(context).textTheme.labelMedium,
                           obscureText: _obscurePassword,
