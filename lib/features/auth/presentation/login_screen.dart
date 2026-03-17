@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(title: Text('EcoUshuaia', style: Theme.of(context).textTheme.displayLarge),),
       body: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(20), // Add padding to the body
+        padding: EdgeInsets.all(15), // Add padding to the body
         
         child: Container(
           decoration: containerInputsLogin,
@@ -40,12 +40,13 @@ class _LoginScreenState extends State<LoginScreen> {
               minHeight: 700,
           ),
           width: 600,
-          padding:EdgeInsets.all(15),// Add padding to the container
+          padding:EdgeInsets.all(20),// Add padding to the container
           
           //Para que los hijos tengan la misma altura que su padre.
           child: IntrinsicHeight(
             //Para que pueda deslizarse
             child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: 45), 
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
