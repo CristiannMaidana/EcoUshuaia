@@ -121,6 +121,8 @@ class ContainerDetailState extends State<ContainerDetail> {
     return _draggableController.size > 0 + 0.001;
   }
 
+  //TODO: crear metodo para guardar en backend los contenedores favoritos cuando toque icon fav, el boton deberia cambiar de color si el contenedor es favorito o no
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ResiduoViewmodel>();
@@ -219,7 +221,13 @@ class ContainerDetailState extends State<ContainerDetail> {
                                           ),
                                         ],
                                       ),
-                                      CircleIcon(icon: Icons.close, onPressed: _bajarSheet), 
+                                      Row(
+                                        children: [
+                                          CircleIcon(icon: Icons.favorite, onPressed: () {}), 
+                                          SizedBox(width: 20),
+                                          CircleIcon(icon: Icons.close, onPressed: _bajarSheet), 
+                                        ]
+                                      ),
                                     ],
                                   ),
                                   SizedBox(height: 16),
