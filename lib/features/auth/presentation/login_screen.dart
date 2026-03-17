@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Iniciar sesión', style: Theme.of(context).textTheme.headlineLarge),
+                  Text('Iniciar sesión', style: Theme.of(context).textTheme.displaySmall),
                   espacioVerticalMediano,
                   // Form for email 
                   Form(
