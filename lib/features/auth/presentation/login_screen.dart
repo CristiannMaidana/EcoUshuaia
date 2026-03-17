@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           context, 
                           MaterialPageRoute(builder: (context) => ForgotPasswordScreen())
                         );},                     
-                        child: Text('Olvido contraseña?', style: Theme.of(context).textTheme.labelMedium,),
+                        child: Text('¿Olvidaste tu contraseña?', style: Theme.of(context).textTheme.labelMedium,),
                       ),
                     ],
                   ),
@@ -162,13 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Eres nuevo aquí?', style: Theme.of(context).textTheme.labelMedium,),
+                      Text('¿No ténes cuenta?', style: Theme.of(context).textTheme.labelMedium,),
                       TextButton(onPressed: (){
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => RegisterScreen())
                         );},
-                        child: Text('Registrate', style: Theme.of(context).textTheme.labelMedium,)
+                        child: Text('Crear cuenta', style: Theme.of(context).textTheme.labelMedium,)
                       ),
                     ],
                   ),
