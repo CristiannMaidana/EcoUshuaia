@@ -144,10 +144,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   ), 
                   espacioVerticalMediano,
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('O ingrese con', style: Theme.of(context).textTheme.labelMedium,)
-                    ]
+                      Expanded(
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'O continuar con', style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
 
                   Row(
