@@ -176,9 +176,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(onPressed: null, icon: Icon(Icons.search), iconSize: 70),
-                      IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
-                      IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70)
+                      ElevatedButton(
+                        onPressed: () {}, 
+                        child: Row(
+                          children: [
+                            Image.asset('assets/images/google_logo.png', height: 24),
+                            SizedBox(width: 8),
+                            Text('Google', style: Theme.of(context).textTheme.labelMedium,),
+                          ],
+                        ),
+                      )
                     ],
                   ),
 
