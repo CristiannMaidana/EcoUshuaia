@@ -185,6 +185,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             Text('Google', style: Theme.of(context).textTheme.labelMedium,),
                           ],
                         ),
+                      ),
+                      // Boton de apple
+                      ElevatedButton(
+                        onPressed: () {}, 
+                        child: Row(
+                          children: [
+                            Image.asset('assets/images/apple_logo.png', height: 24),
+                            SizedBox(width: 8),
+                            Text('Apple', style: Theme.of(context).textTheme.labelMedium,),
+                          ],
+                        ),
                       )
                     ],
                   ),
