@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Container(
           decoration: containerInputsLogin,
           constraints: BoxConstraints(
-              minHeight: 700,
+              maxHeight: 700,
           ),
           width: 600,
           padding:EdgeInsets.all(20),// Add padding to the container
