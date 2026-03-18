@@ -2,51 +2,71 @@ import 'package:flutter/material.dart';
 
 typedef StringValidator = String? Function(String?);
 
-class TextFormFieldDataUser extends StatefulWidget{
-  final Widget? lottie;
+class TextFormFieldDataUser extends StatelessWidget {
+  final GlobalKey<FormFieldState>? fieldKey;
+  final Widget? prefixIcon;
   final StringValidator? validate;
-  final String nombre;
+  final String? titulo;
+  final String labelText;
   final FocusNode? focusNode;
   final TextEditingController? controller;
+  final TextInputType? keyboardType;
+  final EdgeInsetsGeometry contentPadding;
+  final bool obscureText;
+  final VoidCallback? onTap;
 
-  TextFormFieldDataUser({
-    Key ? key,
-    required this.lottie,
-    required this.validate,
-    required this.nombre,
-    required this.focusNode,
+  const TextFormFieldDataUser({
+    super.key,
+    this.fieldKey,
+    this.prefixIcon,
+    this.validate,
+    this.titulo,
+    required this.labelText,
+    this.focusNode,
     this.controller,
-  }): super(key: key);
+    this.keyboardType,
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+    this.obscureText = false,
+    this.onTap,
+  });
 
   @override
-  State<TextFormFieldDataUser> createState() => _TextFormFieldDataUserState();
-}
-
-class _TextFormFieldDataUserState extends State<TextFormFieldDataUser> {
-  @override
-  Widget build(BuildContext context){
-    return Expanded(
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(widget.nombre, style: Theme.of(context).textTheme.bodyLarge),
+          titulo == null
+              ? const SizedBox.shrink()
+              : Text(
+                  titulo!,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
           TextFormField(
-            controller: widget.controller,
-            focusNode: widget.focusNode,
+            key: fieldKey,
+            controller: controller,
+            focusNode: focusNode,
+            style: Theme.of(context).textTheme.labelMedium,
+            obscureText: obscureText,
+            onTap: onTap,
+            keyboardType: keyboardType,
             decoration: InputDecoration(
-              labelText: widget.nombre,
-              contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+              labelText: labelText,
+              contentPadding: contentPadding,
               labelStyle: Theme.of(context).textTheme.labelLarge,
               errorStyle: Theme.of(context).textTheme.labelSmall,
-              prefixIcon: widget.lottie == null ? null : Padding(
-                padding: EdgeInsets.only(left: 12),
-                child: widget.lottie,
-              ),
+              prefixIcon: prefixIcon == null
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: prefixIcon,
+                    ),
             ),
-            validator: widget.validate,
+            validator: validate,
           ),
         ],
       ),
     );
   }
-} 
+}
