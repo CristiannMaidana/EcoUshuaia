@@ -35,7 +35,7 @@ class _TextFormFieldDataUserState extends State<TextFormFieldDataUser> {
             focusNode: widget.focusNode,
             decoration: InputDecoration(
               labelText: widget.nombre,
-              contentPadding: EdgeInsets.all(13),
+              contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
               labelStyle: Theme.of(context).textTheme.labelLarge,
               errorStyle: Theme.of(context).textTheme.labelSmall,
               prefixIcon: widget.lottie == null ? null : Padding(
