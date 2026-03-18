@@ -162,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           focusNode: _emailFocusNode,
                                           decoration: InputDecoration(
                                             labelText: "Email",
-                                            contentPadding: EdgeInsets.all(13),
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
                                             labelStyle: Theme.of(context).textTheme.labelLarge,
                                             errorStyle: Theme.of(context).textTheme.labelSmall,
                                             prefixIcon: emailNoAceptado
@@ -188,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           obscureText: _obscurePassword,
                                           decoration: InputDecoration(
                                             labelText: 'Contraseña',
-                                            contentPadding: EdgeInsets.all(13),
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
                                             labelStyle: Theme.of(context).textTheme.labelLarge,
                                             errorStyle: Theme.of(context).textTheme.labelSmall,
                                             prefixIcon: Padding(
@@ -223,7 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           obscureText: _obscurePasswordTwo,
                                           decoration: InputDecoration(
                                             labelText: 'Repita contraseña',
-                                            contentPadding: EdgeInsets.all(13),
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
                                             labelStyle: Theme.of(context).textTheme.labelLarge,
                                             errorStyle: Theme.of(context).textTheme.labelSmall,
                                             prefixIcon: Padding(
