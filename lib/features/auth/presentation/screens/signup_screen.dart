@@ -9,7 +9,7 @@ import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/singup_validators.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/showDialogPassword.dart';
-import 'package:eco_ushuaia/features/auth/presentation/widgets/textFormFieldDataUser.dart';
+import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
 import 'package:eco_ushuaia/features/auth/presentation/viewmodels/usuarios_create_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -121,32 +121,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                children: [
-                                                  TextFormFieldDataUser(
-                                                    controller: nombreController,
-                                                    lottie: AvatarLottie(focusNode: _userFocusNode),
-                                                    validate: nombreValidator,
-                                                    nombre: 'Nombre',
-                                                    focusNode: _userFocusNode,
-                                                  ),
-                                                ],
+                                              child: TextFormFieldCustom(
+                                                controller: nombreController,
+                                                prefixIcon: AvatarLottie(focusNode: _userFocusNode),
+                                                validate: nombreValidator,
+                                                titulo: 'Nombre',
+                                                labelText: 'Nombre',
+                                                focusNode: _userFocusNode,
                                               ),
                                             ),
                                             SizedBox(width: 16),
                                             Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                children: [
-                                                  TextFormFieldDataUser(
-                                                    controller: apellidoController,
-                                                    lottie: null,
-                                                    validate: apellidoValidator,
-                                                    nombre: 'Apellido',
-                                                    focusNode: null,
-                                                  ),
-                                                ],
+                                              child: TextFormFieldCustom(
+                                                controller: apellidoController,
+                                                validate: apellidoValidator,
+                                                titulo: 'Apellido',
+                                                labelText: 'Apellido',
                                               ),
                                             ),
                                           ],
@@ -154,91 +144,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       espacioVerticalMediano,
 
-                                      Text('Correo electrónico', style: Theme.of(context).textTheme.bodyLarge,),
-                                      SizedBox(
-                                        child: TextFormField(
-                                          key: _emailFieldKey,
-                                          controller: emailController,
-                                          focusNode: _emailFocusNode,
-                                          decoration: InputDecoration(
-                                            labelText: "Email",
-                                            contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-                                            labelStyle: Theme.of(context).textTheme.labelLarge,
-                                            errorStyle: Theme.of(context).textTheme.labelSmall,
-                                            prefixIcon: emailNoAceptado
-                                              ? Padding(
-                                                  padding: EdgeInsetsGeometry.only(left: 12),
-                                                  child: EmailLottie(focusNode: _emailFocusNode,),
-                                                )
-                                              : Padding(
-                                                  padding: EdgeInsetsGeometry.only(left: 12),
-                                                  child: EmailValidateLottie(),
-                                                ),
-                                          ),
-                                          validator: emailConfirmValidator,
-                                          keyboardType: TextInputType.emailAddress,
-                                        ),
+                                      TextFormFieldCustom(
+                                        fieldKey: _emailFieldKey,
+                                        controller: emailController,
+                                        focusNode: _emailFocusNode,
+                                        titulo: 'Correo electrónico',
+                                        labelText: 'Email',
+                                        validate: emailConfirmValidator,
+                                        keyboardType: TextInputType.emailAddress,
+                                        prefixIcon: emailNoAceptado
+                                            ? EmailLottie(focusNode: _emailFocusNode)
+                                            : EmailValidateLottie(),
                                       ),
                                       espacioVerticalMediano,
 
-                                      Text('Contraseña', style: Theme.of(context).textTheme.bodyLarge,),
-                                      SizedBox(
-                                        child: TextFormField(
-                                          controller: passwordController,
-                                          obscureText: _obscurePassword,
-                                          decoration: InputDecoration(
-                                            labelText: 'Contraseña',
-                                            contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-                                            labelStyle: Theme.of(context).textTheme.labelLarge,
-                                            errorStyle: Theme.of(context).textTheme.labelSmall,
-                                            prefixIcon: Padding(
-                                              padding: EdgeInsetsGeometry.only(left: 12),
-                                              child: EyePasswordLottie(
-                                                isClosed: _obscurePassword,
-                                                onTap: () {
-                                                  setState(() {
-                                                    _obscurePassword = !_obscurePassword;
-                                                  });
-                                                },
-                                              )
-                                            )
-                                          ),
-                                          validator: contrasennaValidator,
+                                      TextFormFieldCustom(
+                                        controller: passwordController,
+                                        obscureText: _obscurePassword,
+                                        titulo: 'Contraseña',
+                                        labelText: 'Contraseña',
+                                        validate: contrasennaValidator,
+                                        prefixIcon: EyePasswordLottie(
+                                          isClosed: _obscurePassword,
                                           onTap: () {
-                                            if(mensajePassword){
-                                              mensajePassword = false;
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) => Showdialogpassword(),
-                                              );
-                                            }
+                                            setState(() {
+                                              _obscurePassword = !_obscurePassword;
+                                            });
                                           },
                                         ),
+                                        onTap: () {
+                                          if(mensajePassword){
+                                            mensajePassword = false;
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => Showdialogpassword(),
+                                            );
+                                          }
+                                        },
                                       ),
                                       espacioVerticalMediano,
 
-                                      Text('Repetir contraseña', style: Theme.of(context).textTheme.bodyLarge,),
-                                      SizedBox(
-                                        child: TextFormField(
-                                          obscureText: _obscurePasswordTwo,
-                                          decoration: InputDecoration(
-                                            labelText: 'Repita contraseña',
-                                            contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-                                            labelStyle: Theme.of(context).textTheme.labelLarge,
-                                            errorStyle: Theme.of(context).textTheme.labelSmall,
-                                            prefixIcon: Padding(
-                                              padding: EdgeInsetsGeometry.only(left: 12),
-                                              child: EyePasswordLottie(
-                                                isClosed: _obscurePasswordTwo,
-                                                onTap: () {
-                                                  setState(() {
-                                                    _obscurePasswordTwo = !_obscurePasswordTwo;
-                                                  });
-                                                }
-                                              ),
-                                            )
-                                          ),
-                                          validator: (value) => repetirContrasennaValidator(value, passwordController.text),
+                                      TextFormFieldCustom(
+                                        obscureText: _obscurePasswordTwo,
+                                        titulo: 'Repetir contraseña',
+                                        labelText: 'Repita contraseña',
+                                        validate: (value) => repetirContrasennaValidator(value, passwordController.text),
+                                        prefixIcon: EyePasswordLottie(
+                                          isClosed: _obscurePasswordTwo,
+                                          onTap: () {
+                                            setState(() {
+                                              _obscurePasswordTwo = !_obscurePasswordTwo;
+                                            });
+                                          }
                                         ),
                                       ),
                                       espacioVerticalMediano,
