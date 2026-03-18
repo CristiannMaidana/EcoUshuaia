@@ -8,6 +8,7 @@ import 'package:eco_ushuaia/core/utils/validators/login_validators.dart';
 import 'package:eco_ushuaia/core/theme/container_theme.dart';
 import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
+import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
 
 class LoginScreen extends StatefulWidget{
   @override
@@ -54,50 +55,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 20),
                   Text('¡Bienvenido de nuevo! Por favor, ingresa tus credenciales para continuar.', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center,),
                   espacioVerticalMediano,
-                  // Form for email 
+                  // Formulario de login
                   Form(
                     key: _formKey,
-                    //TextField for email
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Correo electrónico', style: Theme.of(context).textTheme.labelLarge),
-                        TextFormField(
+                        // Input de email
+                        TextFormFieldCustom(
                           focusNode: _emailFocusNode,
-                          style: Theme.of(context).textTheme.labelMedium,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: Theme.of(context).textTheme.labelLarge,
-                            errorStyle: Theme.of(context).textTheme.labelSmall,
-                            prefixIcon: Padding(
-                              padding: EdgeInsets.only(left: 12),
-                              child: AvatarLottie(focusNode: _emailFocusNode)
-                            ),
-                          ),
-                          validator: validarEmail,
+                          titulo: 'Correo electrónico',
+                          labelText: 'Email',
+                          prefixIcon: AvatarLottie(focusNode: _emailFocusNode),
+                          validate: validarEmail,
                         ),
                         espacioVerticalMediano,
-                        Text('Contraseña', style: Theme.of(context).textTheme.labelLarge),
-                        TextFormField(
-                          style: Theme.of(context).textTheme.labelMedium,
+
+                        // Input de contraseña
+                        TextFormFieldCustom(
                           obscureText: _obscurePassword,
-                          decoration: InputDecoration(
-                            labelText: 'Contraseña',
-                            labelStyle: Theme.of(context).textTheme.labelLarge,
-                            errorStyle: Theme.of(context).textTheme.labelSmall,
-                            prefixIcon: Padding(
-                              padding: EdgeInsets.only(left: 12),
-                              child: EyePasswordLottie(
-                                isClosed: _obscurePassword,// true=cerrado, false = abierto
-                                onTap: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                              )
-                            )
+                          titulo: 'Contraseña',
+                          labelText: 'Contraseña',
+                          prefixIcon: EyePasswordLottie(
+                            isClosed: _obscurePassword,
+                            onTap: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
                           ),
-                          validator: validarPassword,
+                          validate: validarPassword,
                         ),
                       ],
                     )              
