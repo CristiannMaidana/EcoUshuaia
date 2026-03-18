@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 typedef StringValidator = String? Function(String?);
 
-class TextFormFieldDataUser extends StatelessWidget {
+class TextFormFieldCustom extends StatelessWidget {
   final GlobalKey<FormFieldState>? fieldKey;
   final Widget? prefixIcon;
   final StringValidator? validate;
@@ -15,7 +15,7 @@ class TextFormFieldDataUser extends StatelessWidget {
   final bool obscureText;
   final VoidCallback? onTap;
 
-  const TextFormFieldDataUser({
+  const TextFormFieldCustom({
     super.key,
     this.fieldKey,
     this.prefixIcon,
