@@ -27,7 +27,7 @@ class UsuariosRepositoryImp implements UsuariosRepository {
       idZona: idZona,
       idTipoUsuario: idTipoUsuario,
     );
-    final creado = await remote.getUser(dto);
+    final creado = await remote.postUser(dto);
     return creado.toEntity();
   }
 }
