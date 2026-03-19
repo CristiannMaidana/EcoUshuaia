@@ -9,6 +9,7 @@ import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/singup_validators.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/showDialogPassword.dart';
+import 'package:eco_ushuaia/features/auth/presentation/widgets/social_login_section.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
 import 'package:eco_ushuaia/features/auth/presentation/viewmodels/usuarios_create_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -223,21 +224,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ],
                                       ),
                                       espacioVerticalMediano,
-
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text('O ingrese con', style: Theme.of(context).textTheme.labelMedium,)
-                                        ]
-                                      ),
-
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
-                                          IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70),
-                                          IconButton(onPressed: null, icon: Icon(Icons.logo_dev), iconSize: 70)
-                                        ],
+                                      
+                                      // Seccion login con redes sociales
+                                      SocialLoginSection(
+                                        onGooglePressed: () {},
+                                        onApplePressed: () {},
                                       ),
                                     ]
                                   ),
