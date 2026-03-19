@@ -4,7 +4,7 @@ String? nombreValidator(String? value) {
   }
   final nombreRegExp = RegExp(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]+$");
   if (!nombreRegExp.hasMatch(value.trim())) {
-    return 'Solo se permiten letras en el nombre';
+    return 'Ingrese un nombre válido';
   }
   if (value.trim().length < 2) {
     return 'El nombre debe tener al menos 2 letras';
@@ -18,7 +18,7 @@ String? apellidoValidator(String? value) {
   }
   final apellidoRegExp = RegExp(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]+$");
   if (!apellidoRegExp.hasMatch(value.trim())) {
-    return 'Solo se permiten letras en el apellido';
+    return 'Ingrese un apellido válido';
   }
   if (value.trim().length < 2) {
     return 'El apellido debe tener al menos 2 letras';
