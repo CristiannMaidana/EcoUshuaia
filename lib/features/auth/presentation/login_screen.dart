@@ -122,22 +122,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 20),
 
                   // Boton de login
-                  StandardButton(
-                    texto: "Ingresar",
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // user Cristian@gmail.com, contraseña 123456
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => ContainerHomeScreen()),
-                          (route) => false,
-                        );
-                      } else {
-                        // Algún campo no pasó la validación
-                      }
-                    },
-                    width: double.infinity,
-                    height: 52,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: StandardButton(
+                      texto: "Ingresar",
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          // user Cristian@gmail.com, contraseña 123456
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => ContainerHomeScreen()),
+                            (route) => false,
+                          );
+                        } else {
+                          // Algún campo no pasó la validación
+                        }
+                      },
+                      width: double.infinity,
+                      height: 52,
+                    ),
                   ),
                   SizedBox(height: 20),
 
