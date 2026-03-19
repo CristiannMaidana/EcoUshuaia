@@ -200,8 +200,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           }
                                         ),
                                       ),
+                                      const SizedBox(height: 16),
+                                      
+                                      // Checkbox de terminos y condiciones
+                                      Row(
+                                        children: [
+                                          Checkbox(
+                                            value: false, 
+                                            onChanged: (bool? valor){
+                                              setState(() {});
+                                            }
+                                          ),
+                                          Expanded(child: Text('Acepto los términos de uso y la política de privacidad.', style: Theme.of(context).textTheme.bodySmall)),
+                                        ],
+                                      ),
                                       const SizedBox(height: 20),
 
+                                      // Boton de registro
                                       StandardButton(
                                         texto: vm.loading ? 'Creando...' : 'Crear cuenta',
                                         onPressed: () => _onRegisterPressed(vm),
