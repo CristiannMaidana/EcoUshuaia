@@ -205,7 +205,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         onPressed: () => _onRegisterPressed(vm),
                                       ),
                                       const SizedBox(height: 20),
+                                      
+                                      // Seccion login con redes sociales
+                                      SocialLoginSection(
+                                        onGooglePressed: () {},
+                                        onApplePressed: () {},
+                                      ),
+                                      const SizedBox(height: 20),
 
+                                      //Seccion para ir a la pagina de login
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
@@ -221,13 +229,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
                                           ),
                                         ],
-                                      ),
-                                      const SizedBox(height: 20),
-                                      
-                                      // Seccion login con redes sociales
-                                      SocialLoginSection(
-                                        onGooglePressed: () {},
-                                        onApplePressed: () {},
                                       ),
                                     ]
                                   ),
