@@ -130,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 prefixIcon: AvatarLottie(focusNode: _userFocusNode),
                                                 validate: nombreValidator,
                                                 titulo: 'Nombre',
-                                                labelText: 'Nombre',
+                                                labelText: 'Tu nombre',
                                                 focusNode: _userFocusNode,
                                               ),
                                             ),
@@ -140,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 controller: apellidoController,
                                                 validate: apellidoValidator,
                                                 titulo: 'Apellido',
-                                                labelText: 'Apellido',
+                                                labelText: 'Tu apellido',
                                               ),
                                             ),
                                           ],
@@ -154,7 +154,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         controller: emailController,
                                         focusNode: _emailFocusNode,
                                         titulo: 'Correo electrónico',
-                                        labelText: 'Email',
+                                        labelText: 'nombre@correo.com',
                                         validate: emailConfirmValidator,
                                         keyboardType: TextInputType.emailAddress,
                                         prefixIcon: emailNoAceptado
@@ -168,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         controller: passwordController,
                                         obscureText: _obscurePassword,
                                         titulo: 'Contraseña',
-                                        labelText: 'Contraseña',
+                                        labelText: 'Ingresá tu contraseña',
                                         validate: contrasennaValidator,
                                         prefixIcon: EyePasswordLottie(
                                           isClosed: _obscurePassword,
@@ -194,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       TextFormFieldCustom(
                                         obscureText: _obscurePasswordTwo,
                                         titulo: 'Repetir contraseña',
-                                        labelText: 'Repita contraseña',
+                                        labelText: 'Repetí tu contraseña',
                                         validate: (value) => repetirContrasennaValidator(value, passwordController.text),
                                         prefixIcon: EyePasswordLottie(
                                           isClosed: _obscurePasswordTwo,
