@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
-import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_validate_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
@@ -110,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                espacioVerticalMediano,
+                                const SizedBox(height: 20),
                                 Container(
                                   margin: EdgeInsets.all(25),
                                   alignment: Alignment.center,
@@ -143,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ],
                                         ),
                                       ),
-                                      espacioVerticalMediano,
+                                      const SizedBox(height: 16),
 
                                       TextFormFieldCustom(
                                         fieldKey: _emailFieldKey,
@@ -157,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             ? EmailLottie(focusNode: _emailFocusNode)
                                             : EmailValidateLottie(),
                                       ),
-                                      espacioVerticalMediano,
+                                      const SizedBox(height: 16),
 
                                       TextFormFieldCustom(
                                         controller: passwordController,
@@ -183,7 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           }
                                         },
                                       ),
-                                      espacioVerticalMediano,
+                                      const SizedBox(height: 16),
 
                                       TextFormFieldCustom(
                                         obscureText: _obscurePasswordTwo,
@@ -199,13 +198,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           }
                                         ),
                                       ),
-                                      espacioVerticalMediano,
+                                      const SizedBox(height: 20),
 
                                       StandardButton(
                                         texto: vm.loading ? 'Creando...' : 'Registrarse',
                                         onPressed: () => _onRegisterPressed(vm),
                                       ),
-                                      espacioVerticalMediano,
+                                      const SizedBox(height: 20),
 
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -223,7 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                         ],
                                       ),
-                                      espacioVerticalMediano,
+                                      const SizedBox(height: 20),
                                       
                                       // Seccion login con redes sociales
                                       SocialLoginSection(
