@@ -8,16 +8,17 @@ import 'package:eco_ushuaia/core/utils/validators/login_validators.dart';
 import 'package:eco_ushuaia/core/theme/container_theme.dart';
 import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
+import 'package:eco_ushuaia/features/auth/presentation/widgets/social_login_section.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
 
-class LoginScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _recordarme = false; 
+  bool _recordarme = false;
   final FocusNode _emailFocusNode = FocusNode();
   bool _obscurePassword = true; // Estado para mostrar/ocultar
 
@@ -34,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(15), // Add padding to the body
-        
+
         child: Container(
           decoration: containerInputsLogin,
           constraints: BoxConstraints(
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: IntrinsicHeight(
             //Para que pueda deslizarse
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: 20), 
+              padding: EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -87,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           validate: validarPassword,
                         ),
                       ],
-                    )              
+                    ),
                   ),
                   espacioVerticalMediano,
                   //Texto debajo del input.
@@ -135,56 +136,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     width: 150,
                     height: 54,
-                  ), 
-                  espacioVerticalMediano,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 1,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          'O continuar con', style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 1,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
                   ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {}, 
-                        child: Row(
-                          children: [
-                            Image.asset('assets/images/google_logo.png', height: 24),
-                            SizedBox(width: 8),
-                            Text('Google', style: Theme.of(context).textTheme.labelMedium,),
-                          ],
-                        ),
-                      ),
-                      // Boton de apple
-                      ElevatedButton(
-                        onPressed: () {}, 
-                        child: Row(
-                          children: [
-                            Image.asset('assets/images/apple_logo.png', height: 24),
-                            SizedBox(width: 8),
-                            Text('Apple', style: Theme.of(context).textTheme.labelMedium,),
-                          ],
-                        ),
-                      )
-                    ],
+                  espacioVerticalMediano,
+                  
+                  // Seccion login con redes sociales
+                  SocialLoginSection(
+                    onGooglePressed: () {},
+                    onApplePressed: () {},
                   ),
 
                   Row(
@@ -201,9 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ],
-              )
-            )
-          )
+              ),
+            ),
+          ),
         ),
       ),
     );
