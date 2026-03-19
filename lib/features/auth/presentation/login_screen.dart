@@ -120,6 +120,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+                  
+                  // Boton de login
                   StandardButton(
                     texto: "Ingresar",
                     onPressed: () {
@@ -138,13 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 54,
                   ),
                   espacioVerticalMediano,
-                  
+
                   // Seccion login con redes sociales
                   SocialLoginSection(
                     onGooglePressed: () {},
                     onApplePressed: () {},
                   ),
 
+                  //Seccion para ir a la pagina de registro
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
