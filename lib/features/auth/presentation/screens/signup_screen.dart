@@ -101,6 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: 12),
                   Text('Registrate para guardar domicilio, contenedores favoritos, recordatorios y personalizar tu experiencia.', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center,),
                   
+                  // Contenedor del formulario
                   Expanded(
                     child: SingleChildScrollView(
                       child: Form(
@@ -118,6 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
+                                      // Inputs de nombre y apellido
                                       IntrinsicHeight(
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,6 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       const SizedBox(height: 16),
 
+                                      // Input de email
                                       TextFormFieldCustom(
                                         fieldKey: _emailFieldKey,
                                         controller: emailController,
@@ -160,6 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       const SizedBox(height: 16),
 
+                                      // Input de contraseña
                                       TextFormFieldCustom(
                                         controller: passwordController,
                                         obscureText: _obscurePassword,
@@ -186,6 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       const SizedBox(height: 16),
 
+                                      // Input para repetir contraseña
                                       TextFormFieldCustom(
                                         obscureText: _obscurePasswordTwo,
                                         titulo: 'Repetir contraseña',
