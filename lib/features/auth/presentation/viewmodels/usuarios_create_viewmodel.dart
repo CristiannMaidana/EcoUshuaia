@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class UsuariosCreateViewModel extends ChangeNotifier {
   final UsuariosRepository repo;
-  
+
   UsuariosCreateViewModel(this.repo);
 
   bool _loading = false;
@@ -18,18 +18,22 @@ class UsuariosCreateViewModel extends ChangeNotifier {
   Future<void> crear({
     required String nombre,
     required String apellido,
-
     required String email,
+    required String password,
     int? idDireccion,
     int? idZona,
     int? idTipoUsuario,
   }) async {
-    _loading = true; _error = null; _creado = null; notifyListeners();
+    _loading = true;
+    _error = null;
+    _creado = null;
+    notifyListeners();
     try {
       final u = await repo.create(
         nombreUsuario: nombre,
         apellidoUsuario: apellido,
         email: email,
+        password: password,
         idDireccion: idDireccion,
         idZona: idZona,
         idTipoUsuario: idTipoUsuario,
@@ -38,7 +42,8 @@ class UsuariosCreateViewModel extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
     } finally {
-      _loading = false; notifyListeners();
+      _loading = false;
+      notifyListeners();
     }
   }
 }
