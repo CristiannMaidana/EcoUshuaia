@@ -93,12 +93,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         builder: (context, vm, _) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Crear cuenta'),
-              titleTextStyle: Theme.of(context).textTheme.displayLarge,
             ),
             body: Center(
               child: Column(
                 children: [
+                  // Titulo y descripcion
+                  Text('Crear cuenta', style: Theme.of(context).textTheme.displayLarge),
+                  SizedBox(height: 12),
+                  Text('Registrate para guardar domicilio, favoritos, recordatorios y personalizar tu experiencia.', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center,),
+                  
                   Expanded(
                     child: SingleChildScrollView(
                       child: Form(
