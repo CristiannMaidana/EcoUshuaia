@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormFieldCustom(
                           focusNode: _emailFocusNode,
                           titulo: 'Correo electrónico',
-                          labelText: 'Email',
+                          labelText: 'nombre@corre.com',
                           prefixIcon: AvatarLottie(focusNode: _emailFocusNode),
                           validate: validarEmail,
                         ),
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormFieldCustom(
                           obscureText: _obscurePassword,
                           titulo: 'Contraseña',
-                          labelText: 'Contraseña',
+                          labelText: 'Ingrese su contraseña',
                           prefixIcon: EyePasswordLottie(
                             isClosed: _obscurePassword,
                             onTap: () {
