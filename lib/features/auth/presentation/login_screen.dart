@@ -6,7 +6,6 @@ import 'package:eco_ushuaia/features/auth/presentation/screens/signup_screen.dar
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/core/utils/validators/login_validators.dart';
 import 'package:eco_ushuaia/core/theme/container_theme.dart';
-import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/social_login_section.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
@@ -53,9 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('Iniciar sesión', style: Theme.of(context).textTheme.displaySmall),
-                  SizedBox(height: 20),
+                  SizedBox(height: 12),
                   Text('¡Bienvenido de nuevo! Por favor, ingresa tus credenciales para continuar.', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center,),
-                  espacioVerticalMediano,
+                  SizedBox(height: 20),
                   // Formulario de login
                   Form(
                     key: _formKey,
@@ -70,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefixIcon: AvatarLottie(focusNode: _emailFocusNode),
                           validate: validarEmail,
                         ),
-                        espacioVerticalMediano,
+                        SizedBox(height: 16),
 
                         // Input de contraseña
                         TextFormFieldCustom(
@@ -90,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  espacioVerticalMediano,
+                  SizedBox(height: 12),
                   //Texto debajo del input.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20),
 
                   // Boton de login
                   StandardButton(
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 150,
                     height: 54,
                   ),
-                  espacioVerticalMediano,
+                  SizedBox(height: 20),
 
                   // Seccion login con redes sociales
                   SocialLoginSection(
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   //Seccion para ir a la pagina de registro
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
