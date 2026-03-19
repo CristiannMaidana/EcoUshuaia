@@ -136,8 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Algún campo no pasó la validación
                       }
                     },
-                    width: 150,
-                    height: 54,
+                    width: double.infinity,
+                    height: 52,
                   ),
                   SizedBox(height: 20),
 
