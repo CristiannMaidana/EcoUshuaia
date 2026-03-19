@@ -1,12 +1,12 @@
 import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
 
+import '../models/usuario_create_request_dto.dart';
 import '../sources/remote/usuarios_remote_data_source.dart';
-import '../models/usuario_dto.dart';
 
 class UsuariosRepositoryImp implements UsuariosRepository {
   final UsuariosRemoteDataSource remote;
-  
+
   UsuariosRepositoryImp(this.remote);
 
   @override
@@ -14,15 +14,16 @@ class UsuariosRepositoryImp implements UsuariosRepository {
     required String nombreUsuario,
     required String apellidoUsuario,
     required String email,
-
+    required String password,
     int? idDireccion,
     int? idZona,
     int? idTipoUsuario,
   }) async {
-    final dto = UsuarioDto.fromForm(
+    final dto = UsuarioCreateRequestDto.fromCreate(
       nombre: nombreUsuario,
       apellido: apellidoUsuario,
       email: email,
+      password: password,
       idDireccion: idDireccion,
       idZona: idZona,
       idTipoUsuario: idTipoUsuario,
