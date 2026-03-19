@@ -14,7 +14,7 @@ import 'package:eco_ushuaia/features/auth/presentation/viewmodels/usuarios_creat
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatefulWidget{
+class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
 
   @override
@@ -64,15 +64,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       nombre: nombreController.text.trim(),
       apellido: apellidoController.text.trim(),
       email: emailController.text.trim(),
+      password: passwordController.text.trim(),
       idTipoUsuario: 1,
     );
 
     if (!mounted) return;
 
     if (vm.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${vm.error}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${vm.error}')));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cuenta creada. Ingresá con tu usuario.')),
@@ -88,7 +89,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => UsuariosCreateViewModel(context.read<UsuariosRepository>()),
+      create: (_) =>
+          UsuariosCreateViewModel(context.read<UsuariosRepository>()),
       child: Consumer<UsuariosCreateViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
@@ -179,7 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           },
                                         ),
                                         onTap: () {
-                                          if(mensajePassword){
+                                          if (mensajePassword) {
                                             mensajePassword = false;
                                             showDialog(
                                               context: context,
@@ -202,19 +204,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             setState(() {
                                               _obscurePasswordTwo = !_obscurePasswordTwo;
                                             });
-                                          }
+                                          },
                                         ),
                                       ),
                                       const SizedBox(height: 6),
-                                      
+
                                       // Checkbox de terminos y condiciones
                                       Row(
                                         children: [
                                           Checkbox(
-                                            value: false, 
-                                            onChanged: (bool? valor){
+                                            value: false,
+                                            onChanged: (bool? valor) {
                                               setState(() {});
-                                            }
+                                            },
                                           ),
                                           Expanded(child: Text('Acepto los términos de uso y la política de privacidad.', style: Theme.of(context).textTheme.bodySmall)),
                                         ],
@@ -223,11 +225,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                       // Boton de registro
                                       StandardButton(
-                                        texto: vm.loading ? 'Creando...' : 'Crear cuenta',
+                                        texto: vm.loading
+                                            ? 'Creando...'
+                                            : 'Crear cuenta',
                                         onPressed: () => _onRegisterPressed(vm),
                                       ),
                                       const SizedBox(height: 20),
-                                      
+
                                       // Seccion login con redes sociales
                                       SocialLoginSection(
                                         onGooglePressed: () {},
@@ -241,7 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         children: [
                                           Text('¿Ya tenés cuenta?', style: Theme.of(context).textTheme.labelMedium,),
                                           TextButton(
-                                            onPressed: (){
+                                            onPressed: () {
                                               Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -252,7 +256,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                         ],
                                       ),
-                                    ]
+                                    ],
                                   ),
                                 ),
                               ],
