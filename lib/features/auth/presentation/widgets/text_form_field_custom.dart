@@ -54,7 +54,8 @@ class TextFormFieldCustom extends StatelessWidget {
             decoration: InputDecoration(
               labelText: labelText,
               contentPadding: contentPadding,
-              labelStyle: Theme.of(context).textTheme.labelLarge,
+              labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.grey[600]),
+              floatingLabelStyle: Theme.of(context).textTheme.labelLarge,
               errorStyle: Theme.of(context).textTheme.labelSmall,
               prefixIcon: prefixIcon == null
                   ? null
