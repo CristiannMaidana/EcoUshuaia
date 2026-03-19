@@ -209,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Text('Ya tiene una cuenta?', style: Theme.of(context).textTheme.labelMedium,),
+                                          Text('¿Ya tenés cuenta?', style: Theme.of(context).textTheme.labelMedium,),
                                           TextButton(
                                             onPressed: (){
                                               Navigator.pushAndRemoveUntil(
