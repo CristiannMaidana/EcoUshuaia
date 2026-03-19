@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  
+
                   // Boton de login
                   StandardButton(
                     texto: "Ingresar",
@@ -148,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   //Seccion para ir a la pagina de registro
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
