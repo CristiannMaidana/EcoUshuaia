@@ -201,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       const SizedBox(height: 20),
 
                                       StandardButton(
-                                        texto: vm.loading ? 'Creando...' : 'Registrarse',
+                                        texto: vm.loading ? 'Creando...' : 'Crear cuenta',
                                         onPressed: () => _onRegisterPressed(vm),
                                       ),
                                       const SizedBox(height: 20),
