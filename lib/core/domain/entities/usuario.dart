@@ -3,7 +3,6 @@ class Usuario {
   final String nombreUsuario;
   final String apellidoUsuario;
   final String email;
-
   final int? idDireccion;
   final int? idZona;
   final int? idTipoUsuario;
