@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/settings/presentation/edit_user_screen.dart';
 import 'package:flutter/material.dart';
 
 class PerfilOptionSettings extends StatelessWidget {
@@ -53,7 +54,12 @@ class PerfilOptionSettings extends StatelessWidget {
               width: 117,
               height: 40,
               child: ElevatedButton(
-                onPressed: () {}, 
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditUserScreen()),
+                  );
+                }, 
                 style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
