@@ -246,7 +246,7 @@ class SheetAddressState extends State<SheetAddress> {
                               onVerticalDragUpdate: _dragFromHeader,
                               onVerticalDragEnd: _endDragFromHeader,
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 4.5, 20, 20),
+                                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
