@@ -19,6 +19,8 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
       backgroundColor: camarone50,
       appBar: AppBar(
         backgroundColor: camarone50,
+        title: Text('Editar perfil', style: Theme.of(context).textTheme.headlineLarge),
+        centerTitle: false,
       ),
     );
   }
