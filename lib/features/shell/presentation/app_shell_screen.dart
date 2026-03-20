@@ -36,6 +36,14 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
     _loadedTabs = List.generate(_pageBuilders.length, (index) => index == _selectedIndex);
   }
 
+  bool _shouldResetTabOnSelect(int index) {
+    return index == 1 || index == 3;
+  }
+
+  void _resetTabToRoot(int index) {
+    _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+  }
+
   Widget _buildTabNavigator(int index) {
     if (!_loadedTabs[index]) {
       return const SizedBox.shrink();
@@ -63,7 +71,9 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
         selectedIndex: _selectedIndex,
         onTabSelected: (idx) {
           if (idx == _selectedIndex) {
-            _navigatorKeys[idx].currentState?.popUntil((route) => route.isFirst);
+            if (_shouldResetTabOnSelect(idx)) {
+              _resetTabToRoot(idx);
+            }
             return;
           }
 
@@ -71,6 +81,10 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
             _selectedIndex = idx;
             _loadedTabs[idx] = true;
           });
+
+          if (_shouldResetTabOnSelect(idx)) {
+            _resetTabToRoot(idx);
+          }
         }
       ),
     );
