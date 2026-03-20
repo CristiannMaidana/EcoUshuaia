@@ -23,7 +23,7 @@ class HeaderForAddressIsClose extends StatelessWidget{
       onVerticalDragUpdate: onVerticalDragUpdateFromFather,
       onVerticalDragEnd: onVerticalDragEndFromFather,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 27, vertical: 4.5),
+        padding: const EdgeInsets.only(left: 27, bottom: 6.3, right: 27),
         child: Column(
           children: [
             BarraAgarre(),
