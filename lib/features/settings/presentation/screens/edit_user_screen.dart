@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class EditUserScreen extends StatefulWidget{
@@ -15,7 +16,10 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
   @override
   Widget build(context){
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: camarone50,
+      appBar: AppBar(
+        backgroundColor: camarone50,
+      ),
     );
   }
 }
