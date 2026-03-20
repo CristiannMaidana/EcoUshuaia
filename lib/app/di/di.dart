@@ -1,4 +1,7 @@
+import 'package:eco_ushuaia/features/auth/data/repositories/auth_usuario_repository_imp.dart';
+import 'package:eco_ushuaia/features/auth/data/sources/remote/auth_usuario_remote_data_sources.dart';
 import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_remote_data_source.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/auth_usuario_repository.dart';
 import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_repository_imp.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
 import 'package:eco_ushuaia/features/calendar/data/repositories/calendario_repository_imp.dart';
@@ -55,12 +58,21 @@ List<SingleChildWidget> _contenedoresProviders() => [
 ];
 
 List<SingleChildWidget> _usuariosProviders() => [
-    ProxyProvider<ApiClient, UsuariosRemoteDataSource>(
-      update: (_, api, __) => UsuariosRemoteDataSource(api),
-    ),
-    ProxyProvider<UsuariosRemoteDataSource, UsuariosRepository>(
-      update: (_, ds, __) => UsuariosRepositoryImp(ds),
-    ),
+  ProxyProvider<ApiClient, UsuariosRemoteDataSource>(
+    update: (_, api, __) => UsuariosRemoteDataSource(api),
+  ),
+  ProxyProvider<UsuariosRemoteDataSource, UsuariosRepository>(
+    update: (_, ds, __) => UsuariosRepositoryImp(ds),
+  ),
+];
+
+List<SingleChildWidget> _authProviders() => [
+  ProxyProvider<ApiClient, AuthUsuarioRemoteDataSources>(
+    update: (_, api, __) => AuthUsuarioRemoteDataSources(api),
+  ),
+  ProxyProvider<AuthUsuarioRemoteDataSources, AuthUsuarioRepository>(
+    update: (_, ds, __) => AuthUsuarioRepositoryImp(ds),
+  ),
 ];
 
 List<SingleChildWidget> _calendarioProviders() => [
@@ -70,10 +82,9 @@ List<SingleChildWidget> _calendarioProviders() => [
   ProxyProvider<CalendarioRemoteDataSources, CalendarioRepository>(
     update: (_, ds, __) => CalendarioRepositoryImp(ds),
   ),
-    ChangeNotifierProvider<CalendarioViewmodel>(
-    create: (ctx) => CalendarioViewmodel(
-      ctx.read<CalendarioRepository>(),
-    )..load(),
+  ChangeNotifierProvider<CalendarioViewmodel>(
+    create: (ctx) =>
+        CalendarioViewmodel(ctx.read<CalendarioRepository>())..load(),
   ),
 ];
 
@@ -88,7 +99,7 @@ List<SingleChildWidget> _categoriaNoticiasProviders() => [
 
 List<SingleChildWidget> _categoriaResiduosProviders() => [
   ProxyProvider<ApiClient, CategoriaResiduosRemoteDataSource>(
-    update: (_, api, __) => CategoriaResiduosRemoteDataSource(api,)
+    update: (_, api, __) => CategoriaResiduosRemoteDataSource(api),
   ),
   ProxyProvider<CategoriaResiduosRemoteDataSource, CategoriaResiduosRepository>(
     update: (_, ds, __) => CategoriaResiduosRepositoryImp(ds),
@@ -109,6 +120,7 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._residuosProviders(),
   ..._contenedoresProviders(),
   ..._usuariosProviders(),
+  ..._authProviders(),
   ..._calendarioProviders(),
   ..._categoriaNoticiasProviders(),
   ..._categoriaResiduosProviders(),
