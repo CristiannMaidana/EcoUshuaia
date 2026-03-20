@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 class ContainerHomeScreen extends StatefulWidget{
   final int initialIndex;
 
-  ContainerHomeScreen({
-    Key? key,
+  const ContainerHomeScreen({
+    super.key,
     this.initialIndex = 0,
-  }) : super (key: key);
+  });
 
   @override
   State<ContainerHomeScreen> createState() => _ContainerHomeScreenState();
@@ -19,29 +19,57 @@ class ContainerHomeScreen extends StatefulWidget{
 
 class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
   late int _selectedIndex;
+  late final List<GlobalKey<NavigatorState>> _navigatorKeys;
+  late final List<bool> _loadedTabs;
+  final List<WidgetBuilder> _pageBuilders = [
+    (_) => HomeScreen(),
+    (_) => CalenderScreen(),
+    (_) => ContainerMapaScreen(),
+    (_) => SettingsScreen(),
+  ];
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex;
+    _navigatorKeys = List.generate(_pageBuilders.length, (_) => GlobalKey<NavigatorState>());
+    _loadedTabs = List.generate(_pageBuilders.length, (index) => index == _selectedIndex);
   }
 
-  final List<Widget> _pages = [
-    HomeScreen(),
-    CalenderScreen(),
-    ContainerMapaScreen(),
-    SettingsScreen(),
-  ];
+  Widget _buildTabNavigator(int index) {
+    if (!_loadedTabs[index]) {
+      return const SizedBox.shrink();
+    }
+
+    return Navigator(
+      key: _navigatorKeys[index],
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(
+          builder: _pageBuilders[index],
+          settings: settings,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: List.generate(_pageBuilders.length, _buildTabNavigator),
+      ),
       bottomNavigationBar: ButtomNavBar(
         selectedIndex: _selectedIndex,
         onTabSelected: (idx) {
+          if (idx == _selectedIndex) {
+            _navigatorKeys[idx].currentState?.popUntil((route) => route.isFirst);
+            return;
+          }
+
           setState(() {
             _selectedIndex = idx;
+            _loadedTabs[idx] = true;
           });
         }
       ),
