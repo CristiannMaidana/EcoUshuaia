@@ -162,7 +162,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
             children: [
               // Barra
               Padding(
-                padding: const EdgeInsets.only(bottom: 4.5),
+                padding: const EdgeInsets.only(bottom: 6.3),
                 child: BarraAgarre(),
               ),
 
