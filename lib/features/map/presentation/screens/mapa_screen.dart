@@ -376,11 +376,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
         // Barra de navegacion del mapa
         FlotanteSheet(
           key: _flotanteKey,
-          minChildSize: .096,
+          minChildSize: .093,
           maxChildSize: .80,
           maxChildSize2: .80,
-          snapPoints: const [.083, .30, .55, .80],
-          snapPoints2: const [.083, .30, .55, .80],
+          snapPoints: const [.093, .30, .55, .80],
+          snapPoints2: const [.093, .30, .55, .80],
           onCollapsed: () {
             final isSecond =
                 _flotanteKey.currentState?.isShowingSecondChild ?? false;
