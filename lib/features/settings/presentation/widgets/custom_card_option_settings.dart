@@ -48,7 +48,6 @@ class CustomCardOptionSettings extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Icono dentro de un contenedor 
             Container(
@@ -60,16 +59,30 @@ class CustomCardOptionSettings extends StatelessWidget {
               padding: EdgeInsets.all(10),
               child: icon,
             ),
+
+            SizedBox(width: 12),
         
             // Texto con titulo y subtítulo
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(titulo, style: Theme.of(context).textTheme.labelLarge,),
-                SizedBox(height: 4),
-                Text(subtitulo, style: Theme.of(context).textTheme.bodySmall,),
-              ],
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(titulo,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  Text(subtitulo,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ),
+
+            SizedBox(width: 12),
         
             // Espacio para el botón de acción
             switchWidget
