@@ -14,6 +14,7 @@ class EditUserScreen extends StatefulWidget{
 }
 
 class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProviderStateMixin{
+  
   Future<void> _openEditPage({required String screenTitle, required String infoText, required List<AdaptableEditField> fields,}) async {
     await Navigator.push(
       context,
@@ -170,7 +171,29 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                     CustomCardOptionSettings(titulo: 'Cambiar contraseña', 
                       subtitulo: 'Actualizar credenciales de acceso de forma segura.', 
                       icon: Icon(Icons.lock_outlined, size: 25),
-                      actionSetting: (){}, 
+                      actionSetting: (){
+                        _openEditPage(
+                          screenTitle: 'Editar contraseña', 
+                          infoText: 'Elegí una contraseña segura y fácil de recordar para vos. Se usará para proteger el acceso a tu cuenta y a tu información personal.',      
+                          fields: const [
+                            AdaptableEditField(keyName: 'current_password',
+                              label: 'Contraseña actual',
+                              hintText: 'Ingrese su contraseña actual',
+                              obscureText: true,
+                            ),
+                            AdaptableEditField(keyName: 'new_password',
+                              label: 'Nueva contraseña',
+                              hintText: 'Ingrese una nueva contraseña',
+                              obscureText: true,
+                            ),
+                            AdaptableEditField(keyName: 'confirm_password',
+                              label: 'Confirmar nueva contraseña',
+                              hintText: 'Reingrese nueva contraseña',
+                              obscureText: true,
+                            ),
+                          ],
+                        );
+                      }, 
                       color: Colors.blueAccent.withValues(alpha: 0.2),
                       bottom: true,
                       switchWidget: false,
