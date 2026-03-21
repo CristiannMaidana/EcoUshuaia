@@ -25,3 +25,10 @@ String? validarPassword(String? value) {
   }
   return null;
 }
+
+String? validarPasswordActual(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'La contraseña actual es obligatoria';
+  }
+  return null;
+}
