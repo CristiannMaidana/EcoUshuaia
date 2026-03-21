@@ -75,7 +75,18 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                     CustomCardOptionSettings(titulo: 'Correo electrónico', 
                       subtitulo: 'usuario@correo.com', 
                       icon: Icon(Icons.mail_outline, size: 25),
-                      actionSetting: (){}, 
+                      actionSetting: (){
+                        _openEditPage(
+                          screenTitle: 'Editar correo', 
+                          infoText: 'Verificá que el correo esté escrito correctamente, ya que se usará para iniciar sesión, recuperar tu cuenta y recibir información importante.',
+                          fields: const [
+                            AdaptableEditField(keyName: 'email',
+                              label: 'Correo electrónico',
+                              hintText: 'Ingrese un nuevo correo electrónico',
+                            ),
+                          ],
+                        );
+                      }, 
                       color: Colors.blueAccent.withValues(alpha: 0.2),
                       all: false,
                       switchWidget: false,
