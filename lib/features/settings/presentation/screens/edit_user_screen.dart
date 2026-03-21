@@ -95,7 +95,17 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                     CustomCardOptionSettings(titulo: 'Teléfono', 
                       subtitulo: 'numero usuario', 
                       icon: Icon(Icons.smartphone_outlined, size: 25),
-                      actionSetting: (){}, 
+                      actionSetting: (){
+                        _openEditPage(
+                          screenTitle: 'Editar teléfono', 
+                          infoText: 'Verificá que el número de teléfono esté escrito correctamente, ya que podrá usarse para contacto, validaciones y datos asociados a tu cuenta.',
+                          fields: const [
+                          AdaptableEditField(keyName: 'phone',
+                            label: 'Teléfono',
+                            hintText: 'Ingrese un nuevo número de teléfono',
+                          ),
+                        ]);
+                      }, 
                       color: Colors.blueGrey.withValues(alpha: 0.2),
                       bottom: true,
                       switchWidget: false,
