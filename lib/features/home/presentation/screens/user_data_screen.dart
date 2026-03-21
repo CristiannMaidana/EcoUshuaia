@@ -1,5 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/features/settings/presentation/edit_user_screen.dart';
+import 'package:eco_ushuaia/features/settings/presentation/screens/edit_user_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomDatosUsuario extends StatefulWidget{
