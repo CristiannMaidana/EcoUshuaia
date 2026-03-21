@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edit_option.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,18 @@ class EditUserScreen extends StatefulWidget{
 }
 
 class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProviderStateMixin{
+  Future<void> _openEditPage({required String screenTitle, required String infoText, required List<AdaptableEditField> fields,}) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdaptableEditOption(
+          screenTitle: screenTitle,
+          infoText: infoText,
+          fields: fields,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(context){
@@ -37,7 +50,23 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                     CustomCardOptionSettings(titulo: 'Nombre completo', 
                       subtitulo: 'nombre usuario', 
                       icon: Icon(Icons.person_outline, size: 25),
-                      actionSetting: (){}, 
+                      actionSetting: () {
+                        _openEditPage(
+                          screenTitle: 'Editar nombre',
+                          infoText:
+                              'Verificá que el nombre y el apellido estén escritos correctamente, ya que se usarán para identificar tu cuenta.',
+                          fields: const [
+                            AdaptableEditField(keyName: 'nombre',
+                              label: 'Nombre',
+                              hintText: 'Ingrese un nuevo nombre completo',
+                            ),
+                            AdaptableEditField(keyName: 'apellido',
+                              label: 'Apellido',
+                              hintText: 'Ingrese un nuevo apellido',
+                            ),
+                          ],
+                        );
+                      }, 
                       color: camarone400.withValues(alpha: 0.2),
                       top: true,
                       switchWidget: false,
