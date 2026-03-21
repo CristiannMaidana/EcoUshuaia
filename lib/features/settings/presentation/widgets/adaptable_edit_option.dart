@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class AdaptableEditOption extends StatefulWidget {
 class _AdaptableEditOptionState extends State<AdaptableEditOption> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final List<TextEditingController> _controllers;
+  late final List<bool> _obscureStates;
   bool _saving = false;
 
   @override
@@ -51,6 +53,9 @@ class _AdaptableEditOptionState extends State<AdaptableEditOption> {
     super.initState();
     _controllers = widget.fields
         .map((field) => TextEditingController(text: field.initialValue))
+        .toList();
+    _obscureStates = widget.fields
+        .map((field) => field.obscureText)
         .toList();
   }
 
@@ -164,8 +169,19 @@ class _AdaptableEditOptionState extends State<AdaptableEditOption> {
                           controller: _controllers[index],
                           labelText: field.hintText,
                           keyboardType: field.keyboardType,
-                          obscureText: field.obscureText,
+                          obscureText: _obscureStates[index],
                           validate: field.validator,
+                          prefixIcon: field.obscureText
+                              ? EyePasswordLottie(
+                                  isClosed: _obscureStates[index],
+                                  onTap: () {
+                                    setState(() {
+                                      _obscureStates[index] =
+                                          !_obscureStates[index];
+                                    });
+                                  },
+                                )
+                              : null,
                         ),
                       ],
                     ),
