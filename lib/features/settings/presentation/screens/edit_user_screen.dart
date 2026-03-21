@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/core/utils/validators/validators.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edit_option.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
 import 'package:flutter/material.dart';
@@ -56,14 +57,16 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                           screenTitle: 'Editar nombre',
                           infoText:
                               'Verificá que el nombre y el apellido estén escritos correctamente, ya que se usarán para identificar tu cuenta.',
-                          fields: const [
+                          fields: [
                             AdaptableEditField(keyName: 'nombre',
                               label: 'Nombre',
                               hintText: 'Ingrese un nuevo nombre completo',
+                              validator: nombreValidator,
                             ),
                             AdaptableEditField(keyName: 'apellido',
                               label: 'Apellido',
                               hintText: 'Ingrese un nuevo apellido',
+                              validator: apellidoValidator,
                             ),
                           ],
                         );
@@ -80,10 +83,11 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                         _openEditPage(
                           screenTitle: 'Editar correo', 
                           infoText: 'Verificá que el correo esté escrito correctamente, ya que se usará para iniciar sesión, recuperar tu cuenta y recibir información importante.',
-                          fields: const [
+                          fields: [
                             AdaptableEditField(keyName: 'email',
                               label: 'Correo electrónico',
                               hintText: 'Ingrese un nuevo correo electrónico',
+                              validator: emailConfirmValidator,
                             ),
                           ],
                         );
@@ -100,10 +104,11 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                         _openEditPage(
                           screenTitle: 'Editar teléfono', 
                           infoText: 'Verificá que el número de teléfono esté escrito correctamente, ya que podrá usarse para contacto, validaciones y datos asociados a tu cuenta.',
-                          fields: const [
+                          fields: [
                           AdaptableEditField(keyName: 'phone',
                             label: 'Teléfono',
                             hintText: 'Ingrese un nuevo número de teléfono',
+                            validator: validarCelular,
                           ),
                         ]);
                       }, 
@@ -175,16 +180,18 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                         _openEditPage(
                           screenTitle: 'Editar contraseña', 
                           infoText: 'Elegí una contraseña segura y fácil de recordar para vos. Se usará para proteger el acceso a tu cuenta y a tu información personal.',      
-                          fields: const [
+                          fields: [
                             AdaptableEditField(keyName: 'current_password',
                               label: 'Contraseña actual',
                               hintText: 'Ingrese su contraseña actual',
                               obscureText: true,
+                              validator: validarPasswordActual,
                             ),
                             AdaptableEditField(keyName: 'new_password',
                               label: 'Nueva contraseña',
                               hintText: 'Ingrese una nueva contraseña',
                               obscureText: true,
+                              validator: contrasennaValidator,
                             ),
                             AdaptableEditField(keyName: 'confirm_password',
                               label: 'Confirmar nueva contraseña',
