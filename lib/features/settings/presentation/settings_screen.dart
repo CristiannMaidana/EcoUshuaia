@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/perfil_option_settings.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       subtitulo: 'Salir de la cuenta en este dispositivo.', 
                       icon: Icon(Icons.logout_outlined, size: 25),
                       color: Colors.redAccent.withValues(alpha: 0.2),
-                      actionSetting: (){},
+                      actionSetting: (){
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
                       bottom: true,
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15,),
