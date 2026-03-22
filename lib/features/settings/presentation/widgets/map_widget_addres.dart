@@ -146,7 +146,7 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
       children: [
         Container(
           height: 280,
-          margin: const EdgeInsets.only(top: 12, left: 4, right: 4),
+          margin: const EdgeInsets.only(left: 4, right: 4),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Colors.grey.shade400),
