@@ -1,6 +1,8 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/utils/validators/validators.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edit_option.dart';
+import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edit_option_container.dart';
+import 'package:eco_ushuaia/features/settings/presentation/widgets/content_edit_addres.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
 import 'package:flutter/material.dart';
 
@@ -130,7 +132,18 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                     CustomCardOptionSettings(titulo: 'Domicilio principal', 
                       subtitulo: 'direccion de usuario, ciudad', 
                       icon: Icon(Icons.location_on_outlined, size: 25),
-                      actionSetting: (){}, 
+                      actionSetting: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const AdaptableEditOptionContainer(
+                                  screenTitle: 'Editar domicilio',
+                                  child: ContentEditAddres(),
+                                ),
+                          ),
+                        );
+                      }, 
                       color: Colors.blueAccent.withValues(alpha: 0.2),
                       top: true,
                       switchWidget: false,
