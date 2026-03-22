@@ -149,8 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       icon: Icon(Icons.logout_outlined, size: 25),
                       color: Colors.redAccent.withValues(alpha: 0.2),
                       actionSetting: (){
-                        Navigator.pushAndRemoveUntil(
-                          context,
+                        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (_) => const LoginScreen(),
                           ),
