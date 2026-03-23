@@ -2,12 +2,12 @@ import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
 
 import '../models/usuario_create_request_dto.dart';
-import '../sources/remote/usuarios_remote_data_source.dart';
+import '../sources/remote/usuarios_create_remote_data_source.dart';
 
-class UsuariosRepositoryImp implements UsuariosRepository {
-  final UsuariosRemoteDataSource remote;
+class UsuariosCreateRepositoryImp implements UsuariosRepository {
+  final UsuariosCreateRemoteDataSource remote;
 
-  UsuariosRepositoryImp(this.remote);
+  UsuariosCreateRepositoryImp(this.remote);
 
   @override
   Future<Usuario> create({
