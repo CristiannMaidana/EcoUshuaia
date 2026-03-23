@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/settings/presentation/screens/edit_user_screen.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,13 @@ import 'package:flutter/material.dart';
 class PerfilOptionSettings extends StatelessWidget {
   final String nameUser;
   final VoidCallback? editProfile;
+  final Usuario user;
 
   const PerfilOptionSettings({
     super.key,
     required this.nameUser,
     this.editProfile,
+    required this.user,
   });
 
   @override
@@ -57,7 +60,7 @@ class PerfilOptionSettings extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EditUserScreen()),
+                    MaterialPageRoute(builder: (context) => EditUserScreen(user: user,)),
                   );
                 }, 
                 style: ElevatedButton.styleFrom(
