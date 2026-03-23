@@ -1,6 +1,8 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/settings/presentation/screens/edit_user_screen.dart';
+import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomDatosUsuario extends StatefulWidget{
   
@@ -13,6 +15,9 @@ class _CustomDatosUsuarioState extends State<CustomDatosUsuario> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final usuarioVm = context.watch<UsuarioViewModel>();
+    final usuario = usuarioVm.usuario;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       height: _historial ? 260 : 190,
@@ -93,7 +98,7 @@ class _CustomDatosUsuarioState extends State<CustomDatosUsuario> with SingleTick
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditUserScreen()), 
+                        MaterialPageRoute(builder: (context) => EditUserScreen(user: usuario!,)), 
                       );
                     }, 
                     style: TextButton.styleFrom(
