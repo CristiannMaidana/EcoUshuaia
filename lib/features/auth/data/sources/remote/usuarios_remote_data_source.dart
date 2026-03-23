@@ -8,7 +8,7 @@ class UsuariosRemoteDataSource {
   UsuariosRemoteDataSource(this.api);
 
   Future<UsuarioDto> postUser(UsuarioCreateRequestDto dto) async {
-    final data = await api.post('/usuarios/', body: dto.toJson());
+    final data = await api.post('/usuarios/', body: dto.toJson(), requiresAuth: false);
     return UsuarioDto.fromJson(data as Map<String, dynamic>);
   }
 }
