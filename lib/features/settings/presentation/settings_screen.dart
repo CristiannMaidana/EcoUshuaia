@@ -2,7 +2,9 @@ import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/perfil_option_settings.dart';
+import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget{
   @override
@@ -13,6 +15,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioVm = context.watch<UsuarioViewModel>();
+    final usuario = usuarioVm.usuario;
+    final nombreCompleto = usuario == null
+        ? (usuarioVm.loading ? 'Cargando perfil...' : 'Usuario')
+        : '${usuario.nombreUsuario} ${usuario.apellidoUsuario}';
 
     return Scaffold(
       backgroundColor: camarone50,
@@ -30,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     SizedBox(height: 10),
                     Text('Cuenta', style: Theme.of(context).textTheme.headlineSmall,),
-                    PerfilOptionSettings(nameUser: 'Cristian Maidana'),
+                    PerfilOptionSettings(nameUser: nombreCompleto),
                     SizedBox(height: 20),
           
                     Text('Notificaciones', style: Theme.of(context).textTheme.headlineSmall,),
