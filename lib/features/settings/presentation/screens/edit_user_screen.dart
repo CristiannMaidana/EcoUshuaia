@@ -55,7 +55,7 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                 child: Column(
                   children: [
                     CustomCardOptionSettings(titulo: 'Nombre completo', 
-                      subtitulo: 'nombre usuario', 
+                      subtitulo: '${widget.user.nombreUsuario} ${widget.user.apellidoUsuario}', 
                       icon: Icon(Icons.person_outline, size: 25),
                       actionSetting: () {
                         _openEditPage(
