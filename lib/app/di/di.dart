@@ -28,14 +28,18 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../../core/network/http_client.dart';
+import '../../services/secure_storage/secure_storage_services.dart';
 
 List<SingleChildWidget> _coreProviders() => [
   Provider<http.Client>(
     create: (_) => http.Client(),
     dispose: (_, client) => client.close(),
   ),
-  ProxyProvider<http.Client, ApiClient>(
-    update: (_, client, __) => ApiClient(client),
+  Provider<SecureStorageServices>(
+    create: (_) => SecureStorageServices(),
+  ),
+  ProxyProvider2<http.Client, SecureStorageServices, ApiClient>(
+    update: (_, client, secureStorage, __) => ApiClient(client, secureStorage),
   ),
 ];
 
