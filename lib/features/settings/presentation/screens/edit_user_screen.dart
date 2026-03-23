@@ -82,7 +82,7 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15,),
                     ),
                     CustomCardOptionSettings(titulo: 'Correo electrónico', 
-                      subtitulo: 'usuario@correo.com', 
+                      subtitulo: '${widget.user.email}', 
                       icon: Icon(Icons.mail_outline, size: 25),
                       actionSetting: (){
                         _openEditPage(
