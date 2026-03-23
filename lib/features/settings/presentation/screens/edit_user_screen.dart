@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/utils/validators/validators.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edit_option.dart';
@@ -7,9 +8,11 @@ import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_o
 import 'package:flutter/material.dart';
 
 class EditUserScreen extends StatefulWidget{
+  final Usuario user;
 
   const EditUserScreen({
     super.key,
+    required this.user,
   });
 
   @override
