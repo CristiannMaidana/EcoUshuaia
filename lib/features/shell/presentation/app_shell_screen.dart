@@ -1,9 +1,15 @@
+import 'package:eco_ushuaia/core/network/http_client.dart';
 import 'package:eco_ushuaia/core/ui/navigation/buttom_nav_bar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/calendar_screen.dart';
 import 'package:eco_ushuaia/features/home/presentation/home_screen.dart';
 import 'package:eco_ushuaia/features/map/presentation/container_mapa_screen.dart';
 import 'package:eco_ushuaia/features/settings/presentation/settings_screen.dart';
+import 'package:eco_ushuaia/features/shell/data/repositories/usuario_repository_imp.dart';
+import 'package:eco_ushuaia/features/shell/data/sources/usuarios_remote_data_sources.dart';
+import 'package:eco_ushuaia/features/shell/domain/repositories/usuario_repository.dart';
+import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ContainerHomeScreen extends StatefulWidget{
   final int initialIndex;
@@ -62,30 +68,43 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: List.generate(_pageBuilders.length, _buildTabNavigator),
-      ),
-      bottomNavigationBar: ButtomNavBar(
-        selectedIndex: _selectedIndex,
-        onTabSelected: (idx) {
-          if (idx == _selectedIndex) {
+    return MultiProvider(
+      providers: [
+        ProxyProvider<ApiClient, UsuariosRemoteDataSources>(
+          update: (_, api, __) => UsuariosRemoteDataSources(api),
+        ),
+        ProxyProvider<UsuariosRemoteDataSources, UsuarioRepository>(
+          update: (_, ds, __) => UsuarioRepositoryImp(ds),
+        ),
+        ChangeNotifierProvider<UsuarioViewModel>(
+          create: (ctx) => UsuarioViewModel(ctx.read<UsuarioRepository>())..load(),
+        ),
+      ],
+      child: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: List.generate(_pageBuilders.length, _buildTabNavigator),
+        ),
+        bottomNavigationBar: ButtomNavBar(
+          selectedIndex: _selectedIndex,
+          onTabSelected: (idx) {
+            if (idx == _selectedIndex) {
+              if (_shouldResetTabOnSelect(idx)) {
+                _resetTabToRoot(idx);
+              }
+              return;
+            }
+
+            setState(() {
+              _selectedIndex = idx;
+              _loadedTabs[idx] = true;
+            });
+
             if (_shouldResetTabOnSelect(idx)) {
               _resetTabToRoot(idx);
             }
-            return;
           }
-
-          setState(() {
-            _selectedIndex = idx;
-            _loadedTabs[idx] = true;
-          });
-
-          if (_shouldResetTabOnSelect(idx)) {
-            _resetTabToRoot(idx);
-          }
-        }
+        ),
       ),
     );
   }
