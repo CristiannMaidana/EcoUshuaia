@@ -1,6 +1,6 @@
 import '../../../../../core/network/http_client.dart';
 import '../../models/usuario_create_request_dto.dart';
-import '../../models/usuario_dto.dart';
+import '../../../../shell/data/models/usuario_dto.dart';
 
 class UsuariosCreateRemoteDataSource {
   final ApiClient api;
