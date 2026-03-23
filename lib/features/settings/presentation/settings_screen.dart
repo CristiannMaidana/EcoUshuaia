@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     SizedBox(height: 10),
                     Text('Cuenta', style: Theme.of(context).textTheme.headlineSmall,),
-                    PerfilOptionSettings(nameUser: nombreCompleto),
+                    PerfilOptionSettings(nameUser: nombreCompleto, user: usuario!),
                     SizedBox(height: 20),
           
                     Text('Notificaciones', style: Theme.of(context).textTheme.headlineSmall,),
