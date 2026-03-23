@@ -27,4 +27,43 @@ class AuthUsuarioRemoteDataSources {
       refreshToken: refreshToken,
     );
   }
+
+  Future<bool> restoreSession() async {
+    final refreshToken = await secureStorage.readRefreshToken();
+    final accessToken = await secureStorage.readAccessToken();
+
+    if (refreshToken == null || refreshToken.isEmpty) {
+      return accessToken != null && accessToken.isNotEmpty;
+    }
+
+    try {
+      final data = await api.post('/token/refresh/', body: {'refresh': refreshToken}, requiresAuth: false);
+
+      final json = data as Map<String, dynamic>;
+      final newAccessToken = json['access'];
+      final newRefreshToken = json['refresh'];
+
+      if (newAccessToken is! String || newAccessToken.isEmpty) {
+        throw const FormatException('La respuesta de refresh no contiene un access token valido.');
+      }
+
+      await secureStorage.saveAccessToken(newAccessToken);
+
+      if (newRefreshToken is String && newRefreshToken.isNotEmpty) {
+        await secureStorage.saveRefreshToken(newRefreshToken);
+      }
+
+      return true;
+    } catch (_) {
+      if (accessToken != null && accessToken.isNotEmpty) {
+        return true;
+      }
+      await secureStorage.clear();
+      return false;
+    }
+  }
+
+  Future<void> logout() {
+    return secureStorage.clear();
+  }
 }
