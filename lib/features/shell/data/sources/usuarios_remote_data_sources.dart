@@ -1,5 +1,5 @@
 import 'package:eco_ushuaia/core/network/http_client.dart';
-import 'package:eco_ushuaia/features/auth/data/models/usuario_dto.dart';
+import 'package:eco_ushuaia/features/shell/data/models/usuario_dto.dart';
 
 class UsuariosRemoteDataSources {
   final ApiClient api;
