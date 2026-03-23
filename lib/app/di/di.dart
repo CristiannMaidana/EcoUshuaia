@@ -71,8 +71,8 @@ List<SingleChildWidget> _usuariosCreateProviders() => [
 ];
 
 List<SingleChildWidget> _authProviders() => [
-  ProxyProvider<ApiClient, AuthUsuarioRemoteDataSources>(
-    update: (_, api, __) => AuthUsuarioRemoteDataSources(api),
+  ProxyProvider2<ApiClient, SecureStorageServices, AuthUsuarioRemoteDataSources>(
+    update: (_, api, secureStorage, __) => AuthUsuarioRemoteDataSources(api, secureStorage),
   ),
   ProxyProvider<AuthUsuarioRemoteDataSources, AuthUsuarioRepository>(
     update: (_, ds, __) => AuthUsuarioRepositoryImp(ds),
