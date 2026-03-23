@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../config/env/env.dart';
 import '../errors/exceptions.dart';
+import '../../services/secure_storage/secure_storage_services.dart';
 
 class ApiClient {
   final http.Client _client;
-  ApiClient(this._client);
+  final SecureStorageServices _secureStorage;
+
+  ApiClient(this._client, this._secureStorage);
 
   Uri _buildUri(String path, [Map<String, dynamic>? query]) {
     final isAbsolute = path.startsWith('http://') || path.startsWith('https://');
@@ -44,12 +47,26 @@ class ApiClient {
       ...?extra,
     };
   }
-  
-  Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
+
+  Future<Map<String, String>> _buildHeaders({Map<String, String>? extra, bool requiresAuth = true}) async {
+    final headers = _jsonHeaders(extra);
+
+    if (!requiresAuth) return headers;
+
+    final accessToken = await _secureStorage.readAccessToken();
+    if (accessToken != null && accessToken.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+
+    return headers;
+  }
+
+  Future<dynamic> get(String path, {Map<String, dynamic>? query, bool requiresAuth = true}) async {
     final uri = _buildUri(path, query);
     try {
+      final headers = await _buildHeaders(requiresAuth: requiresAuth);
       final res = await _client
-          .get(uri)
+          .get(uri, headers: headers)
           .timeout(Env.receiveTimeout);
       return _handleResponse(res);
     } on SocketException {
@@ -61,11 +78,12 @@ class ApiClient {
     }
   }
 
-  Future<dynamic> post(String path, {Object? body}) async {
+  Future<dynamic> post(String path, {Object? body, bool requiresAuth = true}) async {
     final uri = _buildUri(path);
     try {
+      final headers = await _buildHeaders(requiresAuth: requiresAuth);
       final res = await _client
-          .post(uri, headers: _jsonHeaders(), body: body == null ? null : json.encode(body))
+          .post(uri, headers: headers, body: body == null ? null : json.encode(body))
           .timeout(Env.receiveTimeout);
       return _handleResponse(res);
     } on SocketException {
