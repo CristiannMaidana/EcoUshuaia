@@ -1,6 +1,6 @@
 import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
 
-abstract class UsuariosRepository {
+abstract class UsuariosCreateRepository {
   Future<Usuario> create({
     required String nombreUsuario,
     required String apellidoUsuario,
