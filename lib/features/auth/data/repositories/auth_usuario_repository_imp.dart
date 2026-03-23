@@ -12,4 +12,14 @@ class AuthUsuarioRepositoryImp implements AuthUsuarioRepository {
     final dto = AuthUsuarioDto(username: username, password: password);
     await remote.authUser(dto);
   }
+
+  @override
+  Future<bool> restoreSession() {
+    return remote.restoreSession();
+  }
+
+  @override
+  Future<void> logout() {
+    return remote.logout();
+  }
 }
