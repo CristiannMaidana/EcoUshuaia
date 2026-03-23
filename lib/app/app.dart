@@ -1,5 +1,5 @@
 import 'package:eco_ushuaia/app/di/di.dart';
-import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
+import 'package:eco_ushuaia/features/auth/presentation/auth_bootstrap_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +14,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'EcoUshuaia',
         theme: appTheme,
-        home: LoginScreen(),
+        home: const AuthBootstrapScreen(),
       ),
     );
   }
