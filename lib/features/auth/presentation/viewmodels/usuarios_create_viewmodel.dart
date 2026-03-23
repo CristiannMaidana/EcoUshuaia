@@ -1,9 +1,9 @@
 import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
-import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_create_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class UsuariosCreateViewModel extends ChangeNotifier {
-  final UsuariosRepository repo;
+  final UsuariosCreateRepository repo;
 
   UsuariosCreateViewModel(this.repo);
 

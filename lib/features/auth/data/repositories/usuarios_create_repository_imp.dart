@@ -1,10 +1,10 @@
 import 'package:eco_ushuaia/core/domain/entities/usuario.dart';
-import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_create_repository.dart';
 
 import '../models/usuario_create_request_dto.dart';
 import '../sources/remote/usuarios_create_remote_data_source.dart';
 
-class UsuariosCreateRepositoryImp implements UsuariosRepository {
+class UsuariosCreateRepositoryImp implements UsuariosCreateRepository {
   final UsuariosCreateRemoteDataSource remote;
 
   UsuariosCreateRepositoryImp(this.remote);

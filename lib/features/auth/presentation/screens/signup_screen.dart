@@ -3,7 +3,7 @@ import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_validate_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_lottie.dart';
-import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_create_repository.dart';
 
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/singup_validators.dart';
@@ -89,8 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) =>
-          UsuariosCreateViewModel(context.read<UsuariosRepository>()),
+      create: (_) => UsuariosCreateViewModel(context.read<UsuariosCreateRepository>()),
       child: Consumer<UsuariosCreateViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
