@@ -8,7 +8,7 @@ class AuthUsuarioRemoteDataSources {
   AuthUsuarioRemoteDataSources(this.api);
 
   Future<UsuarioDto> authUser(AuthUsuarioDto dto) async {
-    final data = await api.post('/autentificacion/login/', body: dto.toJson());
+    final data = await api.post('/autentificacion/login/', body: dto.toJson(), requiresAuth: false);
     return UsuarioDto.fromJson(data as Map<String, dynamic>);
   }
 }
