@@ -1,8 +1,8 @@
 import 'package:eco_ushuaia/features/auth/data/repositories/auth_usuario_repository_imp.dart';
 import 'package:eco_ushuaia/features/auth/data/sources/remote/auth_usuario_remote_data_sources.dart';
-import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_remote_data_source.dart';
+import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_create_remote_data_source.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/auth_usuario_repository.dart';
-import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_repository_imp.dart';
+import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_create_repository_imp.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_repository.dart';
 import 'package:eco_ushuaia/features/calendar/data/repositories/calendario_repository_imp.dart';
 import 'package:eco_ushuaia/features/calendar/data/repositories/categoria_noticias_imp.dart';
@@ -61,12 +61,12 @@ List<SingleChildWidget> _contenedoresProviders() => [
   ),
 ];
 
-List<SingleChildWidget> _usuariosProviders() => [
-  ProxyProvider<ApiClient, UsuariosRemoteDataSource>(
-    update: (_, api, __) => UsuariosRemoteDataSource(api),
+List<SingleChildWidget> _usuariosCreateProviders() => [
+  ProxyProvider<ApiClient, UsuariosCreateRemoteDataSource>(
+    update: (_, api, __) => UsuariosCreateRemoteDataSource(api),
   ),
-  ProxyProvider<UsuariosRemoteDataSource, UsuariosRepository>(
-    update: (_, ds, __) => UsuariosRepositoryImp(ds),
+  ProxyProvider<UsuariosCreateRemoteDataSource, UsuariosRepository>(
+    update: (_, ds, __) => UsuariosCreateRepositoryImp(ds),
   ),
 ];
 
@@ -123,7 +123,7 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
   ..._contenedoresProviders(),
-  ..._usuariosProviders(),
+  ..._usuariosCreateProviders(),
   ..._authProviders(),
   ..._calendarioProviders(),
   ..._categoriaNoticiasProviders(),
