@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class PerfilOptionSettings extends StatelessWidget {
   final String nameUser;
   final VoidCallback? editProfile;
-  final Usuario user;
+  final Usuario? user;
 
   const PerfilOptionSettings({
     super.key,
@@ -56,13 +56,17 @@ class PerfilOptionSettings extends StatelessWidget {
             SizedBox(
               width: 117,
               height: 40,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditUserScreen(user: user,)),
-                  );
-                }, 
+                child: ElevatedButton(
+                onPressed: user == null
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditUserScreen(initialUser: user),
+                          ),
+                        );
+                      },
                 style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
