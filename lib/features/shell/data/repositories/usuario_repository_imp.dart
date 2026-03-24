@@ -18,11 +18,15 @@ class UsuarioRepositoryImp implements UsuarioRepository {
     String? nombreUsuario,
     String? apellidoUsuario,
     String? email,
+    String? currentPassword,
+    String? password,
   }) async {
     final dto = await remote.updateUser(
       nombreUsuario: nombreUsuario,
       apellidoUsuario: apellidoUsuario,
       email: email,
+      currentPassword: currentPassword,
+      password: password,
     );
     return dto.toEntity();
   }
