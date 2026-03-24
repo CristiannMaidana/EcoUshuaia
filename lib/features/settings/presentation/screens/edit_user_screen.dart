@@ -45,7 +45,9 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
   @override
   Widget build(context){
     final usuario = context.watch<UsuarioViewModel>().usuario ?? widget.initialUser;
-
+    final usuarioViewModel = context.read<UsuarioViewModel>();
+    final messenger = ScaffoldMessenger.of(context);
+    
     if (usuario == null) {
       return Scaffold(
         backgroundColor: camarone50,
@@ -80,8 +82,6 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       subtitulo: usuario.nombreCompleto,
                       icon: Icon(Icons.person_outline, size: 25),
                       actionSetting: () {
-                        final usuarioViewModel = context.read<UsuarioViewModel>();
-                        final messenger = ScaffoldMessenger.of(context);
                         _openEditPage(
                           screenTitle: 'Editar nombre',
                           infoText:
@@ -128,9 +128,19 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                             AdaptableEditField(keyName: 'email',
                               label: 'Correo electrónico',
                               hintText: 'Ingrese un nuevo correo electrónico',
+                              initialValue: usuario.email,
                               validator: emailConfirmValidator,
                             ),
                           ],
+                          onSave: (values) async {
+                            await usuarioViewModel.updateUserEmail(
+                              email: values['email'] ?? '',
+                            );
+                            if (!mounted) return;
+                            messenger.showSnackBar(
+                              const SnackBar(content: Text('Correo actualizado')),
+                            );
+                          },
                         );
                       }, 
                       color: Colors.blueAccent.withValues(alpha: 0.2),
