@@ -12,10 +12,15 @@ class UsuariosRemoteDataSources {
     return UsuarioDto.fromJson(data as Map<String, dynamic>);
   }
 
-  Future<UsuarioDto> updateUser({required String nombreUsuario, required String apellidoUsuario}) async {
+  Future<UsuarioDto> updateUser({
+    String? nombreUsuario,
+    String? apellidoUsuario,
+    String? email,
+  }) async {
     final dto = UsuarioUpdateRequestDto(
       nombreUsuario: nombreUsuario,
       apellidoUsuario: apellidoUsuario,
+      email: email,
     );
     final data = await api.patch('/usuarios/me/', body: dto.toJson());
 
