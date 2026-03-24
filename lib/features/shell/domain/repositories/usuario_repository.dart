@@ -7,5 +7,7 @@ abstract class UsuarioRepository {
     String? nombreUsuario,
     String? apellidoUsuario,
     String? email,
+    String? currentPassword,
+    String? password,
   });
 }
