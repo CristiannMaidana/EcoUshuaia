@@ -16,11 +16,15 @@ class UsuariosRemoteDataSources {
     String? nombreUsuario,
     String? apellidoUsuario,
     String? email,
+    String? currentPassword,
+    String? password,
   }) async {
     final dto = UsuarioUpdateRequestDto(
       nombreUsuario: nombreUsuario,
       apellidoUsuario: apellidoUsuario,
       email: email,
+      currentPassword: currentPassword,
+      password: password,
     );
     final data = await api.patch('/usuarios/me/', body: dto.toJson());
 
