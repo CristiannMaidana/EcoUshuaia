@@ -64,6 +64,30 @@ class UsuarioViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> updateUserEmail({required String email}) async {
+    final nuevoEmail = email.trim();
+
+    if (nuevoEmail.isEmpty) {
+      throw ArgumentError('El correo electrónico es obligatorio');
+    }
+
+    final usuarioActual = _usuario;
+    if (usuarioActual != null && usuarioActual.email == nuevoEmail) {
+      return;
+    }
+
+    try {
+      _error = null;
+      _usuario = await repo.updateUser(email: nuevoEmail);
+      _loadedOnce = true;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   void clear() {
     _usuario = null;
     _error = null;
