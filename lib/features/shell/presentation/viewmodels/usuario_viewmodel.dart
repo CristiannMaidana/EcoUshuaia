@@ -88,6 +88,36 @@ class UsuarioViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> updateUserPassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final current = currentPassword.trim();
+    final next = newPassword.trim();
+
+    if (current.isEmpty) {
+      throw ArgumentError('La contraseña actual es obligatoria');
+    }
+
+    if (next.isEmpty) {
+      throw ArgumentError('La nueva contraseña es obligatoria');
+    }
+
+    try {
+      _error = null;
+      _usuario = await repo.updateUser(
+        currentPassword: current,
+        password: next,
+      );
+      _loadedOnce = true;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   void clear() {
     _usuario = null;
     _error = null;
