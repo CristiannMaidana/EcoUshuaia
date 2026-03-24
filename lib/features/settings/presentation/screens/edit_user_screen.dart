@@ -5,14 +5,16 @@ import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edi
 import 'package:eco_ushuaia/features/settings/presentation/widgets/adaptable_edit_option_container.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/content_edit_addres.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
+import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditUserScreen extends StatefulWidget{
-  final Usuario user;
+  final Usuario? initialUser;
 
   const EditUserScreen({
     super.key,
-    required this.user,
+    this.initialUser,
   });
 
   @override
@@ -21,7 +23,12 @@ class EditUserScreen extends StatefulWidget{
 
 class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProviderStateMixin{
   
-  Future<void> _openEditPage({required String screenTitle, required String infoText, required List<AdaptableEditField> fields,}) async {
+  Future<void> _openEditPage({
+    required String screenTitle,
+    required String infoText,
+    required List<AdaptableEditField> fields,
+    Future<void> Function(Map<String, String> values)? onSave,
+  }) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -29,6 +36,7 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
           screenTitle: screenTitle,
           infoText: infoText,
           fields: fields,
+          onSave: onSave,
         ),
       ),
     );
@@ -36,6 +44,20 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
 
   @override
   Widget build(context){
+    final usuario = context.watch<UsuarioViewModel>().usuario ?? widget.initialUser;
+
+    if (usuario == null) {
+      return Scaffold(
+        backgroundColor: camarone50,
+        appBar: AppBar(
+          backgroundColor: camarone50,
+          title: Text('Editar perfil', style: Theme.of(context).textTheme.headlineLarge),
+          centerTitle: false,
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: camarone50,
       appBar: AppBar(
@@ -55,9 +77,11 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                 child: Column(
                   children: [
                     CustomCardOptionSettings(titulo: 'Nombre completo', 
-                      subtitulo: '${widget.user.nombreUsuario} ${widget.user.apellidoUsuario}', 
+                      subtitulo: usuario.nombreCompleto,
                       icon: Icon(Icons.person_outline, size: 25),
                       actionSetting: () {
+                        final usuarioViewModel = context.read<UsuarioViewModel>();
+                        final messenger = ScaffoldMessenger.of(context);
                         _openEditPage(
                           screenTitle: 'Editar nombre',
                           infoText:
@@ -66,14 +90,26 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                             AdaptableEditField(keyName: 'nombre',
                               label: 'Nombre',
                               hintText: 'Ingrese un nuevo nombre completo',
+                              initialValue: usuario.nombreUsuario,
                               validator: nombreValidator,
                             ),
                             AdaptableEditField(keyName: 'apellido',
                               label: 'Apellido',
                               hintText: 'Ingrese un nuevo apellido',
+                              initialValue: usuario.apellidoUsuario,
                               validator: apellidoValidator,
                             ),
                           ],
+                          onSave: (values) async {
+                            await usuarioViewModel.updateUserName(
+                              nombreUsuario: values['nombre'] ?? '',
+                              apellidoUsuario: values['apellido'] ?? '',
+                            );
+                            if (!mounted) return;
+                            messenger.showSnackBar(
+                              const SnackBar(content: Text('Nombre actualizado')),
+                            );
+                          },
                         );
                       }, 
                       color: camarone400.withValues(alpha: 0.2),
@@ -82,7 +118,7 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15,),
                     ),
                     CustomCardOptionSettings(titulo: 'Correo electrónico', 
-                      subtitulo: '${widget.user.email}', 
+                      subtitulo: usuario.email, 
                       icon: Icon(Icons.mail_outline, size: 25),
                       actionSetting: (){
                         _openEditPage(
