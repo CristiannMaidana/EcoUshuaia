@@ -37,6 +37,33 @@ class UsuarioViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> updateUserName({required String nombreUsuario, required String apellidoUsuario}) async {
+    final nombre = nombreUsuario.trim();
+    final apellido = apellidoUsuario.trim();
+
+    if (nombre.isEmpty || apellido.isEmpty) {
+      throw ArgumentError('El nombre y el apellido son obligatorios');
+    }
+
+    final usuarioActual = _usuario;
+    if (usuarioActual != null &&
+        usuarioActual.nombreUsuario == nombre &&
+        usuarioActual.apellidoUsuario == apellido) {
+      return;
+    }
+
+    try {
+      _error = null;
+      _usuario = await repo.updateUser(nombreUsuario: nombre, apellidoUsuario: apellido);
+      _loadedOnce = true;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   void clear() {
     _usuario = null;
     _error = null;
