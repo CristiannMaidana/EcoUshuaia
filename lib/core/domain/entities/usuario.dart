@@ -16,4 +16,6 @@ class Usuario {
     this.idZona,
     this.idTipoUsuario,
   });
+
+  String get nombreCompleto => '$nombreUsuario $apellidoUsuario';
 }
