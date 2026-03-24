@@ -94,4 +94,21 @@ class ApiClient {
       throw ParseException('Respuesta inválida del servidor');
     }
   }
+
+  Future<dynamic> patch(String path, {Object? body, bool requiresAuth = true}) async {
+    final uri = _buildUri(path);
+    try {
+      final headers = await _buildHeaders(requiresAuth: requiresAuth);
+      final res = await _client
+          .patch(uri, headers: headers, body: body == null ? null : json.encode(body))
+          .timeout(Env.receiveTimeout);
+      return _handleResponse(res);
+    } on SocketException {
+      throw NetworkException('Sin conexión a internet');
+    } on HttpException {
+      throw NetworkException('Error HTTP');
+    } on FormatException {
+      throw ParseException('Respuesta inválida del servidor');
+    }
+  }
 }
