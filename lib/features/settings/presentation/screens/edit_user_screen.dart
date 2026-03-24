@@ -47,7 +47,7 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
     final usuario = context.watch<UsuarioViewModel>().usuario ?? widget.initialUser;
     final usuarioViewModel = context.read<UsuarioViewModel>();
     final messenger = ScaffoldMessenger.of(context);
-    
+
     if (usuario == null) {
       return Scaffold(
         backgroundColor: camarone50,
@@ -261,6 +261,24 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                               obscureText: true,
                             ),
                           ],
+                          onSave: (values) async {
+                            final currentPassword = values['current_password'] ?? '';
+                            final newPassword = values['new_password'] ?? '';
+                            final confirmPassword = values['confirm_password'] ?? '';
+
+                            if (newPassword != confirmPassword) {
+                              throw ArgumentError('La confirmación no coincide con la nueva contraseña');
+                            }
+
+                            await usuarioViewModel.updateUserPassword(
+                              currentPassword: currentPassword,
+                              newPassword: newPassword,
+                            );
+                            if (!mounted) return;
+                            messenger.showSnackBar(
+                              const SnackBar(content: Text('Contraseña actualizada')),
+                            );
+                          },
                         );
                       }, 
                       color: Colors.blueAccent.withValues(alpha: 0.2),
