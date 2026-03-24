@@ -89,6 +89,11 @@ class _AdaptableEditOptionState extends State<AdaptableEditOption> {
       await widget.onSave!(values);
       if (!mounted) return;
       Navigator.pop(context, values);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo guardar: $e')),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -139,8 +144,7 @@ class _AdaptableEditOptionState extends State<AdaptableEditOption> {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          widget.infoText,
+                        child: Text(widget.infoText,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
