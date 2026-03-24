@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget{
+  const SettingsScreen({super.key});
+
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
@@ -20,7 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final usuario = usuarioVm.usuario;
     final nombreCompleto = usuario == null
         ? (usuarioVm.loading ? 'Cargando perfil...' : 'Usuario')
-        : '${usuario.nombreUsuario} ${usuario.apellidoUsuario}';
+        : usuario.nombreCompleto;
 
     return Scaffold(
       backgroundColor: camarone50,
@@ -38,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     SizedBox(height: 10),
                     Text('Cuenta', style: Theme.of(context).textTheme.headlineSmall,),
-                    PerfilOptionSettings(nameUser: nombreCompleto, user: usuario!),
+                    PerfilOptionSettings(nameUser: nombreCompleto, user: usuario),
                     SizedBox(height: 20),
           
                     Text('Notificaciones', style: Theme.of(context).textTheme.headlineSmall,),
