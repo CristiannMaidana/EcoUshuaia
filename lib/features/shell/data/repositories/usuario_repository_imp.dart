@@ -12,4 +12,10 @@ class UsuarioRepositoryImp implements UsuarioRepository {
     final dto = await remote.getUser();
     return dto.toEntity();
   }
+
+  @override
+  Future<Usuario> updateUser({required String nombreUsuario, required String apellidoUsuario}) async {
+    final dto = await remote.updateUser(nombreUsuario: nombreUsuario, apellidoUsuario: apellidoUsuario);
+    return dto.toEntity();
+  }
 }
