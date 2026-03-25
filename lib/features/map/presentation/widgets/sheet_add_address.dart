@@ -109,14 +109,6 @@ class SheetAddAddressState extends State<SheetAddAddress> {
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () {},
-              child: const Text('Ajustar en mapa'),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
             child: FilledButton(
               onPressed: () {},
               style: FilledButton.styleFrom(
