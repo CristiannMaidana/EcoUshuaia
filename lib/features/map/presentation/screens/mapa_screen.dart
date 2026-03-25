@@ -383,7 +383,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         Positioned(
           right: 24,
-          bottom: 180,
+          bottom: 110,
           child: Row(
             children: [
               FloatingActionButton(
