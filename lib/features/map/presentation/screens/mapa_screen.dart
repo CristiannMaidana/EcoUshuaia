@@ -14,9 +14,11 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.d
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
+import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_widget.dart';
@@ -90,11 +92,14 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Map<String, double> _userPoint = const <String, double>{'lon': 0, 'lat': 0};
   
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey = GlobalKey<SheetAddContainerState>();
+  final GlobalKey<SheetAddAddressState> _addAddressSheetKey = GlobalKey<SheetAddAddressState>();
       
   final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
+  bool openSheetAddAddress = false;
+  bool _didShowMissingAddressSheet = false;
 
   // Metodo para abrir el sheetAddContainer
   Future<void> _abrirSheetAddContainer() async {
@@ -113,6 +118,24 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final sheetState = _addContainerSheetKey.currentState;
     if (sheetState == null) {
       setState(() => openSheetAddContainer = false);
+      return;
+    }
+    sheetState.collapse();
+  }
+
+  void _abrirSheetAddAddress() {
+    if (openSheetAddAddress) return;
+    setState(() => openSheetAddAddress = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addAddressSheetKey.currentState?.expand();
+    });
+  }
+
+  void _cerrarSheetAddAddress() {
+    if (!openSheetAddAddress) return;
+    final sheetState = _addAddressSheetKey.currentState;
+    if (sheetState == null) {
+      setState(() => openSheetAddAddress = false);
       return;
     }
     sheetState.collapse();
@@ -281,6 +304,21 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioViewModel = context.watch<UsuarioViewModel>();
+    final user = usuarioViewModel.usuario;
+
+    if (!_didShowMissingAddressSheet &&
+        !usuarioViewModel.loading &&
+        usuarioViewModel.loadedOnce &&
+        user != null &&
+        user.idDireccion == null) {
+      _didShowMissingAddressSheet = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _abrirSheetAddAddress();
+      });
+    }
+
     return Stack(
       children: [
         CustomMapa(
@@ -436,6 +474,29 @@ class _MapaScreenStatePage extends State<MapaPage> {
                       setState(() => openSheetAddContainer = false);
                     },
                     add: _agregarDireccionNueva,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        if (openSheetAddAddress)
+          Positioned.fill(
+            child: Stack(
+              children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _cerrarSheetAddAddress,
+                  child: const SizedBox.expand(),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SheetAddAddress(
+                    key: _addAddressSheetKey,
+                    onClosed: () {
+                      if (!mounted) return;
+                      setState(() => openSheetAddAddress = false);
+                    },
                   ),
                 ),
               ],
