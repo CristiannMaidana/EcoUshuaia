@@ -484,16 +484,44 @@ class _MapaScreenStatePage extends State<MapaPage> {
           Positioned(
             right: 24,
             bottom: 180,
-            child: FloatingActionButton(
-              onPressed: _abrirSheetAddAddress,
-              backgroundColor: camarone500,
-              child: const Icon(
-                Icons.edit_location_alt_rounded,
-                color: Colors.black,
-                size: 32,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 2000),
+              reverseDuration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) {
+                final fade = CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                );
+                final scale = Tween<double>(
+                  begin: 0.82,
+                  end: 1,
+                ).animate(fade);
+
+                return FadeTransition(
+                  opacity: fade,
+                  child: ScaleTransition(
+                    scale: scale,
+                    child: child,
+                  ),
+                );
+              },
+              child: openSheetAddAddress
+                  ? const SizedBox.shrink(key: ValueKey('add-address-hidden'))
+                  : FloatingActionButton(
+                      key: const ValueKey('add-address-fab'),
+                      heroTag: 'map_add_address_fab',
+                      onPressed: _abrirSheetAddAddress,
+                      backgroundColor: camarone500,
+                      child: const Icon(
+                        Icons.edit_location_alt_rounded,
+                        color: Colors.black,
+                        size: 32,
+                      ),
+                    ),
               ),
             ),
-          ),
 
         if (openSheetAddAddress)
           Positioned.fill(
