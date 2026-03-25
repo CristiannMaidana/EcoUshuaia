@@ -480,6 +480,21 @@ class _MapaScreenStatePage extends State<MapaPage> {
             ),
           ),
 
+        if (user?.idDireccion == null)
+          Positioned(
+            right: 24,
+            bottom: 180,
+            child: FloatingActionButton(
+              onPressed: _abrirSheetAddAddress,
+              backgroundColor: camarone500,
+              child: const Icon(
+                Icons.edit_location_alt_rounded,
+                color: Colors.black,
+                size: 32,
+              ),
+            ),
+          ),
+
         if (openSheetAddAddress)
           Positioned.fill(
             child: Stack(
