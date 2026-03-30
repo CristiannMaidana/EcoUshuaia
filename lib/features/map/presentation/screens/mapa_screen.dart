@@ -14,7 +14,6 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.d
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
@@ -92,14 +91,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Map<String, double> _userPoint = const <String, double>{'lon': 0, 'lat': 0};
   
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey = GlobalKey<SheetAddContainerState>();
-  final GlobalKey<SheetAddAddressState> _addAddressSheetKey = GlobalKey<SheetAddAddressState>();
       
   final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
   bool openSheetAddAddress = false;
-  bool _didShowMissingAddressSheet = false;
 
   // Metodo para abrir el sheetAddContainer
   Future<void> _abrirSheetAddContainer() async {
@@ -118,24 +115,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final sheetState = _addContainerSheetKey.currentState;
     if (sheetState == null) {
       setState(() => openSheetAddContainer = false);
-      return;
-    }
-    sheetState.collapse();
-  }
-
-  void _abrirSheetAddAddress() {
-    if (openSheetAddAddress) return;
-    setState(() => openSheetAddAddress = true);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _addAddressSheetKey.currentState?.expand();
-    });
-  }
-
-  void _cerrarSheetAddAddress() {
-    if (!openSheetAddAddress) return;
-    final sheetState = _addAddressSheetKey.currentState;
-    if (sheetState == null) {
-      setState(() => openSheetAddAddress = false);
       return;
     }
     sheetState.collapse();
@@ -167,8 +146,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _userPoint = <String, double>{'lon': lon, 'lat': lat};
     });
   }
-
-
 
   void _changes() {
     setState(() {
@@ -306,18 +283,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Widget build(BuildContext context) {
     final usuarioViewModel = context.watch<UsuarioViewModel>();
     final user = usuarioViewModel.usuario;
-
-    if (!_didShowMissingAddressSheet &&
-        !usuarioViewModel.loading &&
-        usuarioViewModel.loadedOnce &&
-        user != null &&
-        user.idDireccion == null) {
-      _didShowMissingAddressSheet = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _abrirSheetAddAddress();
-      });
-    }
 
     return Stack(
       children: [
@@ -474,72 +439,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
                       setState(() => openSheetAddContainer = false);
                     },
                     add: _agregarDireccionNueva,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-        if (user?.idDireccion == null)
-          Positioned(
-            right: 24,
-            bottom: 180,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 2000),
-              reverseDuration: const Duration(milliseconds: 300),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              transitionBuilder: (child, animation) {
-                final fade = CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOutCubic,
-                );
-                final scale = Tween<double>(
-                  begin: 0.82,
-                  end: 1,
-                ).animate(fade);
-
-                return FadeTransition(
-                  opacity: fade,
-                  child: ScaleTransition(
-                    scale: scale,
-                    child: child,
-                  ),
-                );
-              },
-              child: openSheetAddAddress
-                  ? const SizedBox.shrink(key: ValueKey('add-address-hidden'))
-                  : FloatingActionButton(
-                      key: const ValueKey('add-address-fab'),
-                      heroTag: 'map_add_address_fab',
-                      onPressed: _abrirSheetAddAddress,
-                      backgroundColor: camarone500,
-                      child: const Icon(
-                        Icons.edit_location_alt_rounded,
-                        color: Colors.black,
-                        size: 32,
-                      ),
-                    ),
-              ),
-            ),
-
-        if (openSheetAddAddress)
-          Positioned.fill(
-            child: Stack(
-              children: [
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: _cerrarSheetAddAddress,
-                  child: const SizedBox.expand(),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SheetAddAddress(
-                    key: _addAddressSheetKey,
-                    onClosed: () {
-                      if (!mounted) return;
-                      setState(() => openSheetAddAddress = false);
-                    },
                   ),
                 ),
               ],
