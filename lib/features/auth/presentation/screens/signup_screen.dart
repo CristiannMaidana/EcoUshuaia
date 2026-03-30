@@ -206,6 +206,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           },
                                         ),
                                       ),
+                                      const SizedBox(height: 16),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Ingrese su dirección',
+                                            style: Theme.of(context).textTheme.bodyLarge,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            width: double.infinity,
+                                            constraints: const BoxConstraints(minHeight: 52, maxHeight: 52),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              border: Border.all(color: Colors.grey.shade400),
+                                              borderRadius: BorderRadius.circular(24),
+                                            ),
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              child: ListTile(
+                                                onTap: () {
+                                                  debugPrint('ahora');
+                                                },
+                                                minVerticalPadding: 0,
+                                                minTileHeight: 52,
+                                                visualDensity: const VisualDensity(
+                                                  horizontal: 0,
+                                                  vertical: -4,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(24),
+                                                ),
+                                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                                title: Text('Ir a ingresar dirección',
+                                                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                                    color: Colors.grey.shade700,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.arrow_forward_ios,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       const SizedBox(height: 6),
 
                                       // Checkbox de terminos y condiciones
