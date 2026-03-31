@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/services/mapbox_initializer.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/place_location.dart';
 import 'package:mapbox_search/mapbox_search.dart';
 
@@ -8,19 +9,26 @@ class MapboxSearchService {
   final GeoCodingApi _reversePlaceGeo;
 
   MapboxSearchService()
-      : _geo = GeoCodingApi(
+      : assert(() {
+          MapboxInitializer.ensureInitialized();
+          return true;
+        }()),
+        _geo = GeoCodingApi(
+          apiKey: MapboxInitializer.accessToken,
           country: "AR", // Restringir busquedas a Argentina
           limit: 10, // Limitar resultados a 10
           language: 'es',
           types: const [PlaceType.address, PlaceType.place],
         ),
         _reverseAddressGeo = GeoCodingApi(
+          apiKey: MapboxInitializer.accessToken,
           country: "AR",
           limit: 1,
           language: 'es',
           types: const [PlaceType.address],
         ),
         _reversePlaceGeo = GeoCodingApi(
+          apiKey: MapboxInitializer.accessToken,
           country: "AR",
           limit: 1,
           language: 'es',
