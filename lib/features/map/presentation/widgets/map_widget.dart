@@ -1,15 +1,15 @@
+import 'package:eco_ushuaia/core/services/mapbox_initializer.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'package:mapbox_search/mapbox_search.dart';
 
 class CustomMapa extends StatefulWidget {
   final void Function(MapController controller) onMapReady;
 
   const CustomMapa({
-    Key? key,
+    super.key,
     required this.onMapReady,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomMapa> createState() => _CustomMapaState();
@@ -24,9 +24,8 @@ class _CustomMapaState extends State<CustomMapa> {
   @override
   void initState() {
     super.initState();
-    accessToken = const String.fromEnvironment("ACCESS_TOKEN");
-    MapboxOptions.setAccessToken(accessToken);
-    MapBoxSearch.init(accessToken);
+    MapboxInitializer.ensureInitialized();
+    accessToken = MapboxInitializer.accessToken;
   }
   
   void _onMapCreated(MapboxMap map) {
