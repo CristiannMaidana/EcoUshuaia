@@ -1,9 +1,12 @@
+import 'package:eco_ushuaia/core/services/mapbox_initializer.dart';
+import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/place_location.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'package:mapbox_search/mapbox_search.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MapWidgetAddres extends StatefulWidget {
   final PlaceLocation? selectedPlace;
@@ -24,20 +27,20 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
   static const _defaultLat = -54.8019;
 
   final _searchService = MapboxSearchService();
+  final _perms = LocationPermissionService.I;
 
   MapboxMap? _mapboxMap;
   bool _mapReady = false;
-  bool _loadingAddress = true;
+  bool _loadingAddress = false;
+  bool _hasLocationPermission = false;
   double _selectedLat = _defaultLat;
   double _selectedLon = _defaultLon;
 
   @override
   void initState() {
     super.initState();
-    final accessToken = const String.fromEnvironment('ACCESS_TOKEN');
-    MapboxOptions.setAccessToken(accessToken);
-    MapBoxSearch.init(accessToken);
-    _setInitialLocation();
+    MapboxInitializer.ensureInitialized();
+    _initPermissionState();
   }
 
   @override
@@ -50,16 +53,33 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
     _selectPlace(place);
   }
 
+  Future<void> _initPermissionState() async {
+    final permission = await _perms.refreshStatus();
+    if (!mounted) return;
+    setState(() {
+      _hasLocationPermission = permission.isGranted;
+    });
+    if (_hasLocationPermission) {
+      await _setInitialLocation();
+    }
+  }
+
+  Future<void> _retryPermission() async {
+    final ok = await _perms.ensureWhenInUsePermission(context);
+    if (!mounted) return;
+    setState(() {
+      _hasLocationPermission = ok;
+    });
+    if (ok) {
+      await _setInitialLocation();
+    }
+  }
+
   Future<void> _setInitialLocation() async {
     try {
       final permission = await geo.Geolocator.checkPermission();
-      var currentPermission = permission;
-      if (currentPermission == geo.LocationPermission.denied) {
-        currentPermission = await geo.Geolocator.requestPermission();
-      }
-
-      if (currentPermission == geo.LocationPermission.always ||
-          currentPermission == geo.LocationPermission.whileInUse) {
+      if (permission == geo.LocationPermission.always ||
+          permission == geo.LocationPermission.whileInUse) {
         final position = await geo.Geolocator.getCurrentPosition(
           locationSettings: const geo.LocationSettings(
             accuracy: geo.LocationAccuracy.high,
@@ -172,10 +192,12 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
                     setState(() {
                       _mapReady = true;
                     });
-                    await _moveCamera(_selectedLat, _selectedLon);
+                    if (_hasLocationPermission) {
+                      await _moveCamera(_selectedLat, _selectedLon);
+                    }
                   },
                   onMapIdleListener: (_) {
-                    if (_mapReady) {
+                    if (_mapReady && _hasLocationPermission) {
                       _updateFromMapCenter();
                     }
                   },
@@ -200,6 +222,37 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
                         width: 22,
                         height: 22,
                         child: CircularProgressIndicator(strokeWidth: 2.2),
+                      ),
+                    ),
+                  ),
+                  
+                if (!_hasLocationPermission)
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(color: Colors.black54),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('Necesitamos tu ubicación para mostrarte en el mapa y ajustar el punto exacto.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              const SizedBox(height: 12),
+                              FilledButton(
+                                onPressed: _retryPermission,
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: camarone500,
+                                ),
+                                child: Text('Conceder permiso',
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
