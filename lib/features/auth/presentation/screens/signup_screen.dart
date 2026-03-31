@@ -4,7 +4,7 @@ import 'package:eco_ushuaia/core/ui/animations/email_validate_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_lottie.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_create_repository.dart';
-
+import 'package:eco_ushuaia/features/auth/presentation/screens/set_address_screen.dart';
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
 import 'package:eco_ushuaia/core/utils/validators/singup_validators.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/showDialogPassword.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -36,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePasswordTwo = true;
   bool emailNoAceptado = true;
   bool mensajePassword = true;
+  String? _selectedAddress;
 
   @override
   void dispose() {
@@ -51,6 +52,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onRegisterPressed(UsuariosCreateViewModel vm) {
     if (vm.loading) return;
     _handleRegister(vm);
+  }
+
+  Future<void> _openAddressSelector() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(builder: (_) => const SetAddressScreen()),
+    );
+
+    if (!mounted || result == null) return;
+
+    setState(() {
+      _selectedAddress = result['address'] as String?;
+    });
   }
 
   Future<void> _handleRegister(UsuariosCreateViewModel vm) async {
@@ -208,6 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                       const SizedBox(height: 16),
 
+                                      // Seccion de direccion
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -226,9 +241,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             child: Material(
                                               color: Colors.transparent,
                                               child: ListTile(
-                                                onTap: () {
-                                                  debugPrint('ahora');
-                                                },
+                                                onTap: () {_openAddressSelector();},
                                                 minVerticalPadding: 0,
                                                 minTileHeight: 52,
                                                 visualDensity: const VisualDensity(
@@ -239,8 +252,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   borderRadius: BorderRadius.circular(24),
                                                 ),
                                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                                title: Text('Ir a ingresar dirección',
-                                                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                                title: Text(_selectedAddress ?? 'Ir a ingresar dirección',
+                                                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
                                                     color: Colors.grey.shade700,
                                                   ),
                                                 ),
