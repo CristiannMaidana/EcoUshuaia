@@ -1,12 +1,4 @@
-class Coordenada {
-  final double latitud;
-  final double longitud;
-
-  Coordenada({
-    required this.latitud,
-    required this.longitud,
-  });
-}
+import 'package:eco_ushuaia/core/domain/entities/coordenada.dart';
 
 class Contenedor {
   final int idContenedor;
@@ -25,9 +17,9 @@ class Contenedor {
     required this.idContenedor,
     this.nombreContenedor,
     this.colorContenedor,
-    this.capacidadTotal, 
-    this.fechaInstalacion, 
-    this.ultimoVaciado, 
+    this.capacidadTotal,
+    this.fechaInstalacion,
+    this.ultimoVaciado,
     this.descripcionUbicacion,
     this.coordenada,
     this.idZona,
