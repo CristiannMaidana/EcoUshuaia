@@ -1,6 +1,6 @@
 import 'package:eco_ushuaia/core/network/http_client.dart';
 import 'package:eco_ushuaia/features/auth/data/models/auth_usuario_dto.dart';
-import 'package:eco_ushuaia/services/secure_storage/secure_storage_services.dart';
+import 'package:eco_ushuaia/core/services/secure_storage/secure_storage_services.dart';
 
 class AuthUsuarioRemoteDataSources {
   final ApiClient api;

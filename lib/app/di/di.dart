@@ -28,7 +28,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../../core/network/http_client.dart';
-import '../../services/secure_storage/secure_storage_services.dart';
+import '../../core/services/secure_storage/secure_storage_services.dart';
 
 List<SingleChildWidget> _coreProviders() => [
   Provider<http.Client>(

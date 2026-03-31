@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../config/env/env.dart';
 import '../errors/exceptions.dart';
-import '../../services/secure_storage/secure_storage_services.dart';
+import '../services/secure_storage/secure_storage_services.dart';
 
 class ApiClient {
   final http.Client _client;
