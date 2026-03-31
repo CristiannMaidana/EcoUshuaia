@@ -1,15 +1,5 @@
+import 'package:eco_ushuaia/core/domain/entities/coordenada.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
-import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart' as domain_entities;
-
-class Coordenada {
-  final double latitud;
-  final double longitud;
-
-  Coordenada({
-    required this.latitud,
-    required this.longitud,
-  });
-}
 
 class ContenedorDto {
   final int idContenedor;
@@ -28,9 +18,9 @@ class ContenedorDto {
     required this.idContenedor,
     this.nombreContenedor,
     this.colorContenedor,
-    this.capacidadTotal, 
-    this.fechaInstalacion, 
-    this.ultimoVaciado, 
+    this.capacidadTotal,
+    this.fechaInstalacion,
+    this.ultimoVaciado,
     this.descripcionUbicacion,
     this.coordenada,
     this.idZona,
@@ -43,8 +33,11 @@ class ContenedorDto {
     final geom = features['geometry'] as Map<String, dynamic>? ?? const {};
     final coords = (geom['coordinates'] as List?) ?? const [null, null];
 
-    DateTime? _toDate(dynamic v) =>
-      (v is String) ? DateTime.tryParse(v) : (v is DateTime) ? v : null;
+    DateTime? _toDate(dynamic v) => (v is String)
+        ? DateTime.tryParse(v)
+        : (v is DateTime)
+        ? v
+        : null;
 
     return ContenedorDto(
       idContenedor: features['id'] as int,
@@ -75,13 +68,13 @@ class ContenedorDto {
     ultimoVaciado: ultimoVaciado,
     descripcionUbicacion: descripcionUbicacion,
     coordenada: coordenada != null
-        ? domain_entities.Coordenada(
+        ? Coordenada(
             latitud: coordenada!.latitud,
             longitud: coordenada!.longitud,
           )
         : null,
     idZona: idZona,
     idMapa: idMapa,
-    idResiduo: idResiduo
+    idResiduo: idResiduo,
   );
 }
