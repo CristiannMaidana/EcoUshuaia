@@ -7,7 +7,18 @@ import 'package:eco_ushuaia/features/settings/presentation/widgets/map_widget_ad
 import 'package:flutter/material.dart';
 
 class ContentEditAddres extends StatefulWidget {
-  const ContentEditAddres({super.key});
+  final String? initialAddress;
+  final double? initialLat;
+  final double? initialLon;
+  final Future<void> Function(String address, double lat, double lon)? onSave;
+
+  const ContentEditAddres({
+    super.key,
+    this.initialAddress,
+    this.initialLat,
+    this.initialLon,
+    this.onSave,
+  });
 
   @override
   State<ContentEditAddres> createState() => _ContentEditAddresState();
@@ -27,10 +38,25 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
   double _selectedLat = _defaultLat;
   double _selectedLon = _defaultLon;
   PlaceLocation? _selectedPlaceForMap;
+  bool _saving = false;
 
   @override
   void initState() {
     super.initState();
+    final initialAddress = widget.initialAddress?.trim();
+    if (initialAddress != null && initialAddress.isNotEmpty) {
+      _selectedStreet = initialAddress;
+      _searchController.text = initialAddress;
+    }
+    if (widget.initialLat != null && widget.initialLon != null) {
+      _selectedLat = widget.initialLat!;
+      _selectedLon = widget.initialLon!;
+      _selectedPlaceForMap = PlaceLocation(
+        lat: _selectedLat,
+        lon: _selectedLon,
+        address: initialAddress,
+      );
+    }
     _searchViewModel.addListener(_onSearchUpdated);
     _searchFocusNode.addListener(_handleFocusChange);
   }
@@ -127,11 +153,13 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
                 ),
                 const SizedBox(height: 12),
                 const Divider(height: 1, thickness: 1),
-                
+
                 const SizedBox(height: 16),
-                //TODO: cambiar la ubicacion del usuario almacenado en su perfil
+
                 MapWidgetAddres(
                   selectedPlace: _selectedPlaceForMap,
+                  initialLat: widget.initialLat,
+                  initialLon: widget.initialLon,
                   onAddressChanged: (address, lat, lon) {
                     if (!mounted) return;
                     setState(() {
@@ -143,7 +171,7 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
                 ),
                 const SizedBox(height: 16),
 
-                //Texto inferior 
+                //Texto inferior
                 const Divider(height: 1, thickness: 1),
                 const SizedBox(height: 16),
                 Text('Domicilio seleccionado:',
@@ -167,7 +195,7 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 26),
-                
+
                 // botones
                 Row(
                   children: [
@@ -190,14 +218,38 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: StandardButton(texto: 'Guardar',
+                      child: StandardButton(
+                        texto: _saving ? 'Guardando...' : 'Guardar',
                         height: 48,
-                        onPressed: () {
-                          Navigator.pop(context, <String, dynamic>{
-                            'address': _selectedStreet,
-                            'lat': _selectedLat,
-                            'lon': _selectedLon,
+                        onPressed: () async {
+                          if (_saving) return;
+                          setState(() {
+                            _saving = true;
                           });
+                          try {
+                            if (widget.onSave != null) {
+                              await widget.onSave!(
+                                _selectedStreet,
+                                _selectedLat,
+                                _selectedLon,
+                              );
+                              if (!context.mounted) return;
+                              Navigator.pop(context);
+                              return;
+                            }
+
+                            Navigator.pop(context, <String, dynamic>{
+                              'address': _selectedStreet,
+                              'lat': _selectedLat,
+                              'lon': _selectedLon,
+                            });
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                _saving = false;
+                              });
+                            }
+                          }
                         },
                       ),
                     ),
