@@ -7,7 +7,7 @@ class DomicilioRemoteDataSource {
   DomicilioRemoteDataSource(this.api);
 
   Future<DomicilioDto> postDomicilio(DomicilioDto dto) async {
-    final data = await api.post('/domicilios/',
+    final data = await api.post('/direcciones/',
       body: dto.toJson(), 
       requiresAuth: false,
     );
@@ -15,12 +15,12 @@ class DomicilioRemoteDataSource {
   }
 
   Future<DomicilioDto> getDomicilio(int idDomicilio) async {
-    final data = await api.get('/domicilios/$idDomicilio/');
+    final data = await api.get('/direcciones/$idDomicilio/');
     return DomicilioDto.fromJson(data as Map<String, dynamic>);
   }
 
   Future<DomicilioDto> patchDomicilio(int idDomicilio, DomicilioDto dto) async {
-    final data = await api.patch('/domicilios/$idDomicilio/',
+    final data = await api.patch('/direcciones/$idDomicilio/',
       body: dto.toJson(),
     );
     return DomicilioDto.fromJson(data as Map<String, dynamic>);
