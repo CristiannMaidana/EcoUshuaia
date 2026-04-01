@@ -1,4 +1,6 @@
 import 'package:eco_ushuaia/core/network/http_client.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/domicilio_repository.dart';
+import 'package:eco_ushuaia/features/auth/presentation/viewmodels/domicilio_viewmodel.dart';
 import 'package:eco_ushuaia/core/ui/navigation/buttom_nav_bar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/calendar_screen.dart';
 import 'package:eco_ushuaia/features/home/presentation/home_screen.dart';
@@ -11,19 +13,16 @@ import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewm
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ContainerHomeScreen extends StatefulWidget{
+class ContainerHomeScreen extends StatefulWidget {
   final int initialIndex;
 
-  const ContainerHomeScreen({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const ContainerHomeScreen({super.key, this.initialIndex = 0});
 
   @override
   State<ContainerHomeScreen> createState() => _ContainerHomeScreenState();
 }
 
-class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
+class _ContainerHomeScreenState extends State<ContainerHomeScreen> {
   late int _selectedIndex;
   late final List<GlobalKey<NavigatorState>> _navigatorKeys;
   late final List<bool> _loadedTabs;
@@ -67,7 +66,7 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ProxyProvider<ApiClient, UsuariosRemoteDataSources>(
@@ -78,6 +77,11 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
         ),
         ChangeNotifierProvider<UsuarioViewModel>(
           create: (ctx) => UsuarioViewModel(ctx.read<UsuarioRepository>())..load(),
+        ),
+        ChangeNotifierProxyProvider<UsuarioViewModel, DomicilioViewModel>(
+          create: (ctx) => DomicilioViewModel(ctx.read<DomicilioRepository>()),
+          update: (_, usuarioVm, domicilioVm) =>
+              domicilioVm!..syncWithUserId(usuarioVm.usuario?.idDireccion),
         ),
       ],
       child: Scaffold(
@@ -103,7 +107,7 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen>{
             if (_shouldResetTabOnSelect(idx)) {
               _resetTabToRoot(idx);
             }
-          }
+          },
         ),
       ),
     );
