@@ -11,11 +11,15 @@ import 'package:permission_handler/permission_handler.dart';
 class MapWidgetAddres extends StatefulWidget {
   final PlaceLocation? selectedPlace;
   final void Function(String address, double lat, double lon) onAddressChanged;
+  final double? initialLat;
+  final double? initialLon;
 
   const MapWidgetAddres({
     super.key,
     required this.onAddressChanged,
     this.selectedPlace,
+    this.initialLat,
+    this.initialLon,
   });
 
   @override
@@ -23,6 +27,7 @@ class MapWidgetAddres extends StatefulWidget {
 }
 
 class _MapWidgetAddresState extends State<MapWidgetAddres> {
+  // Borrar estas coordenadas por defecto una vez que se tenga la ubicación inicial del usuario o se seleccione un lugar.
   static const _defaultLon = -68.3030;
   static const _defaultLat = -54.8019;
 
@@ -36,10 +41,16 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
   double _selectedLat = _defaultLat;
   double _selectedLon = _defaultLon;
 
+  bool get _hasExplicitInitialPoint => widget.initialLat != null && widget.initialLon != null;
+
   @override
   void initState() {
     super.initState();
     MapboxInitializer.ensureInitialized();
+    if (_hasExplicitInitialPoint) {
+      _selectedLat = widget.initialLat!;
+      _selectedLon = widget.initialLon!;
+    }
     _initPermissionState();
   }
 
@@ -59,7 +70,7 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
     setState(() {
       _hasLocationPermission = permission.isGranted;
     });
-    if (_hasLocationPermission) {
+    if (_hasLocationPermission && !_hasExplicitInitialPoint) {
       await _setInitialLocation();
     }
   }
@@ -70,7 +81,7 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
     setState(() {
       _hasLocationPermission = ok;
     });
-    if (ok) {
+    if (ok && !_hasExplicitInitialPoint) {
       await _setInitialLocation();
     }
   }
@@ -192,12 +203,10 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
                     setState(() {
                       _mapReady = true;
                     });
-                    if (_hasLocationPermission) {
-                      await _moveCamera(_selectedLat, _selectedLon);
-                    }
+                    await _moveCamera(_selectedLat, _selectedLon);
                   },
                   onMapIdleListener: (_) {
-                    if (_mapReady && _hasLocationPermission) {
+                    if (_mapReady) {
                       _updateFromMapCenter();
                     }
                   },
@@ -225,34 +234,22 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
                       ),
                     ),
                   ),
-                  
+
                 if (!_hasLocationPermission)
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(color: Colors.black54),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('Necesitamos tu ubicación para mostrarte en el mapa y ajustar el punto exacto.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              const SizedBox(height: 12),
-                              FilledButton(
-                                onPressed: _retryPermission,
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: camarone500,
-                                ),
-                                child: Text('Conceder permiso',
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
-                              ),
-                            ],
-                          ),
+                  Positioned(
+                    right: 12,
+                    top: 12,
+                    child: FilledButton(
+                      onPressed: _retryPermission,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: camarone500,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
                         ),
+                      ),
+                      child: Text('Usar mi ubicación',
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ),
                   ),
