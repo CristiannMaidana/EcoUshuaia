@@ -1,8 +1,11 @@
 import 'package:eco_ushuaia/features/auth/data/repositories/auth_usuario_repository_imp.dart';
+import 'package:eco_ushuaia/features/auth/data/repositories/domicilio_repository_imp.dart';
 import 'package:eco_ushuaia/features/auth/data/sources/remote/auth_usuario_remote_data_sources.dart';
+import 'package:eco_ushuaia/features/auth/data/sources/remote/domicilio_remote_data_source.dart';
 import 'package:eco_ushuaia/features/auth/data/sources/remote/usuarios_create_remote_data_source.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/auth_usuario_repository.dart';
 import 'package:eco_ushuaia/features/auth/data/repositories/usuarios_create_repository_imp.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/domicilio_repository.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_create_repository.dart';
 import 'package:eco_ushuaia/features/calendar/data/repositories/calendario_repository_imp.dart';
 import 'package:eco_ushuaia/features/calendar/data/repositories/categoria_noticias_imp.dart';
@@ -35,9 +38,7 @@ List<SingleChildWidget> _coreProviders() => [
     create: (_) => http.Client(),
     dispose: (_, client) => client.close(),
   ),
-  Provider<SecureStorageServices>(
-    create: (_) => SecureStorageServices(),
-  ),
+  Provider<SecureStorageServices>(create: (_) => SecureStorageServices()),
   ProxyProvider2<http.Client, SecureStorageServices, ApiClient>(
     update: (_, client, secureStorage, __) => ApiClient(client, secureStorage),
   ),
@@ -67,6 +68,15 @@ List<SingleChildWidget> _usuariosCreateProviders() => [
   ),
   ProxyProvider<UsuariosCreateRemoteDataSource, UsuariosCreateRepository>(
     update: (_, ds, __) => UsuariosCreateRepositoryImp(ds),
+  ),
+];
+
+List<SingleChildWidget> _domiciliosProviders() => [
+  ProxyProvider<ApiClient, DomicilioRemoteDataSource>(
+    update: (_, api, __) => DomicilioRemoteDataSource(api),
+  ),
+  ProxyProvider<DomicilioRemoteDataSource, DomicilioRepository>(
+    update: (_, ds, __) => DomicilioRepositoryImp(ds),
   ),
 ];
 
@@ -124,6 +134,7 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._residuosProviders(),
   ..._contenedoresProviders(),
   ..._usuariosCreateProviders(),
+  ..._domiciliosProviders(),
   ..._authProviders(),
   ..._calendarioProviders(),
   ..._categoriaNoticiasProviders(),
