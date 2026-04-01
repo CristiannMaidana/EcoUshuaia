@@ -3,6 +3,8 @@ import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_validate_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_lottie.dart';
+import 'package:eco_ushuaia/core/domain/entities/coordenada.dart';
+import 'package:eco_ushuaia/features/auth/domain/repositories/domicilio_repository.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/usuario_create_repository.dart';
 import 'package:eco_ushuaia/features/auth/presentation/screens/set_address_screen.dart';
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
@@ -36,7 +38,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePasswordTwo = true;
   bool emailNoAceptado = true;
   bool mensajePassword = true;
-  String? _selectedAddress;
+  Map<String, dynamic>? _selectedAddressData;
+
+  String? get _selectedAddress => _selectedAddressData?['address'] as String?;
 
   @override
   void dispose() {
@@ -63,8 +67,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!mounted || result == null) return;
 
     setState(() {
-      _selectedAddress = result['address'] as String?;
+      _selectedAddressData = result;
     });
+  }
+
+  Future<int?> _createDomicilioIfNeeded() async {
+    final data = _selectedAddressData;
+    if (data == null) return null;
+
+    final rawAddress = (data['address'] as String?)?.trim() ?? '';
+    if (rawAddress.isEmpty) return null;
+
+    final lat = data['lat'] as double?;
+    final lon = data['lon'] as double?;
+    final numeroMatch = RegExp(r'\b\d+\b').firstMatch(rawAddress);
+    final numero = numeroMatch?.group(0) ?? 'S/N';
+    final calle = rawAddress.replaceFirst(RegExp(r',?\s*\b\d+\b'), '').trim();
+
+    final domicilio = await context.read<DomicilioRepository>().create(
+      calle: calle.isEmpty ? rawAddress : calle,
+      numero: numero,
+      barrio: 'No especificado',
+      ciudad: 'Ushuaia',
+      codigoPostal: '9410',
+      provincia: 'Tierra del Fuego',
+      pais: 'Argentina',
+      coordenada: (lat != null && lon != null)
+          ? Coordenada(latitud: lat, longitud: lon)
+          : null,
+    );
+
+    return domicilio.idDomicilio;
   }
 
   Future<void> _handleRegister(UsuariosCreateViewModel vm) async {
@@ -74,11 +107,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
     if (!_formKey.currentState!.validate()) return;
 
+    int? idDireccion;
+    try {
+      idDireccion = await _createDomicilioIfNeeded();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al guardar domicilio: $e')));
+      return;
+    }
+
     await vm.crear(
       nombre: nombreController.text.trim(),
       apellido: apellidoController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
+      idDireccion: idDireccion,
       idTipoUsuario: 1,
     );
 
@@ -112,10 +157,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   // Titulo y descripcion
-                  Text('Crear cuenta', style: Theme.of(context).textTheme.displayLarge),
+                  Text('Crear cuenta',
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
                   SizedBox(height: 12),
-                  Text('Registrate para guardar domicilio, contenedores favoritos, recordatorios y personalizar tu experiencia.', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center,),
-                  
+                  Text('Registrate para guardar domicilio, contenedores favoritos, recordatorios y personalizar tu experiencia.',
+                    style: Theme.of(context).textTheme.labelMedium,
+                    textAlign: TextAlign.center,
+                  ),
+
                   // Contenedor del formulario
                   Expanded(
                     child: SingleChildScrollView(
@@ -244,10 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 onTap: () {_openAddressSelector();},
                                                 minVerticalPadding: 0,
                                                 minTileHeight: 52,
-                                                visualDensity: const VisualDensity(
-                                                  horizontal: 0,
-                                                  vertical: -4,
-                                                ),
+                                                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(24),
                                                 ),
@@ -276,7 +323,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               setState(() {});
                                             },
                                           ),
-                                          Expanded(child: Text('Acepto los términos de uso y la política de privacidad.', style: Theme.of(context).textTheme.bodySmall)),
+                                          Expanded(
+                                            child: Text('Acepto los términos de uso y la política de privacidad.',
+                                              style: Theme.of(context).textTheme.bodySmall,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       const SizedBox(height: 20),
@@ -301,7 +352,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Text('¿Ya tenés cuenta?', style: Theme.of(context).textTheme.labelMedium,),
+                                          Text('¿Ya tenés cuenta?', 
+                                            style: Theme.of(context).textTheme.labelMedium,
+                                          ),
                                           TextButton(
                                             onPressed: () {
                                               Navigator.pushAndRemoveUntil(
