@@ -4,12 +4,14 @@ import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
@@ -33,6 +35,13 @@ class MapaScreen extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) =>
               ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
+        ),
+        ChangeNotifierProxyProvider2<UsuarioViewModel, ContenedorViewModel, UsuarioContenedoresFavoritosViewModel>(
+          create: (ctx) => UsuarioContenedoresFavoritosViewModel(
+            ctx.read<UsuarioContenedorFavoritosRepository>(),
+          ),
+          update: (_, usuarioVm, contenedorVm, favoritosVm) =>
+              favoritosVm!..syncWithUserIdAndContenedores(usuarioVm.usuario?.idUsuario, contenedorVm.items),
         ),
         ChangeNotifierProvider(
           create: (ctx) => CategoriaResiduosViewmodel(
