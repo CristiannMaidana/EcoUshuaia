@@ -225,7 +225,10 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       ),
                                       Row(
                                         children: [
-                                          CircleIcon(icon: Icons.favorite, onPressed: () {}), 
+                                          CircleIcon(
+                                            icon: Icons.favorite, 
+                                            onPressed: () => vmUsuarioFavoritos.addFavorito(widget.container!.idContenedor),
+                                          ), 
                                           SizedBox(width: 20),
                                           CircleIcon(icon: Icons.close, onPressed: _bajarSheet), 
                                         ]
