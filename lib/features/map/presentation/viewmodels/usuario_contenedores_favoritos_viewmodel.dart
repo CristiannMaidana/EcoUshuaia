@@ -23,6 +23,8 @@ class UsuarioContenedoresFavoritosViewModel extends ChangeNotifier {
   List<Contenedor> get favoritos => _favoritos;
 
   bool isFavorito(int idContenedor) => _favoritosByContenedorId.containsKey(idContenedor);
+  UsuarioContenedorFavoritos? favoritoRelacionByContenedorId(int idContenedor) => _favoritosByContenedorId[idContenedor];
+  int? favoritoRelacionIdByContenedorId(int idContenedor) => _favoritosByContenedorId[idContenedor]?.idUsuarioRegistroContenedor;
 
   UsuarioContenedoresFavoritosViewModel syncWithUserIdAndContenedores(
     int? idUsuario,
@@ -109,5 +111,73 @@ class UsuarioContenedoresFavoritosViewModel extends ChangeNotifier {
       if (current[i].idContenedor != next[i].idContenedor) return false;
     }
     return true;
+  }
+
+  Future<UsuarioContenedorFavoritos> addFavorito(int idContenedor, {String? notaUsuarioContenedor}) async {
+    final idUsuario = _currentIdUsuario;
+    if (idUsuario == null) {
+      throw StateError('No hay usuario cargado para guardar favorito');
+    }
+
+    final current = _favoritosByContenedorId[idContenedor];
+    if (current != null) return current;
+
+    _loading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final created = await repo.create(
+        idUsuario: idUsuario,
+        idContenedor: idContenedor,
+        notaUsuarioContenedor: notaUsuarioContenedor,
+      );
+      _favoritosByContenedorId[idContenedor] = created;
+      _rebuildFavoritos();
+      return created;
+    } catch (e) {
+      _error = e.toString();
+      rethrow;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeFavoritoById(int idContenedor) async {
+    await removeFavoritoByContenedorId(idContenedor);
+  }
+
+  Future<void> removeFavoritoByRelacionId(int idUsuarioRegistroContenedor) async {
+    _loading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await repo.deleteById(idUsuarioRegistroContenedor);
+      _favoritosByContenedorId.removeWhere(
+        (_, relacion) =>
+            relacion.idUsuarioRegistroContenedor == idUsuarioRegistroContenedor,
+      );
+      _rebuildFavoritos();
+    } catch (e) {
+      _error = e.toString();
+      rethrow;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeFavoritoByContenedorId(int idContenedor) async {
+    final relacion = _favoritosByContenedorId[idContenedor];
+    if (relacion == null) return;
+
+    final idRelacion = relacion.idUsuarioRegistroContenedor;
+    if (idRelacion == null) {
+      throw StateError('No hay id de relacion para eliminar favorito');
+    }
+
+    await removeFavoritoByRelacionId(idRelacion);
   }
 }
