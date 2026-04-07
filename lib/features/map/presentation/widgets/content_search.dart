@@ -37,6 +37,7 @@ class ContentSearchState extends State<ContentSearch> {
                             padding: EdgeInsets.only(bottom: 10),
                             child: CartaDetallesRecientes(
                               contenedor: contenedor,
+                              deleteFavorito: () => vmFavoritos.removeFavoritoById(contenedor.idContenedor),
                             ),
                           ),
                         )
