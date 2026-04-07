@@ -12,4 +12,23 @@ class UsuarioContenedorFavoritosRepositoryImp implements UsuarioContenedorFavori
     final dtos = await remote.listByUsuario(idUsuario);
     return dtos.map((e) => e.toEntity()).toList(growable: false);
   }
+
+  @override
+  Future<UsuarioContenedorFavoritos> create({
+    required int idUsuario,
+    required int idContenedor,
+    String? notaUsuarioContenedor,
+  }) async {
+    final dto = await remote.create(
+      idUsuario: idUsuario,
+      idContenedor: idContenedor,
+      notaUsuarioContenedor: notaUsuarioContenedor,
+    );
+    return dto.toEntity();
+  }
+
+  @override
+  Future<void> deleteById(int idUsuarioRegistroContenedor) async {
+    await remote.deleteById(idUsuarioRegistroContenedor);
+  }
 }
