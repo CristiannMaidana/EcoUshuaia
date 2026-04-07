@@ -2,4 +2,6 @@ import 'package:eco_ushuaia/features/map/domain/entities/usuario_contenedor_favo
 
 abstract class UsuarioContenedorFavoritosRepository {
   Future<List<UsuarioContenedorFavoritos>> listByUsuario(int idUsuario);
+
+  Future<void> delete(int idUsuario, int idContenedor);
 }
