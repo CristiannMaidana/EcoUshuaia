@@ -28,4 +28,30 @@ class UsuarioContenedorFavoritosRemoteDataSource {
         .where((e) => e.idUsuario == idUsuario)
         .toList(growable: false);
   }
+
+
+  Future<UsuarioContenedorFavoritosDto> create({required int idUsuario, required int idContenedor, String? notaUsuarioContenedor}) async {
+    final dto = UsuarioContenedorFavoritosDto(
+      notaUsuarioContenedor: notaUsuarioContenedor,
+      idContenedor: idContenedor,
+      idUsuario: idUsuario,
+    );
+
+    final data = await api.post('/usuarios_contenedores_favoritos/', body: dto.toCreateJson());
+
+    if (data is Map<String, dynamic>) {
+      return UsuarioContenedorFavoritosDto.fromJson(data);
+    }
+
+    if (data is Map) {
+      return UsuarioContenedorFavoritosDto.fromJson(Map<String, dynamic>.from(data));
+    }
+
+    final relaciones = await listByUsuario(idUsuario);
+    return relaciones.firstWhere((e) => e.idContenedor == idContenedor);
+  }
+
+  Future<void> deleteById(int idUsuarioRegistroContenedor) async {
+    await api.delete('/usuarios_contenedores_favoritos/$idUsuarioRegistroContenedor/');
+  }
 }
