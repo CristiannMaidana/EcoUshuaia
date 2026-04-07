@@ -32,6 +32,14 @@ class UsuarioContenedorFavoritosDto {
     };
   }
 
+  Map<String, dynamic> toCreateJson() {
+    return {
+      'nota_usuario_contenedor': notaUsuarioContenedor,
+      'id_contenedor': idContenedor,
+      'id_usuario': idUsuario,
+    };
+  }
+
   UsuarioContenedorFavoritos toEntity() => UsuarioContenedorFavoritos(
     idUsuarioRegistroContenedor: idUsuarioRegistroContenedor,
     notaUsuarioContenedor: notaUsuarioContenedor,
