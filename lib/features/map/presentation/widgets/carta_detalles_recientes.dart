@@ -9,12 +9,13 @@ import 'package:provider/provider.dart';
 class CartaDetallesRecientes extends StatelessWidget{
   final Contenedor? contenedor;
   final ValueChanged<Contenedor>? ir;
+  final VoidCallback deleteFavorito;
 
-  //TODO: crear propiedades, (entidad, para tener los textos, id, y favorito de usuario), obtener elementos de icons
   const CartaDetallesRecientes({
     super.key,
     this.contenedor,
     this.ir,
+    required this.deleteFavorito,
   });
 
   @override
