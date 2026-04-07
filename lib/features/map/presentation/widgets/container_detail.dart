@@ -227,7 +227,18 @@ class ContainerDetailState extends State<ContainerDetail> {
                                         children: [
                                           CircleIcon(
                                             icon: Icons.favorite, 
-                                            onPressed: () => vmUsuarioFavoritos.addFavorito(widget.container!.idContenedor),
+                                            color: widget.container == null
+                                                ? Colors.grey
+                                                : vmUsuarioFavoritos.isFavorito(widget.container!.idContenedor)
+                                                    ? Colors.yellow.shade400
+                                                    : Colors.grey,
+                                            onPressed: () {
+                                              final idContenedor = widget.container?.idContenedor;
+                                              if (idContenedor == null) return;
+                                              vmUsuarioFavoritos.isFavorito(idContenedor)
+                                                  ? vmUsuarioFavoritos.removeFavoritoById(idContenedor)
+                                                  : vmUsuarioFavoritos.addFavorito(idContenedor);
+                                            },
                                           ), 
                                           SizedBox(width: 20),
                                           CircleIcon(icon: Icons.close, onPressed: _bajarSheet), 
