@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/info_state_container.dart';
 import 'package:flutter/material.dart';
@@ -127,6 +128,7 @@ class ContainerDetailState extends State<ContainerDetail> {
   Widget build(BuildContext context) {
     final vm = context.watch<ResiduoViewmodel>();
     final vmMap = context.watch<MapSearchViewModel>();
+    final vmUsuarioFavoritos = context.watch<UsuarioContenedoresFavoritosViewModel>();
 
     final idResiduo = widget.container?.idResiduo;
     final Residuos? residuo = (idResiduo == null) ? null : vm.getResiduo(idResiduo);
