@@ -68,7 +68,9 @@ class CartaDetallesRecientes extends StatelessWidget{
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                onPressed: (){}, 
+                onPressed: (){
+                  deleteFavorito();
+                }, 
                 icon: Icon(Icons.favorite, color: Colors.yellow.shade600),
                 style: IconButton.styleFrom(
                   side: BorderSide(width: 1, color: Colors.grey),
