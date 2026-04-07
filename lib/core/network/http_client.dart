@@ -111,4 +111,21 @@ class ApiClient {
       throw ParseException('Respuesta inválida del servidor');
     }
   }
+
+  Future<dynamic> delete(String path, {Object? body, Map<String, dynamic>? query, bool requiresAuth = true}) async {
+    final uri = _buildUri(path, query);
+    try {
+      final headers = await _buildHeaders(requiresAuth: requiresAuth);
+      final res = await _client
+          .delete(uri, headers: headers, body: body == null ? null : json.encode(body))
+          .timeout(Env.receiveTimeout);
+      return _handleResponse(res);
+    } on SocketException {
+      throw NetworkException('Sin conexión a internet');
+    } on HttpException {
+      throw NetworkException('Error HTTP');
+    } on FormatException {
+      throw ParseException('Respuesta inválida del servidor');
+    }
+  }
 }
