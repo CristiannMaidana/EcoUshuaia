@@ -202,6 +202,8 @@ class SheetAddContainerState extends State<SheetAddContainer> {
                                       child: CartaDetallesRecientes(
                                         contenedor: contenedoresCercanos[index],
                                         ir: widget.add,
+                                        deleteFavorito: () {}, 
+                                        //TODO: implementar eliminar favorito desde la carta de detalles recientes
                                       ),
                                     );
                                   },
