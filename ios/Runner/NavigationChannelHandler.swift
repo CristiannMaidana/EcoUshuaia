@@ -28,12 +28,17 @@ final class NavigationChannelHandler: NSObject {
                     return
                 }
 
+                let title = args["title"] as? String
+
                 let destination = CLLocationCoordinate2D(
                     latitude: latitude,
                     longitude: longitude
                 )
 
-                let vc = NavigationViewController(destinationCoordinate: destination)
+                let vc = NavigationViewController(
+                    destinationCoordinate: destination,
+                    destinationTitle: title,
+                )
                 vc.modalPresentationStyle = .fullScreen
                 controller.present(vc, animated: true)
                 result(nil)
