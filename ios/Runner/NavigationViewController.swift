@@ -1,15 +1,11 @@
-//
-//  NavigationViewController.swift
-//  Runner
-//
-//  Created by Cristian Maidana on 09/04/2026.
-//
-
 import UIKit
 import MapKit
+import CoreLocation
 
-final class NavigationViewController: UIViewController {
+final class NavigationViewController: UIViewController, CLLocationManagerDelegate {
     private let mapView = MKMapView()
+    private let locationManager = CLLocationManager()
+    private var hasCenteredOnUser = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,11 +17,12 @@ final class NavigationViewController: UIViewController {
         }
         setupMap()
         setupCloseButton()
-        showTestPin()
+        setupLocation()
     }
 
     private func setupMap() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.showsUserLocation = true
         view.addSubview(mapView)
 
         NSLayoutConstraint.activate([
@@ -50,21 +47,63 @@ final class NavigationViewController: UIViewController {
         ])
     }
 
-    private func showTestPin() {
-        let coordinate = CLLocationCoordinate2D(latitude: -54.82707, longitude: -68.33839)
+    private func setupLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
 
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        annotation.title = "Pin de prueba"
+        if CLLocationManager.locationServicesEnabled() {
+            if #available(iOS 14.0, *) {
+                switch locationManager.authorizationStatus {
+                case .notDetermined:
+                    locationManager.requestWhenInUseAuthorization()
+                    
+                case .authorizedWhenInUse, .authorizedAlways:
+                    locationManager.startUpdatingLocation()
+                    
+                case .denied, .restricted:
+                    break
+                    
+                @unknown default:
+                    break
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
 
-        mapView.addAnnotation(annotation)
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if #available(iOS 14.0, *) {
+            switch manager.authorizationStatus {
+            case .authorizedWhenInUse, .authorizedAlways:
+                manager.startUpdatingLocation()
+                
+            case .denied, .restricted, .notDetermined:
+                break
+                
+            @unknown default:
+                break
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard !hasCenteredOnUser, let location = locations.last else { return }
+
+        hasCenteredOnUser = true
 
         let region = MKCoordinateRegion(
-            center: coordinate,
+            center: location.coordinate,
             latitudinalMeters: 1200,
             longitudinalMeters: 1200
         )
-        mapView.setRegion(region, animated: false)
+        mapView.setRegion(region, animated: true)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location error: \(error.localizedDescription)")
     }
 
     @objc
