@@ -2,27 +2,40 @@ import UIKit
 import MapKit
 import CoreLocation
 
-final class NavigationViewController: UIViewController, CLLocationManagerDelegate {
+final class NavigationViewController: UIViewController, MKMapViewDelegate {
     private let mapView = MKMapView()
-    private let locationManager = CLLocationManager()
+    private let locationService = LocationService()
+    private let navigationManager = NavigationManager()
+
     private var hasCenteredOnUser = false
+
+    private let destinationCoordinate = CLLocationCoordinate2D(
+        latitude: -54.8070,
+        longitude: -68.3047
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         if #available(iOS 13.0, *) {
             view.backgroundColor = .systemBackground
-        } else {
-            // Fallback on earlier versions
         }
+
         setupMap()
         setupCloseButton()
-        setupLocation()
+        setupServices()
+        showDestinationPin()
+    }
+
+    private func setupServices() {
+        locationService.delegate = self
+        locationService.requestPermissionAndStartIfNeeded()
     }
 
     private func setupMap() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.showsUserLocation = true
+        mapView.delegate = self
         view.addSubview(mapView)
 
         NSLayoutConstraint.activate([
@@ -47,67 +60,94 @@ final class NavigationViewController: UIViewController, CLLocationManagerDelegat
         ])
     }
 
-    private func setupLocation() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-
-        if CLLocationManager.locationServicesEnabled() {
-            if #available(iOS 14.0, *) {
-                switch locationManager.authorizationStatus {
-                case .notDetermined:
-                    locationManager.requestWhenInUseAuthorization()
-                    
-                case .authorizedWhenInUse, .authorizedAlways:
-                    locationManager.startUpdatingLocation()
-                    
-                case .denied, .restricted:
-                    break
-                    
-                @unknown default:
-                    break
-                }
-            } else {
-                // Fallback on earlier versions
-            }
-        }
+    private func showDestinationPin() {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = destinationCoordinate
+        annotation.title = "Destino"
+        mapView.addAnnotation(annotation)
     }
 
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if #available(iOS 14.0, *) {
-            switch manager.authorizationStatus {
-            case .authorizedWhenInUse, .authorizedAlways:
-                manager.startUpdatingLocation()
-                
-            case .denied, .restricted, .notDetermined:
-                break
-                
-            @unknown default:
-                break
-            }
-        } else {
-            // Fallback on earlier versions
-        }
-    }
+    private func drawRoute(_ route: MKRoute) {
+        mapView.removeOverlays(mapView.overlays)
+        mapView.addOverlay(route.polyline)
 
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard !hasCenteredOnUser, let location = locations.last else { return }
-
-        hasCenteredOnUser = true
-
-        let region = MKCoordinateRegion(
-            center: location.coordinate,
-            latitudinalMeters: 1200,
-            longitudinalMeters: 1200
+        let rect = route.polyline.boundingMapRect
+        mapView.setVisibleMapRect(
+            rect,
+            edgePadding: UIEdgeInsets(top: 100, left: 50, bottom: 100, right: 50),
+            animated: true
         )
-        mapView.setRegion(region, animated: true)
+
+        print("Distancia total: \(route.distance) metros")
+        print("Tiempo estimado: \(route.expectedTravelTime) segundos")
+
+        for (index, step) in route.steps.enumerated() {
+            if !step.instructions.isEmpty {
+                print("Step \(index): \(step.instructions)")
+            }
+        }
     }
 
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Location error: \(error.localizedDescription)")
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        guard let polyline = overlay as? MKPolyline else {
+            return MKOverlayRenderer(overlay: overlay)
+        }
+
+        let renderer = MKPolylineRenderer(polyline: polyline)
+        renderer.strokeColor = .systemBlue
+        renderer.lineWidth = 6
+        return renderer
     }
 
     @objc
     private func closeTapped() {
         dismiss(animated: true)
+    }
+}
+
+extension NavigationViewController: LocationServiceDelegate {
+    func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            break
+
+        case .denied, .restricted, .notDetermined:
+            break
+
+        @unknown default:
+            break
+        }
+    }
+
+    func locationServiceDidUpdateLocation(_ location: CLLocation) {
+        if !hasCenteredOnUser {
+            hasCenteredOnUser = true
+
+            let region = MKCoordinateRegion(
+                center: location.coordinate,
+                latitudinalMeters: 1200,
+                longitudinalMeters: 1200
+            )
+            mapView.setRegion(region, animated: true)
+
+            navigationManager.calculateRoute(
+                from: location.coordinate,
+                to: destinationCoordinate
+            ) { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .success(let route):
+                    self.drawRoute(route)
+
+                case .failure(let error):
+                    print("Route error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    func locationServiceDidFail(_ error: Error) {
+        print("Location error: \(error.localizedDescription)")
     }
 }
