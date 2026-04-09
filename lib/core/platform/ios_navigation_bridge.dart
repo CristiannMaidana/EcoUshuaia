@@ -7,7 +7,10 @@ class IosNavigationBridge {
     return await _channel.invokeMethod<String>('pingNavigation');
   }
 
-  static Future<void> openNativeNavigation() async {
-    await _channel.invokeMethod('openNativeNavigation');
-  } 
+  static Future<void> openNativeNavigation({required double latitude, required double longitude}) async {
+    await _channel.invokeMethod('openNativeNavigation', {
+      'latitude': latitude,
+      'longitude': longitude,
+    });
+  }
 }
