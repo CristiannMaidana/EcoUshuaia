@@ -8,10 +8,16 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
     private let navigationManager = NavigationManager()
 
     private var hasCenteredOnUser = false
-    private let destinationCoordinate: CLLocationCoordinate2D
 
-    init(destinationCoordinate: CLLocationCoordinate2D) {
+    private let destinationCoordinate: CLLocationCoordinate2D
+    private let destinationTitle: String?
+
+    init(
+        destinationCoordinate: CLLocationCoordinate2D,
+        destinationTitle: String?,
+    ) {
         self.destinationCoordinate = destinationCoordinate
+        self.destinationTitle = destinationTitle
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -68,7 +74,7 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
     private func showDestinationPin() {
         let annotation = MKPointAnnotation()
         annotation.coordinate = destinationCoordinate
-        annotation.title = "Destino"
+        annotation.title = destinationTitle
         mapView.addAnnotation(annotation)
     }
 
