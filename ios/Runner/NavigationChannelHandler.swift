@@ -19,6 +19,13 @@ final class NavigationChannelHandler: NSObject {
             switch call.method {
             case "pingNavigation":
                 result("iOS nativo conectado")
+            
+            case "openNativeNavigation":
+                let vc = NavigationViewController()
+                vc.modalPresentationStyle = .fullScreen
+                controller.present(vc, animated: true)
+                result(nil)
+
             default:
                 result(FlutterMethodNotImplemented)
             }
