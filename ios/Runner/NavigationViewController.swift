@@ -8,11 +8,16 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
     private let navigationManager = NavigationManager()
 
     private var hasCenteredOnUser = false
+    private let destinationCoordinate: CLLocationCoordinate2D
 
-    private let destinationCoordinate = CLLocationCoordinate2D(
-        latitude: -54.8070,
-        longitude: -68.3047
-    )
+    init(destinationCoordinate: CLLocationCoordinate2D) {
+        self.destinationCoordinate = destinationCoordinate
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -106,18 +111,7 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
 }
 
 extension NavigationViewController: LocationServiceDelegate {
-    func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {
-        switch status {
-        case .authorizedWhenInUse, .authorizedAlways:
-            break
-
-        case .denied, .restricted, .notDetermined:
-            break
-
-        @unknown default:
-            break
-        }
-    }
+    func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {}
 
     func locationServiceDidUpdateLocation(_ location: CLLocation) {
         if !hasCenteredOnUser {
