@@ -1,6 +1,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Flutter
 
 final class NavigationMapView: UIView, MKMapViewDelegate {
     private let mapView = MKMapView()
@@ -10,14 +11,17 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
     private var hasCenteredOnUser = false
     private let destinationCoordinate: CLLocationCoordinate2D
     private let destinationTitle: String?
+    private let onRouteInfoChanged: (([String: Any]) -> Void)?
 
     init(
         frame: CGRect,
         destinationCoordinate: CLLocationCoordinate2D,
-        destinationTitle: String?
+        destinationTitle: String?,
+        onRouteInfoChanged: (([String: Any]) -> Void)?
     ) {
         self.destinationCoordinate = destinationCoordinate
         self.destinationTitle = destinationTitle
+        self.onRouteInfoChanged = onRouteInfoChanged
         super.init(frame: frame)
         setupMap()
         setupServices()
@@ -64,6 +68,18 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
             edgePadding: UIEdgeInsets(top: 120, left: 50, bottom: 120, right: 50),
             animated: true
         )
+
+        emitRouteInfo(route)
+    }
+
+    private func emitRouteInfo(_ route: MKRoute) {
+        let firstInstruction = route.steps.first { !$0.instructions.isEmpty }?.instructions ?? "Ruta calculada"
+
+        onRouteInfoChanged?([
+            "instruction": firstInstruction,
+            "distanceMeters": route.distance,
+            "etaSeconds": route.expectedTravelTime,
+        ])
     }
 
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
