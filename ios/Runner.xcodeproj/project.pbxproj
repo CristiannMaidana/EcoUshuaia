@@ -12,6 +12,8 @@
 		3868CFA72F8821C500EEE665 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3868CFA62F8821C300EEE665 /* NavigationViewController.swift */; };
 		3868CFA92F8838B900EEE665 /* NavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3868CFA82F8838B600EEE665 /* NavigationManager.swift */; };
 		3868CFAB2F8838FF00EEE665 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3868CFAA2F8838FD00EEE665 /* LocationService.swift */; };
+		3868CFAD2F88577C00EEE665 /* NavigationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3868CFAC2F88577700EEE665 /* NavigationMapView.swift */; };
+		3868CFAF2F8857A700EEE665 /* NavigationMapViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3868CFAE2F8857A400EEE665 /* NavigationMapViewFactory.swift */; };
 		38C9CDDD2F87566000867E7D /* NavigationChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9CDDC2F87541100867E7D /* NavigationChannelHandler.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		6C64ABD6842A98C2E3F2B16E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CAE2C560006D3B152F6ACD1 /* Pods_Runner.framework */; };
@@ -55,6 +57,8 @@
 		3868CFA62F8821C300EEE665 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		3868CFA82F8838B600EEE665 /* NavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManager.swift; sourceTree = "<group>"; };
 		3868CFAA2F8838FD00EEE665 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		3868CFAC2F88577700EEE665 /* NavigationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapView.swift; sourceTree = "<group>"; };
+		3868CFAE2F8857A400EEE665 /* NavigationMapViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapViewFactory.swift; sourceTree = "<group>"; };
 		38C9CDDC2F87541100867E7D /* NavigationChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationChannelHandler.swift; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3CAE2C560006D3B152F6ACD1 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +155,8 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				3868CFAE2F8857A400EEE665 /* NavigationMapViewFactory.swift */,
+				3868CFAC2F88577700EEE665 /* NavigationMapView.swift */,
 				3868CFAA2F8838FD00EEE665 /* LocationService.swift */,
 				3868CFA82F8838B600EEE665 /* NavigationManager.swift */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -365,13 +371,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -386,13 +388,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -415,6 +413,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3868CFA72F8821C500EEE665 /* NavigationViewController.swift in Sources */,
+				3868CFAD2F88577C00EEE665 /* NavigationMapView.swift in Sources */,
+				3868CFAF2F8857A700EEE665 /* NavigationMapViewFactory.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				38C9CDDD2F87566000867E7D /* NavigationChannelHandler.swift in Sources */,
