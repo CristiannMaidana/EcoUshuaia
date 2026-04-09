@@ -22,18 +22,21 @@ final class NavigationMapViewFactory: NSObject, FlutterPlatformViewFactory {
         NavigationPlatformView(
             frame: frame,
             viewId: viewId,
-            args: args
+            args: args,
+            messenger: messenger
         )
     }
 }
 
 final class NavigationPlatformView: NSObject, FlutterPlatformView {
     private let navigationView: NavigationMapView
+    private let channel: FlutterMethodChannel
 
     init(
         frame: CGRect,
         viewId: Int64,
-        args: Any?
+        args: Any?,
+        messenger: FlutterBinaryMessenger
     ) {
         let params = args as? [String: Any]
         let latitude = params?["latitude"] as? CLLocationDegrees ?? 0
@@ -45,10 +48,18 @@ final class NavigationPlatformView: NSObject, FlutterPlatformView {
             longitude: longitude
         )
 
+        channel = FlutterMethodChannel(
+            name: "eco_ushuaia/navigation_map_view/\(viewId)",
+            binaryMessenger: messenger
+        )
+
         navigationView = NavigationMapView(
             frame: frame,
             destinationCoordinate: destination,
-            destinationTitle: title
+            destinationTitle: title,
+            onRouteInfoChanged: { [weak channel] payload in
+                channel?.invokeMethod("onRouteInfoChanged", arguments: payload)
+            }
         )
 
         super.init()
