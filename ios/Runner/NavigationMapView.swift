@@ -8,7 +8,7 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
     private let locationService = LocationService()
     private let navigationManager = NavigationManager()
 
-    private var hasCenteredOnUser = false
+    private var hasCalculatedInitialRoute = false
     private let destinationCoordinate: CLLocationCoordinate2D
     private let destinationTitle: String?
     private let onRouteInfoChanged: (([String: Any]) -> Void)?
@@ -68,17 +68,14 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
             edgePadding: UIEdgeInsets(top: 120, left: 50, bottom: 120, right: 50),
             animated: true
         )
-
-        emitRouteInfo(route)
     }
 
-    private func emitRouteInfo(_ route: MKRoute) {
-        let firstInstruction = route.steps.first { !$0.instructions.isEmpty }?.instructions ?? "Ruta calculada"
-
+    private func emitProgress(_ progress: NavigationProgress) {
         onRouteInfoChanged?([
-            "instruction": firstInstruction,
-            "distanceMeters": route.distance,
-            "etaSeconds": route.expectedTravelTime,
+            "instruction": progress.instruction,
+            "distanceMeters": progress.remainingDistanceMeters,
+            "etaSeconds": progress.remainingEtaSeconds,
+            "stepIndex": progress.stepIndex,
         ])
     }
 
@@ -98,29 +95,40 @@ extension NavigationMapView: LocationServiceDelegate {
     func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {}
 
     func locationServiceDidUpdateLocation(_ location: CLLocation) {
-        guard !hasCenteredOnUser else { return }
-        hasCenteredOnUser = true
+        if !hasCalculatedInitialRoute {
+            hasCalculatedInitialRoute = true
 
-        let region = MKCoordinateRegion(
-            center: location.coordinate,
-            latitudinalMeters: 1200,
-            longitudinalMeters: 1200
-        )
-        mapView.setRegion(region, animated: true)
+            let region = MKCoordinateRegion(
+                center: location.coordinate,
+                latitudinalMeters: 1200,
+                longitudinalMeters: 1200
+            )
+            mapView.setRegion(region, animated: true)
 
-        navigationManager.calculateRoute(
-            from: location.coordinate,
-            to: destinationCoordinate
-        ) { [weak self] result in
-            guard let self = self else { return }
+            navigationManager.calculateRoute(
+                from: location.coordinate,
+                to: destinationCoordinate
+            ) { [weak self] result in
+                guard let self = self else { return }
 
-            switch result {
-            case .success(let route):
-                self.drawRoute(route)
+                switch result {
+                case .success(let route):
+                    self.drawRoute(route)
 
-            case .failure(let error):
-                print("Route error: \(error.localizedDescription)")
+                    if let progress = self.navigationManager.updateProgress(userLocation: location) {
+                        self.emitProgress(progress)
+                    }
+
+                case .failure(let error):
+                    print("Route error: \(error.localizedDescription)")
+                }
             }
+
+            return
+        }
+
+        if let progress = navigationManager.updateProgress(userLocation: location) {
+            emitProgress(progress)
         }
     }
 
