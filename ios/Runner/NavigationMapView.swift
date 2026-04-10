@@ -9,9 +9,14 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
     private let navigationManager = NavigationManager()
 
     private var hasCalculatedInitialRoute = false
+    private var isRecalculatingRoute = false
+    private var lastRerouteAt: Date?
+
     private let destinationCoordinate: CLLocationCoordinate2D
     private let destinationTitle: String?
     private let onRouteInfoChanged: (([String: Any]) -> Void)?
+
+    private let rerouteCooldown: TimeInterval = 4
 
     init(
         frame: CGRect,
@@ -76,7 +81,86 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
             "distanceMeters": progress.remainingDistanceMeters,
             "etaSeconds": progress.remainingEtaSeconds,
             "stepIndex": progress.stepIndex,
+            "isOffRoute": progress.isOffRoute,
         ])
+    }
+
+    private func emitRecalculating() {
+        onRouteInfoChanged?([
+            "instruction": "Recalculando ruta...",
+            "isOffRoute": true,
+        ])
+    }
+
+    private func calculateInitialRoute(from location: CLLocation) {
+        hasCalculatedInitialRoute = true
+
+        let region = MKCoordinateRegion(
+            center: location.coordinate,
+            latitudinalMeters: 1200,
+            longitudinalMeters: 1200
+        )
+        mapView.setRegion(region, animated: true)
+
+        navigationManager.calculateRoute(
+            from: location.coordinate,
+            to: destinationCoordinate
+        ) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let route):
+                self.drawRoute(route)
+
+                if let progress = self.navigationManager.updateProgress(userLocation: location) {
+                    self.emitProgress(progress)
+                }
+
+            case .failure(let error):
+                print("Route error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func shouldReroute(now: Date) -> Bool {
+        if isRecalculatingRoute {
+            return false
+        }
+
+        if let lastRerouteAt, now.timeIntervalSince(lastRerouteAt) < rerouteCooldown {
+            return false
+        }
+
+        return true
+    }
+
+    private func reroute(from location: CLLocation) {
+        let now = Date()
+        guard shouldReroute(now: now) else { return }
+
+        isRecalculatingRoute = true
+        lastRerouteAt = now
+        emitRecalculating()
+
+        navigationManager.calculateRoute(
+            from: location.coordinate,
+            to: destinationCoordinate
+        ) { [weak self] result in
+            guard let self = self else { return }
+            self.isRecalculatingRoute = false
+
+            switch result {
+            case .success(let route):
+                self.drawRoute(route)
+
+                if let progress = self.navigationManager.updateProgress(userLocation: location) {
+                    self.emitProgress(progress)
+                }
+
+            case .failure(let error):
+                print("Reroute error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -96,40 +180,20 @@ extension NavigationMapView: LocationServiceDelegate {
 
     func locationServiceDidUpdateLocation(_ location: CLLocation) {
         if !hasCalculatedInitialRoute {
-            hasCalculatedInitialRoute = true
-
-            let region = MKCoordinateRegion(
-                center: location.coordinate,
-                latitudinalMeters: 1200,
-                longitudinalMeters: 1200
-            )
-            mapView.setRegion(region, animated: true)
-
-            navigationManager.calculateRoute(
-                from: location.coordinate,
-                to: destinationCoordinate
-            ) { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let route):
-                    self.drawRoute(route)
-
-                    if let progress = self.navigationManager.updateProgress(userLocation: location) {
-                        self.emitProgress(progress)
-                    }
-
-                case .failure(let error):
-                    print("Route error: \(error.localizedDescription)")
-                }
-            }
-
+            calculateInitialRoute(from: location)
             return
         }
 
-        if let progress = navigationManager.updateProgress(userLocation: location) {
-            emitProgress(progress)
+        guard let progress = navigationManager.updateProgress(userLocation: location) else {
+            return
         }
+
+        if progress.isOffRoute {
+            reroute(from: location)
+            return
+        }
+
+        emitProgress(progress)
     }
 
     func locationServiceDidFail(_ error: Error) {
