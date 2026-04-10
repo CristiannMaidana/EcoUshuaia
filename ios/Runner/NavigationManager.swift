@@ -7,19 +7,26 @@ struct NavigationProgress {
     let remainingDistanceMeters: Double
     let remainingEtaSeconds: Double
     let stepIndex: Int
+    let isOffRoute: Bool
 }
 
 final class NavigationManager {
     private(set) var currentRoute: MKRoute?
     private(set) var currentStepIndex: Int = 0
+    private(set) var lastOriginCoordinate: CLLocationCoordinate2D?
 
     private var navigableSteps: [MKRoute.Step] = []
+
+    private let offRouteThresholdMeters: Double = 45
+    private let stepMatchThresholdMeters: Double = 35
 
     func calculateRoute(
         from origin: CLLocationCoordinate2D,
         to destination: CLLocationCoordinate2D,
         completion: @escaping (Result<MKRoute, Error>) -> Void
     ) {
+        lastOriginCoordinate = origin
+
         let sourcePlacemark = MKPlacemark(coordinate: origin)
         let destinationPlacemark = MKPlacemark(coordinate: destination)
 
@@ -54,40 +61,57 @@ final class NavigationManager {
     }
 
     func updateProgress(userLocation: CLLocation) -> NavigationProgress? {
-        guard !navigableSteps.isEmpty else { return nil }
+        guard let route = currentRoute, !navigableSteps.isEmpty else { return nil }
 
-        advanceStepIfNeeded(userLocation: userLocation)
+        let isOffRoute = distanceFromRoute(userLocation, route: route) > offRouteThresholdMeters
 
-        let safeIndex = min(currentStepIndex, navigableSteps.count - 1)
-        let currentStep = navigableSteps[safeIndex]
+        if !isOffRoute {
+            updateCurrentStep(userLocation: userLocation)
+        }
 
-        let remainingDistance = remainingDistanceMeters(from: safeIndex, userLocation: userLocation)
-        let remainingEta = remainingEtaSeconds()
+        let safeIndex = min(currentStepIndex, max(navigableSteps.count - 1, 0))
+        let currentInstruction = navigableSteps[safeIndex].instructions
+
+        let remainingDistance = isOffRoute
+            ? route.distance
+            : remainingDistanceMeters(from: safeIndex, userLocation: userLocation)
+
+        let remainingEta = isOffRoute
+            ? route.expectedTravelTime
+            : remainingEtaSeconds(remainingDistance: remainingDistance)
 
         return NavigationProgress(
-            instruction: currentStep.instructions,
+            instruction: currentInstruction,
             remainingDistanceMeters: remainingDistance,
             remainingEtaSeconds: remainingEta,
-            stepIndex: safeIndex
+            stepIndex: safeIndex,
+            isOffRoute: isOffRoute
         )
     }
 
-    private func advanceStepIfNeeded(userLocation: CLLocation) {
-        guard currentStepIndex < navigableSteps.count else { return }
+    private func updateCurrentStep(userLocation: CLLocation) {
+        guard !navigableSteps.isEmpty else { return }
 
-        let currentStep = navigableSteps[currentStepIndex]
-        guard let endCoordinate = lastCoordinate(of: currentStep.polyline) else { return }
+        let startIndex = min(currentStepIndex, navigableSteps.count - 1)
+        var bestIndex = startIndex
+        var bestDistance = Double.greatestFiniteMagnitude
 
-        let endLocation = CLLocation(
-            latitude: endCoordinate.latitude,
-            longitude: endCoordinate.longitude
-        )
+        for index in startIndex..<navigableSteps.count {
+            let step = navigableSteps[index]
+            let distance = distanceFromPolyline(userLocation, polyline: step.polyline)
 
-        let distanceToStepEnd = userLocation.distance(from: endLocation)
+            if distance < bestDistance {
+                bestDistance = distance
+                bestIndex = index
+            }
 
-        if distanceToStepEnd <= 35, currentStepIndex < navigableSteps.count - 1 {
-            currentStepIndex += 1
+            if distance <= stepMatchThresholdMeters {
+                bestIndex = index
+                break
+            }
         }
+
+        currentStepIndex = bestIndex
     }
 
     private func remainingDistanceMeters(from stepIndex: Int, userLocation: CLLocation) -> Double {
@@ -96,13 +120,7 @@ final class NavigationManager {
         var total = 0.0
 
         let currentStep = navigableSteps[stepIndex]
-        if let endCoordinate = lastCoordinate(of: currentStep.polyline) {
-            let endLocation = CLLocation(
-                latitude: endCoordinate.latitude,
-                longitude: endCoordinate.longitude
-            )
-            total += userLocation.distance(from: endLocation)
-        }
+        total += distanceFromPolyline(userLocation, polyline: currentStep.polyline)
 
         if stepIndex + 1 < navigableSteps.count {
             for index in (stepIndex + 1)..<navigableSteps.count {
@@ -113,31 +131,52 @@ final class NavigationManager {
         return total
     }
 
-    private func remainingEtaSeconds() -> Double {
-        guard let route = currentRoute, !navigableSteps.isEmpty else { return 0 }
-
-        let remainingDistance = navigableSteps[currentStepIndex...]
-            .reduce(0.0) { $0 + $1.distance }
-
-        guard route.distance > 0 else { return 0 }
-
-        let ratio = remainingDistance / route.distance
+    private func remainingEtaSeconds(remainingDistance: Double) -> Double {
+        guard let route = currentRoute, route.distance > 0 else { return 0 }
+        let ratio = max(0, min(1, remainingDistance / route.distance))
         return route.expectedTravelTime * ratio
     }
 
-    private func lastCoordinate(of polyline: MKPolyline) -> CLLocationCoordinate2D? {
-        guard polyline.pointCount > 0 else { return nil }
+    private func distanceFromRoute(_ location: CLLocation, route: MKRoute) -> Double {
+        distanceFromPolyline(location, polyline: route.polyline)
+    }
 
-        var coordinates = Array(
-            repeating: CLLocationCoordinate2D(latitude: 0, longitude: 0),
-            count: polyline.pointCount
-        )
+    private func distanceFromPolyline(_ location: CLLocation, polyline: MKPolyline) -> Double {
+        guard polyline.pointCount > 1 else { return .greatestFiniteMagnitude }
 
-        polyline.getCoordinates(
-            &coordinates,
-            range: NSRange(location: 0, length: polyline.pointCount)
-        )
+        let userPoint = MKMapPoint(location.coordinate)
 
-        return coordinates.last
+        let pointsPointer = polyline.points()
+        let points = Array(UnsafeBufferPointer(start: pointsPointer, count: polyline.pointCount))
+
+        var minDistance = Double.greatestFiniteMagnitude
+
+        for i in 0..<(points.count - 1) {
+            let a = points[i]
+            let b = points[i + 1]
+            let distance = distanceFromPointToSegment(userPoint, a, b)
+            if distance < minDistance {
+                minDistance = distance
+            }
+        }
+
+        return minDistance
+    }
+
+    private func distanceFromPointToSegment(
+        _ p: MKMapPoint,
+        _ a: MKMapPoint,
+        _ b: MKMapPoint
+    ) -> Double {
+        let dx = b.x - a.x
+        let dy = b.y - a.y
+
+        if dx == 0 && dy == 0 {
+            return p.distance(to: a)
+        }
+
+        let t = max(0, min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy)))
+        let projection = MKMapPoint(x: a.x + t * dx, y: a.y + t * dy)
+        return p.distance(to: projection)
     }
 }
