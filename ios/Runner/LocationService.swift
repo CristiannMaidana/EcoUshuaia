@@ -15,6 +15,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 5
     }
 
     func requestPermissionAndStartIfNeeded() {
