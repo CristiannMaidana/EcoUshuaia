@@ -66,13 +66,6 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
     private func drawRoute(_ route: MKRoute) {
         mapView.removeOverlays(mapView.overlays)
         mapView.addOverlay(route.polyline)
-
-        let rect = route.polyline.boundingMapRect
-        mapView.setVisibleMapRect(
-            rect,
-            edgePadding: UIEdgeInsets(top: 120, left: 50, bottom: 120, right: 50),
-            animated: true
-        )
     }
 
     private func emitProgress(_ progress: NavigationProgress) {
@@ -94,13 +87,7 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
 
     private func calculateInitialRoute(from location: CLLocation) {
         hasCalculatedInitialRoute = true
-
-        let region = MKCoordinateRegion(
-            center: location.coordinate,
-            latitudinalMeters: 1200,
-            longitudinalMeters: 1200
-        )
-        mapView.setRegion(region, animated: true)
+        updateCamera(for: location, animated: false)
 
         navigationManager.calculateRoute(
             from: location.coordinate,
@@ -163,6 +150,20 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
         }
     }
 
+    private func updateCamera(for location: CLLocation, animated: Bool) {
+        let camera = MKMapCamera()
+        camera.centerCoordinate = location.coordinate
+        camera.heading = location.course > 0 ? location.course : mapView.camera.heading
+        camera.pitch = 50
+        if #available(iOS 13.0, *) {
+            camera.centerCoordinateDistance = 450
+        } else {
+            // Fallback on earlier versions
+        }
+
+        mapView.setCamera(camera, animated: animated)
+    }
+
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         guard let polyline = overlay as? MKPolyline else {
             return MKOverlayRenderer(overlay: overlay)
@@ -179,6 +180,8 @@ extension NavigationMapView: LocationServiceDelegate {
     func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {}
 
     func locationServiceDidUpdateLocation(_ location: CLLocation) {
+        updateCamera(for: location, animated: true)
+
         if !hasCalculatedInitialRoute {
             calculateInitialRoute(from: location)
             return
