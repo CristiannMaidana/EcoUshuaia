@@ -4,9 +4,11 @@ import UIKit
 
 final class NavigationChannelHandler: NSObject {
     private static var navigationChannel: FlutterMethodChannel?
+    private static var searchChannelHandler: SearchChannelHandler?
 
     static func register(with controller: FlutterViewController) {
         registerNavigationMapView(with: controller)
+        registerSearchBridge(with: controller)
         registerNavigationBridge(with: controller)
     }
 
@@ -39,12 +41,31 @@ final class NavigationChannelHandler: NSObject {
                     result: result
                 )
 
+            case "startNavigation":
+                startNavigation(
+                    from: controller,
+                    arguments: call.arguments,
+                    result: result
+                )
+
+            case "stopNavigation":
+                stopNavigation(
+                    from: controller,
+                    result: result
+                )
+
             default:
                 result(FlutterMethodNotImplemented)
             }
         }
 
         navigationChannel = channel
+    }
+
+    private static func registerSearchBridge(with controller: FlutterViewController) {
+        searchChannelHandler = SearchChannelHandler(
+            messenger: controller.binaryMessenger
+        )
     }
 
     private static func openNativeNavigation(
@@ -85,6 +106,51 @@ final class NavigationChannelHandler: NSObject {
 
         let presenter = controller.presentedViewController ?? controller
         presenter.present(navigationViewController, animated: true) {
+            result(nil)
+        }
+    }
+
+    private static func startNavigation(
+        from controller: FlutterViewController?,
+        arguments: Any?,
+        result: @escaping FlutterResult
+    ) {
+        let waypoints = NativeMapCommandPayload.waypoints(from: arguments)
+        guard let destination = waypoints.last else {
+            result(FlutterError(
+                code: "INVALID_ARGUMENTS",
+                message: "Falta destino para iniciar navegación",
+                details: nil
+            ))
+            return
+        }
+
+        openNativeNavigation(
+            from: controller,
+            arguments: [
+                "latitude": destination.latitude,
+                "longitude": destination.longitude,
+                "title": destination.title as Any
+            ],
+            result: result
+        )
+    }
+
+    private static func stopNavigation(
+        from controller: FlutterViewController?,
+        result: @escaping FlutterResult
+    ) {
+        guard let controller else {
+            result(FlutterError(
+                code: "NO_CONTROLLER",
+                message: "No se encontró el controlador de Flutter",
+                details: nil
+            ))
+            return
+        }
+
+        let presenter = controller.presentedViewController ?? controller
+        presenter.dismiss(animated: true) {
             result(nil)
         }
     }
