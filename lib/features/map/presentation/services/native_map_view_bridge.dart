@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/presentation/models/native_route_info.dart';
 import 'package:eco_ushuaia/features/map/presentation/models/native_waypoint.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,7 @@ class NativeMapViewBridge {
   }
 
   void setEventHandlers({
-    ValueChanged<Map<String, dynamic>>? onRouteInfoChanged,
+    ValueChanged<NativeRouteInfo>? onRouteInfoChanged,
     ValueChanged<int>? onContainerSelected,
     VoidCallback? onMapReady,
     ValueChanged<String>? onMapError,
@@ -24,8 +25,10 @@ class NativeMapViewBridge {
     _channel.setMethodCallHandler((call) async {
       switch (call.method) {
         case 'onRouteInfoChanged':
-          final args = Map<String, dynamic>.from(call.arguments as Map);
-          onRouteInfoChanged?.call(args);
+          final args = call.arguments;
+          if (args is Map) {
+            onRouteInfoChanged?.call(NativeRouteInfo.fromMap(args));
+          }
           return null;
         case 'onContainerSelected':
           final args = Map<String, dynamic>.from(call.arguments as Map);
