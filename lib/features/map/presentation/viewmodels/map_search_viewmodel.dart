@@ -5,7 +5,7 @@ import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_ser
 import 'package:flutter/foundation.dart';
 
 class MapSearchViewModel extends ChangeNotifier {
-  final MapboxSearchService svc;
+  final AddressSearchService svc;
   MapSearchViewModel(this.svc);
 
   bool loading = false;
