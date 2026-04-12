@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eco_ushuaia/features/map/presentation/models/native_route_info.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +10,7 @@ class IosNavigationMapView extends StatefulWidget {
   final String? title;
   final ValueChanged<NativeMapViewBridge>? onMapReady;
   final ValueChanged<int>? onContainerSelected;
-  final ValueChanged<Map<String, dynamic>>? onRouteInfoChanged;
+  final ValueChanged<NativeRouteInfo>? onRouteInfoChanged;
 
   const IosNavigationMapView({
     super.key,
@@ -31,12 +32,29 @@ class _IosNavigationMapViewState extends State<IosNavigationMapView> {
   void _onPlatformViewCreated(int id) {
     final bridge = NativeMapViewBridge.fromViewId(id);
     _bridge = bridge;
+    _setBridgeHandlers(bridge);
+    widget.onMapReady?.call(bridge);
+  }
+
+  void _setBridgeHandlers(NativeMapViewBridge bridge) {
     bridge.setEventHandlers(
       onRouteInfoChanged: widget.onRouteInfoChanged,
       onContainerSelected: widget.onContainerSelected,
       onMapReady: () => widget.onMapReady?.call(bridge),
     );
-    widget.onMapReady?.call(bridge);
+  }
+
+  @override
+  void didUpdateWidget(covariant IosNavigationMapView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final bridge = _bridge;
+    if (bridge == null) return;
+
+    if (oldWidget.onRouteInfoChanged != widget.onRouteInfoChanged ||
+        oldWidget.onContainerSelected != widget.onContainerSelected ||
+        oldWidget.onMapReady != widget.onMapReady) {
+      _setBridgeHandlers(bridge);
+    }
   }
 
   @override
