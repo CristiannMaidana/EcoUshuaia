@@ -1,20 +1,31 @@
-import UIKit
-import MapKit
+import Combine
 import CoreLocation
+import MapboxDirections
+import MapboxNavigationCore
+import MapboxNavigationUIKit
+import UIKit
 
-final class NavigationViewController: UIViewController, MKMapViewDelegate {
-    private let mapView = MKMapView()
-    private let locationService = LocationService()
-    private let navigationManager = NavigationManager()
-
-    private var hasCenteredOnUser = false
-
+final class NavigationViewController: UIViewController {
     private let destinationCoordinate: CLLocationCoordinate2D
     private let destinationTitle: String?
+    private let navigationManager = NavigationManager()
+
+    private var cancellables = Set<AnyCancellable>()
+    private var routeRequestTask: Task<Void, Never>?
+    private var embeddedNavigationViewController: MapboxNavigationUIKit.NavigationViewController?
+    private var hasRequestedRoute = false
+
+    private lazy var loadingLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Calculando ruta..."
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
 
     init(
         destinationCoordinate: CLLocationCoordinate2D,
-        destinationTitle: String?,
+        destinationTitle: String?
     ) {
         self.destinationCoordinate = destinationCoordinate
         self.destinationTitle = destinationTitle
@@ -27,42 +38,31 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
 
-        if #available(iOS 13.0, *) {
-            view.backgroundColor = .systemBackground
-        }
-
-        setupMap()
-        setupCloseButton()
-        setupServices()
-        showDestinationPin()
+        setupLoadingState()
+        observeLocation()
+        navigationManager.start()
     }
 
-    private func setupServices() {
-        locationService.delegate = self
-        locationService.requestPermissionAndStartIfNeeded()
+    deinit {
+        routeRequestTask?.cancel()
     }
 
-    private func setupMap() {
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.showsUserLocation = true
-        mapView.delegate = self
-        view.addSubview(mapView)
+    private func setupLoadingState() {
+        view.addSubview(loadingLabel)
 
         NSLayoutConstraint.activate([
-            mapView.topAnchor.constraint(equalTo: view.topAnchor),
-            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            loadingLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 24),
+            loadingLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -24)
         ])
-    }
 
-    private func setupCloseButton() {
         let closeButton = UIButton(type: .system)
         closeButton.setTitle("Cerrar", for: .normal)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
-
         view.addSubview(closeButton)
 
         NSLayoutConstraint.activate([
@@ -71,43 +71,69 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
         ])
     }
 
-    private func showDestinationPin() {
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = destinationCoordinate
-        annotation.title = destinationTitle
-        mapView.addAnnotation(annotation)
+    private func observeLocation() {
+        navigationManager.$currentLocation
+            .compactMap { $0 }
+            .first()
+            .sink { [weak self] _ in
+                self?.requestRouteIfNeeded()
+            }
+            .store(in: &cancellables)
     }
 
-    private func drawRoute(_ route: MKRoute) {
-        mapView.removeOverlays(mapView.overlays)
-        mapView.addOverlay(route.polyline)
+    private func requestRouteIfNeeded() {
+        guard !hasRequestedRoute else { return }
+        hasRequestedRoute = true
 
-        let rect = route.polyline.boundingMapRect
-        mapView.setVisibleMapRect(
-            rect,
-            edgePadding: UIEdgeInsets(top: 100, left: 50, bottom: 100, right: 50),
-            animated: true
-        )
+        routeRequestTask = Task { [weak self] in
+            guard let self else { return }
 
-        print("Distancia total: \(route.distance) metros")
-        print("Tiempo estimado: \(route.expectedTravelTime) segundos")
-
-        for (index, step) in route.steps.enumerated() {
-            if !step.instructions.isEmpty {
-                print("Step \(index): \(step.instructions)")
+            do {
+                let routes = try await navigationManager.calculateRoute(
+                    to: destinationCoordinate,
+                    title: destinationTitle
+                )
+                await MainActor.run {
+                    self.presentNavigation(with: routes)
+                }
+            } catch {
+                await MainActor.run {
+                    self.loadingLabel.text = error.localizedDescription
+                    print("Route error: \(error.localizedDescription)")
+                }
             }
         }
     }
 
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let polyline = overlay as? MKPolyline else {
-            return MKOverlayRenderer(overlay: overlay)
-        }
+    private func presentNavigation(with routes: NavigationRoutes) {
+        let navigationOptions = NavigationOptions(
+            mapboxNavigation: navigationManager.mapboxNavigation,
+            voiceController: navigationManager.routeVoiceController,
+            eventsManager: navigationManager.eventsManager()
+        )
 
-        let renderer = MKPolylineRenderer(polyline: polyline)
-        renderer.strokeColor = .systemBlue
-        renderer.lineWidth = 6
-        return renderer
+        let navigationViewController = MapboxNavigationUIKit.NavigationViewController(
+            navigationRoutes: routes,
+            navigationOptions: navigationOptions
+        )
+        navigationViewController.delegate = self
+        navigationViewController.routeLineTracksTraversal = true
+        navigationViewController.floatingButtonsPosition = .topTrailing
+
+        embeddedNavigationViewController = navigationViewController
+        addChild(navigationViewController)
+        navigationViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(navigationViewController.view, at: 0)
+
+        NSLayoutConstraint.activate([
+            navigationViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            navigationViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        navigationViewController.didMove(toParent: self)
+        loadingLabel.removeFromSuperview()
     }
 
     @objc
@@ -116,38 +142,25 @@ final class NavigationViewController: UIViewController, MKMapViewDelegate {
     }
 }
 
-extension NavigationViewController: LocationServiceDelegate {
-    func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {}
-
-    func locationServiceDidUpdateLocation(_ location: CLLocation) {
-        if !hasCenteredOnUser {
-            hasCenteredOnUser = true
-
-            let region = MKCoordinateRegion(
-                center: location.coordinate,
-                latitudinalMeters: 1200,
-                longitudinalMeters: 1200
-            )
-            mapView.setRegion(region, animated: true)
-
-            navigationManager.calculateRoute(
-                from: location.coordinate,
-                to: destinationCoordinate
-            ) { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let route):
-                    self.drawRoute(route)
-
-                case .failure(let error):
-                    print("Route error: \(error.localizedDescription)")
-                }
-            }
-        }
+extension NavigationViewController: MapboxNavigationUIKit.NavigationViewControllerDelegate {
+    func navigationViewControllerDidDismiss(
+        _ navigationViewController: MapboxNavigationUIKit.NavigationViewController,
+        byCanceling canceled: Bool
+    ) {
+        dismiss(animated: true)
     }
 
-    func locationServiceDidFail(_ error: Error) {
-        print("Location error: \(error.localizedDescription)")
+    func navigationViewController(
+        _ navigationViewController: MapboxNavigationUIKit.NavigationViewController,
+        willRerouteFrom location: CLLocation?
+    ) {
+        print("Recalculando ruta...")
+    }
+
+    func navigationViewController(
+        _ navigationViewController: MapboxNavigationUIKit.NavigationViewController,
+        didFailToRerouteWith error: Error
+    ) {
+        print("Reroute error: \(error.localizedDescription)")
     }
 }
