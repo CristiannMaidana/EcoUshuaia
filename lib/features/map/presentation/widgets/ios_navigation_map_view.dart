@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -6,6 +7,8 @@ class IosNavigationMapView extends StatefulWidget {
   final double latitude;
   final double longitude;
   final String? title;
+  final ValueChanged<NativeMapViewBridge>? onMapReady;
+  final ValueChanged<int>? onContainerSelected;
   final ValueChanged<Map<String, dynamic>>? onRouteInfoChanged;
 
   const IosNavigationMapView({
@@ -13,6 +16,8 @@ class IosNavigationMapView extends StatefulWidget {
     required this.latitude,
     required this.longitude,
     this.title,
+    this.onMapReady,
+    this.onContainerSelected,
     this.onRouteInfoChanged,
   });
 
@@ -21,17 +26,23 @@ class IosNavigationMapView extends StatefulWidget {
 }
 
 class _IosNavigationMapViewState extends State<IosNavigationMapView> {
-  MethodChannel? _channel;
+  NativeMapViewBridge? _bridge;
 
   void _onPlatformViewCreated(int id) {
-    _channel = MethodChannel('eco_ushuaia/navigation_map_view/$id');
+    final bridge = NativeMapViewBridge.fromViewId(id);
+    _bridge = bridge;
+    bridge.setEventHandlers(
+      onRouteInfoChanged: widget.onRouteInfoChanged,
+      onContainerSelected: widget.onContainerSelected,
+      onMapReady: () => widget.onMapReady?.call(bridge),
+    );
+    widget.onMapReady?.call(bridge);
+  }
 
-    _channel!.setMethodCallHandler((call) async {
-      if (call.method == 'onRouteInfoChanged') {
-        final data = Map<String, dynamic>.from(call.arguments as Map);
-        widget.onRouteInfoChanged?.call(data);
-      }
-    });
+  @override
+  void dispose() {
+    _bridge?.clearEventHandlers();
+    super.dispose();
   }
 
   @override
@@ -41,7 +52,7 @@ class _IosNavigationMapViewState extends State<IosNavigationMapView> {
     }
 
     return UiKitView(
-      viewType: 'eco_ushuaia/navigation_map_view',
+      viewType: NativeMapViewBridge.viewType,
       creationParams: {
         'latitude': widget.latitude,
         'longitude': widget.longitude,
