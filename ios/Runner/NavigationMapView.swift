@@ -1,5 +1,6 @@
 import Combine
 import CoreLocation
+import Flutter
 import MapboxDirections
 import MapboxNavigationCore
 import UIKit
@@ -11,6 +12,7 @@ final class NavigationMapView: UIView {
 
     private let navigationManager: NavigationManager
     private let mapView: MapboxNavigationCore.NavigationMapView
+    private var nativeMapCoordinator: NativeMapCoordinator?
     private var cancellables = Set<AnyCancellable>()
     private var routeRequestTask: Task<Void, Never>?
     private var hasRequestedRoute = false
@@ -34,6 +36,12 @@ final class NavigationMapView: UIView {
         super.init(frame: frame)
 
         setupMap()
+        nativeMapCoordinator = NativeMapCoordinator(
+            navigationMapView: mapView,
+            navigationManager: navigationManager,
+            onRouteInfoChanged: onRouteInfoChanged,
+            onContainerSelected: { _ in }
+        )
         observeNavigation()
         navigationManager.start()
         emitLoading()
@@ -60,6 +68,19 @@ final class NavigationMapView: UIView {
             mapView.trailingAnchor.constraint(equalTo: trailingAnchor),
             mapView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+
+    func setNativeContainerSelectionHandler(_ handler: @escaping (Int) -> Void) {
+        nativeMapCoordinator = NativeMapCoordinator(
+            navigationMapView: mapView,
+            navigationManager: navigationManager,
+            onRouteInfoChanged: onRouteInfoChanged,
+            onContainerSelected: handler
+        )
+    }
+
+    func handleMapCommand(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        nativeMapCoordinator?.handle(call, result: result)
     }
 
     private func observeNavigation() {
