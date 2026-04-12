@@ -61,8 +61,18 @@ final class NavigationPlatformView: NSObject, FlutterPlatformView {
                 channel?.invokeMethod("onRouteInfoChanged", arguments: payload)
             }
         )
+        navigationView.setNativeContainerSelectionHandler { [weak channel] idContenedor in
+            channel?.invokeMethod(
+                "onContainerSelected",
+                arguments: ["idContenedor": idContenedor]
+            )
+        }
 
         super.init()
+
+        channel.setMethodCallHandler { [weak navigationView] call, result in
+            navigationView?.handleMapCommand(call, result: result)
+        }
     }
 
     func view() -> UIView {
