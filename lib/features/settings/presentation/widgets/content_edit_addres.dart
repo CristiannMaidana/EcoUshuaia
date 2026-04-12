@@ -31,7 +31,7 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
   final _searchLayerLink = LayerLink();
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
-  final _searchViewModel = MapSearchViewModel(MapboxSearchService());
+  final _searchViewModel = MapSearchViewModel(AddressSearchService());
 
   bool _showSuggestions = false;
   String _selectedStreet = 'Buscá o mové el mapa para seleccionar una dirección';
