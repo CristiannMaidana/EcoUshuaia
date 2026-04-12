@@ -39,8 +39,8 @@ final class NavigationPlatformView: NSObject, FlutterPlatformView {
         messenger: FlutterBinaryMessenger
     ) {
         let params = args as? [String: Any]
-        let latitude = params?["latitude"] as? CLLocationDegrees ?? 0
-        let longitude = params?["longitude"] as? CLLocationDegrees ?? 0
+        let latitude = Self.coordinate(from: params?["latitude"])
+        let longitude = Self.coordinate(from: params?["longitude"])
         let title = params?["title"] as? String
 
         let destination = CLLocationCoordinate2D(
@@ -67,5 +67,17 @@ final class NavigationPlatformView: NSObject, FlutterPlatformView {
 
     func view() -> UIView {
         navigationView
+    }
+
+    private static func coordinate(from value: Any?) -> CLLocationDegrees {
+        if let value = value as? CLLocationDegrees {
+            return value
+        }
+
+        if let value = value as? NSNumber {
+            return value.doubleValue
+        }
+
+        return 0
     }
 }
