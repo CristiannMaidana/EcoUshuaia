@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -24,6 +26,17 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MBXAccessToken</key>
+	<string>pk.eyJ1IjoiY3Jpc3RpYW4zNiIsImEiOiJjbWUzMmx3ajkwMnl1MmlvZ3g3eXA4bWIzIn0.l8r13pcoP4LFRJO-bn19fw</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Usamos tu ubicación para mostrarte en el mapa y guiarte a puntos de reciclaje cercanos.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,16 +54,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Usamos tu ubicación para mostrarte en el mapa y guiarte a puntos de reciclaje cercanos.</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-	<key>NSAllowsArbitraryLoads</key>
-	<true/>
-	</dict>
 </dict>
 </plist>
