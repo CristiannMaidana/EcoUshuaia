@@ -6,6 +6,7 @@ import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
+import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
@@ -13,6 +14,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_view
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/ios_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
@@ -22,7 +24,6 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.d
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/map_widget.dart';
 import 'package:provider/provider.dart';
 
 class MapaScreen extends StatelessWidget {
@@ -53,13 +54,12 @@ class MapaScreen extends StatelessWidget {
               ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) =>
-          HorarioRecoleccionFiltrosViewModel(
+          create: (ctx) => HorarioRecoleccionFiltrosViewModel(
             ctx.read<HorarioRecoleccionFiltrosRepository>(),
           )..initAll(),
         ),
         ChangeNotifierProvider(
-          create: (_) => MapSearchViewModel(MapboxSearchService()),
+          create: (_) => MapSearchViewModel(AddressSearchService()),
         ),
       ],
       child: MapaPage(),
@@ -93,7 +93,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<FlotanteSheetState> _flotanteKey = GlobalKey<FlotanteSheetState>();
 
 
-
   //=== Variable y metodos para el SheetAddContainer ===
   double _addressLon = 0;
   double _addressLat = 0;
@@ -103,9 +102,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
       
   final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
 
+
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
   bool openSheetAddAddress = false;
+
 
   // Metodo para abrir el sheetAddContainer
   Future<void> _abrirSheetAddContainer() async {
@@ -192,6 +193,41 @@ class _MapaScreenStatePage extends State<MapaPage> {
     ctrl.applyFilter(data);
   }
 
+  Future<void> _onNativeMapReady(NativeMapViewBridge bridge) async {
+    final controller = MapController(bridge)
+      ..onContenedorTap = _onContenedorTap;
+    _mapController = controller;
+
+    final vm = context.read<ContenedorViewModel>();
+    if (_vm != vm) {
+      _vm?.removeListener(_onVmChanged);
+      _vm = vm..addListener(_onVmChanged);
+    }
+
+    await controller.setStyle(_estiloActual);
+    if (_hasLocationPermission) {
+      await controller.enableUserPuck();
+    }
+
+    final data = vm.contenedorFiltrado.isNotEmpty
+        ? vm.contenedorFiltrado
+        : vm.items;
+    await controller.refreshContenedores(data);
+  }
+
+  void _onNativeContainerSelected(int idContenedor) {
+    final vm = _vm;
+    if (vm == null) return;
+
+    final candidates = <Contenedor>[...vm.items, ...vm.contenedorFiltrado];
+    for (final contenedor in candidates) {
+      if (contenedor.idContenedor == idContenedor) {
+        _onContenedorTap(contenedor);
+        return;
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -218,7 +254,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (!mounted) return;
     setState(() => _hasLocationPermission = ok);
     if (ok && _mapController != null) {
-      _mapController!.enableUserPuck();
+      await _mapController!.enableUserPuck();
 
       final vm = context.read<ContenedorViewModel>();
       await _mapController!.showContenedores(vm.items);
@@ -284,46 +320,59 @@ class _MapaScreenStatePage extends State<MapaPage> {
     sheet?.showSecondChild();
   }
 
-  Future<double>? _getMetros (double lat, double lon){
+  Future<double>? _getMetros(double lat, double lon) {
     return _mapController?.getMetros(lon, lat);
   }
 
   @override
   Widget build(BuildContext context) {
-    final usuarioViewModel = context.watch<UsuarioViewModel>();
-    final user = usuarioViewModel.usuario;
+    String instruction = 'Calculando ruta...';
+    double? distanceMeters;
+    double? etaSeconds;
 
     return Stack(
       children: [
-        CustomMapa(
-          onMapReady: (controller) async {
-            _mapController = controller;
-
-            // Conectar callback de tap de contenedor
-            controller.onContenedorTap = _onContenedorTap;
-
-            if (_hasLocationPermission) {
-              await controller.enableUserPuck();
-            }
-
-            _vm = context.read<ContenedorViewModel>();
-
-            // Si cargaron contenedores cargo
-            if (_vm!.items.isNotEmpty) {
-              await controller.refreshContenedores(_vm!.items);
-            } else {
-              // Crear listener de un solo uso, cargar el resto de contenedore y actualizar una unica vez
-              void once() async {
-                if (!_vm!.loading) {
-                  _vm!.removeListener(once);
-                  await _mapController?.refreshContenedores(_vm!.items);
-                }
-              }
-
-              _vm!.addListener(once);
-            }
-          },
+        //Encapsulado en un StatefulBuilder para actualizar la info de ruta sin necesidad de usar un setState global
+        StatefulBuilder(
+          builder: (context, setRouteInfoState) => Stack(
+            children: [
+              IosNavigationMapView(
+                latitude: -54.8070,
+                longitude: -68.3047,
+                title: 'Contenedor Centro',
+                onMapReady: _onNativeMapReady,
+                onContainerSelected: _onNativeContainerSelected,
+                onRouteInfoChanged: (data) {
+                  setRouteInfoState(() {
+                    instruction = data['instruction'] as String? ?? instruction;
+                    distanceMeters = (data['distanceMeters'] as num?)
+                        ?.toDouble();
+                    etaSeconds = (data['etaSeconds'] as num?)?.toDouble();
+                  });
+                },
+              ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
+                    color: Colors.white,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(instruction),
+                        Text('Distancia: ${distanceMeters?.toStringAsFixed(0) ?? "--"} m'),
+                        Text('ETA: ${etaSeconds?.toStringAsFixed(0) ?? "--"} s'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox.expand(),
 
         if (!_hasLocationPermission)
           Positioned.fill(
@@ -335,8 +384,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        'Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
+                      child: Text('Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white),
                       ),
@@ -347,7 +395,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
                       style: FilledButton.styleFrom(
                         backgroundColor: camarone500,
                       ),
-                      child: Text('Conceder permiso', style: Theme.of(context).textTheme.labelLarge,),
+                      child: Text('Conceder permiso',
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
                     ),
                   ],
                 ),
@@ -410,20 +460,20 @@ class _MapaScreenStatePage extends State<MapaPage> {
             abrirDetalleDireccion: _abrirDetalleDireccion,
           ),
           child2: SheetAddress(
-            key: _sheetAddressKey, 
+            key: _sheetAddressKey,
             openOptionContainer: _abrirSheetAddContainer,
             tuUbicacion: 'Tu ubicación',
             direccion: 'Dirección seleccionada',
             userPoint: _userPoint,
           ),
         ),
-        
+
         //Sheet de detalles de contenedor seleccionado
         if (_contenedorSeleccionado != null)
           ContainerDetail(
-            key: _detailKey, 
-            container: _contenedorSeleccionado!, 
-            distancia: _getMetros
+            key: _detailKey,
+            container: _contenedorSeleccionado!,
+            distancia: _getMetros,
           ),
 
         //Sheet para agregar contenedores a la ruta
