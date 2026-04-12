@@ -1,207 +1,66 @@
-import 'dart:convert';
-
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/presentation/models/native_waypoint.dart';
+import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
-import 'package:flutter/services.dart';
 
 class MapController {
-  MapboxMap? _map;
-  PointAnnotationManager? _contenedorAnnotationManager;
-  Uint8List? _contenedorIcon;
+  NativeMapViewBridge? _bridge;
 
-  // Icon de la ubicacion a buscar y punto
-  PointAnnotationManager? _direccionAnnotationManager;
-  Uint8List? _searchIcon;
-
-  // Marca la ruta desde la posicion al destino
-  PolylineAnnotationManager? _routeAnnotationManager;
-
-  final Map<String, Contenedor> _annotationToContenedor = {};
-
-  /// Callback que la UI puede setear para reaccionar al contenedor tocado
+  /// Callback que la UI puede setear para reaccionar al contenedor tocado.
   void Function(Contenedor contenedor)? onContenedorTap;
 
-  MapController(this._map);
+  MapController(this._bridge);
 
   Future<void> enableUserPuck() async {
-    final ByteData byte = await rootBundle.load('assets/icons/mapa/location.png');
-    final Uint8List imageData = byte.buffer.asUint8List();
-    final map = _map;
-    if (map == null) return;
-
-    await map.location.updateSettings(
-      LocationComponentSettings(
-        enabled: true,
-        pulsingEnabled: true,
-        puckBearingEnabled: true,
-        locationPuck: LocationPuck(
-          locationPuck2D: LocationPuck2D(
-            topImage: imageData,
-          ),
-        ),
-      ),
-    );
+    await _bridge?.setUserLocationEnabled(true);
   }
 
   Future<void> centerOnUserOnce({double zoom = 15}) async {
-    final map = _map;
-    if (map == null) return;
-
-    final pos = await geo.Geolocator.getCurrentPosition(
-      desiredAccuracy: geo.LocationAccuracy.high,
-    );
-    
-    await map.setCamera(
-      CameraOptions(
-        center: Point(
-          coordinates: Position(pos.longitude, pos.latitude),
-        ),
-        zoom: zoom,
-      ),
-    );
+    await _bridge?.centerOnUser(zoom: zoom);
   }
 
   Future<void> setStyle(MapStyle style) async {
-    final map = _map;
-    if (map == null) return;
-
-    switch (style) {
-      case MapStyle.Estandar:
-        await map.style.setStyleURI(MapboxStyles.STANDARD);
-        break;
-
-      case MapStyle.Satelite:
-        await map.style.setStyleURI(MapboxStyles.SATELLITE_STREETS);
-        break;
-
-      case MapStyle.Oscuro:
-        await map.style.setStyleURI(MapboxStyles.DARK);
-        break;
-
-      case MapStyle.Terreno:
-        await map.style.setStyleURI(MapboxStyles.OUTDOORS);
-        break;
-    }
+    await _bridge?.setMapStyle(style);
   }
 
-  void attach(MapboxMap map) {
-    _map = map;
+  void attach(NativeMapViewBridge bridge) {
+    _bridge = bridge;
   }
 
   void detach() {
-    _map = null;
-    _contenedorAnnotationManager = null;
-    _contenedorIcon = null;
-    _annotationToContenedor.clear();
+    _bridge = null;
     onContenedorTap = null;
-
-    _direccionAnnotationManager = null;
-    _searchIcon = null;
-  }
-
-  Future<void> _ensureContenedorAnnotationManager() async {
-    final map = _map;
-    if (map == null) return;
-
-    _contenedorAnnotationManager ??= await map.annotations.createPointAnnotationManager();
-
-    if (_contenedorAnnotationManager != null) {
-      _contenedorAnnotationManager!.tapEvents(
-        onTap: (PointAnnotation tapped) async {
-          await _onContenedorTapped(tapped);
-        },
-      );
-    }
-  }
-
-  Future<void> _ensureContenedorIcon() async {
-    if (_contenedorIcon != null) return;
-
-    final byte = await rootBundle.load('assets/icons/mapa/container.png');
-    _contenedorIcon = byte.buffer.asUint8List();
   }
 
   /// Agrega en el mapa una lista de contenedores.
   Future<void> showContenedores(List<Contenedor> contenedores) async {
-    final map = _map;
-    if (map == null || contenedores.isEmpty) return;
-
-    await _ensureContenedorAnnotationManager();
-    await _ensureContenedorIcon();
-
-    final mgr = _contenedorAnnotationManager;
-    if (mgr == null || _contenedorIcon == null) return;
-
-    final options = contenedores.where((c) => c.coordenada != null)
-        .map((c) {
-          final coord = c.coordenada!;
-          return PointAnnotationOptions(
-            geometry: Point(
-              coordinates: Position(
-                coord.longitud,
-                coord.latitud,
-              ),
-            ),
-            image: _contenedorIcon,
-          );
-        })
-        .toList();
-
-    if (options.isEmpty) return;
-
-    final annotations = await mgr.createMulti(options);
-
-    //Cargo el mapa con Contenedor
-    _annotationToContenedor.clear();
-    for (var i = 0; i < annotations.length && i < contenedores.length; i++) {
-      _annotationToContenedor[annotations[i]! .id] = contenedores[i];
-    }
+    await _bridge?.setContainers(contenedores);
   }
-  
+
   /// Refresca los contenedores en el mapa.
   Future<void> refreshContenedores(List<Contenedor> contenedores) async {
-    final map = _map;
-    if (map == null) return;
-
-    await _ensureContenedorAnnotationManager();
-    await _ensureContenedorIcon();
-
-    final mgr = _contenedorAnnotationManager;
-    if (mgr == null) return;
-
-    // limpiar anteriores para evitar duplicados
-    await mgr.deleteAll();
-    // agregar de nuevo
-    await showContenedores(contenedores);
+    await _bridge?.setContainers(contenedores);
   }
 
-  ///Callback interno cuando se toca un contenedor
-  Future<void> _onContenedorTapped(PointAnnotation annotation) async {
-    final _contenedorSeleccionado = _annotationToContenedor[annotation.id];
-
-    onContenedorTap!(_contenedorSeleccionado!);
-  }
-
-  // Cargar los contenedores filtrados por opciones de filtros
+  // Cargar los contenedores filtrados por opciones de filtros.
   Future<void> applyFilter(List<Contenedor> filtroContenedor) async {
     await refreshContenedores(filtroContenedor);
   }
 
-  // Metodo para obtener la distancia entre dos puntos
-  Future<double> getMetros(double lon, double lat) async{
+  // Metodo para obtener la distancia entre dos puntos.
+  Future<double> getMetros(double lon, double lat) async {
     final pos = await geo.Geolocator.getCurrentPosition(
       desiredAccuracy: geo.LocationAccuracy.high,
     );
-    
+
     return geo.Geolocator.distanceBetween(
-      pos.latitude, pos.longitude,
-      lat, lon
+      pos.latitude,
+      pos.longitude,
+      lat,
+      lon,
     );
-  } 
+  }
 
   Future<Map<String, double>> getPoint() async {
     final pos = await geo.Geolocator.getCurrentPosition(
@@ -209,145 +68,22 @@ class MapController {
     );
     return <String, double>{'lon': pos.longitude, 'lat': pos.latitude};
   }
-  
-  //==== Metodos de generacion de direccion a buscar ===
-  // Inicializo el punto que muestra la direccion destino
-  Future<void> _ensureDireccionAnnotationManager() async {
-    final map = _map;
-    if (map == null) return;
 
-    _direccionAnnotationManager ??=
-        await map.annotations.createPointAnnotationManager();
+  // Centrar el mapa en la dirección buscada.
+  Future<void> centerOnAddress({
+    required double lat,
+    required double lon,
+    double zoom = 15,
+  }) async {
+    await _bridge?.showDestination(latitude: lat, longitude: lon, zoom: zoom);
   }
 
-  // Inicializo el icon para el punto que muestra la direccion destino
-  Future<void> _ensureDireccionIcon() async {
-    if (_searchIcon != null) return;
-
-    final byte = await rootBundle.load('assets/icons/mapa/map_pin.png');
-    _searchIcon = byte.buffer.asUint8List();
-  }
-
-  // Centrar el mapa en la dirección buscada
-  Future<void> centerOnAddress({required double lat, required double lon, double zoom = 15}) async {
-    if (_map == null) return;
-    await _map!.setCamera(
-      CameraOptions(
-        center: Point(coordinates: Position(lon, lat)), 
-        zoom: zoom
-      )
+  // Marca la ruta desde la ubicacion del usuario a la direccion.
+  Future<void> addRoute({required double lat, required double lon}) async {
+    await _bridge?.previewRoute(
+      waypoints: <NativeWaypoint>[
+        NativeWaypoint(latitude: lat, longitude: lon),
+      ],
     );
-
-    // Inicializo y creo icon para el punto de la direccion
-    await _ensureDireccionAnnotationManager();
-    await _ensureDireccionIcon();
-
-    final mgr = _direccionAnnotationManager;
-    if (mgr == null || _searchIcon == null) return;
-
-    // Borra cualquier pin previo de búsqueda
-    await mgr.deleteAll();
-
-    // Crear el nuevo pin en la dirección buscada
-    final options = PointAnnotationOptions(
-      geometry: Point(coordinates: Position(lon, lat)),
-      image: _searchIcon!,
-    );
-
-    await mgr.create(options);
-  }
-
-
-  //==== Marca la ruta desde la ubicacion del usuario a la direccion ====
-   Future<void> addRoute({required double lat, required double lon}) async {
-    final map = _map;
-    if (map == null) return;
-
-    // Posición actual
-    final posUser = await geo.Geolocator.getCurrentPosition(
-      desiredAccuracy: geo.LocationAccuracy.high,
-    );
-    final uLat = posUser.latitude;
-    final uLon = posUser.longitude;
-
-    // Llamada Directions
-    final token = const String.fromEnvironment('ACCESS_TOKEN');
-    final uri = Uri.parse(
-      'https://api.mapbox.com/directions/v5/mapbox/driving/'
-      '$uLon,$uLat;$lon,$lat'
-      '?alternatives=false&geometries=polyline6&overview=full&steps=false'
-      '&access_token=$token',
-    );
-
-    final resp = await http.get(uri);
-    if (resp.statusCode != 200) {
-      return;
-    }
-
-    final data = json.decode(resp.body) as Map<String, dynamic>;
-    final routes = (data['routes'] as List?) ?? const [];
-    if (routes.isEmpty) return;
-
-    final geometry = routes.first['geometry'] as String?;
-    if (geometry == null || geometry.isEmpty) return;
-
-    // lista de Position
-    final positions = _decodePolyline6(geometry);
-    if (positions.length < 2) return;
-
-    // Reemplazamos ruta previa
-    await _ensureRouteAnnotationManager();
-    final mgr = _routeAnnotationManager;
-    if (mgr == null) return;
-
-    await mgr.deleteAll(); // limpiar ruta previa
-
-    await mgr.create(
-      PolylineAnnotationOptions(
-        geometry: LineString(coordinates: positions),
-        lineWidth: 4.0,
-        lineOpacity: 1.0,
-        lineColor: Colors.blue.value,
-      ),
-    );
-}
-
-  Future<void> _ensureRouteAnnotationManager() async {
-    final map = _map;
-    if (map == null) return;
-    _routeAnnotationManager ??=
-        await map.annotations.createPolylineAnnotationManager();
-  }
-
-  /// Decodifica polyline 
-  List<Position> _decodePolyline6(String polyline) {
-    final List<Position> coords = [];
-    int index = 0, lat = 0, lon = 0;
-
-    while (index < polyline.length) {
-      int b, shift = 0, result = 0;
-      do {
-        b = polyline.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      final dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = polyline.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      final dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lon += dlng;
-
-      coords.add(
-        Position(lon / 1e6, lat / 1e6),
-      );
-    }
-    return coords;
   }
 }
