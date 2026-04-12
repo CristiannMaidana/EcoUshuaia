@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_reposito
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/models/native_route_info.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
@@ -80,6 +81,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool _hasLocationPermission = false;
   MapController? _mapController;
   MapStyle _estiloActual = MapStyle.Estandar;
+  final ValueNotifier<NativeRouteInfo> _routeInfo =
+      ValueNotifier<NativeRouteInfo>(
+        const NativeRouteInfo(instruction: 'Calculando ruta...'),
+      );
 
   ContenedorViewModel? _vm;
 
@@ -106,7 +111,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
   bool openSheetAddAddress = false;
-
 
   // Metodo para abrir el sheetAddContainer
   Future<void> _abrirSheetAddContainer() async {
@@ -135,7 +139,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
   }
 
   Future<void> _getCoordenates() async {
-    final ok = _hasLocationPermission || await _perms.ensureWhenInUsePermission(context);
+    final ok =
+        _hasLocationPermission ||
+        await _perms.ensureWhenInUsePermission(context);
     if (!mounted || !ok) return;
     if (!_hasLocationPermission) setState(() => _hasLocationPermission = ok);
 
@@ -170,7 +176,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final vm = _vm;
     if (ctrl != null && vm != null) {
       // Si hay filtro activo, cargar los contenedores filtrados, si no con todos
-      final data = vm.contenedorFiltrado.isNotEmpty ? vm.contenedorFiltrado : vm.items;
+      final data = vm.contenedorFiltrado.isNotEmpty
+          ? vm.contenedorFiltrado
+          : vm.items;
       ctrl.refreshContenedores(data);
     }
   }
@@ -189,7 +197,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final ctrl = _mapController;
     if (vm == null || ctrl == null) return;
 
-    final data = vm.contenedorFiltrado.isNotEmpty ? vm.contenedorFiltrado : vm.items;
+    final data = vm.contenedorFiltrado.isNotEmpty
+        ? vm.contenedorFiltrado
+        : vm.items;
     ctrl.applyFilter(data);
   }
 
@@ -226,6 +236,20 @@ class _MapaScreenStatePage extends State<MapaPage> {
         return;
       }
     }
+  }
+
+  void _onRouteInfoChanged(NativeRouteInfo routeInfo) {
+    if (!mounted) return;
+
+    _routeInfo.value = routeInfo.instruction.isEmpty
+        ? NativeRouteInfo(
+            instruction: _routeInfo.value.instruction,
+            distanceMeters: routeInfo.distanceMeters,
+            etaSeconds: routeInfo.etaSeconds,
+            stepIndex: routeInfo.stepIndex,
+            isOffRoute: routeInfo.isOffRoute,
+          )
+        : routeInfo;
   }
 
   @override
@@ -307,6 +331,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   @override
   void dispose() {
     _vm?.removeListener(_onVmChanged);
+    _routeInfo.dispose();
     super.dispose();
   }
 
@@ -326,51 +351,48 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   @override
   Widget build(BuildContext context) {
-    String instruction = 'Calculando ruta...';
-    double? distanceMeters;
-    double? etaSeconds;
-
     return Stack(
       children: [
-        //Encapsulado en un StatefulBuilder para actualizar la info de ruta sin necesidad de usar un setState global
-        StatefulBuilder(
-          builder: (context, setRouteInfoState) => Stack(
-            children: [
-              IosNavigationMapView(
-                latitude: -54.8070,
-                longitude: -68.3047,
-                title: 'Contenedor Centro',
-                onMapReady: _onNativeMapReady,
-                onContainerSelected: _onNativeContainerSelected,
-                onRouteInfoChanged: (data) {
-                  setRouteInfoState(() {
-                    instruction = data['instruction'] as String? ?? instruction;
-                    distanceMeters = (data['distanceMeters'] as num?)
-                        ?.toDouble();
-                    etaSeconds = (data['etaSeconds'] as num?)?.toDouble();
-                  });
-                },
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(12),
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(instruction),
-                        Text('Distancia: ${distanceMeters?.toStringAsFixed(0) ?? "--"} m'),
-                        Text('ETA: ${etaSeconds?.toStringAsFixed(0) ?? "--"} s'),
-                      ],
-                    ),
-                  ),
+        Stack(
+          children: [
+            IosNavigationMapView(
+              latitude: -54.8070,
+              longitude: -68.3047,
+              title: 'Contenedor Centro',
+              onMapReady: _onNativeMapReady,
+              onContainerSelected: _onNativeContainerSelected,
+              onRouteInfoChanged: _onRouteInfoChanged,
+            ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ValueListenableBuilder<NativeRouteInfo>(
+                  valueListenable: _routeInfo,
+                  builder: (context, routeInfo, _) {
+                    final instruction = routeInfo.instruction.isEmpty
+                        ? 'Calculando ruta...'
+                        : routeInfo.instruction;
+                    final distanceMeters = routeInfo.distanceMeters;
+                    final etaSeconds = routeInfo.etaSeconds;
+
+                    return Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
+                      color: Colors.white,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(instruction),
+                          Text('Distancia: ${distanceMeters?.toStringAsFixed(0) ?? "--"} m'),
+                          Text('ETA: ${etaSeconds?.toStringAsFixed(0) ?? "--"} s'),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox.expand(),
 
