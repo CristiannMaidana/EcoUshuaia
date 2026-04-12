@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
+		38161B0E2F8C0B0100F1DEEB /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 38161B0D2F8C0B0100F1DEEB /* MapboxMaps */; };
 		383273C12F8B40C10053B7C4 /* MapboxNavigationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 383273C02F8B40C10053B7C4 /* MapboxNavigationCore */; };
 		383273C32F8B40C10053B7C4 /* MapboxNavigationUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 383273C22F8B40C10053B7C4 /* MapboxNavigationUIKit */; };
 		3868CFA72F8821C500EEE665 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3868CFA62F8821C300EEE665 /* NavigationViewController.swift */; };
@@ -98,6 +99,7 @@
 			files = (
 				383273C32F8B40C10053B7C4 /* MapboxNavigationUIKit in Frameworks */,
 				383273C12F8B40C10053B7C4 /* MapboxNavigationCore in Frameworks */,
+				38161B0E2F8C0B0100F1DEEB /* MapboxMaps in Frameworks */,
 				6C64ABD6842A98C2E3F2B16E /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,6 +267,7 @@
 			mainGroup = 97C146E51CF9000F007C117D;
 			packageReferences = (
 				383273BF2F8B40C10053B7C4 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */,
+				38161B0C2F8C0B0100F1DEEB /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
 			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
@@ -382,9 +385,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -399,9 +406,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -783,6 +794,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		38161B0C2F8C0B0100F1DEEB /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.21.0;
+			};
+		};
 		383273BF2F8B40C10053B7C4 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-navigation-ios.git";
@@ -794,6 +813,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		38161B0D2F8C0B0100F1DEEB /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 38161B0C2F8C0B0100F1DEEB /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
+		};
 		383273C02F8B40C10053B7C4 /* MapboxNavigationCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 383273BF2F8B40C10053B7C4 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
