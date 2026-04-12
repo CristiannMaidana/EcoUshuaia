@@ -182,10 +182,14 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    SizedBox(width: 10),
-                    Text(_selectedStreet,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(_selectedStreet,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
