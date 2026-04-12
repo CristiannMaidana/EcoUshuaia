@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '14.0'
+platform :ios, '15.6'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -45,5 +45,45 @@ post_install do |installer|
         'PERMISSION_LOCATION_WHENINUSE=1',
       ]
     end
+  end
+
+  mapbox_swift_package_frameworks = [
+    'MapboxCommon',
+    'MapboxCoreMaps',
+    'Turf',
+  ]
+
+  pods_runner_support_dir = File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-Runner')
+  frameworks_script_path = File.join(pods_runner_support_dir, 'Pods-Runner-frameworks.sh')
+
+  if File.exist?(frameworks_script_path)
+    frameworks_script = File.read(frameworks_script_path)
+    mapbox_swift_package_frameworks.each do |framework_name|
+      frameworks_script.gsub!(
+        /^\s*install_framework "\$\{PODS_XCFRAMEWORKS_BUILD_DIR\}\/#{framework_name}\/#{framework_name}\.framework"\n/,
+        ''
+      )
+    end
+    File.write(frameworks_script_path, frameworks_script)
+  end
+
+  Dir[File.join(pods_runner_support_dir, 'Pods-Runner-frameworks-*-input-files.xcfilelist')].each do |file_path|
+    lines = File.readlines(file_path)
+    lines.reject! do |line|
+      mapbox_swift_package_frameworks.any? do |framework_name|
+        line.include?("${PODS_XCFRAMEWORKS_BUILD_DIR}/#{framework_name}/#{framework_name}.framework")
+      end
+    end
+    File.write(file_path, lines.join)
+  end
+
+  Dir[File.join(pods_runner_support_dir, 'Pods-Runner-frameworks-*-output-files.xcfilelist')].each do |file_path|
+    lines = File.readlines(file_path)
+    lines.reject! do |line|
+      mapbox_swift_package_frameworks.any? do |framework_name|
+        line.include?("${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/#{framework_name}.framework")
+      end
+    end
+    File.write(file_path, lines.join)
   end
 end
