@@ -1,22 +1,19 @@
-import UIKit
-import MapKit
+import Combine
 import CoreLocation
-import Flutter
+import MapboxDirections
+import MapboxNavigationCore
+import UIKit
 
-final class NavigationMapView: UIView, MKMapViewDelegate {
-    private let mapView = MKMapView()
-    private let locationService = LocationService()
-    private let navigationManager = NavigationManager()
-
-    private var hasCalculatedInitialRoute = false
-    private var isRecalculatingRoute = false
-    private var lastRerouteAt: Date?
-
+final class NavigationMapView: UIView {
     private let destinationCoordinate: CLLocationCoordinate2D
     private let destinationTitle: String?
     private let onRouteInfoChanged: (([String: Any]) -> Void)?
 
-    private let rerouteCooldown: TimeInterval = 4
+    private let navigationManager: NavigationManager
+    private let mapView: MapboxNavigationCore.NavigationMapView
+    private var cancellables = Set<AnyCancellable>()
+    private var routeRequestTask: Task<Void, Never>?
+    private var hasRequestedRoute = false
 
     init(
         frame: CGRect,
@@ -24,23 +21,37 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
         destinationTitle: String?,
         onRouteInfoChanged: (([String: Any]) -> Void)?
     ) {
+        let manager = NavigationManager()
+        self.navigationManager = manager
+        self.mapView = MapboxNavigationCore.NavigationMapView(
+            location: manager.locationPublisher,
+            routeProgress: manager.routeProgressPublisher,
+            predictiveCacheManager: manager.predictiveCacheManager
+        )
         self.destinationCoordinate = destinationCoordinate
         self.destinationTitle = destinationTitle
         self.onRouteInfoChanged = onRouteInfoChanged
         super.init(frame: frame)
+
         setupMap()
-        setupServices()
-        showDestinationPin()
+        observeNavigation()
+        navigationManager.start()
+        emitLoading()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        routeRequestTask?.cancel()
+    }
+
     private func setupMap() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.showsUserLocation = true
-        mapView.delegate = self
+        mapView.viewportPadding = UIEdgeInsets(top: 90, left: 24, bottom: 90, right: 24)
+        mapView.routeLineTracksTraversal = true
+        mapView.showsTrafficOnRouteLine = true
         addSubview(mapView)
 
         NSLayoutConstraint.activate([
@@ -51,155 +62,107 @@ final class NavigationMapView: UIView, MKMapViewDelegate {
         ])
     }
 
-    private func setupServices() {
-        locationService.delegate = self
-        locationService.requestPermissionAndStartIfNeeded()
+    private func observeNavigation() {
+        navigationManager.$currentLocation
+            .compactMap { $0 }
+            .first()
+            .sink { [weak self] _ in
+                self?.requestRouteIfNeeded()
+            }
+            .store(in: &cancellables)
+
+        navigationManager.$routeProgress
+            .compactMap { $0 }
+            .sink { [weak self] progress in
+                self?.emitProgress(progress)
+            }
+            .store(in: &cancellables)
+
+        navigationManager.$isRerouting
+            .removeDuplicates()
+            .sink { [weak self] isRerouting in
+                if isRerouting {
+                    self?.emitRecalculating()
+                }
+            }
+            .store(in: &cancellables)
     }
 
-    private func showDestinationPin() {
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = destinationCoordinate
-        annotation.title = destinationTitle
-        mapView.addAnnotation(annotation)
+    private func requestRouteIfNeeded() {
+        guard !hasRequestedRoute else { return }
+        hasRequestedRoute = true
+
+        routeRequestTask = Task { [weak self] in
+            guard let self else { return }
+
+            do {
+                let routes = try await navigationManager.calculateRoute(
+                    to: destinationCoordinate,
+                    title: destinationTitle
+                )
+                await MainActor.run {
+                    self.mapView.showcase(routes, routeAnnotationKinds: [], animated: true)
+                    self.emitInitialRoute(routes)
+                }
+            } catch {
+                await MainActor.run {
+                    self.emitError(error)
+                    print("Route error: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 
-    private func drawRoute(_ route: MKRoute) {
-        mapView.removeOverlays(mapView.overlays)
-        mapView.addOverlay(route.polyline)
-    }
-
-    private func emitProgress(_ progress: NavigationProgress) {
+    private func emitLoading() {
         onRouteInfoChanged?([
-            "instruction": progress.instruction,
-            "distanceMeters": progress.remainingDistanceMeters,
-            "etaSeconds": progress.remainingEtaSeconds,
-            "stepIndex": progress.stepIndex,
-            "isOffRoute": progress.isOffRoute,
+            "instruction": "Calculando ruta...",
+            "isOffRoute": false
+        ])
+    }
+
+    private func emitInitialRoute(_ routes: NavigationRoutes) {
+        let route = routes.mainRoute.route
+        onRouteInfoChanged?([
+            "instruction": firstInstruction(in: route) ?? "Ruta calculada",
+            "distanceMeters": route.distance,
+            "etaSeconds": route.expectedTravelTime,
+            "stepIndex": 0,
+            "isOffRoute": false
+        ])
+    }
+
+    private func emitProgress(_ progress: RouteProgress) {
+        let stepProgress = progress.currentLegProgress.currentStepProgress
+        let instruction = stepProgress.currentVisualInstruction?.primaryInstruction.text
+            ?? stepProgress.step.instructions
+
+        onRouteInfoChanged?([
+            "instruction": instruction,
+            "distanceMeters": progress.distanceRemaining,
+            "etaSeconds": progress.durationRemaining,
+            "stepIndex": progress.currentLegProgress.stepIndex,
+            "isOffRoute": false
         ])
     }
 
     private func emitRecalculating() {
         onRouteInfoChanged?([
             "instruction": "Recalculando ruta...",
-            "isOffRoute": true,
+            "isOffRoute": true
         ])
     }
 
-    private func calculateInitialRoute(from location: CLLocation) {
-        hasCalculatedInitialRoute = true
-        updateCamera(for: location, animated: false)
-
-        navigationManager.calculateRoute(
-            from: location.coordinate,
-            to: destinationCoordinate
-        ) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case .success(let route):
-                self.drawRoute(route)
-
-                if let progress = self.navigationManager.updateProgress(userLocation: location) {
-                    self.emitProgress(progress)
-                }
-
-            case .failure(let error):
-                print("Route error: \(error.localizedDescription)")
-            }
-        }
+    private func emitError(_ error: Error) {
+        onRouteInfoChanged?([
+            "instruction": error.localizedDescription,
+            "isOffRoute": false
+        ])
     }
 
-    private func shouldReroute(now: Date) -> Bool {
-        if isRecalculatingRoute {
-            return false
-        }
-
-        if let lastRerouteAt, now.timeIntervalSince(lastRerouteAt) < rerouteCooldown {
-            return false
-        }
-
-        return true
-    }
-
-    private func reroute(from location: CLLocation) {
-        let now = Date()
-        guard shouldReroute(now: now) else { return }
-
-        isRecalculatingRoute = true
-        lastRerouteAt = now
-        emitRecalculating()
-
-        navigationManager.calculateRoute(
-            from: location.coordinate,
-            to: destinationCoordinate
-        ) { [weak self] result in
-            guard let self = self else { return }
-            self.isRecalculatingRoute = false
-
-            switch result {
-            case .success(let route):
-                self.drawRoute(route)
-
-                if let progress = self.navigationManager.updateProgress(userLocation: location) {
-                    self.emitProgress(progress)
-                }
-
-            case .failure(let error):
-                print("Reroute error: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    private func updateCamera(for location: CLLocation, animated: Bool) {
-        let camera = MKMapCamera()
-        camera.centerCoordinate = location.coordinate
-        camera.heading = location.course > 0 ? location.course : mapView.camera.heading
-        camera.pitch = 50
-        if #available(iOS 13.0, *) {
-            camera.centerCoordinateDistance = 450
-        } else {
-            // Fallback on earlier versions
-        }
-
-        mapView.setCamera(camera, animated: animated)
-    }
-
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let polyline = overlay as? MKPolyline else {
-            return MKOverlayRenderer(overlay: overlay)
-        }
-
-        let renderer = MKPolylineRenderer(polyline: polyline)
-        renderer.strokeColor = .systemBlue
-        renderer.lineWidth = 6
-        return renderer
-    }
-}
-
-extension NavigationMapView: LocationServiceDelegate {
-    func locationServiceDidChangeAuthorization(_ status: CLAuthorizationStatus) {}
-
-    func locationServiceDidUpdateLocation(_ location: CLLocation) {
-        updateCamera(for: location, animated: true)
-
-        if !hasCalculatedInitialRoute {
-            calculateInitialRoute(from: location)
-            return
-        }
-
-        guard let progress = navigationManager.updateProgress(userLocation: location) else {
-            return
-        }
-
-        if progress.isOffRoute {
-            reroute(from: location)
-            return
-        }
-
-        emitProgress(progress)
-    }
-
-    func locationServiceDidFail(_ error: Error) {
-        print("Location error: \(error.localizedDescription)")
+    private func firstInstruction(in route: Route) -> String? {
+        route.legs
+            .flatMap(\.steps)
+            .first { !$0.instructions.isEmpty }?
+            .instructions
     }
 }
