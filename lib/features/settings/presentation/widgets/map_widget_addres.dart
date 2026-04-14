@@ -1,11 +1,11 @@
-import 'package:eco_ushuaia/core/services/mapbox_initializer.dart';
+//import 'package:eco_ushuaia/core/services/mapbox_initializer.dart';
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/place_location.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as geo;
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+//import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MapWidgetAddres extends StatefulWidget {
@@ -31,10 +31,10 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
   static const _defaultLon = -68.3030;
   static const _defaultLat = -54.8019;
 
-  final _searchService = MapboxSearchService();
+  //final _searchService = MapboxSearchService();
   final _perms = LocationPermissionService.I;
 
-  MapboxMap? _mapboxMap;
+  //MapboxMap? _mapboxMap;
   bool _mapReady = false;
   bool _loadingAddress = false;
   bool _hasLocationPermission = false;
@@ -45,13 +45,13 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
 
   @override
   void initState() {
-    super.initState();
-    MapboxInitializer.ensureInitialized();
-    if (_hasExplicitInitialPoint) {
-      _selectedLat = widget.initialLat!;
-      _selectedLon = widget.initialLon!;
-    }
-    _initPermissionState();
+    // super.initState();
+    // MapboxInitializer.ensureInitialized();
+    // if (_hasExplicitInitialPoint) {
+    //   _selectedLat = widget.initialLat!;
+    //   _selectedLon = widget.initialLon!;
+    // }
+    // _initPermissionState();
   }
 
   @override
@@ -111,47 +111,47 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
   }
 
   Future<void> _moveCamera(double lat, double lon, {double zoom = 15}) async {
-    final map = _mapboxMap;
-    if (map == null) return;
-    await map.setCamera(
-      CameraOptions(
-        center: Point(coordinates: Position(lon, lat)),
-        zoom: zoom,
-      ),
-    );
+    // final map = _mapboxMap;
+    // if (map == null) return;
+    // await map.setCamera(
+    //   CameraOptions(
+    //     center: Point(coordinates: Position(lon, lat)),
+    //     zoom: zoom,
+    //   ),
+    // );
   }
 
   Future<void> _loadAddressFromPoint(double lat, double lon) async {
-    if (!mounted) return;
-    setState(() {
-      _loadingAddress = true;
-    });
+    // if (!mounted) return;
+    // setState(() {
+    //   _loadingAddress = true;
+    // });
 
-    try {
-      final address = await _searchService.addressFromPoint(lat, lon);
-      if (!mounted) return;
-      final selectedStreet = (address == null || address.trim().isEmpty)
-          ? 'Dirección no disponible'
-          : address;
-      setState(() {
-        _selectedLat = lat;
-        _selectedLon = lon;
-      });
-      widget.onAddressChanged(selectedStreet, lat, lon);
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _selectedLat = lat;
-        _selectedLon = lon;
-      });
-      widget.onAddressChanged('Dirección no disponible', lat, lon);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loadingAddress = false;
-        });
-      }
-    }
+    // try {
+    //   final address = await _searchService.addressFromPoint(lat, lon);
+    //   if (!mounted) return;
+    //   final selectedStreet = (address == null || address.trim().isEmpty)
+    //       ? 'Dirección no disponible'
+    //       : address;
+    //   setState(() {
+    //     _selectedLat = lat;
+    //     _selectedLon = lon;
+    //   });
+    //   widget.onAddressChanged(selectedStreet, lat, lon);
+    // } catch (_) {
+    //   if (!mounted) return;
+    //   setState(() {
+    //     _selectedLat = lat;
+    //     _selectedLon = lon;
+    //   });
+    //   widget.onAddressChanged('Dirección no disponible', lat, lon);
+    // } finally {
+    //   if (mounted) {
+    //     setState(() {
+    //       _loadingAddress = false;
+    //     });
+    //   }
+    // }
   }
 
   Future<void> _selectPlace(PlaceLocation place) async {
@@ -160,14 +160,14 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
   }
 
   Future<void> _updateFromMapCenter() async {
-    final map = _mapboxMap;
-    if (map == null) return;
+    // final map = _mapboxMap;
+    // if (map == null) return;
 
-    final cameraState = await map.getCameraState();
-    final center = cameraState.center;
-    final lat = center.coordinates.lat.toDouble();
-    final lon = center.coordinates.lng.toDouble();
-    await _loadAddressFromPoint(lat, lon);
+    // final cameraState = await map.getCameraState();
+    // final center = cameraState.center;
+    // final lat = center.coordinates.lat.toDouble();
+    // final lon = center.coordinates.lng.toDouble();
+    // await _loadAddressFromPoint(lat, lon);
   }
 
   @override
@@ -188,29 +188,29 @@ class _MapWidgetAddresState extends State<MapWidgetAddres> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                MapWidget(
-                  key: const ValueKey('edit-address-map'),
-                  styleUri: MapboxStyles.STANDARD,
-                  cameraOptions: CameraOptions(
-                    center: Point(
-                      coordinates: Position(_selectedLon, _selectedLat),
-                    ),
-                    zoom: 15,
-                  ),
-                  onMapCreated: (map) async {
-                    _mapboxMap = map;
-                    if (!mounted) return;
-                    setState(() {
-                      _mapReady = true;
-                    });
-                    await _moveCamera(_selectedLat, _selectedLon);
-                  },
-                  onMapIdleListener: (_) {
-                    if (_mapReady) {
-                      _updateFromMapCenter();
-                    }
-                  },
-                ),
+                // MapWidget(
+                //   key: const ValueKey('edit-address-map'),
+                //   styleUri: MapboxStyles.STANDARD,
+                //   cameraOptions: CameraOptions(
+                //     center: Point(
+                //       coordinates: Position(_selectedLon, _selectedLat),
+                //     ),
+                //     zoom: 15,
+                //   ),
+                //   onMapCreated: (map) async {
+                //     _mapboxMap = map;
+                //     if (!mounted) return;
+                //     setState(() {
+                //       _mapReady = true;
+                //     });
+                //     await _moveCamera(_selectedLat, _selectedLon);
+                //   },
+                //   onMapIdleListener: (_) {
+                //     if (_mapReady) {
+                //       _updateFromMapCenter();
+                //     }
+                //   },
+                // ),
 
                 IgnorePointer(
                   child: Padding(
