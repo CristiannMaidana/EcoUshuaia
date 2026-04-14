@@ -1,7 +1,5 @@
-import UIKit
-import Combine
 import CoreLocation
-import MapboxMaps
+import UIKit
 import MapboxNavigationCore
 import MapboxNavigationUIKit
 
@@ -10,16 +8,13 @@ final class NativeMapView: UIView {
     private let navigationProvider: MapboxNavigationProvider
     private let navigationMapView: NavigationMapView
     private let navigationCore: NavigationCoreNative
-    private let initialCoordinate: CLLocationCoordinate2D
-    private let initialZoom: Double
 
-    init(
-        frame: CGRect,
-        latitude: Double = -54.8070,
-        longitude: Double = -68.3047,
-        zoom: Double = 13
-    ) {
-        self.navigationProvider = MapboxNavigationProvider(coreConfig: .init())
+    override init(frame: CGRect) {
+        self.navigationProvider = MapboxNavigationProvider(
+            coreConfig: .init(
+                locationSource: .simulation()
+            )
+        )
 
         let navigation = navigationProvider.navigation()
 
@@ -34,16 +29,22 @@ final class NativeMapView: UIView {
             predictiveCacheManager: navigationProvider.predictiveCacheManager
         )
 
-        self.navigationCore = NavigationCoreNative()
-        self.initialCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        self.initialZoom = zoom
+        self.navigationCore = NavigationCoreNative(
+            navigationProvider: navigationProvider
+        )
+
         super.init(frame: frame)
 
         setupMap()
+        buildInitialRoute()
     }
 
     required init?(coder: NSCoder) {
-        self.navigationProvider = MapboxNavigationProvider(coreConfig: .init())
+        self.navigationProvider = MapboxNavigationProvider(
+            coreConfig: .init(
+                locationSource: .simulation()
+            )
+        )
 
         let navigation = navigationProvider.navigation()
 
@@ -58,12 +59,14 @@ final class NativeMapView: UIView {
             predictiveCacheManager: navigationProvider.predictiveCacheManager
         )
 
-        self.navigationCore = NavigationCoreNative()
-        self.initialCoordinate = CLLocationCoordinate2D(latitude: -54.8070, longitude: -68.3047)
-        self.initialZoom = 13
+        self.navigationCore = NavigationCoreNative(
+            navigationProvider: navigationProvider
+        )
+
         super.init(coder: coder)
 
         setupMap()
+        buildInitialRoute()
     }
 
     private func setupMap() {
@@ -76,9 +79,27 @@ final class NativeMapView: UIView {
             navigationMapView.trailingAnchor.constraint(equalTo: trailingAnchor),
             navigationMapView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
 
-        navigationMapView.mapView.mapboxMap.setCamera(
-            to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
-        )
+    private func buildInitialRoute() {
+        let origin = CLLocationCoordinate2D(latitude: -54.8272, longitude: -68.3385)
+        let destination = CLLocationCoordinate2D(latitude: -54.8061, longitude: -68.3038)
+
+        navigationCore.buildPreviewRoute(origin: origin, destination: destination) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self else { return }
+
+                switch result {
+                case .failure(let error):
+                    print(error.localizedDescription)
+                case .success(let navigationRoutes):
+                    self.showRoute(navigationRoutes)
+                }
+            }
+        }
+    }
+
+    func showRoute(_ navigationRoutes: NavigationRoutes) {
+        navigationMapView.showcase(navigationRoutes, animated: false)
     }
 }
