@@ -3,10 +3,14 @@ import UIKit
 
 final class NavigationChannelHandler {
 
-    static func register(with controller: FlutterViewController) {
-        let _ = FlutterMethodChannel(
-            name: "eco_ushuaia/native_map",
-            binaryMessenger: controller.binaryMessenger
+    static func register(with registry: FlutterPluginRegistry) {
+        guard let registrar = registry.registrar(forPlugin: "MapboxNavigationMapViewPlugin") else {
+            return
+        }
+
+        registrar.register(
+            MapboxNavigationMapViewFactory(),
+            withId: MapboxNavigationMapViewFactory.viewType
         )
     }
 }
