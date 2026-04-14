@@ -1,6 +1,7 @@
 import UIKit
 import Combine
 import CoreLocation
+import MapboxMaps
 import MapboxNavigationCore
 import MapboxNavigationUIKit
 
@@ -9,8 +10,15 @@ final class NativeMapView: UIView {
     private let navigationProvider: MapboxNavigationProvider
     private let navigationMapView: NavigationMapView
     private let navigationCore: NavigationCoreNative
+    private let initialCoordinate: CLLocationCoordinate2D
+    private let initialZoom: Double
 
-    override init(frame: CGRect) {
+    init(
+        frame: CGRect,
+        latitude: Double = -54.8070,
+        longitude: Double = -68.3047,
+        zoom: Double = 13
+    ) {
         self.navigationProvider = MapboxNavigationProvider(coreConfig: .init())
 
         let navigation = navigationProvider.navigation()
@@ -27,6 +35,8 @@ final class NativeMapView: UIView {
         )
 
         self.navigationCore = NavigationCoreNative()
+        self.initialCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        self.initialZoom = zoom
         super.init(frame: frame)
 
         setupMap()
@@ -49,6 +59,8 @@ final class NativeMapView: UIView {
         )
 
         self.navigationCore = NavigationCoreNative()
+        self.initialCoordinate = CLLocationCoordinate2D(latitude: -54.8070, longitude: -68.3047)
+        self.initialZoom = 13
         super.init(coder: coder)
 
         setupMap()
@@ -64,5 +76,9 @@ final class NativeMapView: UIView {
             navigationMapView.trailingAnchor.constraint(equalTo: trailingAnchor),
             navigationMapView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+
+        navigationMapView.mapView.mapboxMap.setCamera(
+            to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
+        )
     }
 }
