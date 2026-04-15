@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
@@ -279,15 +280,22 @@ class SheetAddressState extends State<SheetAddress> {
                                         const SizedBox(width: 12),
 
                                         // Boton para agregar parada
-                                        ElevatedButton(
+                                        CircleIcon(
+                                          icon: Icons.add, 
                                           onPressed: widget.openOptionContainer,
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.add_circle),
-                                              SizedBox(width: 8),
-                                              Text('Parada'),
-                                            ],
-                                          ),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        CircleIcon(
+                                          icon: Icons.favorite, 
+                                          onPressed: () {},
+                                        ),
+                                        SizedBox(width: 10,),
+                                        CircleIcon(
+                                          icon: Icons.close, 
+                                          onPressed: () {
+                                              _sheet?.showFirstChild();
+                                              _sheet?.collapseSheet();
+                                            },
                                         ),
                                       ],
                                     ),
@@ -417,70 +425,6 @@ class SheetAddressState extends State<SheetAddress> {
                                   const Padding(
                                     padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
                                     child: DetalleRuta(),
-                                  ),
-                                  
-                                  // Acciones para cancelar, guardar o reportar la ruta
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                                      borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(16),
-                                        bottomRight: Radius.circular(16),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 8,
-                                    ),
-                                    child: SafeArea(
-                                      top: false,
-                                      child: Row(
-                                        children: [
-                                          OutlinedButton(
-                                            style: outlineBtnStyle,
-                                            onPressed: () {
-                                              _sheet?.showFirstChild();
-                                              _sheet?.collapseSheet();
-                                            },
-                                            child: Row(
-                                              children: [
-                                                const Icon(Icons.cancel, color: Colors.black),
-                                                const SizedBox(width: 8),
-                                                Text('Cancelar', style: Theme.of(context).textTheme.labelLarge,),
-                                              ],
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          if (_showBottomActions)
-                                            OutlinedButton(
-                                              style: outlineBtnStyle,
-                                              onPressed: () {},
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.favorite, color: Colors.black),
-                                                  const SizedBox(width: 8),
-                                                  Text('Guardar', style: Theme.of(context).textTheme.labelLarge,),
-                                                ],
-                                              ),
-                                            ),
-                                          if (_showBottomActions) const SizedBox(width: 10),
-                                          if (_showBottomActions)
-                                            OutlinedButton(
-                                              style: outlineBtnStyle,
-                                              onPressed: () {},
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.report, color: Colors.black),
-                                                  const SizedBox(width: 8),
-                                                  Text('Reportar', style: Theme.of(context).textTheme.labelLarge),
-                                                ],
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
                                   ),
                                 ],
                               ),
