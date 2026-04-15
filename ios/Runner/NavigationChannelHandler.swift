@@ -73,6 +73,8 @@ final class NavigationChannelHandler {
             startNavigation(result: result)
         case "cancelNavigation":
             cancelNavigation(result: result)
+        case "centerTurnByTurnCamera":
+            centerTurnByTurnCamera(result: result)
         case "getNavigationState":
             result(runtime.navigationCore.currentPayload())
         default:
@@ -127,6 +129,14 @@ final class NavigationChannelHandler {
 
         channel.invokeMethod("onNavigationStateChanged", arguments: payload)
         result(payload)
+    }
+
+    private func centerTurnByTurnCamera(result: @escaping FlutterResult) {
+        mapView?.centerTurnByTurnCamera()
+        result([
+            "event": "navigationCameraCentered",
+            "cameraState": "following"
+        ])
     }
 
     private func routeCoordinates(arguments: Any?) -> (origin: CLLocationCoordinate2D, destination: CLLocationCoordinate2D)? {
