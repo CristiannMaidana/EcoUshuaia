@@ -84,9 +84,9 @@ final class NativeMapView: UIView, FlutterPlatformView {
     func centerTurnByTurnCamera() {
         configureTurnByTurnCamera()
         navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
-            top: 100,
+            top: 200,
             left: 16,
-            bottom: 260,
+            bottom: 60,
             right: 16
         )
         navigationMapView.navigationCamera.update(cameraState: .following)
@@ -141,9 +141,9 @@ final class NativeMapView: UIView, FlutterPlatformView {
         viewportDataSource.options.followingCameraOptions.zoomRange = 13.75...16.35
 
         let padding = UIEdgeInsets(
-            top: 100,
+            top: 200,
             left: 16,
-            bottom: 260,
+            bottom: 60,
             right: 16
         )
         viewportDataSource.currentNavigationCameraOptions.followingCamera.padding = padding
