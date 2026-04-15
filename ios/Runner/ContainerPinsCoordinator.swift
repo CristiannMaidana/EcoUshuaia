@@ -1,4 +1,5 @@
 import CoreLocation
+import Flutter
 import MapboxMaps
 import MapboxNavigationCore
 import MapboxNavigationUIKit
@@ -135,6 +136,39 @@ final class ContainerPinsCoordinator {
     }
 
     private func containerPinImage() -> UIImage {
+        if let assetImage = loadContainerAssetImage() {
+            return resizedImage(assetImage, to: CGSize(width: 34, height: 34))
+        }
+
+        return fallbackContainerPinImage()
+    }
+
+    private func loadContainerAssetImage() -> UIImage? {
+        let assetKey = FlutterDartProject.lookupKey(forAsset: "assets/icons/mapa/container.png")
+        let assetPathCandidates = [
+            Bundle.main.path(forResource: assetKey, ofType: nil),
+            Bundle.main.resourceURL?.appendingPathComponent(assetKey).path,
+            Bundle.main.resourceURL?.appendingPathComponent("Frameworks/App.framework/\(assetKey)").path
+        ]
+
+        for path in assetPathCandidates {
+            guard let path else { continue }
+            if let image = UIImage(contentsOfFile: path) {
+                return image
+            }
+        }
+
+        return nil
+    }
+
+    private func resizedImage(_ image: UIImage, to size: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+
+    private func fallbackContainerPinImage() -> UIImage {
         let size = CGSize(width: 30, height: 40)
         let renderer = UIGraphicsImageRenderer(size: size)
 
