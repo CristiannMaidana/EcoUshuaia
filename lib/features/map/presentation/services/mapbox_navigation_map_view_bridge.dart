@@ -76,6 +76,10 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('startNavigation');
   }
 
+  Future<Map<String, dynamic>?> cancelNavigation() {
+    return _invokeMap('cancelNavigation');
+  }
+
   Future<Map<String, dynamic>?> getNavigationState() {
     return _invokeMap('getNavigationState');
   }
