@@ -278,13 +278,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
     MapboxNavigationMapViewBridge bridge,
   ) async {
     _nativeNavigationBridge = bridge;
-    final payload = await bridge.previewDrivingRoute(
-      originLatitude: _routeOriginLatitude,
-      originLongitude: _routeOriginLongitude,
-      destinationLatitude: _routeDestinationLatitude,
-      destinationLongitude: _routeDestinationLongitude,
-    );
-    if (payload != null) _onNativeNavigationPayload(payload);
   }
 
   void _onNativeNavigationPayload(Map<String, dynamic> payload) {
@@ -323,43 +316,30 @@ class _MapaScreenStatePage extends State<MapaPage> {
     await _mapController?.centerOnUserOnce();
   }
 
-  Future<void> _previewNativeDrivingRoute() async {
+  Future<void> _paintNativeRoute({required String profile}) async {
     final bridge = _nativeNavigationBridge;
     if (bridge == null) return;
 
-    final payload = await bridge.previewDrivingRoute(
+    final payload = await bridge.previewRoute(
       originLatitude: _routeOriginLatitude,
       originLongitude: _routeOriginLongitude,
       destinationLatitude: _routeDestinationLatitude,
       destinationLongitude: _routeDestinationLongitude,
+      profile: profile,
     );
     if (payload != null) _onNativeNavigationPayload(payload);
   }
 
-  Future<void> _previewNativeWalkingRoute() async {
-    final bridge = _nativeNavigationBridge;
-    if (bridge == null) return;
-
-    final payload = await bridge.previewWalkingRoute(
-      originLatitude: _routeOriginLatitude,
-      originLongitude: _routeOriginLongitude,
-      destinationLatitude: _routeDestinationLatitude,
-      destinationLongitude: _routeDestinationLongitude,
-    );
-    if (payload != null) _onNativeNavigationPayload(payload);
+  Future<void> _previewNativeDrivingRoute() {
+    return _paintNativeRoute(profile: 'automobile');
   }
 
-  Future<void> _previewNativeCyclingRoute() async {
-    final bridge = _nativeNavigationBridge;
-    if (bridge == null) return;
+  Future<void> _previewNativeWalkingRoute() {
+    return _paintNativeRoute(profile: 'walking');
+  }
 
-    final payload = await bridge.previewCyclingRoute(
-      originLatitude: _routeOriginLatitude,
-      originLongitude: _routeOriginLongitude,
-      destinationLatitude: _routeDestinationLatitude,
-      destinationLongitude: _routeDestinationLongitude,
-    );
-    if (payload != null) _onNativeNavigationPayload(payload);
+  Future<void> _previewNativeCyclingRoute() {
+    return _paintNativeRoute(profile: 'cycling');
   }
 
   @override
