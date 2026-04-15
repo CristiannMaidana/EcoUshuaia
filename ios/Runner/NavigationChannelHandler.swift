@@ -76,6 +76,8 @@ final class NavigationChannelHandler {
             cancelNavigation(result: result)
         case "centerTurnByTurnCamera":
             centerTurnByTurnCamera(result: result)
+        case "setMapStyle":
+            setMapStyle(arguments: call.arguments, result: result)
         case "getNavigationState":
             result(runtime.navigationCore.currentPayload())
         default:
@@ -139,6 +141,20 @@ final class NavigationChannelHandler {
         result([
             "event": "navigationCameraCentered",
             "cameraState": "following"
+        ])
+    }
+
+    private func setMapStyle(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let styleIdentifier = args["style"] as? String else {
+            result(FlutterError(code: "invalid_style_args", message: "Map style arguments are invalid.", details: nil))
+            return
+        }
+
+        mapView?.setMapStyle(styleIdentifier)
+        result([
+            "event": "mapStyleChanged",
+            "style": styleIdentifier
         ])
     }
 
