@@ -304,6 +304,20 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (payload != null) _onNativeNavigationPayload(payload);
   }
 
+  Future<void> _centerNativeTurnByTurnCamera() async {
+    if (!_hasLocationPermission) {
+      await _retryPermission();
+      return;
+    }
+
+    if (_nativeNavigationBridge != null) {
+      await _nativeNavigationBridge!.centerTurnByTurnCamera();
+      return;
+    }
+
+    await _mapController?.centerOnUserOnce();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -560,13 +574,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
               const SizedBox(width: 20),
               FloatingActionButton(
-                onPressed: () async {
-                  if (!_hasLocationPermission) {
-                    await _retryPermission();
-                    return;
-                  }
-                  await _mapController?.centerOnUserOnce();
-                },
+                onPressed: _centerNativeTurnByTurnCamera,
                 backgroundColor: camarone500,
                 child: const Icon(
                   Icons.my_location,
