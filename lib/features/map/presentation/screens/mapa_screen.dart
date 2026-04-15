@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_reposito
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/services/mapbox_container_pins_bridge.dart';
 // import 'package:eco_ushuaia/features/map/presentation/models/native_route_info.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_navigation_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
@@ -97,6 +98,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   MapController? _mapController;
 
   MapboxNavigationMapViewBridge? _nativeNavigationBridge;
+  MapboxContainerPinsBridge? _containerPinsBridge;
   Map<String, dynamic> _nativeNavigationPayload = const <String, dynamic>{};
   bool _nativeRouteReady = false;
   bool _nativeNavigationStarted = false;
@@ -194,24 +196,27 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   // Actualiza los contenedores cuando cambia el VM
   void _onVmChanged() {
-    final ctrl = _mapController;
     final vm = _vm;
-    if (ctrl != null && vm != null) {
-      // Si hay filtro activo, cargar los contenedores filtrados, si no con todos
+    final bridge = _containerPinsBridge;
+    if (vm != null && bridge != null) {
       final data = vm.contenedorFiltrado.isNotEmpty
           ? vm.contenedorFiltrado
           : vm.items;
-      ctrl.refreshContenedores(data);
+      if (data.isEmpty) {
+        bridge.clearContainers();
+      } else {
+        bridge.setContainers(data);
+      }
     }
   }
 
   // Callback que recibe el contenedor tocado desde MapController
-  // void _onContenedorTap(Contenedor c) {
-  //   setState(() {
-  //     _contenedorSeleccionado = c;
-  //     _detailKey.currentState?.subirSheet();
-  //   });
-  // }
+  void _onContenedorTap(Contenedor c) {
+    setState(() {
+      _contenedorSeleccionado = c;
+      _detailKey.currentState?.subirSheet();
+    });
+  }
 
   // Cargar los contenedores filtrados en mapa
   void _applyFilters() {
@@ -278,6 +283,41 @@ class _MapaScreenStatePage extends State<MapaPage> {
     MapboxNavigationMapViewBridge bridge,
   ) async {
     _nativeNavigationBridge = bridge;
+  }
+
+  Future<void> _onMapboxContainerPinsReady(
+    MapboxContainerPinsBridge bridge,
+  ) async {
+    _containerPinsBridge = bridge;
+
+    final vm = context.read<ContenedorViewModel>();
+    if (_vm != vm) {
+      _vm?.removeListener(_onVmChanged);
+      _vm = vm..addListener(_onVmChanged);
+    }
+
+    final data = vm.contenedorFiltrado.isNotEmpty
+        ? vm.contenedorFiltrado
+        : vm.items;
+
+    if (data.isEmpty) {
+      await bridge.clearContainers();
+    } else {
+      await bridge.setContainers(data);
+    }
+  }
+
+  void _onMapboxContainerSelected(int idContenedor) {
+    final vm = _vm;
+    if (vm == null) return;
+
+    final candidates = <Contenedor>[...vm.items, ...vm.contenedorFiltrado];
+    for (final contenedor in candidates) {
+      if (contenedor.idContenedor == idContenedor) {
+        _onContenedorTap(contenedor);
+        return;
+      }
+    }
   }
 
   void _onNativeNavigationPayload(Map<String, dynamic> payload) {
@@ -450,6 +490,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
               longitude: -68.3047,
               zoom: 13,
               onMapReady: _onMapboxNavigationMapReady,
+              onContainerPinsReady: _onMapboxContainerPinsReady,
+              onContainerSelected: _onMapboxContainerSelected,
               onRoutePreviewed: _onNativeNavigationPayload,
               onRouteProgress: _onNativeNavigationPayload,
               onNavigationStateChanged: _onNativeNavigationPayload,
