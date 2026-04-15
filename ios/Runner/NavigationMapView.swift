@@ -94,7 +94,22 @@ final class NativeMapView: UIView, FlutterPlatformView {
 
     func releaseTurnByTurnCameraLock() {
         keepsTurnByTurnCameraCentered = false
+        navigationMapView.navigationCamera.viewportPadding = .zero
+
+        if let viewportDataSource = navigationMapView.navigationCamera.viewportDataSource as? MobileViewportDataSource {
+            viewportDataSource.options.followingCameraOptions = FollowingCameraOptions()
+        }
+
         try? navigationMapView.mapView.mapboxMap.setCameraBounds(with: CameraBoundsOptions())
+    }
+
+    func resetAfterNavigationCancel() {
+        releaseTurnByTurnCameraLock()
+        navigationMapView.removeRoutes()
+        navigationMapView.navigationCamera.update(cameraState: .idle)
+        navigationMapView.mapView.mapboxMap.setCamera(
+            to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
+        )
     }
 
     private func bindTurnByTurnCameraLock() {
