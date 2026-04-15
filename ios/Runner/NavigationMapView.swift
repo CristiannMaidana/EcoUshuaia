@@ -1,22 +1,29 @@
+import Combine
 import CoreLocation
-import UIKit
+import Flutter
+import MapboxMaps
 import MapboxNavigationCore
 import MapboxNavigationUIKit
+import UIKit
 
-final class NativeMapView: UIView {
-
-    private let navigationProvider: MapboxNavigationProvider
+final class NativeMapView: UIView, FlutterPlatformView {
+    private let runtime: NativeMapRuntime
     private let navigationMapView: NavigationMapView
-    private let navigationCore: NavigationCoreNative
+    private let initialCoordinate: CLLocationCoordinate2D
+    private let initialZoom: Double
 
-    override init(frame: CGRect) {
-        self.navigationProvider = MapboxNavigationProvider(
-            coreConfig: .init(
-                locationSource: .simulation()
-            )
-        )
+    init(
+        frame: CGRect,
+        runtime: NativeMapRuntime,
+        latitude: Double = -54.8070,
+        longitude: Double = -68.3047,
+        zoom: Double = 13
+    ) {
+        self.runtime = runtime
+        self.initialCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        self.initialZoom = zoom
 
-        let navigation = navigationProvider.navigation()
+        let navigation = runtime.navigationProvider.navigation()
 
         self.navigationMapView = NavigationMapView(
             location: navigation.locationMatching
@@ -26,27 +33,20 @@ final class NativeMapView: UIView {
                 .map(\.?.routeProgress)
                 .eraseToAnyPublisher(),
             heading: navigation.heading,
-            predictiveCacheManager: navigationProvider.predictiveCacheManager
-        )
-
-        self.navigationCore = NavigationCoreNative(
-            navigationProvider: navigationProvider
+            predictiveCacheManager: runtime.navigationProvider.predictiveCacheManager
         )
 
         super.init(frame: frame)
 
         setupMap()
-        buildInitialRoute()
     }
 
     required init?(coder: NSCoder) {
-        self.navigationProvider = MapboxNavigationProvider(
-            coreConfig: .init(
-                locationSource: .simulation()
-            )
-        )
+        self.runtime = NativeMapRuntime.shared
+        self.initialCoordinate = CLLocationCoordinate2D(latitude: -54.8070, longitude: -68.3047)
+        self.initialZoom = 13
 
-        let navigation = navigationProvider.navigation()
+        let navigation = runtime.navigationProvider.navigation()
 
         self.navigationMapView = NavigationMapView(
             location: navigation.locationMatching
@@ -56,17 +56,24 @@ final class NativeMapView: UIView {
                 .map(\.?.routeProgress)
                 .eraseToAnyPublisher(),
             heading: navigation.heading,
-            predictiveCacheManager: navigationProvider.predictiveCacheManager
-        )
-
-        self.navigationCore = NavigationCoreNative(
-            navigationProvider: navigationProvider
+            predictiveCacheManager: runtime.navigationProvider.predictiveCacheManager
         )
 
         super.init(coder: coder)
 
         setupMap()
-        buildInitialRoute()
+    }
+
+    func view() -> UIView {
+        self
+    }
+
+    func showRoute(_ navigationRoutes: NavigationRoutes) {
+        navigationMapView.showcase(navigationRoutes, animated: true)
+    }
+
+    func followActiveNavigation() {
+        navigationMapView.navigationCamera.update(cameraState: .following)
     }
 
     private func setupMap() {
@@ -79,27 +86,9 @@ final class NativeMapView: UIView {
             navigationMapView.trailingAnchor.constraint(equalTo: trailingAnchor),
             navigationMapView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-    }
 
-    private func buildInitialRoute() {
-        let origin = CLLocationCoordinate2D(latitude: -54.8272, longitude: -68.3385)
-        let destination = CLLocationCoordinate2D(latitude: -54.8061, longitude: -68.3038)
-
-        navigationCore.buildPreviewRoute(origin: origin, destination: destination) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else { return }
-
-                switch result {
-                case .failure(let error):
-                    print(error.localizedDescription)
-                case .success(let navigationRoutes):
-                    self.showRoute(navigationRoutes)
-                }
-            }
-        }
-    }
-
-    func showRoute(_ navigationRoutes: NavigationRoutes) {
-        navigationMapView.showcase(navigationRoutes, animated: false)
+        navigationMapView.mapView.mapboxMap.setCamera(
+            to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
+        )
     }
 }
