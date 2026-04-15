@@ -194,14 +194,16 @@ class _MapaScreenStatePage extends State<MapaPage> {
     });
   }
 
+  List<Contenedor> _containersForCurrentMapState(ContenedorViewModel vm) {
+    return vm.hasActiveFilters ? vm.contenedorFiltrado : vm.items;
+  }
+
   // Actualiza los contenedores cuando cambia el VM
   void _onVmChanged() {
     final vm = _vm;
     final bridge = _containerPinsBridge;
     if (vm != null && bridge != null) {
-      final data = vm.contenedorFiltrado.isNotEmpty
-          ? vm.contenedorFiltrado
-          : vm.items;
+      final data = _containersForCurrentMapState(vm);
       if (data.isEmpty) {
         bridge.clearContainers();
       } else {
@@ -221,13 +223,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
   // Cargar los contenedores filtrados en mapa
   void _applyFilters() {
     final vm = _vm;
-    final ctrl = _mapController;
-    if (vm == null || ctrl == null) return;
+    final bridge = _containerPinsBridge;
+    if (vm == null || bridge == null) return;
 
-    final data = vm.contenedorFiltrado.isNotEmpty
-        ? vm.contenedorFiltrado
-        : vm.items;
-    ctrl.applyFilter(data);
+    final data = _containersForCurrentMapState(vm);
+    if (data.isEmpty) {
+      bridge.clearContainers();
+    } else {
+      bridge.setContainers(data);
+    }
   }
 
   // Future<void> _onNativeMapReady(NativeMapViewBridge bridge) async {
@@ -296,9 +300,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _vm = vm..addListener(_onVmChanged);
     }
 
-    final data = vm.contenedorFiltrado.isNotEmpty
-        ? vm.contenedorFiltrado
-        : vm.items;
+    final data = _containersForCurrentMapState(vm);
 
     if (data.isEmpty) {
       await bridge.clearContainers();
