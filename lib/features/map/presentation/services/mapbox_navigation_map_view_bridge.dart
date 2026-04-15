@@ -63,13 +63,60 @@ class MapboxNavigationMapViewBridge {
     required double originLongitude,
     required double destinationLatitude,
     required double destinationLongitude,
+    String profile = 'automobile',
   }) {
     return _invokeMap('previewRoute', <String, dynamic>{
       'originLatitude': originLatitude,
       'originLongitude': originLongitude,
       'destinationLatitude': destinationLatitude,
       'destinationLongitude': destinationLongitude,
+      'profile': profile,
     });
+  }
+
+  Future<Map<String, dynamic>?> previewDrivingRoute({
+    required double originLatitude,
+    required double originLongitude,
+    required double destinationLatitude,
+    required double destinationLongitude,
+  }) {
+    return previewRoute(
+      originLatitude: originLatitude,
+      originLongitude: originLongitude,
+      destinationLatitude: destinationLatitude,
+      destinationLongitude: destinationLongitude,
+      profile: 'automobile',
+    );
+  }
+
+  Future<Map<String, dynamic>?> previewWalkingRoute({
+    required double originLatitude,
+    required double originLongitude,
+    required double destinationLatitude,
+    required double destinationLongitude,
+  }) {
+    return previewRoute(
+      originLatitude: originLatitude,
+      originLongitude: originLongitude,
+      destinationLatitude: destinationLatitude,
+      destinationLongitude: destinationLongitude,
+      profile: 'walking',
+    );
+  }
+
+  Future<Map<String, dynamic>?> previewCyclingRoute({
+    required double originLatitude,
+    required double originLongitude,
+    required double destinationLatitude,
+    required double destinationLongitude,
+  }) {
+    return previewRoute(
+      originLatitude: originLatitude,
+      originLongitude: originLongitude,
+      destinationLatitude: destinationLatitude,
+      destinationLongitude: destinationLongitude,
+      profile: 'cycling',
+    );
   }
 
   Future<Map<String, dynamic>?> startNavigation() {
