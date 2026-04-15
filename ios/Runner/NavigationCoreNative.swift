@@ -15,6 +15,7 @@ final class NavigationCoreNative {
     private var currentRouteProgress: RouteProgress?
     private var currentSession: Session?
     private var currentProfileIdentifier: ProfileIdentifier = .automobile
+    private var isRerouting = false
 
     var onRouteProgressPayload: (([String: Any]) -> Void)?
     var onNavigationStatePayload: (([String: Any]) -> Void)?
@@ -36,6 +37,7 @@ final class NavigationCoreNative {
         tripSession.setToIdle()
         currentRouteProgress = nil
         currentProfileIdentifier = profileIdentifier
+        isRerouting = false
 
         let options = NavigationRouteOptions(
             coordinates: [origin, destination],
@@ -78,6 +80,7 @@ final class NavigationCoreNative {
         tripSession.setToIdle()
         currentRouteProgress = nil
         currentNavigationRoutes = nil
+        isRerouting = false
 
         return [
             "event": "navigationCancelled",
@@ -85,7 +88,8 @@ final class NavigationCoreNative {
             "sessionState": "idle",
             "isNavigating": false,
             "shouldEnterRouteMode": false,
-            "hasRoute": false
+            "hasRoute": false,
+            "isRerouting": false
         ]
     }
 
@@ -109,7 +113,8 @@ final class NavigationCoreNative {
             "mode": "idle",
             "isNavigating": false,
             "shouldEnterRouteMode": false,
-            "hasRoute": false
+            "hasRoute": false,
+            "isRerouting": false
         ]
     }
 
@@ -121,8 +126,63 @@ final class NavigationCoreNative {
                     return
                 }
 
+                let previousRouteId = self.currentNavigationRoutes?.mainRoute.routeId
+                self.currentNavigationRoutes = routeProgress.navigationRoutes
                 self.currentRouteProgress = routeProgress
+
+                if self.isRerouting,
+                   let previousRouteId,
+                   previousRouteId != routeProgress.navigationRoutes.mainRoute.routeId {
+                    self.isRerouting = false
+                    self.onNavigationStatePayload?(
+                        self.routeStatePayload(
+                            event: "rerouteApplied",
+                            routes: routeProgress.navigationRoutes,
+                            isNavigating: true,
+                            shouldEnterRouteMode: true,
+                            extra: [
+                                "sessionState": self.sessionStateString(self.currentSession),
+                                "currentInstruction": "Nuevo recorrido aplicado.",
+                                "isRerouting": false
+                            ]
+                        )
+                    )
+                }
+
                 self.onRouteProgressPayload?(self.progressPayload(routeProgress))
+            }
+            .store(in: &cancellables)
+
+        tripSession.navigationRoutes
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] navigationRoutes in
+                guard let self, let navigationRoutes else {
+                    return
+                }
+
+                let previousRouteId = self.currentNavigationRoutes?.mainRoute.routeId
+                self.currentNavigationRoutes = navigationRoutes
+
+                guard self.isRerouting,
+                      let previousRouteId,
+                      previousRouteId != navigationRoutes.mainRoute.routeId else {
+                    return
+                }
+
+                self.isRerouting = false
+                self.onNavigationStatePayload?(
+                    self.routeStatePayload(
+                        event: "rerouteApplied",
+                        routes: navigationRoutes,
+                        isNavigating: true,
+                        shouldEnterRouteMode: true,
+                        extra: [
+                            "sessionState": self.sessionStateString(self.currentSession),
+                            "currentInstruction": "Nuevo recorrido aplicado.",
+                            "isRerouting": false
+                        ]
+                    )
+                )
             }
             .store(in: &cancellables)
 
@@ -133,6 +193,17 @@ final class NavigationCoreNative {
 
                 self.currentSession = session
                 self.onNavigationStatePayload?(self.sessionPayload(session))
+            }
+            .store(in: &cancellables)
+
+        navigation.rerouting
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                guard let self else { return }
+
+                if let payload = self.reroutingPayload(status) {
+                    self.onNavigationStatePayload?(payload)
+                }
             }
             .store(in: &cancellables)
 
@@ -164,6 +235,7 @@ final class NavigationCoreNative {
             "shouldEnterRouteMode": shouldEnterRouteMode,
             "hasRoute": true,
             "routeProfile": profilePayload(currentProfileIdentifier),
+            "isRerouting": isRerouting,
             "distanceRemaining": route.distance,
             "durationRemaining": route.expectedTravelTime,
             "stepIndex": 0,
@@ -192,6 +264,7 @@ final class NavigationCoreNative {
             "shouldEnterRouteMode": true,
             "hasRoute": true,
             "routeProfile": profilePayload(currentProfileIdentifier),
+            "isRerouting": isRerouting,
             "distanceRemaining": progress.distanceRemaining,
             "durationRemaining": progress.durationRemaining,
             "distanceTraveled": progress.distanceTraveled,
@@ -215,32 +288,108 @@ final class NavigationCoreNative {
     }
 
     private func sessionPayload(_ session: Session) -> [String: Any] {
-        let state: String
         let isNavigating: Bool
         let shouldEnterRouteMode: Bool
 
         switch session.state {
         case .idle:
-            state = "idle"
             isNavigating = false
             shouldEnterRouteMode = false
         case .freeDrive:
-            state = "freeDrive"
             isNavigating = false
             shouldEnterRouteMode = false
         case .activeGuidance(let activeState):
-            state = "activeGuidance.\(activeState)"
             isNavigating = true
             shouldEnterRouteMode = true
         }
 
         var payload = currentPayload()
         payload["event"] = "navigationStateChanged"
-        payload["sessionState"] = state
+        payload["sessionState"] = sessionStateString(session)
         payload["isNavigating"] = isNavigating
         payload["shouldEnterRouteMode"] = shouldEnterRouteMode
+        payload["isRerouting"] = isRerouting
         payload["mode"] = shouldEnterRouteMode ? "recorrido" : (payload["mode"] ?? "idle")
         return payload
+    }
+
+    private func routeStatePayload(
+        event: String,
+        routes: NavigationRoutes,
+        isNavigating: Bool,
+        shouldEnterRouteMode: Bool,
+        extra: [String: Any] = [:]
+    ) -> [String: Any] {
+        var payload = routePayload(
+            event: event,
+            mode: shouldEnterRouteMode ? "recorrido" : "preview",
+            routes: routes,
+            isNavigating: isNavigating,
+            shouldEnterRouteMode: shouldEnterRouteMode
+        )
+
+        for (key, value) in extra {
+            payload[key] = value
+        }
+
+        return payload
+    }
+
+    private func reroutingPayload(_ status: ReroutingStatus) -> [String: Any]? {
+        switch status.event {
+        case is ReroutingStatus.Events.FetchingRoute:
+            isRerouting = true
+
+            var payload = currentPayload()
+            payload["event"] = "reroutingStateChanged"
+            payload["mode"] = "recorrido"
+            payload["isNavigating"] = true
+            payload["shouldEnterRouteMode"] = true
+            payload["sessionState"] = sessionStateString(currentSession)
+            payload["isRerouting"] = true
+            payload["currentInstruction"] = "Recalculando recorrido..."
+            return payload
+
+        case is ReroutingStatus.Events.Interrupted:
+            isRerouting = false
+
+            var payload = currentPayload()
+            payload["event"] = "reroutingInterrupted"
+            payload["sessionState"] = sessionStateString(currentSession)
+            payload["isRerouting"] = false
+            return payload
+
+        case let failed as ReroutingStatus.Events.Failed:
+            isRerouting = false
+
+            var payload = currentPayload()
+            payload["event"] = "reroutingFailed"
+            payload["sessionState"] = sessionStateString(currentSession)
+            payload["isRerouting"] = false
+            payload["message"] = failed.error.localizedDescription
+            return payload
+
+        case is ReroutingStatus.Events.Fetched:
+            return nil
+
+        default:
+            return nil
+        }
+    }
+
+    private func sessionStateString(_ session: Session?) -> String {
+        guard let session else {
+            return "idle"
+        }
+
+        switch session.state {
+        case .idle:
+            return "idle"
+        case .freeDrive:
+            return "freeDrive"
+        case .activeGuidance(let activeState):
+            return "activeGuidance.\(activeState)"
+        }
     }
 
     private func stepsPayload(routes: NavigationRoutes) -> [[String: Any]] {
