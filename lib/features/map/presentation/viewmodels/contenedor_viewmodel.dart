@@ -21,6 +21,8 @@ class ContenedorViewModel extends ChangeNotifier {
   // Lista de contenedores filtrados para mostrar en el mapa
   List<Contenedor> _contenedorFiltrado = [];
   List<Contenedor> get contenedorFiltrado => _contenedorFiltrado;
+  bool _hasActiveFilters = false;
+  bool get hasActiveFilters => _hasActiveFilters;
 
   // Lista de contenedores filtrados por un radio
   List<Contenedor> _contenedorCercanos = [];
@@ -47,6 +49,7 @@ class ContenedorViewModel extends ChangeNotifier {
 
       // Sin filtros activos al cargar
       _contenedorFiltrado = const [];
+      _hasActiveFilters = false;
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -69,12 +72,14 @@ class ContenedorViewModel extends ChangeNotifier {
   // Limpia contendores filtrados
   void clearAllFilter() {
     _contenedorFiltrado = [];
+    _hasActiveFilters = false;
     notifyListeners();
   }
 
   // Metodo para actualizar la lista de contenedores visibles en base a lo que esta cargado
   Future<void> applyFilter(Map<dynamic, List<int>> idMap) async {
     List<Contenedor> result = [];
+    _hasActiveFilters = idMap.values.any((ids) => ids.isNotEmpty);
 
     // --- separar grupos ---
     final idsResiduos = idMap[1]; // puede ser null/empty
@@ -122,7 +127,7 @@ class ContenedorViewModel extends ChangeNotifier {
       }
     } else {
       // solo H, o nada seleccionado
-      result = unionH.isNotEmpty ? unionH : _items;
+      result = unionH.isNotEmpty ? unionH : (_hasActiveFilters ? <Contenedor>[] : _items);
     }
 
     _contenedorFiltrado = result;
