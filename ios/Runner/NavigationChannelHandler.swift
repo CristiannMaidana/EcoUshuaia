@@ -71,6 +71,8 @@ final class NavigationChannelHandler {
             await previewRoute(arguments: call.arguments, result: result)
         case "startNavigation":
             startNavigation(result: result)
+        case "cancelNavigation":
+            cancelNavigation(result: result)
         case "getNavigationState":
             result(runtime.navigationCore.currentPayload())
         default:
@@ -114,6 +116,17 @@ final class NavigationChannelHandler {
             channel.invokeMethod("onNavigationError", arguments: payload)
             result(FlutterError(code: "start_navigation_failed", message: error.localizedDescription, details: payload))
         }
+    }
+
+    private func cancelNavigation(result: @escaping FlutterResult) {
+        let payload = runtime.navigationCore.cancelNavigation()
+
+        if let routes = runtime.navigationCore.currentNavigationRoutes {
+            mapView?.showRoute(routes)
+        }
+
+        channel.invokeMethod("onNavigationStateChanged", arguments: payload)
+        result(payload)
     }
 
     private func routeCoordinates(arguments: Any?) -> (origin: CLLocationCoordinate2D, destination: CLLocationCoordinate2D)? {
