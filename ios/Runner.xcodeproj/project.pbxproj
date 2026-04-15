@@ -14,15 +14,15 @@
 		38161B132F8C0D0B00F1DEEB /* MapboxSearchUI in Frameworks */ = {isa = PBXBuildFile; productRef = 38161B122F8C0D0B00F1DEEB /* MapboxSearchUI */; };
 		383273C12F8B40C10053B7C4 /* MapboxNavigationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 383273C02F8B40C10053B7C4 /* MapboxNavigationCore */; };
 		383273C32F8B40C10053B7C4 /* MapboxNavigationUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 383273C22F8B40C10053B7C4 /* MapboxNavigationUIKit */; };
-		3867DBA32F8F1D7400D53496 /* NativeMapRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */; };
-		3867DBA12F8EEA4100D53496 /* MapboxNavigationMapViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */; };
-		4A1B2C3D4E5F60718293A4B5 /* ContainerPinsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1B2C3D4E5F60718293A4B4 /* ContainerPinsCoordinator.swift */; };
-		4A1B2C3D4E5F60718293A4B7 /* ContainerPinsChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1B2C3D4E5F60718293A4B6 /* ContainerPinsChannelHandler.swift */; };
 		3867DB9B2F8EDD2E00D53496 /* NavigationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DB9A2F8EDD2200D53496 /* NavigationMapView.swift */; };
 		3867DB9D2F8EDDAE00D53496 /* NavigationCoreNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DB9C2F8EDDA900D53496 /* NavigationCoreNative.swift */; };
 		3867DB9F2F8EDEA600D53496 /* NavigationChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DB9E2F8EDE9F00D53496 /* NavigationChannelHandler.swift */; };
+		3867DBA12F8EEA4100D53496 /* MapboxNavigationMapViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */; };
+		3867DBA32F8F1D7400D53496 /* NativeMapRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */; };
 		3868CFB32F88715F00EEE665 /* ruta.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 3868CFB22F88706300EEE665 /* ruta.gpx */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		4A1B2C3D4E5F60718293A4B5 /* ContainerPinsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1B2C3D4E5F60718293A4B4 /* ContainerPinsCoordinator.swift */; };
+		4A1B2C3D4E5F60718293A4B7 /* ContainerPinsChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1B2C3D4E5F60718293A4B6 /* ContainerPinsChannelHandler.swift */; };
 		6C64ABD6842A98C2E3F2B16E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CAE2C560006D3B152F6ACD1 /* Pods_Runner.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -61,16 +61,16 @@
 		1BE757A470B559F9220CE16E /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMapRuntime.swift; sourceTree = "<group>"; };
-		3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapboxNavigationMapViewFactory.swift; sourceTree = "<group>"; };
-		4A1B2C3D4E5F60718293A4B4 /* ContainerPinsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerPinsCoordinator.swift; sourceTree = "<group>"; };
-		4A1B2C3D4E5F60718293A4B6 /* ContainerPinsChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerPinsChannelHandler.swift; sourceTree = "<group>"; };
 		3867DB9A2F8EDD2200D53496 /* NavigationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapView.swift; sourceTree = "<group>"; };
 		3867DB9C2F8EDDA900D53496 /* NavigationCoreNative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoreNative.swift; sourceTree = "<group>"; };
 		3867DB9E2F8EDE9F00D53496 /* NavigationChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationChannelHandler.swift; sourceTree = "<group>"; };
+		3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapboxNavigationMapViewFactory.swift; sourceTree = "<group>"; };
+		3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMapRuntime.swift; sourceTree = "<group>"; };
 		3868CFB22F88706300EEE665 /* ruta.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ruta.gpx; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3CAE2C560006D3B152F6ACD1 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A1B2C3D4E5F60718293A4B4 /* ContainerPinsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerPinsCoordinator.swift; sourceTree = "<group>"; };
+		4A1B2C3D4E5F60718293A4B6 /* ContainerPinsChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerPinsChannelHandler.swift; sourceTree = "<group>"; };
 		694F7422390E7C30B584B3C4 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B9A5F93FD4AF70058BB553F /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -393,13 +393,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -414,13 +410,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
