@@ -1,5 +1,6 @@
 import CoreLocation
 import Flutter
+import MapboxDirections
 import UIKit
 
 @MainActor
@@ -88,11 +89,16 @@ final class NavigationChannelHandler {
             return
         }
 
+        let profileIdentifier = routeProfile(arguments: arguments)
+
         do {
             let payload = try await runtime.navigationCore.calculatePreviewRoute(
                 origin: points.origin,
-                destination: points.destination
+                destination: points.destination,
+                profileIdentifier: profileIdentifier
             )
+
+            mapView?.releaseTurnByTurnCameraLock()
 
             if let routes = runtime.navigationCore.currentNavigationRoutes {
                 mapView?.showRoute(routes)
@@ -149,6 +155,22 @@ final class NavigationChannelHandler {
             origin: CLLocationCoordinate2D(latitude: originLatitude, longitude: originLongitude),
             destination: CLLocationCoordinate2D(latitude: destinationLatitude, longitude: destinationLongitude)
         )
+    }
+
+    private func routeProfile(arguments: Any?) -> ProfileIdentifier {
+        guard let args = arguments as? [String: Any],
+              let rawProfile = args["profile"] as? String else {
+            return .automobile
+        }
+
+        switch rawProfile {
+        case "walking":
+            return .walking
+        case "cycling":
+            return .cycling
+        default:
+            return .automobile
+        }
     }
 
     private func errorPayload(_ error: Error) -> [String: Any] {
