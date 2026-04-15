@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 
 class MapboxNavigationMapViewBridge {
   static const String viewType = 'eco_ushuaia/mapbox_navigation_map_view';
@@ -131,6 +132,12 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('centerTurnByTurnCamera');
   }
 
+  Future<Map<String, dynamic>?> setMapStyle(MapStyle style) {
+    return _invokeMap('setMapStyle', <String, dynamic>{
+      'style': _styleId(style),
+    });
+  }
+
   Future<Map<String, dynamic>?> getNavigationState() {
     return _invokeMap('getNavigationState');
   }
@@ -155,5 +162,18 @@ class MapboxNavigationMapViewBridge {
       return Map<String, dynamic>.from(value);
     }
     return <String, dynamic>{};
+  }
+
+  static String _styleId(MapStyle style) {
+    switch (style) {
+      case MapStyle.Estandar:
+        return 'standard';
+      case MapStyle.Satelite:
+        return 'standardSatellite';
+      case MapStyle.Oscuro:
+        return 'dark';
+      case MapStyle.Terreno:
+        return 'outdoors';
+    }
   }
 }
