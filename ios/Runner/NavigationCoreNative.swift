@@ -14,6 +14,7 @@ final class NavigationCoreNative {
     private(set) var currentNavigationRoutes: NavigationRoutes?
     private var currentRouteProgress: RouteProgress?
     private var currentSession: Session?
+    private var currentProfileIdentifier: ProfileIdentifier = .automobile
 
     var onRouteProgressPayload: (([String: Any]) -> Void)?
     var onNavigationStatePayload: (([String: Any]) -> Void)?
@@ -29,14 +30,21 @@ final class NavigationCoreNative {
 
     func calculatePreviewRoute(
         origin: CLLocationCoordinate2D,
-        destination: CLLocationCoordinate2D
+        destination: CLLocationCoordinate2D,
+        profileIdentifier: ProfileIdentifier
     ) async throws -> [String: Any] {
-        let options = NavigationRouteOptions(coordinates: [origin, destination])
+        tripSession.setToIdle()
+        currentRouteProgress = nil
+        currentProfileIdentifier = profileIdentifier
+
+        let options = NavigationRouteOptions(
+            coordinates: [origin, destination],
+            profileIdentifier: profileIdentifier
+        )
         let request = navigationProvider.routingProvider().calculateRoutes(options: options)
         let navigationRoutes = try await request.value
 
         currentNavigationRoutes = navigationRoutes
-        currentRouteProgress = nil
 
         return routePayload(
             event: "routePreviewed",
@@ -155,6 +163,7 @@ final class NavigationCoreNative {
             "isNavigating": isNavigating,
             "shouldEnterRouteMode": shouldEnterRouteMode,
             "hasRoute": true,
+            "routeProfile": profilePayload(currentProfileIdentifier),
             "distanceRemaining": route.distance,
             "durationRemaining": route.expectedTravelTime,
             "stepIndex": 0,
@@ -182,6 +191,7 @@ final class NavigationCoreNative {
             "isNavigating": true,
             "shouldEnterRouteMode": true,
             "hasRoute": true,
+            "routeProfile": profilePayload(currentProfileIdentifier),
             "distanceRemaining": progress.distanceRemaining,
             "durationRemaining": progress.durationRemaining,
             "distanceTraveled": progress.distanceTraveled,
@@ -238,6 +248,17 @@ final class NavigationCoreNative {
             leg.steps.enumerated().map { stepIndex, step in
                 stepPayload(step, legIndex: legIndex, stepIndex: stepIndex)
             }
+        }
+    }
+
+    private func profilePayload(_ profileIdentifier: ProfileIdentifier) -> String {
+        switch profileIdentifier {
+        case .walking:
+            return "walking"
+        case .cycling:
+            return "cycling"
+        default:
+            return "automobile"
         }
     }
 
