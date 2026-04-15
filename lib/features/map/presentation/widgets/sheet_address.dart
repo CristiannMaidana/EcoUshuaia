@@ -182,11 +182,6 @@ class SheetAddressState extends State<SheetAddress> {
     MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
     _syncOrder(vmMapSearch);
 
-    final outlineBtnStyle = OutlinedButton.styleFrom(
-      shape: const StadiumBorder(),
-      side: BorderSide(color: Colors.grey.shade400),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-    );
 
     return SafeArea(
       top: false,
