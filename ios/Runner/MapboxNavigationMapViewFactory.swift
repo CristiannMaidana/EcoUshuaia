@@ -6,7 +6,8 @@ final class MapboxNavigationMapViewFactory: NSObject, @MainActor FlutterPlatform
     static let viewType = "eco_ushuaia/mapbox_navigation_map_view"
 
     private let binaryMessenger: FlutterBinaryMessenger
-    private var channelHandlers: [Int64: NavigationChannelHandler] = [:]
+    private var navigationChannelHandlers: [Int64: NavigationChannelHandler] = [:]
+    private var containerPinsChannelHandlers: [Int64: ContainerPinsChannelHandler] = [:]
 
     init(binaryMessenger: FlutterBinaryMessenger) {
         self.binaryMessenger = binaryMessenger
@@ -36,11 +37,16 @@ final class MapboxNavigationMapViewFactory: NSObject, @MainActor FlutterPlatform
             zoom: zoom
         )
 
-        channelHandlers[viewId] = NavigationChannelHandler(
+        navigationChannelHandlers[viewId] = NavigationChannelHandler(
             viewId: viewId,
             binaryMessenger: binaryMessenger,
             runtime: runtime,
             mapView: nativeMapView
+        )
+        containerPinsChannelHandlers[viewId] = ContainerPinsChannelHandler(
+            viewId: viewId,
+            binaryMessenger: binaryMessenger,
+            coordinator: nativeMapView.containerPinsCoordinator
         )
 
         return nativeMapView
