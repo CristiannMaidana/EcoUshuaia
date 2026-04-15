@@ -16,6 +16,9 @@ final class NavigationCoreNative {
     private var currentSession: Session?
     private var currentProfileIdentifier: ProfileIdentifier = .automobile
     private var isRerouting = false
+    private var lastEmittedProgressSignature: String?
+    private var lastProgressEmissionDate: Date = .distantPast
+    private let minimumProgressEmissionInterval: TimeInterval = 0.35
 
     var onRouteProgressPayload: (([String: Any]) -> Void)?
     var onNavigationStatePayload: (([String: Any]) -> Void)?
@@ -38,6 +41,7 @@ final class NavigationCoreNative {
         currentRouteProgress = nil
         currentProfileIdentifier = profileIdentifier
         isRerouting = false
+        resetProgressEmissionState()
 
         let options = NavigationRouteOptions(
             coordinates: [origin, destination],
@@ -62,6 +66,8 @@ final class NavigationCoreNative {
             throw NativeNavigationError.missingRoute
         }
 
+        resetProgressEmissionState()
+
         tripSession.startActiveGuidance(
             with: currentNavigationRoutes,
             startLegIndex: 0
@@ -81,6 +87,7 @@ final class NavigationCoreNative {
         currentRouteProgress = nil
         currentNavigationRoutes = nil
         isRerouting = false
+        resetProgressEmissionState()
 
         return [
             "event": "navigationCancelled",
@@ -149,7 +156,7 @@ final class NavigationCoreNative {
                     )
                 }
 
-                self.onRouteProgressPayload?(self.progressPayload(routeProgress))
+                self.emitProgressIfNeeded(routeProgress)
             }
             .store(in: &cancellables)
 
@@ -390,6 +397,69 @@ final class NavigationCoreNative {
         case .activeGuidance(let activeState):
             return "activeGuidance.\(activeState)"
         }
+    }
+
+    private func resetProgressEmissionState() {
+        lastEmittedProgressSignature = nil
+        lastProgressEmissionDate = .distantPast
+    }
+
+    private func emitProgressIfNeeded(_ progress: RouteProgress) {
+        let payload = progressPayload(progress)
+        let signature = progressSignature(from: payload)
+        let now = Date()
+
+        let enoughTimePassed =
+            now.timeIntervalSince(lastProgressEmissionDate) >= minimumProgressEmissionInterval
+
+        let didChangeMeaningfully =
+            signature != lastEmittedProgressSignature
+
+        guard enoughTimePassed || didChangeMeaningfully else {
+            return
+        }
+
+        lastProgressEmissionDate = now
+        lastEmittedProgressSignature = signature
+        onRouteProgressPayload?(payload)
+    }
+
+    private func progressSignature(from payload: [String: Any]) -> String {
+        let instruction = payload["currentInstruction"] as? String ?? ""
+        let stepIndex = payload["stepIndex"] as? Int ?? -1
+        let legIndex = payload["legIndex"] as? Int ?? -1
+
+        let distanceRemaining: Int = {
+            if let value = payload["distanceRemaining"] as? Double {
+                return Int(value.rounded())
+            }
+            if let value = payload["distanceRemaining"] as? NSNumber {
+                return Int(value.doubleValue.rounded())
+            }
+            return -1
+        }()
+
+        let durationRemaining: Int = {
+            if let value = payload["durationRemaining"] as? Double {
+                return Int(value.rounded())
+            }
+            if let value = payload["durationRemaining"] as? NSNumber {
+                return Int(value.doubleValue.rounded())
+            }
+            return -1
+        }()
+
+        let isReroutingValue: Bool = {
+            if let value = payload["isRerouting"] as? Bool {
+                return value
+            }
+            if let value = payload["isRerouting"] as? NSNumber {
+                return value.boolValue
+            }
+            return false
+        }()
+
+        return "\(legIndex)|\(stepIndex)|\(distanceRemaining)|\(durationRemaining)|\(instruction)|\(isReroutingValue)"
     }
 
     private func stepsPayload(routes: NavigationRoutes) -> [[String: Any]] {
