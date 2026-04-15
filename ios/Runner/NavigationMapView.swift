@@ -11,6 +11,8 @@ final class NativeMapView: UIView, FlutterPlatformView {
     private let navigationMapView: NavigationMapView
     private let initialCoordinate: CLLocationCoordinate2D
     private let initialZoom: Double
+    private var cancellables = Set<AnyCancellable>()
+    private var keepsTurnByTurnCameraCentered = false
 
     init(
         frame: CGRect,
@@ -39,6 +41,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         super.init(frame: frame)
 
         setupMap()
+        bindTurnByTurnCameraLock()
     }
 
     required init?(coder: NSCoder) {
@@ -62,6 +65,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         super.init(coder: coder)
 
         setupMap()
+        bindTurnByTurnCameraLock()
     }
 
     func view() -> UIView {
@@ -73,10 +77,12 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func followActiveNavigation() {
+        keepsTurnByTurnCameraCentered = true
         centerTurnByTurnCamera()
     }
 
     func centerTurnByTurnCamera() {
+        configureTurnByTurnCamera()
         navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
             top: 100,
             left: 16,
@@ -84,6 +90,51 @@ final class NativeMapView: UIView, FlutterPlatformView {
             right: 16
         )
         navigationMapView.navigationCamera.update(cameraState: .following)
+    }
+
+    func releaseTurnByTurnCameraLock() {
+        keepsTurnByTurnCameraCentered = false
+        try? navigationMapView.mapView.mapboxMap.setCameraBounds(with: CameraBoundsOptions())
+    }
+
+    private func bindTurnByTurnCameraLock() {
+        runtime.navigationProvider.navigation().routeProgress
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] routeProgressState in
+                guard let self,
+                      self.keepsTurnByTurnCameraCentered,
+                      routeProgressState?.routeProgress != nil else {
+                    return
+                }
+
+                self.centerTurnByTurnCamera()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func configureTurnByTurnCamera() {
+        guard let viewportDataSource = navigationMapView.navigationCamera.viewportDataSource as? MobileViewportDataSource else {
+            return
+        }
+
+        viewportDataSource.options.followingCameraOptions.centerUpdatesAllowed = true
+        viewportDataSource.options.followingCameraOptions.zoomUpdatesAllowed = true
+        viewportDataSource.options.followingCameraOptions.bearingUpdatesAllowed = true
+        viewportDataSource.options.followingCameraOptions.pitchUpdatesAllowed = true
+        viewportDataSource.options.followingCameraOptions.paddingUpdatesAllowed = false
+        viewportDataSource.options.followingCameraOptions.followsLocationCourse = true
+        viewportDataSource.options.followingCameraOptions.zoomRange = 13.75...16.35
+
+        let padding = UIEdgeInsets(
+            top: 100,
+            left: 16,
+            bottom: 260,
+            right: 16
+        )
+        viewportDataSource.currentNavigationCameraOptions.followingCamera.padding = padding
+        try? navigationMapView.mapView.mapboxMap.setCameraBounds(
+            with: CameraBoundsOptions(minZoom: 13.75)
+        )
     }
 
     private func setupMap() {
