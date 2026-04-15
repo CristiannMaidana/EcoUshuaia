@@ -6,6 +6,7 @@ import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 // import 'package:eco_ushuaia/features/map/presentation/models/native_route_info.dart';
+import 'package:eco_ushuaia/features/map/presentation/services/mapbox_navigation_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
 // import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
@@ -39,12 +40,19 @@ class MapaScreen extends StatelessWidget {
           create: (ctx) =>
               ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
         ),
-        ChangeNotifierProxyProvider2<UsuarioViewModel, ContenedorViewModel, UsuarioContenedoresFavoritosViewModel>(
+        ChangeNotifierProxyProvider2<
+          UsuarioViewModel,
+          ContenedorViewModel,
+          UsuarioContenedoresFavoritosViewModel
+        >(
           create: (ctx) => UsuarioContenedoresFavoritosViewModel(
             ctx.read<UsuarioContenedorFavoritosRepository>(),
           ),
-          update: (_, usuarioVm, contenedorVm, favoritosVm) =>
-              favoritosVm!..syncWithUserIdAndContenedores(usuarioVm.usuario?.idUsuario, contenedorVm.items),
+          update: (_, usuarioVm, contenedorVm, favoritosVm) => favoritosVm!
+            ..syncWithUserIdAndContenedores(
+              usuarioVm.usuario?.idUsuario,
+              contenedorVm.items,
+            ),
         ),
         ChangeNotifierProvider(
           create: (ctx) => CategoriaResiduosViewmodel(
@@ -81,6 +89,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   MapController? _mapController;
+
+
+  MapboxNavigationMapViewBridge? _nativeNavigationBridge;
+  Map<String, dynamic> _nativeNavigationPayload = const <String, dynamic>{};
+  bool _nativeRouteReady = false;
+  bool _nativeNavigationStarted = false;
   MapStyle _estiloActual = MapStyle.Estandar;
   // final ValueNotifier<NativeRouteInfo> _routeInfo =
   //     ValueNotifier<NativeRouteInfo>(
@@ -94,18 +108,22 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool _cambio = false;
 
   //Variable para manejar el tamaño del sheet
-  final GlobalKey<SheetSearchBarState> _filterKey = GlobalKey<SheetSearchBarState>();
+  final GlobalKey<SheetSearchBarState> _filterKey =
+      GlobalKey<SheetSearchBarState>();
 
-  final GlobalKey<FlotanteSheetState> _flotanteKey = GlobalKey<FlotanteSheetState>();
+  final GlobalKey<FlotanteSheetState> _flotanteKey =
+      GlobalKey<FlotanteSheetState>();
 
   //=== Variable y metodos para el SheetAddContainer ===
   double _addressLon = 0;
   double _addressLat = 0;
   Map<String, double> _userPoint = const <String, double>{'lon': 0, 'lat': 0};
 
-  final GlobalKey<SheetAddContainerState> _addContainerSheetKey = GlobalKey<SheetAddContainerState>();
+  final GlobalKey<SheetAddContainerState> _addContainerSheetKey =
+      GlobalKey<SheetAddContainerState>();
 
-  final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
+  final GlobalKey<SheetAddressState> _sheetAddressKey =
+      GlobalKey<SheetAddressState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -251,6 +269,36 @@ class _MapaScreenStatePage extends State<MapaPage> {
   //       : routeInfo;
   // }
 
+  Future<void> _onMapboxNavigationMapReady(
+    MapboxNavigationMapViewBridge bridge,
+  ) async {
+    _nativeNavigationBridge = bridge;
+    final payload = await bridge.previewRoute(
+      originLatitude: -54.8272,
+      originLongitude: -68.3385,
+      destinationLatitude: -54.8061,
+      destinationLongitude: -68.3038,
+    );
+    if (payload != null) _onNativeNavigationPayload(payload);
+  }
+
+  void _onNativeNavigationPayload(Map<String, dynamic> payload) {
+    if (!mounted) return;
+
+    setState(() {
+      _nativeNavigationPayload = payload;
+      _nativeRouteReady = payload['hasRoute'] == true;
+      _nativeNavigationStarted =
+          payload['isNavigating'] == true ||
+          payload['shouldEnterRouteMode'] == true;
+    });
+  }
+
+  Future<void> _startNativeNavigation() async {
+    final payload = await _nativeNavigationBridge?.startNavigation();
+    if (payload != null) _onNativeNavigationPayload(payload);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -354,10 +402,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
       children: [
         Stack(
           children: [
-            const MapboxNavigationMapView(
+            MapboxNavigationMapView(
               latitude: -54.8070,
               longitude: -68.3047,
               zoom: 13,
+              onMapReady: _onMapboxNavigationMapReady,
+              onRoutePreviewed: _onNativeNavigationPayload,
+              onRouteProgress: _onNativeNavigationPayload,
+              onNavigationStateChanged: _onNativeNavigationPayload,
+              onNavigationError: _onNativeNavigationPayload,
             ),
             // IosNavigationMapView(
             //   latitude: -54.8070,
@@ -396,6 +449,51 @@ class _MapaScreenStatePage extends State<MapaPage> {
             //     ),
             //   ),
             // ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _nativeNavigationPayload['currentInstruction']
+                                as String? ??
+                            'Calculando ruta nativa...',
+                      ),
+                      Text(
+                        'Distancia: ${(_nativeNavigationPayload['distanceRemaining'] as num?)?.toStringAsFixed(0) ?? "--"} m',
+                      ),
+                      Text(
+                        'ETA: ${(_nativeNavigationPayload['durationRemaining'] as num?)?.toStringAsFixed(0) ?? "--"} s',
+                      ),
+                      Text(
+                        _nativeNavigationStarted
+                            ? 'Modo recorrido activo'
+                            : 'Previsualizacion de ruta',
+                      ),
+                      if (_nativeRouteReady && !_nativeNavigationStarted)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: FilledButton(
+                            onPressed: _startNativeNavigation,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: camarone500,
+                            ),
+                            child: Text(
+                              'Iniciar recorrido',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
         const SizedBox.expand(),
