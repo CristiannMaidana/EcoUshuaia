@@ -14,6 +14,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
     private let initialZoom: Double
     private var cancellables = Set<AnyCancellable>()
     private var keepsTurnByTurnCameraCentered = false
+    private var isUsingNavigationPuck: Bool?
 
     init(
         frame: CGRect,
@@ -27,14 +28,19 @@ final class NativeMapView: UIView, FlutterPlatformView {
         self.initialZoom = zoom
 
         let navigation = runtime.navigationProvider.navigation()
+        let routeProgress = navigation.routeProgress
+            .map(\.?.routeProgress)
+            .eraseToAnyPublisher()
+        let location = navigation.locationMatching
+            .combineLatest(routeProgress)
+            .map { state, routeProgress in
+                routeProgress == nil ? state.location : state.enhancedLocation
+            }
+            .eraseToAnyPublisher()
 
         self.navigationMapView = NavigationMapView(
-            location: navigation.locationMatching
-                .map(\.mapMatchingResult.enhancedLocation)
-                .eraseToAnyPublisher(),
-            routeProgress: navigation.routeProgress
-                .map(\.?.routeProgress)
-                .eraseToAnyPublisher(),
+            location: location,
+            routeProgress: routeProgress,
             heading: navigation.heading,
             predictiveCacheManager: runtime.navigationProvider.predictiveCacheManager
         )
@@ -54,14 +60,19 @@ final class NativeMapView: UIView, FlutterPlatformView {
         self.initialZoom = 13
 
         let navigation = runtime.navigationProvider.navigation()
+        let routeProgress = navigation.routeProgress
+            .map(\.?.routeProgress)
+            .eraseToAnyPublisher()
+        let location = navigation.locationMatching
+            .combineLatest(routeProgress)
+            .map { state, routeProgress in
+                routeProgress == nil ? state.location : state.enhancedLocation
+            }
+            .eraseToAnyPublisher()
 
         self.navigationMapView = NavigationMapView(
-            location: navigation.locationMatching
-                .map(\.mapMatchingResult.enhancedLocation)
-                .eraseToAnyPublisher(),
-            routeProgress: navigation.routeProgress
-                .map(\.?.routeProgress)
-                .eraseToAnyPublisher(),
+            location: location,
+            routeProgress: routeProgress,
             heading: navigation.heading,
             predictiveCacheManager: runtime.navigationProvider.predictiveCacheManager
         )
@@ -123,9 +134,14 @@ final class NativeMapView: UIView, FlutterPlatformView {
         runtime.navigationProvider.navigation().routeProgress
             .receive(on: DispatchQueue.main)
             .sink { [weak self] routeProgressState in
-                guard let self,
-                      self.keepsTurnByTurnCameraCentered,
-                      routeProgressState?.routeProgress != nil else {
+                guard let self else {
+                    return
+                }
+
+                let isNavigating = routeProgressState?.routeProgress != nil
+                self.configureUserLocationPuck(isNavigating: isNavigating)
+
+                guard self.keepsTurnByTurnCameraCentered, isNavigating else {
                     return
                 }
 
@@ -171,14 +187,21 @@ final class NativeMapView: UIView, FlutterPlatformView {
             navigationMapView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
-        configureUserLocationPuck()
+        configureUserLocationPuck(isNavigating: false)
         navigationMapView.mapView.mapboxMap.setCamera(
             to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
         )
     }
 
-    private func configureUserLocationPuck() {
-        navigationMapView.puckType = .puck2D(.makeDefault(showBearing: true))
+    private func configureUserLocationPuck(isNavigating: Bool) {
+        guard isUsingNavigationPuck != isNavigating else {
+            return
+        }
+
+        isUsingNavigationPuck = isNavigating
+        navigationMapView.puckType = isNavigating
+            ? .puck3D(.navigationDefault)
+            : .puck2D(.makeDefault(showBearing: true))
         navigationMapView.puckBearing = .course
     }
 }
