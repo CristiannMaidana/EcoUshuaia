@@ -66,6 +66,32 @@ final class NavigationCoreNative {
         )
     }
 
+    func cancelNavigation() -> [String: Any] {
+        tripSession.setToIdle()
+        currentRouteProgress = nil
+
+        guard let currentNavigationRoutes else {
+            return [
+                "event": "navigationCancelled",
+                "mode": "idle",
+                "sessionState": "idle",
+                "isNavigating": false,
+                "shouldEnterRouteMode": false,
+                "hasRoute": false
+            ]
+        }
+
+        var payload = routePayload(
+            event: "navigationCancelled",
+            mode: "preview",
+            routes: currentNavigationRoutes,
+            isNavigating: false,
+            shouldEnterRouteMode: false
+        )
+        payload["sessionState"] = "idle"
+        return payload
+    }
+
     func currentPayload() -> [String: Any] {
         if let progress = currentRouteProgress {
             return progressPayload(progress)
