@@ -52,7 +52,6 @@ struct ContainerPinPayload {
 final class ContainerPinsCoordinator {
     private static let annotationManagerId = "container-pins-manager"
     private static let annotationImageName = "container-pin-marker"
-    private static let standardStyleSlot = "middle"
 
     private weak var navigationMapView: NavigationMapView?
     private var pointAnnotationManager: PointAnnotationManager?
@@ -106,7 +105,6 @@ final class ContainerPinsCoordinator {
         let manager = navigationMapView.mapView.annotations.makePointAnnotationManager(
             id: Self.annotationManagerId
         )
-        manager.slot = Self.standardStyleSlot
         manager.iconAllowOverlap = true
         manager.iconIgnorePlacement = true
         manager.iconAnchor = .bottom
