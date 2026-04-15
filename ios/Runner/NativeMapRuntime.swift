@@ -11,7 +11,7 @@ final class NativeMapRuntime {
     private init() {
         let provider = MapboxNavigationProvider(
             coreConfig: .init(
-                locationSource: .simulation()
+                locationSource: .live
             )
         )
 
