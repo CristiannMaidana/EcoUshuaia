@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 import MapboxNavigationCore
 
@@ -11,7 +12,15 @@ final class NativeMapRuntime {
     private init() {
         let provider = MapboxNavigationProvider(
             coreConfig: .init(
-                locationSource: .live
+                // Produccion o pruebas con ubicacion real.
+                //locationSource: .live
+                // Para testear simulacion
+                 locationSource: .simulation(
+                     initialLocation: CLLocation(
+                         latitude: -54.8153,
+                         longitude: -68.3257
+                     )
+                 )
             )
         )
 
