@@ -9,6 +9,7 @@ import UIKit
 final class NativeMapView: UIView, FlutterPlatformView {
     private let runtime: NativeMapRuntime
     private let navigationMapView: NavigationMapView
+    let containerPinsCoordinator: ContainerPinsCoordinator
     private let initialCoordinate: CLLocationCoordinate2D
     private let initialZoom: Double
     private var cancellables = Set<AnyCancellable>()
@@ -37,6 +38,9 @@ final class NativeMapView: UIView, FlutterPlatformView {
             heading: navigation.heading,
             predictiveCacheManager: runtime.navigationProvider.predictiveCacheManager
         )
+        self.containerPinsCoordinator = ContainerPinsCoordinator(
+            navigationMapView: navigationMapView
+        )
 
         super.init(frame: frame)
 
@@ -60,6 +64,9 @@ final class NativeMapView: UIView, FlutterPlatformView {
                 .eraseToAnyPublisher(),
             heading: navigation.heading,
             predictiveCacheManager: runtime.navigationProvider.predictiveCacheManager
+        )
+        self.containerPinsCoordinator = ContainerPinsCoordinator(
+            navigationMapView: navigationMapView
         )
 
         super.init(coder: coder)
