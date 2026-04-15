@@ -457,7 +457,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
     setState(() => _estiloActual = estilo);
 
-    _mapController?.setStyle(estilo);
+    await _nativeNavigationBridge?.setMapStyle(estilo);
   }
 
   @override
