@@ -73,6 +73,16 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func followActiveNavigation() {
+        centerTurnByTurnCamera()
+    }
+
+    func centerTurnByTurnCamera() {
+        navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
+            top: 100,
+            left: 16,
+            bottom: 260,
+            right: 16
+        )
         navigationMapView.navigationCamera.update(cameraState: .following)
     }
 
