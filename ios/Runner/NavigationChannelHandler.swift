@@ -122,11 +122,7 @@ final class NavigationChannelHandler {
 
     private func cancelNavigation(result: @escaping FlutterResult) {
         let payload = runtime.navigationCore.cancelNavigation()
-        mapView?.releaseTurnByTurnCameraLock()
-
-        if let routes = runtime.navigationCore.currentNavigationRoutes {
-            mapView?.showRoute(routes)
-        }
+        mapView?.resetAfterNavigationCancel()
 
         channel.invokeMethod("onNavigationStateChanged", arguments: payload)
         result(payload)
