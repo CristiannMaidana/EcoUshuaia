@@ -99,6 +99,10 @@ final class NativeMapView: UIView, FlutterPlatformView {
         centerTurnByTurnCamera()
     }
 
+    func setMapStyle(_ styleIdentifier: String) {
+        navigationMapView.mapView.mapboxMap.mapStyle = mapStyle(for: styleIdentifier)
+    }
+
     func centerTurnByTurnCamera() {
         configureTurnByTurnCamera()
         navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
@@ -203,5 +207,18 @@ final class NativeMapView: UIView, FlutterPlatformView {
             ? .puck3D(.navigationDefault)
             : .puck2D(.makeDefault(showBearing: true))
         navigationMapView.puckBearing = .course
+    }
+
+    private func mapStyle(for styleIdentifier: String) -> MapboxMaps.MapStyle {
+        switch styleIdentifier {
+        case "standardSatellite":
+            return .standardSatellite
+        case "dark":
+            return .dark
+        case "outdoors":
+            return .outdoors
+        default:
+            return .standard
+        }
     }
 }
