@@ -160,6 +160,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     private func setupMap() {
+        runtime.navigationProvider.tripSession().startFreeDrive()
         navigationMapView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(navigationMapView)
 
@@ -170,8 +171,14 @@ final class NativeMapView: UIView, FlutterPlatformView {
             navigationMapView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
+        configureUserLocationPuck()
         navigationMapView.mapView.mapboxMap.setCamera(
             to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
         )
+    }
+
+    private func configureUserLocationPuck() {
+        navigationMapView.puckType = .puck2D(.makeDefault(showBearing: true))
+        navigationMapView.puckBearing = .course
     }
 }
