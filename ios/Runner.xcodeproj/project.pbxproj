@@ -14,6 +14,7 @@
 		38161B132F8C0D0B00F1DEEB /* MapboxSearchUI in Frameworks */ = {isa = PBXBuildFile; productRef = 38161B122F8C0D0B00F1DEEB /* MapboxSearchUI */; };
 		383273C12F8B40C10053B7C4 /* MapboxNavigationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 383273C02F8B40C10053B7C4 /* MapboxNavigationCore */; };
 		383273C32F8B40C10053B7C4 /* MapboxNavigationUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 383273C22F8B40C10053B7C4 /* MapboxNavigationUIKit */; };
+		3867DBA32F8F1D7400D53496 /* NativeMapRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */; };
 		3867DBA12F8EEA4100D53496 /* MapboxNavigationMapViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */; };
 		3867DB9B2F8EDD2E00D53496 /* NavigationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DB9A2F8EDD2200D53496 /* NavigationMapView.swift */; };
 		3867DB9D2F8EDDAE00D53496 /* NavigationCoreNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3867DB9C2F8EDDA900D53496 /* NavigationCoreNative.swift */; };
@@ -58,6 +59,7 @@
 		1BE757A470B559F9220CE16E /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMapRuntime.swift; sourceTree = "<group>"; };
 		3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapboxNavigationMapViewFactory.swift; sourceTree = "<group>"; };
 		3867DB9A2F8EDD2200D53496 /* NavigationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMapView.swift; sourceTree = "<group>"; };
 		3867DB9C2F8EDDA900D53496 /* NavigationCoreNative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoreNative.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				3867DBA02F8EEA3A00D53496 /* MapboxNavigationMapViewFactory.swift */,
+				3867DBA22F8F1D6F00D53496 /* NativeMapRuntime.swift */,
 				3867DB9E2F8EDE9F00D53496 /* NavigationChannelHandler.swift */,
 				3867DB9C2F8EDDA900D53496 /* NavigationCoreNative.swift */,
 				3867DB9A2F8EDD2200D53496 /* NavigationMapView.swift */,
@@ -434,6 +437,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				3867DBA32F8F1D7400D53496 /* NativeMapRuntime.swift in Sources */,
 				3867DB9D2F8EDDAE00D53496 /* NavigationCoreNative.swift in Sources */,
 				3867DBA12F8EEA4100D53496 /* MapboxNavigationMapViewFactory.swift in Sources */,
 				3867DB9F2F8EDEA600D53496 /* NavigationChannelHandler.swift in Sources */,
