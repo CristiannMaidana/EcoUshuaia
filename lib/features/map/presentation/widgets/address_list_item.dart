@@ -19,14 +19,14 @@ class AddressListItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(26),
         side: BorderSide(color: Colors.grey.shade300),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
 
         leading: CircleAvatar(
-          radius: 18,
+          radius: 20,
           backgroundColor: Colors.green.shade100,
           child: const Icon(Icons.place, color: Colors.green),
         ),
