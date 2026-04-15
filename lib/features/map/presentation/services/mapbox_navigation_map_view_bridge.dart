@@ -80,6 +80,10 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('cancelNavigation');
   }
 
+  Future<Map<String, dynamic>?> centerTurnByTurnCamera() {
+    return _invokeMap('centerTurnByTurnCamera');
+  }
+
   Future<Map<String, dynamic>?> getNavigationState() {
     return _invokeMap('getNavigationState');
   }
