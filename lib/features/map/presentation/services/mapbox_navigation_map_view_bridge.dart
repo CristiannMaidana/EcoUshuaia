@@ -1,5 +1,18 @@
+import 'package:flutter/services.dart';
+
 class MapboxNavigationMapViewBridge {
   static const String viewType = 'eco_ushuaia/mapbox_navigation_map_view';
+  static const String _channelPrefix = 'eco_ushuaia/mapbox_navigation_map_view';
+
+  final MethodChannel _channel;
+
+  MapboxNavigationMapViewBridge._(this._channel);
+
+  factory MapboxNavigationMapViewBridge.fromViewId(int viewId) {
+    return MapboxNavigationMapViewBridge._(
+      MethodChannel('$_channelPrefix/$viewId'),
+    );
+  }
 
   static Map<String, dynamic> creationParams({
     required double latitude,
@@ -11,5 +24,81 @@ class MapboxNavigationMapViewBridge {
       'longitude': longitude,
       'zoom': zoom,
     };
+  }
+
+  void setEventHandlers({
+    ValueChanged<Map<String, dynamic>>? onRoutePreviewed,
+    ValueChanged<Map<String, dynamic>>? onRouteProgress,
+    ValueChanged<Map<String, dynamic>>? onNavigationStateChanged,
+    ValueChanged<Map<String, dynamic>>? onNavigationError,
+  }) {
+    _channel.setMethodCallHandler((call) async {
+      final payload = _payload(call.arguments);
+
+      switch (call.method) {
+        case 'onRoutePreviewed':
+          onRoutePreviewed?.call(payload);
+          return null;
+        case 'onRouteProgress':
+          onRouteProgress?.call(payload);
+          return null;
+        case 'onNavigationStateChanged':
+          onNavigationStateChanged?.call(payload);
+          return null;
+        case 'onNavigationError':
+          onNavigationError?.call(payload);
+          return null;
+        default:
+          return null;
+      }
+    });
+  }
+
+  void clearEventHandlers() {
+    _channel.setMethodCallHandler(null);
+  }
+
+  Future<Map<String, dynamic>?> previewRoute({
+    required double originLatitude,
+    required double originLongitude,
+    required double destinationLatitude,
+    required double destinationLongitude,
+  }) {
+    return _invokeMap('previewRoute', <String, dynamic>{
+      'originLatitude': originLatitude,
+      'originLongitude': originLongitude,
+      'destinationLatitude': destinationLatitude,
+      'destinationLongitude': destinationLongitude,
+    });
+  }
+
+  Future<Map<String, dynamic>?> startNavigation() {
+    return _invokeMap('startNavigation');
+  }
+
+  Future<Map<String, dynamic>?> getNavigationState() {
+    return _invokeMap('getNavigationState');
+  }
+
+  Future<Map<String, dynamic>?> _invokeMap(
+    String method, [
+    Map<String, dynamic>? args,
+  ]) async {
+    try {
+      final result = await _channel.invokeMapMethod<String, dynamic>(
+        method,
+        args,
+      );
+      return result == null ? null : Map<String, dynamic>.from(result);
+    } on MissingPluginException {
+      return null;
+    }
+  }
+
+  static Map<String, dynamic> _payload(Object? value) {
+    if (value is Map) {
+      return Map<String, dynamic>.from(value);
+    }
+    return <String, dynamic>{};
   }
 }
