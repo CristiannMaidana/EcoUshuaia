@@ -299,6 +299,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (payload != null) _onNativeNavigationPayload(payload);
   }
 
+  Future<void> _cancelNativeNavigation() async {
+    final payload = await _nativeNavigationBridge?.cancelNavigation();
+    if (payload != null) _onNativeNavigationPayload(payload);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -485,6 +490,20 @@ class _MapaScreenStatePage extends State<MapaPage> {
                             ),
                             child: Text(
                               'Iniciar recorrido',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
+                        ),
+                      if (_nativeNavigationStarted)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: FilledButton(
+                            onPressed: _cancelNativeNavigation,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            child: Text(
+                              'Cancelar recorrido',
                               style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ),
