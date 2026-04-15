@@ -85,11 +85,16 @@ class MapaPage extends StatefulWidget {
 }
 
 class _MapaScreenStatePage extends State<MapaPage> {
-  final GlobalKey<ContainerDetailState> _detailKey = GlobalKey<ContainerDetailState>();
+  static const double _routeOriginLatitude = -54.8272;
+  static const double _routeOriginLongitude = -68.3385;
+  static const double _routeDestinationLatitude = -54.8061;
+  static const double _routeDestinationLongitude = -68.3038;
+
+  final GlobalKey<ContainerDetailState> _detailKey =
+      GlobalKey<ContainerDetailState>();
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   MapController? _mapController;
-
 
   MapboxNavigationMapViewBridge? _nativeNavigationBridge;
   Map<String, dynamic> _nativeNavigationPayload = const <String, dynamic>{};
@@ -273,11 +278,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
     MapboxNavigationMapViewBridge bridge,
   ) async {
     _nativeNavigationBridge = bridge;
-    final payload = await bridge.previewRoute(
-      originLatitude: -54.8272,
-      originLongitude: -68.3385,
-      destinationLatitude: -54.8061,
-      destinationLongitude: -68.3038,
+    final payload = await bridge.previewDrivingRoute(
+      originLatitude: _routeOriginLatitude,
+      originLongitude: _routeOriginLongitude,
+      destinationLatitude: _routeDestinationLatitude,
+      destinationLongitude: _routeDestinationLongitude,
     );
     if (payload != null) _onNativeNavigationPayload(payload);
   }
@@ -316,6 +321,45 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
 
     await _mapController?.centerOnUserOnce();
+  }
+
+  Future<void> _previewNativeDrivingRoute() async {
+    final bridge = _nativeNavigationBridge;
+    if (bridge == null) return;
+
+    final payload = await bridge.previewDrivingRoute(
+      originLatitude: _routeOriginLatitude,
+      originLongitude: _routeOriginLongitude,
+      destinationLatitude: _routeDestinationLatitude,
+      destinationLongitude: _routeDestinationLongitude,
+    );
+    if (payload != null) _onNativeNavigationPayload(payload);
+  }
+
+  Future<void> _previewNativeWalkingRoute() async {
+    final bridge = _nativeNavigationBridge;
+    if (bridge == null) return;
+
+    final payload = await bridge.previewWalkingRoute(
+      originLatitude: _routeOriginLatitude,
+      originLongitude: _routeOriginLongitude,
+      destinationLatitude: _routeDestinationLatitude,
+      destinationLongitude: _routeDestinationLongitude,
+    );
+    if (payload != null) _onNativeNavigationPayload(payload);
+  }
+
+  Future<void> _previewNativeCyclingRoute() async {
+    final bridge = _nativeNavigationBridge;
+    if (bridge == null) return;
+
+    final payload = await bridge.previewCyclingRoute(
+      originLatitude: _routeOriginLatitude,
+      originLongitude: _routeOriginLongitude,
+      destinationLatitude: _routeDestinationLatitude,
+      destinationLongitude: _routeDestinationLongitude,
+    );
+    if (payload != null) _onNativeNavigationPayload(payload);
   }
 
   @override
@@ -494,6 +538,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
                             ? 'Modo recorrido activo'
                             : 'Previsualizacion de ruta',
                       ),
+                      Text(
+                        'Perfil: ${(_nativeNavigationPayload['routeProfile'] as String?) ?? 'automobile'}',
+                      ),
                       if (_nativeRouteReady && !_nativeNavigationStarted)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
@@ -541,7 +588,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text('Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
+                      child: Text(
+                        'Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white),
                       ),
@@ -552,7 +600,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
                       style: FilledButton.styleFrom(
                         backgroundColor: camarone500,
                       ),
-                      child: Text('Conceder permiso',
+                      child: Text(
+                        'Conceder permiso',
                         style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ),
@@ -565,22 +614,50 @@ class _MapaScreenStatePage extends State<MapaPage> {
         Positioned(
           right: 24,
           bottom: 110,
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              FloatingActionButton(
-                onPressed: () => _mostrarOpciones(context),
+              FloatingActionButton.small(
+                heroTag: 'fab-route-car',
+                onPressed: _previewNativeDrivingRoute,
                 backgroundColor: camarone500,
-                child: Image.asset('assets/icons/mapa/maps-style.png'),
+                child: const Icon(Icons.directions_car, color: Colors.black),
               ),
-              const SizedBox(width: 20),
-              FloatingActionButton(
-                onPressed: _centerNativeTurnByTurnCamera,
+              const SizedBox(height: 12),
+              FloatingActionButton.small(
+                heroTag: 'fab-route-bike',
+                onPressed: _previewNativeCyclingRoute,
                 backgroundColor: camarone500,
-                child: const Icon(
-                  Icons.my_location,
-                  color: Colors.black,
-                  size: 32,
-                ),
+                child: const Icon(Icons.directions_bike, color: Colors.black),
+              ),
+              const SizedBox(height: 12),
+              FloatingActionButton.small(
+                heroTag: 'fab-route-walk',
+                onPressed: _previewNativeWalkingRoute,
+                backgroundColor: camarone500,
+                child: const Icon(Icons.directions_walk, color: Colors.black),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  FloatingActionButton(
+                    heroTag: 'fab-map-style',
+                    onPressed: () => _mostrarOpciones(context),
+                    backgroundColor: camarone500,
+                    child: Image.asset('assets/icons/mapa/maps-style.png'),
+                  ),
+                  const SizedBox(width: 20),
+                  FloatingActionButton(
+                    heroTag: 'fab-center-camera',
+                    onPressed: _centerNativeTurnByTurnCamera,
+                    backgroundColor: camarone500,
+                    child: const Icon(
+                      Icons.my_location,
+                      color: Colors.black,
+                      size: 32,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
