@@ -571,27 +571,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              FloatingActionButton.small(
-                heroTag: 'fab-route-car',
-                onPressed: _previewNativeDrivingRoute,
-                backgroundColor: camarone500,
-                child: const Icon(Icons.directions_car, color: Colors.black),
-              ),
-              const SizedBox(height: 12),
-              FloatingActionButton.small(
-                heroTag: 'fab-route-bike',
-                onPressed: _previewNativeCyclingRoute,
-                backgroundColor: camarone500,
-                child: const Icon(Icons.directions_bike, color: Colors.black),
-              ),
-              const SizedBox(height: 12),
-              FloatingActionButton.small(
-                heroTag: 'fab-route-walk',
-                onPressed: _previewNativeWalkingRoute,
-                backgroundColor: camarone500,
-                child: const Icon(Icons.directions_walk, color: Colors.black),
-              ),
-              const SizedBox(height: 20),
               Row(
                 children: [
                   FloatingActionButton(
