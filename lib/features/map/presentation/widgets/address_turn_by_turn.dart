@@ -26,13 +26,13 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     }
 
     final instruction = widget.navigationPayload['currentInstruction'] as String? ?? 'Ruta lista.';
-    final distanceRemaining = _numberValue(widget.navigationPayload['distanceRemaining']);
     final durationRemaining = _numberValue(widget.navigationPayload['durationRemaining']);
     final maneuver = _maneuverPayload(widget.navigationPayload);
+    final maneuverDistance = _maneuverDistance(widget.navigationPayload, maneuver);
 
     return Container(
       width: double.infinity,
-      height: 100,
+      height: 120,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -51,8 +51,8 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
-            _maneuverIcon(maneuver),
-            size: 70,
+            _maneuverIcon(maneuver, instruction),
+            size: 50,
             color: Colors.blueAccent[400],
           ),
           const SizedBox(width: 12),
@@ -62,16 +62,17 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                  '${_metersText(maneuverDistance)} ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
                   instruction,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
-                Text('Distancia: ${_metersText(distanceRemaining)}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Text('ETA: ${_secondsText(durationRemaining)}',
+                Text(
+                  'Tiempo: ${_minutesText(durationRemaining)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
@@ -115,12 +116,13 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     return hasManeuverData ? maneuver : null;
   }
 
-  IconData _maneuverIcon(Map<String, dynamic> maneuver) {
+  IconData _maneuverIcon(Map<String, dynamic> maneuver, String instruction) {
     final type = _maneuverString(maneuver, 'maneuverType').toLowerCase();
     final direction = _maneuverString(
       maneuver,
       'maneuverDirection',
     ).toLowerCase();
+    final normalizedInstruction = instruction.trim().toLowerCase();
 
     if (type.contains('arrive') || type.contains('destination')) {
       return Icons.flag;
@@ -149,11 +151,32 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     }
     if (type.contains('depart') ||
         type.contains('continue') ||
-        direction.contains('straight')) {
+        direction.contains('straight') ||
+        normalizedInstruction.contains('derecho') ||
+        normalizedInstruction.contains('recto') ||
+        normalizedInstruction.contains('straight')) {
       return Icons.straight;
     }
 
     return Icons.directions;
+  }
+
+  num? _maneuverDistance(
+    Map<String, dynamic> payload,
+    Map<String, dynamic> maneuver,
+  ) {
+    final currentVisualInstruction = payload['currentVisualInstruction'];
+    if (currentVisualInstruction is Map) {
+      final distanceAlongStep = _numberValue(
+        currentVisualInstruction['distanceAlongStep'],
+      );
+      if (distanceAlongStep != null) return distanceAlongStep;
+    }
+
+    final maneuverDistance = _numberValue(maneuver['distance']);
+    if (maneuverDistance != null) return maneuverDistance;
+
+    return _numberValue(payload['stepDistanceRemaining']);
   }
 
   String _maneuverString(Map<String, dynamic> maneuver, String key) {
@@ -172,8 +195,12 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     return '${meters.round()} m';
   }
 
-  String _secondsText(num? seconds) {
-    if (seconds == null) return '-- s';
-    return '${seconds.round()} s';
+  String _minutesText(num? seconds) {
+    if (seconds == null) return '-- min';
+
+    final minutes = seconds / 60;
+    if (minutes > 0 && minutes < 1) return '1 min';
+
+    return '${minutes.round()} min';
   }
 }
