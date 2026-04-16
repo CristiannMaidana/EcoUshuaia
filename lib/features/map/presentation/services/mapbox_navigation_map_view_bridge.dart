@@ -132,6 +132,16 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('centerTurnByTurnCamera');
   }
 
+  Future<Map<String, dynamic>?> updatePreviewSheetInset({
+    required double height,
+    required String state,
+  }) {
+    return _invokeMap('updatePreviewSheetInset', <String, dynamic>{
+      'height': height,
+      'state': state,
+    });
+  }
+
   Future<Map<String, dynamic>?> setMapStyle(MapStyle style) {
     return _invokeMap('setMapStyle', <String, dynamic>{
       'style': _styleId(style),
