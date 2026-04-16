@@ -37,7 +37,7 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.hasRoute) {
+    if (!widget.hasRoute || !widget.isNavigating) {
       return const SizedBox.shrink();
     }
 
