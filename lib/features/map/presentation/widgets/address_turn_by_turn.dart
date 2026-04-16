@@ -19,6 +19,22 @@ class AddressTurnByTurn extends StatefulWidget {
 }
 
 class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
+  num? _totalDistance;
+  num? _totalDuration;
+  String? _routeSignature;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncRouteTotals();
+  }
+
+  @override
+  void didUpdateWidget(covariant AddressTurnByTurn oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncRouteTotals();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.hasRoute) {
@@ -26,9 +42,14 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     }
 
     final instruction = widget.navigationPayload['currentInstruction'] as String? ?? 'Ruta lista.';
-    final durationRemaining = _numberValue(widget.navigationPayload['durationRemaining']);
     final maneuver = _maneuverPayload(widget.navigationPayload);
     final maneuverDistance = _maneuverDistance(widget.navigationPayload, maneuver);
+    final totalDistance =
+        _totalDistance ??
+        _numberValue(widget.navigationPayload['distanceRemaining']);
+    final totalDuration =
+        _totalDuration ??
+        _numberValue(widget.navigationPayload['durationRemaining']);
 
     return Container(
       width: double.infinity,
@@ -62,7 +83,7 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${_metersText(maneuverDistance)} ',
+                  'Indicación: ${_distanceText(maneuverDistance)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
@@ -72,7 +93,7 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  'Tiempo: ${_minutesText(durationRemaining)}',
+                  'Total: ${_distanceText(totalDistance)} · ${_minutesText(totalDuration)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
@@ -89,7 +110,58 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     );
   }
 
-//Helper para extraer el payload de maniobra relevante, priorizando currentVisualInstruction, luego nextManeuver, y finalmente currentStep, para asegurar que se muestre la información de maniobra más precisa y actualizada posible en la interfaz de navegación paso a paso.
+  void _syncRouteTotals() {
+    if (!widget.hasRoute) {
+      _totalDistance = null;
+      _totalDuration = null;
+      _routeSignature = null;
+      return;
+    }
+
+    final nextSignature = _routeSignatureFromPayload(widget.navigationPayload);
+    final isNewRoute =
+        nextSignature != null && nextSignature != _routeSignature;
+
+    if (!isNewRoute && _totalDistance != null && _totalDuration != null) {
+      return;
+    }
+
+    _routeSignature = nextSignature ?? _routeSignature;
+    _totalDistance =
+        _numberValue(widget.navigationPayload['distanceRemaining']) ??
+        _totalDistance;
+    _totalDuration =
+        _numberValue(widget.navigationPayload['durationRemaining']) ??
+        _totalDuration;
+  }
+
+  String? _routeSignatureFromPayload(Map<String, dynamic> payload) {
+    final steps = payload['steps'];
+    if (steps is! List || steps.isEmpty) return null;
+
+    final firstStep = steps.first;
+    final lastStep = steps.last;
+
+    return [
+      payload['routeProfile'],
+      steps.length,
+      _stepCoordinateSignature(firstStep),
+      _stepCoordinateSignature(lastStep),
+      _numberValue(payload['distanceRemaining'])?.round(),
+      _numberValue(payload['durationRemaining'])?.round(),
+    ].join('|');
+  }
+
+  String _stepCoordinateSignature(Object? step) {
+    if (step is! Map) return '';
+
+    final latitude = _numberValue(step['latitude']);
+    final longitude = _numberValue(step['longitude']);
+
+    return '${latitude?.toStringAsFixed(5)},${longitude?.toStringAsFixed(5)}';
+  }
+
+  //Helper para extraer el payload de maniobra relevante, priorizando currentVisualInstruction, luego nextManeuver, y finalmente currentStep, para asegurar que se muestre la información de maniobra más precisa y actualizada posible en la interfaz de navegación paso a paso.
   Map<String, dynamic> _maneuverPayload(Map<String, dynamic> payload) {
     final currentVisualInstruction = _usableManeuverPayload(
       payload['currentVisualInstruction'],
@@ -190,8 +262,16 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
     return null;
   }
 
-  String _metersText(num? meters) {
+  String _distanceText(num? meters) {
     if (meters == null) return '-- m';
+    if (meters >= 1000) {
+      final kilometers = meters / 1000;
+      final decimals =
+          kilometers >= 10 || kilometers == kilometers.roundToDouble() ? 0 : 1;
+
+      return '${kilometers.toStringAsFixed(decimals)} km';
+    }
+
     return '${meters.round()} m';
   }
 
