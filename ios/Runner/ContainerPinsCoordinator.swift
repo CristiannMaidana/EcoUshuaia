@@ -50,7 +50,7 @@ struct ContainerPinPayload {
 
 @MainActor
 final class ContainerPinsCoordinator {
-    private static let annotationManagerId = "container-pins-manager"
+    static let annotationManagerId = "container-pins-manager"
     private static let annotationImageName = "container-pin-marker"
 
     private weak var navigationMapView: NavigationMapView?
