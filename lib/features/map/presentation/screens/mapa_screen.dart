@@ -14,6 +14,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recolec
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/address_turn_by_turn.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
@@ -467,67 +468,76 @@ class _MapaScreenStatePage extends State<MapaPage> {
             ),
 
             SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(12),
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _nativeNavigationPayload['currentInstruction']
-                                as String? ??
-                            'Calculando ruta nativa...',
-                      ),
-                      Text(
-                        'Distancia: ${(_nativeNavigationPayload['distanceRemaining'] as num?)?.toStringAsFixed(0) ?? "--"} m',
-                      ),
-                      Text(
-                        'ETA: ${(_nativeNavigationPayload['durationRemaining'] as num?)?.toStringAsFixed(0) ?? "--"} s',
-                      ),
-                      Text(
-                        _nativeNavigationStarted
-                            ? 'Modo recorrido activo'
-                            : 'Previsualizacion de ruta',
-                      ),
-                      Text(
-                        'Perfil: ${(_nativeNavigationPayload['routeProfile'] as String?) ?? 'automobile'}',
-                      ),
-                      if (_nativeRouteReady && !_nativeNavigationStarted)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: FilledButton(
-                            onPressed: _startNativeNavigation,
-                            style: FilledButton.styleFrom(
-                              backgroundColor: camarone500,
-                            ),
-                            child: Text(
-                              'Iniciar recorrido',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ),
-                        ),
-                      if (_nativeNavigationStarted)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: FilledButton(
-                            onPressed: _cancelNativeNavigation,
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            child: Text(
-                              'Cancelar recorrido',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AddressTurnByTurn(),
+              )
             ),
+
+          //   SafeArea(
+          //     child: Align(
+          //       alignment: Alignment.topCenter,
+          //       child: Container(
+          //         margin: const EdgeInsets.all(16),
+          //         padding: const EdgeInsets.all(12),
+          //         color: Colors.white,
+          //         child: Column(
+          //           mainAxisSize: MainAxisSize.min,
+          //           children: [
+          //             Text(
+          //               _nativeNavigationPayload['currentInstruction']
+          //                       as String? ??
+          //                   'Calculando ruta nativa...',
+          //             ),
+          //             Text(
+          //               'Distancia: ${(_nativeNavigationPayload['distanceRemaining'] as num?)?.toStringAsFixed(0) ?? "--"} m',
+          //             ),
+          //             Text(
+          //               'ETA: ${(_nativeNavigationPayload['durationRemaining'] as num?)?.toStringAsFixed(0) ?? "--"} s',
+          //             ),
+          //             Text(
+          //               _nativeNavigationStarted
+          //                   ? 'Modo recorrido activo'
+          //                   : 'Previsualizacion de ruta',
+          //             ),
+          //             Text(
+          //               'Perfil: ${(_nativeNavigationPayload['routeProfile'] as String?) ?? 'automobile'}',
+          //             ),
+          //             if (_nativeRouteReady && !_nativeNavigationStarted)
+          //               Padding(
+          //                 padding: const EdgeInsets.only(top: 8),
+          //                 child: FilledButton(
+          //                   onPressed: _startNativeNavigation,
+          //                   style: FilledButton.styleFrom(
+          //                     backgroundColor: camarone500,
+          //                   ),
+          //                   child: Text(
+          //                     'Iniciar recorrido',
+          //                     style: Theme.of(context).textTheme.labelLarge,
+          //                   ),
+          //                 ),
+          //               ),
+          //             if (_nativeNavigationStarted)
+          //               Padding(
+          //                 padding: const EdgeInsets.only(top: 8),
+          //                 child: FilledButton(
+          //                   onPressed: _cancelNativeNavigation,
+          //                   style: FilledButton.styleFrom(
+          //                     backgroundColor: Colors.red,
+          //                   ),
+          //                   child: Text(
+          //                     'Cancelar recorrido',
+          //                     style: Theme.of(context).textTheme.labelLarge,
+          //                   ),
+          //                 ),
+          //               ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          
+          
           ],
         ),
         const SizedBox.expand(),
