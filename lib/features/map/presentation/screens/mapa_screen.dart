@@ -122,8 +122,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey =
       GlobalKey<SheetAddContainerState>();
 
-  final GlobalKey<SheetAddressState> _sheetAddressKey =
-      GlobalKey<SheetAddressState>();
+  final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -316,6 +315,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (payload != null) _onNativeNavigationPayload(payload);
   }
 
+  // Metodos de tipo de transporte para previsualizar ruta
   Future<void> _previewNativeDrivingRoute() {
     return _paintNativeRoute(profile: 'automobile');
   }
@@ -626,6 +626,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
             tuUbicacion: 'Tu ubicación',
             direccion: 'Dirección seleccionada',
             userPoint: _userPoint,
+            generateRouteCar: _previewNativeDrivingRoute,
+            generateRouteBike: _previewNativeCyclingRoute,
+            generateRouteWalk: _previewNativeWalkingRoute,
           ),
         ),
 
