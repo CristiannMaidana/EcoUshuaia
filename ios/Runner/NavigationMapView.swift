@@ -7,6 +7,9 @@ import MapboxNavigationUIKit
 import UIKit
 
 final class NativeMapView: UIView, FlutterPlatformView {
+    private static let destinationPreviewAnnotationManagerId = "destination-preview-manager"
+    private static let destinationPreviewImageName = "destination-preview-pin"
+
     private let runtime: NativeMapRuntime
     private let navigationMapView: NavigationMapView
     let containerPinsCoordinator: ContainerPinsCoordinator
@@ -19,6 +22,9 @@ final class NativeMapView: UIView, FlutterPlatformView {
     private var previewSheetBottomInset: CGFloat = 0
     private var previewSheetState: PreviewSheetState = .collapsed
     private var lastPreviewOverviewCameraKey: PreviewOverviewCameraKey?
+    private var destinationPreviewManager: PointAnnotationManager?
+    private var destinationPreviewCoordinate: CLLocationCoordinate2D?
+    private var hiddenAnnotationLayerVisibilityById: [String: String] = [:]
 
     init(
         frame: CGRect,
@@ -99,6 +105,89 @@ final class NativeMapView: UIView, FlutterPlatformView {
             navigationRoutes,
             routeAnnotationKinds: [.relativeDurationsOnAlternative]
         )
+    }
+
+    func showDestinationPreview(at coordinate: CLLocationCoordinate2D) {
+        guard isValidCoordinate(coordinate) else {
+            return
+        }
+        guard navigationMapView.bounds.width > 0, navigationMapView.bounds.height > 0 else {
+            return
+        }
+
+        if let destinationPreviewCoordinate,
+           destinationPreviewCoordinate.isSameCoordinate(as: coordinate) {
+            focusDestinationCamera(coordinate)
+            return
+        }
+
+        destinationPreviewCoordinate = coordinate
+        destinationPreviewAnnotationManager().annotations = [
+            makeDestinationPreviewAnnotation(at: coordinate)
+        ]
+        setNonContainerAnnotationsHidden(true)
+        focusDestinationCamera(coordinate)
+    }
+
+    func focusDestinationCamera(_ coordinate: CLLocationCoordinate2D) {
+        navigationMapView.navigationCamera.stop()
+        navigationMapView.mapView.camera.ease(
+            to: CameraOptions(
+                center: coordinate,
+                zoom: max(navigationMapView.mapView.mapboxMap.cameraState.zoom, 15),
+                bearing: 0,
+                pitch: 0
+            ),
+            duration: 0.35
+        )
+    }
+
+    func setNonContainerAnnotationsHidden(_ hidden: Bool) {
+        let annotationManagers = navigationMapView.mapView.annotations.annotationManagersById
+        let visibleValue = Visibility.visible.rawValue
+        let hiddenValue = Visibility.none.rawValue
+
+        for manager in annotationManagers.values {
+            guard manager.id != ContainerPinsCoordinator.annotationManagerId,
+                  manager.id != Self.destinationPreviewAnnotationManagerId else {
+                continue
+            }
+
+            if hidden {
+                if hiddenAnnotationLayerVisibilityById[manager.layerId] == nil {
+                    let visibility = navigationMapView.mapView.mapboxMap
+                        .layerProperty(for: manager.layerId, property: "visibility")
+                        .value as? String
+                    hiddenAnnotationLayerVisibilityById[manager.layerId] = visibility ?? visibleValue
+                }
+                try? navigationMapView.mapView.mapboxMap.setLayerProperty(
+                    for: manager.layerId,
+                    property: "visibility",
+                    value: hiddenValue
+                )
+            } else {
+                let visibility = hiddenAnnotationLayerVisibilityById[manager.layerId] ?? visibleValue
+                try? navigationMapView.mapView.mapboxMap.setLayerProperty(
+                    for: manager.layerId,
+                    property: "visibility",
+                    value: visibility
+                )
+            }
+        }
+
+        if !hidden {
+            hiddenAnnotationLayerVisibilityById.removeAll()
+        }
+    }
+
+    func clearDestinationPreview() {
+        guard destinationPreviewCoordinate != nil else {
+            return
+        }
+
+        destinationPreviewCoordinate = nil
+        destinationPreviewManager?.annotations = []
+        setNonContainerAnnotationsHidden(false)
     }
 
     func followActiveNavigation() {
@@ -215,6 +304,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func resetAfterNavigationCancel() {
+        clearDestinationPreview()
         stopPreviewOverviewMode()
         releaseTurnByTurnCameraLock()
         navigationMapView.removeRoutes()
@@ -290,6 +380,74 @@ final class NativeMapView: UIView, FlutterPlatformView {
         )
     }
 
+    private func destinationPreviewAnnotationManager() -> PointAnnotationManager {
+        if let destinationPreviewManager {
+            return destinationPreviewManager
+        }
+
+        let manager = navigationMapView.mapView.annotations.makePointAnnotationManager(
+            id: Self.destinationPreviewAnnotationManagerId
+        )
+        manager.iconAllowOverlap = true
+        manager.iconIgnorePlacement = true
+        manager.iconAnchor = .bottom
+        destinationPreviewManager = manager
+        return manager
+    }
+
+    private func makeDestinationPreviewAnnotation(at coordinate: CLLocationCoordinate2D) -> PointAnnotation {
+        var annotation = PointAnnotation(
+            id: "destination-preview",
+            coordinate: coordinate
+        )
+        annotation.image = .init(
+            image: destinationPreviewPinImage(),
+            name: Self.destinationPreviewImageName
+        )
+        annotation.iconAnchor = .bottom
+        annotation.iconOffset = [0, -2]
+        annotation.iconSize = 1.0
+        return annotation
+    }
+
+    private func destinationPreviewPinImage() -> UIImage {
+        let size = CGSize(width: 30, height: 40)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            let cgContext = context.cgContext
+            let pinColor = UIColor(red: 0.90, green: 0.16, blue: 0.12, alpha: 1)
+            let strokeColor = UIColor.white
+
+            let circleRect = CGRect(x: 3, y: 3, width: 24, height: 24)
+            let tipPoint = CGPoint(x: size.width / 2, y: size.height - 3)
+
+            let path = UIBezierPath()
+            path.append(UIBezierPath(ovalIn: circleRect))
+            path.move(to: CGPoint(x: circleRect.midX - 5, y: circleRect.maxY - 1))
+            path.addLine(to: tipPoint)
+            path.addLine(to: CGPoint(x: circleRect.midX + 5, y: circleRect.maxY - 1))
+            path.close()
+
+            pinColor.setFill()
+            path.fill()
+
+            strokeColor.setStroke()
+            path.lineWidth = 2
+            path.stroke()
+
+            cgContext.setFillColor(strokeColor.cgColor)
+            cgContext.fillEllipse(in: CGRect(x: 10, y: 10, width: 10, height: 10))
+        }
+    }
+
+    private func isValidCoordinate(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        coordinate.latitude.isFinite &&
+            coordinate.longitude.isFinite &&
+            (-90...90).contains(coordinate.latitude) &&
+            (-180...180).contains(coordinate.longitude)
+    }
+
     private func setupMap() {
         runtime.navigationProvider.tripSession().startFreeDrive()
         navigationMapView.translatesAutoresizingMaskIntoConstraints = false
@@ -349,4 +507,11 @@ private struct PreviewOverviewCameraKey: Equatable {
     let routeId: String
     let bottomInset: Int
     let sheetState: PreviewSheetState
+}
+
+private extension CLLocationCoordinate2D {
+    func isSameCoordinate(as other: CLLocationCoordinate2D) -> Bool {
+        abs(latitude - other.latitude) < 0.000001 &&
+            abs(longitude - other.longitude) < 0.000001
+    }
 }
