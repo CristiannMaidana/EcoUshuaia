@@ -79,6 +79,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                   vm.clearSuggestions(); // Limpiar sugerencias al enviar
                   widget.cerrar(); // Cerrar el sheet
                   //TODO: enviar direccion seleccionada al mapa para mostrar pin y ruta, y eliminar resto de pines, solo contenedores, cargandolo en metodo 
+                  widget.onSubmitted(0, 0);
                   widget.detalleDireccion(); // Abrir detalle de direccion
                 },
               ),
