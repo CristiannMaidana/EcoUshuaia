@@ -78,6 +78,8 @@ final class NavigationChannelHandler {
             centerTurnByTurnCamera(result: result)
         case "setMapStyle":
             setMapStyle(arguments: call.arguments, result: result)
+        case "updatePreviewSheetInset":
+            updatePreviewSheetInset(arguments: call.arguments, result: result)
         case "getNavigationState":
             result(runtime.navigationCore.currentPayload())
         default:
@@ -104,6 +106,7 @@ final class NavigationChannelHandler {
 
             if let routes = runtime.navigationCore.currentNavigationRoutes {
                 mapView?.showRoute(routes)
+                mapView?.startPreviewOverviewMode()
             }
 
             channel.invokeMethod("onRoutePreviewed", arguments: payload)
@@ -118,6 +121,7 @@ final class NavigationChannelHandler {
     private func startNavigation(result: @escaping FlutterResult) {
         do {
             let payload = try runtime.navigationCore.startNavigation()
+            mapView?.stopPreviewOverviewMode()
             mapView?.followActiveNavigation()
             channel.invokeMethod("onNavigationStateChanged", arguments: payload)
             result(payload)
@@ -130,6 +134,7 @@ final class NavigationChannelHandler {
 
     private func cancelNavigation(result: @escaping FlutterResult) {
         let payload = runtime.navigationCore.cancelNavigation()
+        mapView?.stopPreviewOverviewMode()
         mapView?.resetAfterNavigationCancel()
 
         channel.invokeMethod("onNavigationStateChanged", arguments: payload)
@@ -141,6 +146,22 @@ final class NavigationChannelHandler {
         result([
             "event": "navigationCameraCentered",
             "cameraState": "following"
+        ])
+    }
+
+    private func updatePreviewSheetInset(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let height = Self.doubleValue(args["height"]),
+              let state = args["state"] as? String else {
+            result(FlutterError(code: "invalid_preview_sheet_args", message: "Preview sheet arguments are invalid.", details: nil))
+            return
+        }
+
+        mapView?.updatePreviewSheetInset(CGFloat(height), state: state)
+        result([
+            "event": "previewSheetInsetUpdated",
+            "height": height,
+            "state": state
         ])
     }
 
