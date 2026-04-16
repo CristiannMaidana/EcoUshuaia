@@ -80,6 +80,11 @@ final class NavigationChannelHandler {
             setMapStyle(arguments: call.arguments, result: result)
         case "updatePreviewSheetInset":
             updatePreviewSheetInset(arguments: call.arguments, result: result)
+        case "showDestinationPreview":
+            showDestinationPreview(arguments: call.arguments, result: result)
+        case "clearDestinationPreview":
+            mapView?.clearDestinationPreview()
+            result(["event": "destinationPreviewCleared"])
         case "getNavigationState":
             result(runtime.navigationCore.currentPayload())
         default:
@@ -94,6 +99,7 @@ final class NavigationChannelHandler {
         }
 
         let profileIdentifier = routeProfile(arguments: arguments)
+        mapView?.clearDestinationPreview()
 
         do {
             let payload = try await runtime.navigationCore.calculatePreviewRoute(
@@ -134,6 +140,7 @@ final class NavigationChannelHandler {
 
     private func cancelNavigation(result: @escaping FlutterResult) {
         let payload = runtime.navigationCore.cancelNavigation()
+        mapView?.clearDestinationPreview()
         mapView?.stopPreviewOverviewMode()
         mapView?.resetAfterNavigationCancel()
 
@@ -146,6 +153,23 @@ final class NavigationChannelHandler {
         result([
             "event": "navigationCameraCentered",
             "cameraState": "following"
+        ])
+    }
+
+    private func showDestinationPreview(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let latitude = Self.doubleValue(args["latitude"]),
+              let longitude = Self.doubleValue(args["longitude"]) else {
+            result(FlutterError(code: "invalid_destination_preview_args", message: "Destination preview arguments are invalid.", details: nil))
+            return
+        }
+
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        mapView?.showDestinationPreview(at: coordinate)
+        result([
+            "event": "destinationPreviewShown",
+            "latitude": latitude,
+            "longitude": longitude
         ])
     }
 
