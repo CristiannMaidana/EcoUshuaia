@@ -425,7 +425,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   // Metodo para buscar direccion desde parametros
   Future<void> _buscarDireccion(double lat, double lon) async {
-    await _mapController?.centerOnAddress(lat: lat, lon: lon);
+    setState(() {
+      _addressLat = lat;
+      _addressLon = lon;
+    });
+    //TODO:cambiar por datos dinamicos.
+    await _nativeNavigationBridge?.showDestinationPreview(
+      latitude: -54.8061,
+      longitude: -68.3038,
+    );
   }
 
   void _abrirDetalleDireccion() {
