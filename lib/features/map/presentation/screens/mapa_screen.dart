@@ -431,6 +431,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   void _abrirDetalleDireccion() {
     final sheet = _flotanteKey.currentState;
     sheet?.showSecondChild();
+    //TODO: usar metodo para mostrar el pin de direccion seleccionada, y eliminar resto de pines, solo contenedores
   }
 
   Future<double>? _getMetros(double lat, double lon) {
