@@ -102,7 +102,7 @@ class _AddressTurnByTurnState extends State<AddressTurnByTurn> {
           if (widget.isNavigating && widget.onCancelNavigation != null)
             IconButton(
               onPressed: widget.onCancelNavigation,
-              icon: const Icon(Icons.cancel),
+              icon: const Icon(Icons.cancel, size: 50),
               color: Colors.red,
             ),
         ],
