@@ -96,9 +96,11 @@ class SheetAddressState extends State<SheetAddress> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
+    if (oldIndex >= _rutaItems.length) return;
     setState(() {
       if (newIndex > oldIndex) newIndex -= 1;
       final item = _rutaItems.removeAt(oldIndex);
+      newIndex = newIndex.clamp(0, _rutaItems.length);
       _rutaItems.insert(newIndex, item);
       _syncOrder();
     });
@@ -182,7 +184,6 @@ class SheetAddressState extends State<SheetAddress> {
     MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
     _syncOrder(vmMapSearch);
 
-
     return SafeArea(
       top: false,
       child: Stack(
@@ -217,18 +218,18 @@ class SheetAddressState extends State<SheetAddress> {
                             alignment: Alignment.topCenter,
                             heightFactor: collapsedHeaderOpacity,
                             child: HeaderForAddressIsClose(
-                              onVerticalDragUpdateFromFather: _dragFromHeader, 
+                              onVerticalDragUpdateFromFather: _dragFromHeader,
                               onVerticalDragEndFromFather: _endDragFromHeader,
                               address: widget.direccion,
                               onPressedClose: () {
                                 _sheet?.showFirstChild();
                                 _sheet?.expandSheet(); // Falta arreglar
                               },
-                            )
+                            ),
                           ),
                         ),
                       ),
-                      
+
                       // Header expandido
                       IgnorePointer(
                         ignoring: expandedHeaderOpacity <= 0.01,
@@ -247,7 +248,7 @@ class SheetAddressState extends State<SheetAddress> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     BarraAgarre(),
-                                    
+
                                     SizedBox(height: 12),
 
                                     //Header con direccion y boton de agregar parada
@@ -276,21 +277,21 @@ class SheetAddressState extends State<SheetAddress> {
 
                                         // Boton para agregar parada
                                         CircleIcon(
-                                          icon: Icons.add, 
+                                          icon: Icons.add,
                                           onPressed: widget.openOptionContainer,
                                         ),
-                                        SizedBox(width: 10,),
+                                        SizedBox(width: 10),
                                         CircleIcon(
-                                          icon: Icons.favorite, 
+                                          icon: Icons.favorite,
                                           onPressed: () {},
                                         ),
-                                        SizedBox(width: 10,),
+                                        SizedBox(width: 10),
                                         CircleIcon(
-                                          icon: Icons.close, 
+                                          icon: Icons.close,
                                           onPressed: () {
-                                              _sheet?.showFirstChild();
-                                              _sheet?.collapseSheet();
-                                            },
+                                            _sheet?.showFirstChild();
+                                            _sheet?.collapseSheet();
+                                          },
                                         ),
                                       ],
                                     ),
@@ -380,7 +381,7 @@ class SheetAddressState extends State<SheetAddress> {
                                       ],
                                     ),
                                   ),
-                                  
+
                                   // Lista de paradas agregadas a la ruta
                                   Expanded(
                                     child: ReorderableListView.builder(
@@ -389,6 +390,11 @@ class SheetAddressState extends State<SheetAddress> {
                                       itemCount: _rutaItems.length,
                                       onReorder: _onReorder,
                                       buildDefaultDragHandles: false,
+                                      footer: const Padding(
+                                        key: ValueKey('detalle_ruta'),
+                                        padding: EdgeInsets.fromLTRB(12, 6, 12, 8,),
+                                        child: DetalleRuta(),
+                                      ),
                                       itemBuilder: (context, index) {
                                         final item = _rutaItems[index];
                                         final direccion = _direccionForItem(vmMapSearch, item);
@@ -414,12 +420,6 @@ class SheetAddressState extends State<SheetAddress> {
                                         );
                                       },
                                     ),
-                                  ),
-                                  
-                                  if (generarRuta)
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(12, 6, 12, 8),
-                                    child: DetalleRuta(),
                                   ),
                                 ],
                               ),
@@ -464,6 +464,7 @@ abstract final class _RutaItemId {
   static const String tuUbicacion = 'tu_ubicacion';
   static const String direccion = 'direccion';
 }
+
 // Mapea y une Strings con contenedores
 class _RutaItem {
   final String id;
@@ -478,10 +479,7 @@ class _RutaItem {
     required this.isDismissible,
   });
 
-  factory _RutaItem.fixed({
-    required String id,
-    required String title,
-  }) {
+  factory _RutaItem.fixed({required String id, required String title}) {
     return _RutaItem._(
       id: id,
       title: title,
