@@ -23,6 +23,7 @@ class SheetAddress extends StatefulWidget {
   final Future<void> Function() generateRouteBike;
   final Future<void> Function() generateRouteWalk;
   final Future<void> Function(double height, String state)? onPreviewSheetMetricsChanged;
+  final Future<void> Function() iniciarRuta;
 
   const SheetAddress({
     super.key,
@@ -34,6 +35,7 @@ class SheetAddress extends StatefulWidget {
     required this.generateRouteBike,
     required this.generateRouteWalk,
     this.onPreviewSheetMetricsChanged,
+    required this.iniciarRuta,
   });
 
   @override
@@ -470,10 +472,12 @@ class SheetAddressState extends State<SheetAddress> {
                                       itemCount: _rutaItems.length,
                                       onReorder: _onReorder,
                                       buildDefaultDragHandles: false,
-                                      footer: const Padding(
-                                        key: ValueKey('detalle_ruta'),
-                                        padding: EdgeInsets.fromLTRB(12, 6, 12, 8,),
-                                        child: DetalleRuta(),
+                                      footer: Padding(
+                                        key: const ValueKey('detalle_ruta'),
+                                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 8,),
+                                        child: DetalleRuta(
+                                          botonIr: widget.iniciarRuta,
+                                        ),
                                       ),
                                       itemBuilder: (context, index) {
                                         final item = _rutaItems[index];
