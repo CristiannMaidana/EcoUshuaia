@@ -130,16 +130,32 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func focusDestinationCamera(_ coordinate: CLLocationCoordinate2D) {
-        navigationMapView.navigationCamera.stop()
-        navigationMapView.mapView.camera.ease(
-            to: CameraOptions(
-                center: coordinate,
-                zoom: max(navigationMapView.mapView.mapboxMap.cameraState.zoom, 15),
-                bearing: 0,
-                pitch: 0
-            ),
-            duration: 0.35
+        let padding = UIEdgeInsets(
+            top: 96,
+            left: 24,
+            bottom: previewSheetBottomInset + 32,
+            right: 24
         )
+        let initialCameraOptions = CameraOptions(
+            padding: padding,
+            bearing: 0,
+            pitch: 0
+        )
+
+        do {
+            let cameraOptions = try navigationMapView.mapView.mapboxMap.camera(
+                for: [coordinate],
+                camera: initialCameraOptions,
+                coordinatesPadding: nil,
+                maxZoom: 15,
+                offset: nil
+            )
+            navigationMapView.navigationCamera.stop()
+            navigationMapView.navigationCamera.viewportPadding = padding
+            navigationMapView.mapView.camera.ease(to: cameraOptions, duration: 0.35)
+        } catch {
+            return
+        }
     }
 
     func setNonContainerAnnotationsHidden(_ hidden: Bool) {
@@ -205,6 +221,9 @@ final class NativeMapView: UIView, FlutterPlatformView {
     func updatePreviewSheetInset(_ height: CGFloat, state: String) {
         previewSheetBottomInset = max(0, height)
         previewSheetState = PreviewSheetState(rawValue: state) ?? .moving
+        if let destinationPreviewCoordinate {
+            focusDestinationCamera(destinationPreviewCoordinate)
+        }
         updatePreviewRouteOverviewIfNeeded()
     }
 
