@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
@@ -20,6 +22,7 @@ class SheetAddress extends StatefulWidget {
   final Future<void> Function() generateRouteCar;
   final Future<void> Function() generateRouteBike;
   final Future<void> Function() generateRouteWalk;
+  final Future<void> Function(double height, String state)? onPreviewSheetMetricsChanged;
 
   const SheetAddress({
     super.key,
@@ -30,6 +33,7 @@ class SheetAddress extends StatefulWidget {
     required this.generateRouteCar,
     required this.generateRouteBike,
     required this.generateRouteWalk,
+    this.onPreviewSheetMetricsChanged,
   });
 
   @override
@@ -42,6 +46,8 @@ class SheetAddressState extends State<SheetAddress> {
   bool _showBottomActions = true;
   bool botonSeleccionado = true;
   bool generarRuta = false;
+  double? _lastPreviewSheetHeight;
+  String? _lastPreviewSheetState;
 
   final Set<int> _contenedoresRutaIds = <int>{};
 
@@ -138,6 +144,69 @@ class SheetAddressState extends State<SheetAddress> {
     sheet?.showSecondChild();
   }
 
+  void reportPreviewSheetMetrics() {
+    final sheet = _sheet;
+    if (sheet == null) return;
+    _reportPreviewSheetMetrics(sheet, schedulePostFrame: false);
+  }
+
+  void _reportPreviewSheetMetrics(
+    FlotanteSheetState sheet, {
+    bool schedulePostFrame = true,
+  }) {
+    final state = _previewSheetStateFor(sheet);
+    if (state == 'moving') return;
+
+    final height = MediaQuery.sizeOf(context).height * sheet.currentSheetSize;
+    final roundedHeight = height.roundToDouble();
+    final lastHeight = _lastPreviewSheetHeight;
+    final heightChanged =
+        lastHeight == null || (lastHeight - roundedHeight).abs() >= 1;
+    final stateChanged = _lastPreviewSheetState != state;
+
+    if (!heightChanged && !stateChanged) return;
+
+    _lastPreviewSheetHeight = roundedHeight;
+    _lastPreviewSheetState = state;
+
+    void notifyNativeMap() {
+      if (!mounted) return;
+      final callback = widget.onPreviewSheetMetricsChanged;
+      if (callback == null) return;
+      unawaited(callback(roundedHeight, state));
+    }
+
+    if (schedulePostFrame) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => notifyNativeMap());
+    } else {
+      notifyNativeMap();
+    }
+  }
+
+  String _previewSheetStateFor(FlotanteSheetState sheet) {
+    if (sheet.isFullyExpanded) return 'expanded';
+    if (sheet.isCollapsed) return 'collapsed';
+
+    final min = sheet.widget.minChildSize;
+    final max = sheet.isShowingSecondChild
+        ? (sheet.widget.maxChildSize2 ?? sheet.widget.maxChildSize)
+        : sheet.widget.maxChildSize;
+    final primary = sheet.isShowingSecondChild
+        ? sheet.widget.secondChildInitialSize.clamp(min, max).toDouble()
+        : _primarySnapPoint(sheet);
+
+    if ((sheet.currentSheetSize - primary).abs() < 0.005) {
+      return 'primary';
+    }
+    return 'moving';
+  }
+
+  double _primarySnapPoint(FlotanteSheetState sheet) {
+    final snapPoints = List<double>.of(sheet.widget.snapPoints)..sort();
+    if (snapPoints.length > 1) return snapPoints[1];
+    return sheet.widget.minChildSize;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -197,6 +266,8 @@ class SheetAddressState extends State<SheetAddress> {
           ValueListenableBuilder<double>(
             valueListenable: sheet.sheetSizeListenable,
             builder: (context, _, __) {
+              _reportPreviewSheetMetrics(sheet);
+
               final snapPoints = List<double>.of(sheet.widget.snapPoints)..sort();
               final contentHiddenThreshold = sheet.widget.minChildSize;
               final contentFadeStartThreshold = snapPoints.length > 2
