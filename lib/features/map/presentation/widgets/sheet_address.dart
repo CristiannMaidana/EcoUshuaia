@@ -17,6 +17,9 @@ class SheetAddress extends StatefulWidget {
   final String tuUbicacion;
   final String direccion;
   final Map<String, double> userPoint;
+  final Future<void> Function() generateRouteCar;
+  final Future<void> Function() generateRouteBike;
+  final Future<void> Function() generateRouteWalk;
 
   const SheetAddress({
     super.key,
@@ -24,6 +27,9 @@ class SheetAddress extends StatefulWidget {
     required this.tuUbicacion,
     required this.direccion,
     required this.userPoint,
+    required this.generateRouteCar,
+    required this.generateRouteBike,
+    required this.generateRouteWalk,
   });
 
   @override
@@ -344,6 +350,7 @@ class SheetAddressState extends State<SheetAddress> {
                                                 IconButton(
                                                   onPressed: () {
                                                     setState(() {
+                                                      widget.generateRouteCar();
                                                       _showBottomActions = !_showBottomActions;
                                                       botonSeleccionado = !botonSeleccionado;
                                                       generarRuta = !generarRuta;
@@ -357,6 +364,7 @@ class SheetAddressState extends State<SheetAddress> {
                                                 IconButton(
                                                   onPressed: () {
                                                     setState((){
+                                                      widget.generateRouteBike();
                                                       _showBottomActions = !_showBottomActions;
                                                       generarRuta = !generarRuta;
                                                     });
@@ -367,6 +375,7 @@ class SheetAddressState extends State<SheetAddress> {
                                                 IconButton(
                                                   onPressed: () {
                                                     setState(() {
+                                                      widget.generateRouteWalk();
                                                       _showBottomActions = !_showBottomActions;
                                                       generarRuta = !generarRuta;
                                                     });
