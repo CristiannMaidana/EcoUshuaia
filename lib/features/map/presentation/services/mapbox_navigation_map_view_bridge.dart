@@ -132,6 +132,20 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('centerTurnByTurnCamera');
   }
 
+  Future<Map<String, dynamic>?> showDestinationPreview({
+    required double latitude,
+    required double longitude,
+  }) {
+    return _invokeMap('showDestinationPreview', <String, dynamic>{
+      'latitude': latitude,
+      'longitude': longitude,
+    });
+  }
+
+  Future<Map<String, dynamic>?> clearDestinationPreview() {
+    return _invokeMap('clearDestinationPreview');
+  }
+
   Future<Map<String, dynamic>?> updatePreviewSheetInset({
     required double height,
     required String state,
