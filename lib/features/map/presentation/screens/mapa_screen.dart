@@ -6,10 +6,8 @@ import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_container_pins_bridge.dart';
-// import 'package:eco_ushuaia/features/map/presentation/models/native_route_info.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_navigation_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
-// import 'package:eco_ushuaia/features/map/presentation/services/native_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
@@ -17,7 +15,6 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_view
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
-// import 'package:eco_ushuaia/features/map/presentation/widgets/ios_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
@@ -103,10 +100,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool _nativeRouteReady = false;
   bool _nativeNavigationStarted = false;
   MapStyle _estiloActual = MapStyle.Estandar;
-  // final ValueNotifier<NativeRouteInfo> _routeInfo =
-  //     ValueNotifier<NativeRouteInfo>(
-  //       const NativeRouteInfo(instruction: 'Calculando ruta...'),
-  //     );
 
   ContenedorViewModel? _vm;
 
@@ -233,55 +226,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
       bridge.setContainers(data);
     }
   }
-
-  // Future<void> _onNativeMapReady(NativeMapViewBridge bridge) async {
-  //   final controller = MapController(bridge)
-  //     ..onContenedorTap = _onContenedorTap;
-  //   _mapController = controller;
-  //
-  //   final vm = context.read<ContenedorViewModel>();
-  //   if (_vm != vm) {
-  //     _vm?.removeListener(_onVmChanged);
-  //     _vm = vm..addListener(_onVmChanged);
-  //   }
-  //
-  //   await controller.setStyle(_estiloActual);
-  //   if (_hasLocationPermission) {
-  //     await controller.enableUserPuck();
-  //   }
-  //
-  //   final data = vm.contenedorFiltrado.isNotEmpty
-  //       ? vm.contenedorFiltrado
-  //       : vm.items;
-  //   await controller.refreshContenedores(data);
-  // }
-  //
-  // void _onNativeContainerSelected(int idContenedor) {
-  //   final vm = _vm;
-  //   if (vm == null) return;
-  //
-  //   final candidates = <Contenedor>[...vm.items, ...vm.contenedorFiltrado];
-  //   for (final contenedor in candidates) {
-  //     if (contenedor.idContenedor == idContenedor) {
-  //       _onContenedorTap(contenedor);
-  //       return;
-  //     }
-  //   }
-  // }
-  //
-  // void _onRouteInfoChanged(NativeRouteInfo routeInfo) {
-  //   if (!mounted) return;
-  //
-  //   _routeInfo.value = routeInfo.instruction.isEmpty
-  //       ? NativeRouteInfo(
-  //           instruction: _routeInfo.value.instruction,
-  //           distanceMeters: routeInfo.distanceMeters,
-  //           etaSeconds: routeInfo.etaSeconds,
-  //           stepIndex: routeInfo.stepIndex,
-  //           isOffRoute: routeInfo.isOffRoute,
-  //         )
-  //       : routeInfo;
-  // }
 
   Future<void> _onMapboxNavigationMapReady(
     MapboxNavigationMapViewBridge bridge,
@@ -487,6 +431,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       children: [
         Stack(
           children: [
+            // Mapa con navegación nativa y pins de contenedores integrados
             MapboxNavigationMapView(
               latitude: -54.8070,
               longitude: -68.3047,
@@ -499,43 +444,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               onNavigationStateChanged: _onNativeNavigationPayload,
               onNavigationError: _onNativeNavigationPayload,
             ),
-            // IosNavigationMapView(
-            //   latitude: -54.8070,
-            //   longitude: -68.3047,
-            //   title: 'Contenedor Centro',
-            //   onMapReady: _onNativeMapReady,
-            //   onContainerSelected: _onNativeContainerSelected,
-            //   onRouteInfoChanged: _onRouteInfoChanged,
-            // ),
-            // SafeArea(
-            //   child: Align(
-            //     alignment: Alignment.topCenter,
-            //     child: ValueListenableBuilder<NativeRouteInfo>(
-            //       valueListenable: _routeInfo,
-            //       builder: (context, routeInfo, _) {
-            //         final instruction = routeInfo.instruction.isEmpty
-            //             ? 'Calculando ruta...'
-            //             : routeInfo.instruction;
-            //         final distanceMeters = routeInfo.distanceMeters;
-            //         final etaSeconds = routeInfo.etaSeconds;
-            //
-            //         return Container(
-            //           margin: const EdgeInsets.all(16),
-            //           padding: const EdgeInsets.all(12),
-            //           color: Colors.white,
-            //           child: Column(
-            //             mainAxisSize: MainAxisSize.min,
-            //             children: [
-            //               Text(instruction),
-            //               Text('Distancia: ${distanceMeters?.toStringAsFixed(0) ?? "--"} m'),
-            //               Text('ETA: ${etaSeconds?.toStringAsFixed(0) ?? "--"} s'),
-            //             ],
-            //           ),
-            //         );
-            //       },
-            //     ),
-            //   ),
-            // ),
+
             SafeArea(
               child: Align(
                 alignment: Alignment.topCenter,
