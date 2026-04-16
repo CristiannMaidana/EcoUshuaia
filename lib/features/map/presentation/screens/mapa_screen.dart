@@ -630,6 +630,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             generateRouteBike: _previewNativeCyclingRoute,
             generateRouteWalk: _previewNativeWalkingRoute,
             onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
+            iniciarRuta: _startNativeNavigation,
           ),
         ),
 
