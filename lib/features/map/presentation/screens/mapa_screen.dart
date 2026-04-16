@@ -483,106 +483,109 @@ class _MapaScreenStatePage extends State<MapaPage> {
         const SizedBox.expand(),
 
         if (!_hasLocationPermission)
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: Colors.black54),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+          if (!_nativeRouteReady || !_nativeNavigationStarted)
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Colors.black54),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Text(
+                          'Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: _retryPermission,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: camarone500,
+                        ),
+                        child: Text(
+                          'Conceder permiso',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+        if (!_nativeRouteReady || !_nativeNavigationStarted)
+          Positioned(
+            right: 24,
+            bottom: 110,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        'Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    FloatingActionButton(
+                      heroTag: 'fab-map-style',
+                      onPressed: () => _mostrarOpciones(context),
+                      backgroundColor: camarone500,
+                      child: Image.asset('assets/icons/mapa/maps-style.png'),
                     ),
-                    const SizedBox(height: 12),
-                    FilledButton(
-                      onPressed: _retryPermission,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: camarone500,
-                      ),
-                      child: Text(
-                        'Conceder permiso',
-                        style: Theme.of(context).textTheme.labelLarge,
+                    const SizedBox(width: 20),
+                    FloatingActionButton(
+                      heroTag: 'fab-center-camera',
+                      onPressed: _centerNativeTurnByTurnCamera,
+                      backgroundColor: camarone500,
+                      child: const Icon(
+                        Icons.my_location,
+                        color: Colors.black,
+                        size: 32,
                       ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
 
-        Positioned(
-          right: 24,
-          bottom: 110,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'fab-map-style',
-                    onPressed: () => _mostrarOpciones(context),
-                    backgroundColor: camarone500,
-                    child: Image.asset('assets/icons/mapa/maps-style.png'),
-                  ),
-                  const SizedBox(width: 20),
-                  FloatingActionButton(
-                    heroTag: 'fab-center-camera',
-                    onPressed: _centerNativeTurnByTurnCamera,
-                    backgroundColor: camarone500,
-                    child: const Icon(
-                      Icons.my_location,
-                      color: Colors.black,
-                      size: 32,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-
         // Barra de navegacion del mapa
-        FlotanteSheet(
-          key: _flotanteKey,
-          minChildSize: .093,
-          maxChildSize: .80,
-          maxChildSize2: .80,
-          snapPoints: const [.093, .30, .55, .80],
-          snapPoints2: const [.093, .30, .55, .80],
-          onCollapsed: () {
-            final isSecond =
-                _flotanteKey.currentState?.isShowingSecondChild ?? false;
-            if (!isSecond) {
-              _filterKey.currentState?.onSheetCollapsed();
-            }
-          },
-          // ignore: sort_child_properties_last
-          child: SheetSearchBar(
-            key: _filterKey,
-            cambio: _cambio,
-            closeFilter: _changes,
-            aplicarFiltros: _applyFilters,
-            buscarDireccion: _buscarDireccion,
-            abrirDetalleDireccion: _abrirDetalleDireccion,
+        if (!_nativeRouteReady || !_nativeNavigationStarted)
+          FlotanteSheet(
+            key: _flotanteKey,
+            minChildSize: .093,
+            maxChildSize: .80,
+            maxChildSize2: .80,
+            snapPoints: const [.093, .30, .55, .80],
+            snapPoints2: const [.093, .30, .55, .80],
+            onCollapsed: () {
+              final isSecond =
+                  _flotanteKey.currentState?.isShowingSecondChild ?? false;
+              if (!isSecond) {
+                _filterKey.currentState?.onSheetCollapsed();
+              }
+            },
+            // ignore: sort_child_properties_last
+            child: SheetSearchBar(
+              key: _filterKey,
+              cambio: _cambio,
+              closeFilter: _changes,
+              aplicarFiltros: _applyFilters,
+              buscarDireccion: _buscarDireccion,
+              abrirDetalleDireccion: _abrirDetalleDireccion,
+            ),
+            child2: SheetAddress(
+              key: _sheetAddressKey,
+              openOptionContainer: _abrirSheetAddContainer,
+              tuUbicacion: 'Tu ubicación',
+              direccion: 'Dirección seleccionada',
+              userPoint: _userPoint,
+              generateRouteCar: _previewNativeDrivingRoute,
+              generateRouteBike: _previewNativeCyclingRoute,
+              generateRouteWalk: _previewNativeWalkingRoute,
+              onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
+              iniciarRuta: _startNativeNavigation,
+            ),
           ),
-          child2: SheetAddress(
-            key: _sheetAddressKey,
-            openOptionContainer: _abrirSheetAddContainer,
-            tuUbicacion: 'Tu ubicación',
-            direccion: 'Dirección seleccionada',
-            userPoint: _userPoint,
-            generateRouteCar: _previewNativeDrivingRoute,
-            generateRouteBike: _previewNativeCyclingRoute,
-            generateRouteWalk: _previewNativeWalkingRoute,
-            onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
-            iniciarRuta: _startNativeNavigation,
-          ),
-        ),
 
         //Sheet de detalles de contenedor seleccionado
         if (_contenedorSeleccionado != null)
