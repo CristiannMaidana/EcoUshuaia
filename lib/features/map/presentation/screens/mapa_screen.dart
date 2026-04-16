@@ -305,6 +305,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final bridge = _nativeNavigationBridge;
     if (bridge == null) return;
 
+    _sheetAddressKey.currentState?.reportPreviewSheetMetrics();
+
     final payload = await bridge.previewRoute(
       originLatitude: _routeOriginLatitude,
       originLongitude: _routeOriginLongitude,
@@ -313,6 +315,16 @@ class _MapaScreenStatePage extends State<MapaPage> {
       profile: profile,
     );
     if (payload != null) _onNativeNavigationPayload(payload);
+  }
+
+  Future<void> _updateNativePreviewSheetInset(
+    double height,
+    String state,
+  ) async {
+    await _nativeNavigationBridge?.updatePreviewSheetInset(
+      height: height,
+      state: state,
+    );
   }
 
   // Metodos de tipo de transporte para previsualizar ruta
@@ -629,6 +641,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             generateRouteCar: _previewNativeDrivingRoute,
             generateRouteBike: _previewNativeCyclingRoute,
             generateRouteWalk: _previewNativeWalkingRoute,
+            onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
           ),
         ),
 
