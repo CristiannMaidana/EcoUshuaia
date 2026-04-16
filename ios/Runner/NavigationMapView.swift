@@ -15,6 +15,10 @@ final class NativeMapView: UIView, FlutterPlatformView {
     private var cancellables = Set<AnyCancellable>()
     private var keepsTurnByTurnCameraCentered = false
     private var isUsingNavigationPuck: Bool?
+    private var isPreviewOverviewModeActive = false
+    private var previewSheetBottomInset: CGFloat = 0
+    private var previewSheetState: PreviewSheetState = .collapsed
+    private var lastPreviewOverviewCameraKey: PreviewOverviewCameraKey?
 
     init(
         frame: CGRect,
@@ -91,12 +95,97 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func showRoute(_ navigationRoutes: NavigationRoutes) {
-        navigationMapView.showcase(navigationRoutes, animated: true)
+        navigationMapView.show(
+            navigationRoutes,
+            routeAnnotationKinds: [.relativeDurationsOnAlternative]
+        )
     }
 
     func followActiveNavigation() {
+        stopPreviewOverviewMode()
         keepsTurnByTurnCameraCentered = true
         centerTurnByTurnCamera()
+    }
+
+    func startPreviewOverviewMode() {
+        isPreviewOverviewModeActive = true
+        lastPreviewOverviewCameraKey = nil
+        updatePreviewRouteOverviewIfNeeded(force: true)
+    }
+
+    func updatePreviewSheetInset(_ height: CGFloat, state: String) {
+        previewSheetBottomInset = max(0, height)
+        previewSheetState = PreviewSheetState(rawValue: state) ?? .moving
+        updatePreviewRouteOverviewIfNeeded()
+    }
+
+    func updatePreviewRouteOverviewIfNeeded(force: Bool = false) {
+        guard isPreviewOverviewModeActive else {
+            return
+        }
+        guard !keepsTurnByTurnCameraCentered else {
+            return
+        }
+        guard force || previewSheetState.allowsOverviewUpdates else {
+            return
+        }
+        guard navigationMapView.bounds.width > 0, navigationMapView.bounds.height > 0 else {
+            return
+        }
+        guard let previewRoute = currentPreviewRouteCoordinates() else {
+            return
+        }
+
+        let bottomInset = Int(previewSheetBottomInset.rounded())
+        let cameraKey = PreviewOverviewCameraKey(
+            routeId: previewRoute.routeId,
+            bottomInset: bottomInset,
+            sheetState: previewSheetState
+        )
+
+        guard force || cameraKey != lastPreviewOverviewCameraKey else {
+            return
+        }
+
+        applyPreviewOverviewCamera(
+            coordinates: previewRoute.coordinates,
+            bottomInset: CGFloat(bottomInset)
+        )
+        lastPreviewOverviewCameraKey = cameraKey
+    }
+
+    func applyPreviewOverviewCamera(coordinates: [CLLocationCoordinate2D], bottomInset: CGFloat) {
+        let padding = UIEdgeInsets(
+            top: 96,
+            left: 24,
+            bottom: bottomInset + 32,
+            right: 24
+        )
+        let initialCameraOptions = CameraOptions(
+            padding: padding,
+            bearing: 0,
+            pitch: 0
+        )
+
+        do {
+            navigationMapView.navigationCamera.stop()
+            navigationMapView.navigationCamera.viewportPadding = padding
+            let cameraOptions = try navigationMapView.mapView.mapboxMap.camera(
+                for: coordinates,
+                camera: initialCameraOptions,
+                coordinatesPadding: nil,
+                maxZoom: nil,
+                offset: nil
+            )
+            navigationMapView.mapView.camera.ease(to: cameraOptions, duration: 0.35)
+        } catch {
+            return
+        }
+    }
+
+    func stopPreviewOverviewMode() {
+        isPreviewOverviewModeActive = false
+        lastPreviewOverviewCameraKey = nil
     }
 
     func setMapStyle(_ styleIdentifier: String) {
@@ -126,6 +215,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func resetAfterNavigationCancel() {
+        stopPreviewOverviewMode()
         releaseTurnByTurnCameraLock()
         navigationMapView.removeRoutes()
         navigationMapView.navigationCamera.update(cameraState: .idle)
@@ -179,6 +269,27 @@ final class NativeMapView: UIView, FlutterPlatformView {
         )
     }
 
+    private func currentPreviewRouteCoordinates() -> (routeId: String, coordinates: [CLLocationCoordinate2D])? {
+        guard let navigationRoutes = runtime.navigationCore.currentNavigationRoutes else {
+            return nil
+        }
+
+        let routes = [navigationRoutes.mainRoute.route] + navigationRoutes.alternativeRoutes.map(\.route)
+        let coordinates = routes.flatMap { route in
+            route.shape?.coordinates ?? []
+        }
+
+        guard !coordinates.isEmpty else {
+            return nil
+        }
+
+        let routeIds = [navigationRoutes.mainRoute.routeId] + navigationRoutes.alternativeRoutes.map(\.routeId)
+        return (
+            routeId: routeIds.map { String(describing: $0) }.joined(separator: "|"),
+            coordinates: coordinates
+        )
+    }
+
     private func setupMap() {
         runtime.navigationProvider.tripSession().startFreeDrive()
         navigationMapView.translatesAutoresizingMaskIntoConstraints = false
@@ -221,4 +332,21 @@ final class NativeMapView: UIView, FlutterPlatformView {
             return .standard
         }
     }
+}
+
+private enum PreviewSheetState: String {
+    case collapsed
+    case primary
+    case expanded
+    case moving
+
+    var allowsOverviewUpdates: Bool {
+        self == .collapsed || self == .primary
+    }
+}
+
+private struct PreviewOverviewCameraKey: Equatable {
+    let routeId: String
+    let bottomInset: Int
+    let sheetState: PreviewSheetState
 }
