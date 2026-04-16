@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DetalleRuta extends StatelessWidget {
+  final Future<void> Function() botonIr;
+
   //TODO: Recibir datos de la ruta, tiempo estimado, distancia, cantidad de residuos, tipo de residuo, etc.
-  const DetalleRuta({super.key});
+  const DetalleRuta({
+    super.key,
+    required this.botonIr,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +77,9 @@ class DetalleRuta extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18),
             ),
             onPressed: () {
-              //TODO: Iniciar la navegación y cerrar sheet
+              //TODO: Iniciar navegación nativa con la ruta generada, y cerrar el sheet de detalle de ruta,
+              //mostrar sheet de navegación con indicaciones paso a paso, y opciones para finalizar ruta, compartir ruta, etc.
+              botonIr();
             },
             child: Text('IR', style: Theme.of(context).textTheme.labelLarge),  
           ),
