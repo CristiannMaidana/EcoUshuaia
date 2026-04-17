@@ -397,7 +397,7 @@ class SheetAddressState extends State<SheetAddress> {
                                 children: [
                                   // Botones para elegir tipo perfil de ruta
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
                                     child:  Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(24),
@@ -451,7 +451,6 @@ class SheetAddressState extends State<SheetAddress> {
                                   // Lista de paradas agregadas a la ruta
                                   Expanded(
                                     child: ReorderableListView.builder(
-                                      padding: const EdgeInsets.symmetric(vertical: 25),
                                       scrollController: scrollController,
                                       itemCount: _rutaItems.length,
                                       onReorder: _onReorder,
