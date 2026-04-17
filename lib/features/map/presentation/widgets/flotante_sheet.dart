@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 
 typedef FlotanteSheetWrapperBuilder =
@@ -73,6 +74,7 @@ class FlotanteSheetState extends State<FlotanteSheet> {
   double? _previousSheetSize;
   double? _currentSheetSize;
   double _lastHeaderDragDeltaDy = 0;
+  bool _sheetChangeSetStateScheduled = false;
 
   bool get isShowingSecondChild => _showSecondChild;
   ValueNotifier<double> get sheetSizeListenable => _sheetSizeNotifier;
@@ -203,7 +205,24 @@ class FlotanteSheetState extends State<FlotanteSheet> {
       _currentSheetSize = _controller.size;
       _sheetSizeNotifier.value = _controller.size;
     }
-    setState(_syncInnerBottomPaddingAndCallbacks);
+
+    void updateSheetState() {
+      if (!mounted) return;
+      setState(_syncInnerBottomPaddingAndCallbacks);
+    }
+
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      if (_sheetChangeSetStateScheduled) return;
+      _sheetChangeSetStateScheduled = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _sheetChangeSetStateScheduled = false;
+        updateSheetState();
+      });
+      return;
+    }
+
+    updateSheetState();
   }
 
   @override
