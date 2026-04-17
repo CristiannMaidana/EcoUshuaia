@@ -300,6 +300,22 @@ final class NativeMapView: UIView, FlutterPlatformView {
         navigationMapView.mapView.mapboxMap.mapStyle = mapStyle(for: styleIdentifier)
     }
 
+    var cameraCenterCoordinate: CLLocationCoordinate2D {
+        navigationMapView.mapView.mapboxMap.cameraState.center
+    }
+
+    func centerOnCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Double) {
+        guard isValidCoordinate(coordinate) else {
+            return
+        }
+
+        navigationMapView.navigationCamera.stop()
+        navigationMapView.mapView.camera.ease(
+            to: CameraOptions(center: coordinate, zoom: zoom, bearing: 0, pitch: 0),
+            duration: 0.35
+        )
+    }
+
     func centerTurnByTurnCamera(restrictZoomOut: Bool = true) {
         configureTurnByTurnCamera(restrictZoomOut: restrictZoomOut)
         navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
