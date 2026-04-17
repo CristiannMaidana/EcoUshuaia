@@ -23,7 +23,7 @@ class AddressListItem extends StatelessWidget {
         side: BorderSide(color: Colors.grey.shade300),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 
         leading: CircleAvatar(
           radius: 20,
