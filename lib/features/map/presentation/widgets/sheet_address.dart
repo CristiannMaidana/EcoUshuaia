@@ -458,7 +458,7 @@ class SheetAddressState extends State<SheetAddress> {
                                       buildDefaultDragHandles: false,
                                       footer: Padding(
                                         key: const ValueKey('detalle_ruta'),
-                                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 8,),
+                                        padding: const EdgeInsets.fromLTRB(12, 30, 12, 8,),
                                         child: DetalleRuta(
                                           botonIr: widget.iniciarRuta,
                                           routePayload: widget.navigationPayload,
