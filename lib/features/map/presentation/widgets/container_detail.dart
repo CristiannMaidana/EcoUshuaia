@@ -15,11 +15,17 @@ import 'package:provider/provider.dart';
 class ContainerDetail extends StatefulWidget {
   Contenedor? container;
   final Future<double>? Function(double lat, double lon)? distancia;
+  final Future<void> Function(double lat, double lon)? buscarDireccion;
+  final VoidCallback? abrirDetalleDireccion;
+  final Future<void> Function()? generateRouteCar;
 
   ContainerDetail({
     super.key,
     required this.container,
     this.distancia,
+    this.buscarDireccion,
+    this.abrirDetalleDireccion,
+    this.generateRouteCar,
   });
 
   @override
@@ -122,8 +128,6 @@ class ContainerDetailState extends State<ContainerDetail> {
     return _draggableController.size > 0 + 0.001;
   }
 
-  //TODO: crear metodo para guardar en backend los contenedores favoritos cuando toque icon fav, el boton deberia cambiar de color si el contenedor es favorito o no
-
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ResiduoViewmodel>();
@@ -158,7 +162,7 @@ class ContainerDetailState extends State<ContainerDetail> {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
                   border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!, width: 1)),
                 ),
                 child: ListView(
@@ -177,7 +181,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                         child: Column(
                           children: [
                             Container(
-                              margin: const EdgeInsets.all(10),
+                              margin: const EdgeInsets.only(bottom: 10),
                               child: BarraAgarre(),
                             ),
                             Padding(
@@ -207,15 +211,13 @@ class ContainerDetailState extends State<ContainerDetail> {
                                             children: [
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10),
-                                                child: Text(
-                                                  'Zona: ${widget.container?.idZona}',
+                                                child: Text('Zona: ${widget.container?.idZona}',
                                                   style: Theme.of(context).textTheme.titleMedium,
                                                 ),
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10),
-                                                child: Text(
-                                                  widget.container?.nombreContenedor ?? 'Contenedor numero',
+                                                child: Text(widget.container?.nombreContenedor ?? 'Contenedor numero',
                                                   style: Theme.of(context).textTheme.bodyMedium,
                                                 ),
                                               ),
@@ -293,7 +295,9 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Direccion:',
-                                          descripcion: 'direccion', // TODO: obtener direccion a partir de coordenadas
+                                          descripcion: direccion.isNotEmpty
+                                              ? direccion
+                                              : widget.container?.descripcionUbicacion ?? 'direccion',
                                         ),
                                       ),
                                       SizedBox(width: 8),
@@ -349,7 +353,24 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       ),
                                       const SizedBox(width: 8),
                                       ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          final coord = widget.container?.coordenada;
+                                          if (coord == null) return;
+
+                                          _bajarSheet();
+                                          final buscarDireccion = widget.buscarDireccion;
+                                          if (buscarDireccion != null) {
+                                            await buscarDireccion(
+                                              coord.latitud,
+                                              coord.longitud,
+                                            );
+                                          }
+                                          widget.abrirDetalleDireccion?.call();
+                                          final generateRouteCar = widget.generateRouteCar;
+                                          if (generateRouteCar != null) {
+                                            await generateRouteCar();
+                                          }
+                                        },
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
