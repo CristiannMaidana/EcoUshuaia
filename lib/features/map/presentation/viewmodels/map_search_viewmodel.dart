@@ -23,8 +23,8 @@ class MapSearchViewModel extends ChangeNotifier {
   // Buscar y devolver el primer resultado
   Future<PlaceLocation?> searchFirst(String query) async {
     if (query.trim().isEmpty) return null;
-    loading = true; 
-    error = null; 
+    loading = true;
+    error = null;
     notifyListeners();
     try {
       results = await svc.search(query);
@@ -34,7 +34,23 @@ class MapSearchViewModel extends ChangeNotifier {
       results = const [];
       return null;
     } finally {
-      loading = false; 
+      loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<PlaceLocation?> resolveSuggestion(PlaceLocation suggestion) async {
+    if (!suggestion.isSuggestion) return suggestion;
+    loading = true;
+    error = null;
+    notifyListeners();
+    try {
+      return await svc.selectSuggestion(suggestion);
+    } catch (e) {
+      error = e.toString();
+      return null;
+    } finally {
+      loading = false;
       notifyListeners();
     }
   }
@@ -42,14 +58,14 @@ class MapSearchViewModel extends ChangeNotifier {
   // Sugerencias mientras escribe
   void onQueryChanged(String query) {
     _debounce?.cancel();
-    if (query.trim().isEmpty) { 
-      suggestions = const []; 
-      notifyListeners(); 
-      return; 
+    if (query.trim().isEmpty) {
+      suggestions = const [];
+      notifyListeners();
+      return;
     }
     _debounce = Timer(const Duration(milliseconds: 300), () async {
       try {
-        suggestions = await svc.search(query);
+        suggestions = await svc.suggestions(query);
       } catch (_) {
         suggestions = const [];
       }
@@ -58,15 +74,15 @@ class MapSearchViewModel extends ChangeNotifier {
   }
 
   // Limpiar sugerencias
-  void clearSuggestions() { 
-    suggestions = const []; 
-    notifyListeners(); 
+  void clearSuggestions() {
+    suggestions = const [];
+    notifyListeners();
   }
 
   @override
-  void dispose() { 
-    _debounce?.cancel(); 
-    super.dispose(); 
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   String getDireccionFromPoint(double? lat, double? lon) {
