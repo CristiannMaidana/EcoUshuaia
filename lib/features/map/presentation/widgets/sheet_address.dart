@@ -375,7 +375,6 @@ class SheetAddressState extends State<SheetAddress> {
                                           icon: Icons.close,
                                           onPressed: () {
                                             _sheet?.showFirstChild();
-                                            //TODO: this need a little delay to avoid conflicts with the sheet animation, should be fixed in the future
                                             _sheet?.collapseSheet();
                                             widget.cancelNavigation();
                                             widget.cancelSetCamera();
