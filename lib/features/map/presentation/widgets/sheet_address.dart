@@ -24,6 +24,7 @@ class SheetAddress extends StatefulWidget {
   final Future<void> Function() generateRouteWalk;
   final Future<void> Function(double height, String state)? onPreviewSheetMetricsChanged;
   final Future<void> Function() iniciarRuta;
+  final Map<String, dynamic> navigationPayload;
 
   const SheetAddress({
     super.key,
@@ -36,6 +37,7 @@ class SheetAddress extends StatefulWidget {
     required this.generateRouteWalk,
     this.onPreviewSheetMetricsChanged,
     required this.iniciarRuta,
+    required this.navigationPayload,
   });
 
   @override
@@ -477,6 +479,7 @@ class SheetAddressState extends State<SheetAddress> {
                                         padding: const EdgeInsets.fromLTRB(12, 6, 12, 8,),
                                         child: DetalleRuta(
                                           botonIr: widget.iniciarRuta,
+                                          routePayload: widget.navigationPayload,
                                         ),
                                       ),
                                       itemBuilder: (context, index) {
