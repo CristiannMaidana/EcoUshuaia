@@ -132,6 +132,22 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('centerTurnByTurnCamera');
   }
 
+  Future<Map<String, dynamic>?> centerOnCoordinate({
+    required double latitude,
+    required double longitude,
+    double zoom = 15,
+  }) {
+    return _invokeMap('centerOnCoordinate', <String, dynamic>{
+      'latitude': latitude,
+      'longitude': longitude,
+      'zoom': zoom,
+    });
+  }
+
+  Future<Map<String, dynamic>?> getCameraCenter() {
+    return _invokeMap('getCameraCenter');
+  }
+
   Future<Map<String, dynamic>?> showDestinationPreview({
     required double latitude,
     required double longitude,
