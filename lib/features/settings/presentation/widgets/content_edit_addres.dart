@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/place_location.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
+import 'package:eco_ushuaia/features/map/presentation/services/native_map_search_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/address_search_field.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/map_widget_addres.dart';
@@ -31,7 +32,9 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
   final _searchLayerLink = LayerLink();
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
-  final _searchViewModel = MapSearchViewModel(AddressSearchService());
+  final _searchViewModel = MapSearchViewModel(
+    AddressSearchService(bridge: const NativeMapSearchBridge()),
+  );
 
   bool _showSuggestions = false;
   String _selectedStreet = 'Buscá o mové el mapa para seleccionar una dirección';
@@ -81,15 +84,22 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
   }
 
   Future<void> _selectPlace(PlaceLocation place) async {
-    _searchController.text = place.address?.trim().isNotEmpty == true
-        ? place.address!
-        : (place.name ?? '');
+    final resolvedPlace = await _searchViewModel.resolveSuggestion(place);
+    if (resolvedPlace == null) return;
+    _searchController.text = resolvedPlace.address?.trim().isNotEmpty == true
+        ? resolvedPlace.address!
+        : (resolvedPlace.name ?? '');
     _searchFocusNode.unfocus();
     _searchViewModel.clearSuggestions();
     if (!mounted) return;
     setState(() {
       _showSuggestions = false;
-      _selectedPlaceForMap = place;
+      _selectedStreet = resolvedPlace.address?.trim().isNotEmpty == true
+          ? resolvedPlace.address!
+          : (resolvedPlace.name ?? 'Dirección seleccionada');
+      _selectedLat = resolvedPlace.lat;
+      _selectedLon = resolvedPlace.lon;
+      _selectedPlaceForMap = resolvedPlace;
     });
   }
 
@@ -116,7 +126,9 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
 
   @override
   Widget build(BuildContext context) {
-    final suggestions = _showSuggestions ? _searchViewModel.suggestions : const <PlaceLocation>[];
+    final suggestions = _showSuggestions
+        ? _searchViewModel.suggestions
+        : const <PlaceLocation>[];
 
     return Padding(
       padding: const EdgeInsets.all(14),
