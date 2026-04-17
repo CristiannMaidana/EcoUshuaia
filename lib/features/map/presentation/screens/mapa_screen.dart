@@ -583,6 +583,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               iniciarRuta: _startNativeNavigation,
               navigationPayload: _nativeNavigationPayload,
               cancelNavigation: _cancelNativeNavigation,
+              cancelSetCamera: _centerNativeTurnByTurnCamera,
             ),
           ),
 
