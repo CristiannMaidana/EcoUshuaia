@@ -83,7 +83,7 @@ class _DetalleRutaState extends State<DetalleRuta> {
                   const Icon(Icons.place, size: 20, color: Colors.black54),
                   const SizedBox(width: 8),
                   Text(
-                    '${_distanceText(distance)} . llegada: ${_arrivalText()}',
+                    'Llegada: ${_arrivalText()} . ${_distanceText(distance)}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.black54,
                       fontWeight: FontWeight.w600,
