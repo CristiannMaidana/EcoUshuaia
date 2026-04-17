@@ -341,24 +341,10 @@ class SheetAddressState extends State<SheetAddress> {
                                       children: [
                                         // Contenedor para direccion con estilo de tarjeta
                                         Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Dirección Ejemplo',
-                                                style: Theme.of(context).textTheme.titleMedium
-                                                    ?.copyWith(fontWeight: FontWeight.w700),
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                'Calle Falsa 123, Ciudad, País',
-                                                style: Theme.of(context).textTheme.bodySmall
-                                                    ?.copyWith(color: Colors.grey.shade600),
-                                              ),
-                                            ],
+                                          child: Text('Como llegar',
+                                            style: Theme.of(context).textTheme.headlineLarge
                                           ),
                                         ),
-                                        const SizedBox(width: 12),
 
                                         // Boton para agregar parada
                                         CircleIcon(
