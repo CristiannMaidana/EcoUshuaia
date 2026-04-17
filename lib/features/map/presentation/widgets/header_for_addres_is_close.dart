@@ -23,14 +23,19 @@ class HeaderForAddressIsClose extends StatelessWidget{
       onVerticalDragUpdate: onVerticalDragUpdateFromFather,
       onVerticalDragEnd: onVerticalDragEndFromFather,
       child: Padding(
-        padding: const EdgeInsets.only(left: 27, bottom: 6.3, right: 27),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: Column(
           children: [
             BarraAgarre(),
+            
+            SizedBox(height: 5),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(address),
+                Text(address,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
                 CircleIcon(
                   icon: Icons.close,
                   onPressed: onPressedClose,
