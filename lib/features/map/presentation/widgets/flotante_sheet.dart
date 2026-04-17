@@ -276,6 +276,9 @@ class FlotanteSheetState extends State<FlotanteSheet> {
   }
 
   Future<void> collapseSheet() async {
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || !_controller.isAttached) return;
+
     await _controller.animateTo(
       widget.minChildSize,
       duration: const Duration(milliseconds: 300),
