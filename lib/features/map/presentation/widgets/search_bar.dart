@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SerchBar extends StatefulWidget{
+class SerchBar extends StatefulWidget {
   final VoidCallback changeHeader;
   final VoidCallback expandir;
   final Future<void> Function(double lat, double lon) onSubmitted;
@@ -25,7 +25,7 @@ class SerchBar extends StatefulWidget{
   State<SerchBar> createState() => SerchBarState();
 }
 
-class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
+class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin {
   final _controller = TextEditingController();
   final _focus = FocusNode();
 
@@ -35,7 +35,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
   // Metodo para resetear el estado del searchFiled usado desde el widget padre
   void resetToBase() {
     _controller.clear();
-    _focus.unfocus(); 
+    _focus.unfocus();
   }
 
   @override
@@ -49,7 +49,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
   bool tieneTexto() => _controller.text.isNotEmpty;
 
   @override
-  Widget build (BuildContext context) {
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {},
       child: Row(
@@ -69,7 +69,9 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                 placeholder: 'Buscar dirección o lugar',
                 borderRadius: BorderRadius.circular(28),
                 onTap: widget.expandir,
-                onChanged: (q) => context.read<MapSearchViewModel>().onQueryChanged(q), // Sugerencias mientras escribe
+                onChanged: (q) => context
+                    .read<MapSearchViewModel>()
+                    .onQueryChanged(q), // Sugerencias mientras escribe
                 onSubmitted: (value) async {
                   final vm = context.read<MapSearchViewModel>();
                   final place = await vm.searchFirst(value);
@@ -78,8 +80,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
                   }
                   vm.clearSuggestions(); // Limpiar sugerencias al enviar
                   widget.cerrar(); // Cerrar el sheet
-                  //TODO: enviar direccion seleccionada al mapa para mostrar pin y ruta, y eliminar resto de pines, solo contenedores, cargandolo en metodo 
-                  widget.onSubmitted(0, 0);
+                  //TODO: enviar direccion seleccionada al mapa para mostrar pin y ruta, y eliminar resto de pines, solo contenedores, cargandolo en metodo
                   widget.detalleDireccion(); // Abrir detalle de direccion
                 },
               ),
@@ -88,10 +89,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin{
           SizedBox(width: 10),
 
           //Boton filtro para abrir opciones de busqueda
-          FilterButton(
-            onSelected: resetToBase,
-            changes: widget.changeHeader,
-          )
+          FilterButton(onSelected: resetToBase, changes: widget.changeHeader),
         ],
       ),
     );
