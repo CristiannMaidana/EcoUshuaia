@@ -430,10 +430,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _addressLat = lat;
       _addressLon = lon;
     });
-    //TODO:cambiar por datos dinamicos.
     await _nativeNavigationBridge?.showDestinationPreview(
-      latitude: -54.8061,
-      longitude: -68.3038,
+      latitude: lat,
+      longitude: lon,
     );
   }
 
