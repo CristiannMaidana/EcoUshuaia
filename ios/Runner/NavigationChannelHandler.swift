@@ -150,7 +150,7 @@ final class NavigationChannelHandler {
     }
 
     private func centerTurnByTurnCamera(result: @escaping FlutterResult) {
-        mapView?.centerTurnByTurnCamera()
+        mapView?.centerTurnByTurnCamera(restrictZoomOut: false)
         result([
             "event": "navigationCameraCentered",
             "cameraState": "following"
