@@ -300,8 +300,8 @@ final class NativeMapView: UIView, FlutterPlatformView {
         navigationMapView.mapView.mapboxMap.mapStyle = mapStyle(for: styleIdentifier)
     }
 
-    func centerTurnByTurnCamera() {
-        configureTurnByTurnCamera()
+    func centerTurnByTurnCamera(restrictZoomOut: Bool = true) {
+        configureTurnByTurnCamera(restrictZoomOut: restrictZoomOut)
         navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
             top: 200,
             left: 16,
@@ -353,7 +353,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
             .store(in: &cancellables)
     }
 
-    private func configureTurnByTurnCamera() {
+    private func configureTurnByTurnCamera(restrictZoomOut: Bool = true) {
         guard let viewportDataSource = navigationMapView.navigationCamera.viewportDataSource as? MobileViewportDataSource else {
             return
         }
@@ -364,7 +364,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         viewportDataSource.options.followingCameraOptions.pitchUpdatesAllowed = true
         viewportDataSource.options.followingCameraOptions.paddingUpdatesAllowed = false
         viewportDataSource.options.followingCameraOptions.followsLocationCourse = true
-        viewportDataSource.options.followingCameraOptions.zoomRange = 13.75...16.35
+        viewportDataSource.options.followingCameraOptions.zoomRange = restrictZoomOut ? 13.75...16.35 : FollowingCameraOptions().zoomRange
 
         let padding = UIEdgeInsets(
             top: 200,
@@ -374,7 +374,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         )
         viewportDataSource.currentNavigationCameraOptions.followingCamera.padding = padding
         try? navigationMapView.mapView.mapboxMap.setCameraBounds(
-            with: CameraBoundsOptions(minZoom: 13.75)
+            with: restrictZoomOut ? CameraBoundsOptions(minZoom: 13.75) : CameraBoundsOptions()
         )
     }
 
