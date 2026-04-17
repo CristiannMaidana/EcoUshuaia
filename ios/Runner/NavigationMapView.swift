@@ -459,7 +459,22 @@ final class NativeMapView: UIView, FlutterPlatformView {
             cgContext.fillEllipse(in: CGRect(x: 10, y: 10, width: 10, height: 10))
         }
     }
+    
+    func resetCameraToIdle() {
+        navigationMapView.navigationCamera.viewportPadding = .zero
+        navigationMapView.navigationCamera.update(cameraState: .idle)
 
+        let currentCenter = navigationMapView.mapView.mapboxMap.cameraState.center
+
+        navigationMapView.mapView.camera.ease(
+            to: CameraOptions(
+                center: currentCenter,
+                bearing: 0, pitch: 0
+            ),
+            duration: 0.35
+        )
+    }
+    
     private func isValidCoordinate(_ coordinate: CLLocationCoordinate2D) -> Bool {
         coordinate.latitude.isFinite &&
             coordinate.longitude.isFinite &&
