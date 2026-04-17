@@ -352,11 +352,6 @@ class SheetAddressState extends State<SheetAddress> {
                                         ),
                                         SizedBox(width: 10),
                                         CircleIcon(
-                                          icon: Icons.favorite,
-                                          onPressed: () {},
-                                        ),
-                                        SizedBox(width: 10),
-                                        CircleIcon(
                                           icon: Icons.close,
                                           onPressed: () {
                                             _sheet?.showFirstChild();
