@@ -400,10 +400,10 @@ class SheetAddressState extends State<SheetAddress> {
                                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                     child:  Container(
                                       decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24),
-                                      border: Border.all(width: 1, color: Colors.grey.shade300,),
-                                      color: Colors.grey.shade100,
-                                    ),
+                                        borderRadius: BorderRadius.circular(24),
+                                        border: Border.all(width: 1, color: Colors.grey.shade300,),
+                                        color: Colors.grey.shade100,
+                                      ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
@@ -448,12 +448,10 @@ class SheetAddressState extends State<SheetAddress> {
                                     ),
                                   ),
                                       
-                                  
-
                                   // Lista de paradas agregadas a la ruta
                                   Expanded(
                                     child: ReorderableListView.builder(
-                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      padding: const EdgeInsets.symmetric(vertical: 25),
                                       scrollController: scrollController,
                                       itemCount: _rutaItems.length,
                                       onReorder: _onReorder,
