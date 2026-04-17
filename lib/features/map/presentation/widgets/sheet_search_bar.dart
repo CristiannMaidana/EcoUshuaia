@@ -133,7 +133,9 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                             )
                           : null,
                       onTap: () async {
-                        await widget.buscarDireccion(s.lat, s.lon);
+                        final place = await vm.resolveSuggestion(s);
+                        if (place == null) return;
+                        await widget.buscarDireccion(place.lat, place.lon);
                         vm.clearSuggestions();
                         _keySearchBar.currentState
                             ?.resetToBase(); // limpia campo
