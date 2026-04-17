@@ -8,7 +8,15 @@ class AddressSearchService {
     : _bridge = bridge ?? const NativeMapSearchBridge();
 
   Future<List<PlaceLocation>> search(String query) async {
-    return _bridge.search(query);
+    return _bridge.searchAddress(query);
+  }
+
+  Future<List<PlaceLocation>> suggestions(String query) async {
+    return _bridge.searchSuggestions(query);
+  }
+
+  Future<PlaceLocation?> selectSuggestion(PlaceLocation suggestion) async {
+    return _bridge.selectSuggestion(suggestion);
   }
 
   Future<String?> addressFromPoint(double lat, double lon) async {
