@@ -139,7 +139,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                         vm.clearSuggestions();
                         _keySearchBar.currentState
                             ?.resetToBase(); // limpia campo
-                        _collapse(); // colapsa sheet
+                        widget.abrirDetalleDireccion();
                       },
                     );
                   },
@@ -189,7 +189,6 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                             changeHeader: widget.closeFilter,
                             expandir: expand,
                             onSubmitted: widget.buscarDireccion,
-                            cerrar: _collapse,
                             detalleDireccion: widget.abrirDetalleDireccion,
                           ),
                   ),
