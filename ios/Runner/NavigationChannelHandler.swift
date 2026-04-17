@@ -76,6 +76,10 @@ final class NavigationChannelHandler {
             cancelNavigation(result: result)
         case "centerTurnByTurnCamera":
             centerTurnByTurnCamera(result: result)
+        case "centerOnCoordinate":
+            centerOnCoordinate(arguments: call.arguments, result: result)
+        case "getCameraCenter":
+            getCameraCenter(result: result)
         case "setMapStyle":
             setMapStyle(arguments: call.arguments, result: result)
         case "updatePreviewSheetInset":
@@ -154,6 +158,36 @@ final class NavigationChannelHandler {
         result([
             "event": "navigationCameraCentered",
             "cameraState": "following"
+        ])
+    }
+
+    private func centerOnCoordinate(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let latitude = Self.doubleValue(args["latitude"]),
+              let longitude = Self.doubleValue(args["longitude"]) else {
+            result(FlutterError(code: "invalid_camera_args", message: "Camera center arguments are invalid.", details: nil))
+            return
+        }
+
+        let zoom = Self.doubleValue(args["zoom"]) ?? 15
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        mapView?.centerOnCoordinate(coordinate, zoom: zoom)
+        result([
+            "event": "cameraCentered",
+            "latitude": latitude,
+            "longitude": longitude
+        ])
+    }
+
+    private func getCameraCenter(result: @escaping FlutterResult) {
+        guard let coordinate = mapView?.cameraCenterCoordinate else {
+            result(nil)
+            return
+        }
+
+        result([
+            "latitude": coordinate.latitude,
+            "longitude": coordinate.longitude
         ])
     }
 
