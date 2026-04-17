@@ -396,67 +396,60 @@ class SheetAddressState extends State<SheetAddress> {
                               opacity: contentOpacity,
                               child: Column(
                                 children: [
-                                  SizedBox(width: double.infinity, child: lineDivider()),
-                                  // Acciones para elegir tipo de ruta
+                                  // Botones para elegir tipo perfil de ruta
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            margin: const EdgeInsets.only(top: 8),
-                                            padding: const EdgeInsets.all(2),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(24),
-                                              border: Border.all(width: 1, color: Colors.grey.shade300,),
-                                              color: Colors.grey.shade100,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      widget.generateRouteCar();
-                                                      _showBottomActions = !_showBottomActions;
-                                                      botonSeleccionado = !botonSeleccionado;
-                                                      generarRuta = !generarRuta;
-                                                    });
-                                                  },
-                                                  icon: const Icon(Icons.directions_car),
-                                                  color: botonSeleccionado
-                                                      ? Colors.black
-                                                      : Colors.blue.shade300,
-                                                ),
-                                                IconButton(
-                                                  onPressed: () {
-                                                    setState((){
-                                                      widget.generateRouteBike();
-                                                      _showBottomActions = !_showBottomActions;
-                                                      generarRuta = !generarRuta;
-                                                    });
-                                                  },
-                                                  icon: const Icon(Icons.directions_bike),
-                                                  color: Colors.grey.shade700,
-                                                ),
-                                                IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      widget.generateRouteWalk();
-                                                      _showBottomActions = !_showBottomActions;
-                                                      generarRuta = !generarRuta;
-                                                    });
-                                                  },
-                                                  icon: const Icon(Icons.directions_walk),
-                                                  color: Colors.grey.shade700,
-                                                ),
-                                              ],
-                                            ),
+                                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child:  Container(
+                                      decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(24),
+                                      border: Border.all(width: 1, color: Colors.grey.shade300,),
+                                      color: Colors.grey.shade100,
+                                    ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                widget.generateRouteCar();
+                                                _showBottomActions = !_showBottomActions;
+                                                botonSeleccionado = !botonSeleccionado;
+                                                generarRuta = !generarRuta;
+                                              });
+                                            },
+                                            icon: const Icon(Icons.directions_car),
+                                            color: botonSeleccionado
+                                                ? Colors.black
+                                                : Colors.blue.shade300,
                                           ),
-                                        ),
-                                      ],
+                                          IconButton(
+                                            onPressed: () {
+                                              setState((){
+                                                widget.generateRouteBike();
+                                                _showBottomActions = !_showBottomActions;
+                                                generarRuta = !generarRuta;
+                                              });
+                                            },
+                                            icon: const Icon(Icons.directions_bike),
+                                            color: Colors.grey.shade700,
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                widget.generateRouteWalk();
+                                                _showBottomActions = !_showBottomActions;
+                                                generarRuta = !generarRuta;
+                                              });
+                                            },
+                                            icon: const Icon(Icons.directions_walk),
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                      
+                                  
 
                                   // Lista de paradas agregadas a la ruta
                                   Expanded(
