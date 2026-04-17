@@ -26,6 +26,7 @@ class SheetAddress extends StatefulWidget {
   final Future<void> Function() iniciarRuta;
   final Map<String, dynamic> navigationPayload;
   final Future<void> Function() cancelNavigation;
+  final Future<void> Function() cancelSetCamera;
 
   const SheetAddress({
     super.key,
@@ -40,6 +41,7 @@ class SheetAddress extends StatefulWidget {
     required this.iniciarRuta,
     required this.navigationPayload,
     required this.cancelNavigation,
+    required this.cancelSetCamera,
   });
 
   @override
@@ -373,8 +375,10 @@ class SheetAddressState extends State<SheetAddress> {
                                           icon: Icons.close,
                                           onPressed: () {
                                             _sheet?.showFirstChild();
+                                            //TODO: this need a little delay to avoid conflicts with the sheet animation, should be fixed in the future
                                             _sheet?.collapseSheet();
                                             widget.cancelNavigation();
+                                            widget.cancelSetCamera();
                                           },
                                         ),
                                       ],
