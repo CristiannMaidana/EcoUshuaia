@@ -94,19 +94,18 @@ class _DetalleRutaState extends State<DetalleRuta> {
             ],
           ),
 
-          //Informacion de conteendor
+          //Informacion de contenedor
           //TOOD: cambiar para que solo aparezca si eligio un contenedor en parada
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               //TODO: Cambiar color según el tipo de residuo
               color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(26),
               border: Border.all(color: Colors.black12, width: 1),
             ),
             // TODO: Mostrar la cantidad de residuo que tiene o que puede llevar?
-            child: Text(
-              '0.34 kg',
+            child: Text('0.34 kg',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: Colors.black87,
@@ -123,8 +122,6 @@ class _DetalleRutaState extends State<DetalleRuta> {
               padding: const EdgeInsets.symmetric(horizontal: 18),
             ),
             onPressed: () {
-              //TODO: Iniciar navegación nativa con la ruta generada, y cerrar el sheet de detalle de ruta,
-              //mostrar sheet de navegación con indicaciones paso a paso, y opciones para finalizar ruta, compartir ruta, etc.
               widget.botonIr();
             },
             child: Text('IR', style: Theme.of(context).textTheme.labelLarge),
