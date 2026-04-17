@@ -84,11 +84,6 @@ class MapaPage extends StatefulWidget {
 }
 
 class _MapaScreenStatePage extends State<MapaPage> {
-  static const double _routeOriginLatitude = -54.8272;
-  static const double _routeOriginLongitude = -68.3385;
-  static const double _routeDestinationLatitude = -54.8061;
-  static const double _routeDestinationLongitude = -68.3038;
-
   final GlobalKey<ContainerDetailState> _detailKey =
       GlobalKey<ContainerDetailState>();
   final _perms = LocationPermissionService.I;
@@ -155,7 +150,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     _sheetAddressKey.currentState?.addContenedor(contenedor);
   }
 
-  Future<void> _getCoordenates() async {
+  Future<void> _getCoordenates({bool updateAddress = true}) async {
     final ok =
         _hasLocationPermission ||
         await _perms.ensureWhenInUsePermission(context);
@@ -174,8 +169,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
     setState(() {
       final lon = puntos['lon'] ?? _addressLon;
       final lat = puntos['lat'] ?? _addressLat;
-      _addressLon = lon;
-      _addressLat = lat;
+      if (updateAddress) {
+        _addressLon = lon;
+        _addressLat = lat;
+      }
       _userPoint = <String, double>{'lon': lon, 'lat': lat};
     });
   }
@@ -306,13 +303,23 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final bridge = _nativeNavigationBridge;
     if (bridge == null) return;
 
+    if (_userPoint['lat'] == 0 || _userPoint['lon'] == 0) {
+      await _getCoordenates(updateAddress: false);
+    }
+
+    final originLatitude = _userPoint['lat'];
+    final originLongitude = _userPoint['lon'];
+    if (originLatitude == null || originLongitude == null) return;
+    if (originLatitude == 0 && originLongitude == 0) return;
+    if (_addressLat == 0 && _addressLon == 0) return;
+
     _sheetAddressKey.currentState?.reportPreviewSheetMetrics();
 
     final payload = await bridge.previewRoute(
-      originLatitude: _routeOriginLatitude,
-      originLongitude: _routeOriginLongitude,
-      destinationLatitude: _routeDestinationLatitude,
-      destinationLongitude: _routeDestinationLongitude,
+      originLatitude: originLatitude,
+      originLongitude: originLongitude,
+      destinationLatitude: _addressLat,
+      destinationLongitude: _addressLon,
       profile: profile,
     );
     if (payload != null) _onNativeNavigationPayload(payload);
@@ -357,7 +364,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       }
 
       if (ok) {
-        await _getCoordenates();
+        await _getCoordenates(updateAddress: false);
       }
     });
   }
@@ -373,7 +380,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       await _mapController!.showContenedores(vm.items);
     }
     if (ok) {
-      await _getCoordenates();
+      await _getCoordenates(updateAddress: false);
     }
   }
 
@@ -446,6 +453,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final direccionSeleccionada = (_addressLat == 0 && _addressLon == 0)
+        ? ''
+        : context.watch<MapSearchViewModel>().getDireccionFromPoint(
+            _addressLat,
+            _addressLon,
+          );
+
     return Stack(
       children: [
         Stack(
@@ -574,7 +588,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
               key: _sheetAddressKey,
               openOptionContainer: _abrirSheetAddContainer,
               tuUbicacion: 'Tu ubicación',
-              direccion: 'Dirección seleccionada',
+              direccion: direccionSeleccionada.isEmpty
+                  ? 'Dirección seleccionada'
+                  : direccionSeleccionada,
               userPoint: _userPoint,
               generateRouteCar: _previewNativeDrivingRoute,
               generateRouteBike: _previewNativeCyclingRoute,
@@ -593,6 +609,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
             key: _detailKey,
             container: _contenedorSeleccionado!,
             distancia: _getMetros,
+            buscarDireccion: _buscarDireccion,
+            abrirDetalleDireccion: _abrirDetalleDireccion,
+            generateRouteCar: _previewNativeDrivingRoute,
           ),
 
         //Sheet para agregar contenedores a la ruta
