@@ -100,8 +100,8 @@ class DomicilioDto {
       'coordenada': coordenada == null
           ? null
           : <String, dynamic>{
-              'latitud': coordenada!.latitud,
-              'longitud': coordenada!.longitud,
+              'type': 'Point',
+              'coordinates': [coordenada!.longitud, coordenada!.latitud],
             },
     };
 
@@ -119,6 +119,15 @@ class DomicilioDto {
 
     if (nested is Map) {
       final map = nested.cast<String, dynamic>();
+      final coordinates = map['coordinates'];
+      if (coordinates is List && coordinates.length >= 2) {
+        final lon = _toDouble(coordinates[0]);
+        final lat = _toDouble(coordinates[1]);
+        if (lat != null && lon != null) {
+          return Coordenada(latitud: lat, longitud: lon);
+        }
+      }
+
       final lat = _toDouble(map['latitud'] ?? map['lat']);
       final lon = _toDouble(map['longitud'] ?? map['lon'] ?? map['lng']);
       if (lat != null && lon != null) {
