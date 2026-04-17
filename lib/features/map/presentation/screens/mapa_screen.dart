@@ -582,6 +582,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
               iniciarRuta: _startNativeNavigation,
               navigationPayload: _nativeNavigationPayload,
+              cancelNavigation: _cancelNativeNavigation,
             ),
           ),
 
