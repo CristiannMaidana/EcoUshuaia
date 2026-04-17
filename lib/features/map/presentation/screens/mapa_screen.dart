@@ -584,6 +584,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               generateRouteWalk: _previewNativeWalkingRoute,
               onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
               iniciarRuta: _startNativeNavigation,
+              navigationPayload: _nativeNavigationPayload,
             ),
           ),
 
