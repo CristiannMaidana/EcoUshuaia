@@ -35,9 +35,26 @@ class ApiClient {
     String message = 'Error del servidor';
     try {
       final body = json.decode(utf8.decode(res.bodyBytes));
-      message = body is Map && body['detail'] != null ? body['detail'].toString() : message;
+      message = _errorMessage(body) ?? message;
     } catch (_) {}
     throw ServerException(message, statusCode: code);
+  }
+
+  String? _errorMessage(Object? body) {
+    if (body is String && body.trim().isNotEmpty) return body;
+    if (body is List && body.isNotEmpty) return body.join(', ');
+    if (body is! Map || body.isEmpty) return null;
+
+    final detail = body['detail'];
+    if (detail != null) return detail.toString();
+
+    return body.entries
+        .map((entry) {
+          final value = entry.value;
+          final text = value is List ? value.join(', ') : value.toString();
+          return '${entry.key}: $text';
+        })
+        .join(' | ');
   }
   
   Map<String, String> _jsonHeaders([Map<String, String>? extra]) {
