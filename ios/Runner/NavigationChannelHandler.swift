@@ -143,6 +143,7 @@ final class NavigationChannelHandler {
         mapView?.clearDestinationPreview()
         mapView?.stopPreviewOverviewMode()
         mapView?.resetAfterNavigationCancel()
+        mapView?.resetCameraToIdle()
 
         channel.invokeMethod("onNavigationStateChanged", arguments: payload)
         result(payload)
