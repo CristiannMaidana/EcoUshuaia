@@ -9,7 +9,6 @@ class SerchBar extends StatefulWidget {
   final VoidCallback changeHeader;
   final VoidCallback expandir;
   final Future<void> Function(double lat, double lon) onSubmitted;
-  final VoidCallback cerrar;
   final VoidCallback detalleDireccion;
 
   const SerchBar({
@@ -17,7 +16,6 @@ class SerchBar extends StatefulWidget {
     required this.changeHeader,
     required this.expandir,
     required this.onSubmitted,
-    required this.cerrar,
     required this.detalleDireccion,
   });
 
@@ -77,11 +75,9 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin 
                   final place = await vm.searchFirst(value);
                   if (place != null) {
                     await widget.onSubmitted(place.lat, place.lon);
+                    widget.detalleDireccion(); // Abrir detalle de direccion
                   }
                   vm.clearSuggestions(); // Limpiar sugerencias al enviar
-                  widget.cerrar(); // Cerrar el sheet
-                  //TODO: enviar direccion seleccionada al mapa para mostrar pin y ruta, y eliminar resto de pines, solo contenedores, cargandolo en metodo
-                  widget.detalleDireccion(); // Abrir detalle de direccion
                 },
               ),
             ),
