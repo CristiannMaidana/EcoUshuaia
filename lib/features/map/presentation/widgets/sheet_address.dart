@@ -25,6 +25,7 @@ class SheetAddress extends StatefulWidget {
   final Future<void> Function(double height, String state)? onPreviewSheetMetricsChanged;
   final Future<void> Function() iniciarRuta;
   final Map<String, dynamic> navigationPayload;
+  final Future<void> Function() cancelNavigation;
 
   const SheetAddress({
     super.key,
@@ -38,6 +39,7 @@ class SheetAddress extends StatefulWidget {
     this.onPreviewSheetMetricsChanged,
     required this.iniciarRuta,
     required this.navigationPayload,
+    required this.cancelNavigation,
   });
 
   @override
@@ -372,6 +374,7 @@ class SheetAddressState extends State<SheetAddress> {
                                           onPressed: () {
                                             _sheet?.showFirstChild();
                                             _sheet?.collapseSheet();
+                                            widget.cancelNavigation();
                                           },
                                         ),
                                       ],
