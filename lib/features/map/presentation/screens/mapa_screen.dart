@@ -580,6 +580,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               aplicarFiltros: _applyFilters,
               buscarDireccion: _buscarDireccion,
               abrirDetalleDireccion: _abrirDetalleDireccion,
+              generateRouteCar: _previewNativeDrivingRoute,
             ),
             child2: SheetAddress(
               key: _sheetAddressKey,
@@ -633,6 +634,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
                       setState(() => openSheetAddContainer = false);
                     },
                     add: _agregarDireccionNueva,
+                    buscarDireccion: _buscarDireccion,
+                    abrirDetalleDireccion: _abrirDetalleDireccion,
+                    generateRouteCar: _previewNativeDrivingRoute,
                   ),
                 ),
               ],
