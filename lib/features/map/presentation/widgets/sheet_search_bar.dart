@@ -168,13 +168,14 @@ class SheetSearchBarState extends State<SheetSearchBar> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Barra
+              // Barra de agarre para arrastrar el sheet
               Padding(
                 padding: const EdgeInsets.only(bottom: 6.3),
                 child: BarraAgarre(),
               ),
 
-              // Barra de busqueda o header de filtros
+              // Header del sheet
+              // El header es el searchBar o el header de filtros dependiendo del estado del sheet
               CompositedTransformTarget(
                 link: _searchBarLink,
                 child: Padding(
@@ -201,7 +202,8 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                 ),
               ),
 
-              // Contenido cambiable del sheet cuando se expande
+              // Contenido del sheet expandido
+              // Contenido de filtros o busqueda dependiendo del estado del sheet
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, viewport) {
@@ -227,7 +229,8 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                 ),
               ),
 
-              // Contenido para botones inamovible inferior
+              // Seccion inferior inamovible  
+              // Boton cerrar y texto de filtros aplicados inferior
               if (widget.cambio)
                 Container(
                   height: 56,
