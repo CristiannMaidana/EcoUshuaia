@@ -16,6 +16,7 @@ class SheetSearchBar extends StatefulWidget {
   final VoidCallback aplicarFiltros;
   final Future<void> Function(double lat, double lon) buscarDireccion;
   final VoidCallback abrirDetalleDireccion;
+  final Future<void> Function() generateRouteCar;
 
   SheetSearchBar({
     super.key,
@@ -24,6 +25,7 @@ class SheetSearchBar extends StatefulWidget {
     required this.aplicarFiltros,
     required this.buscarDireccion,
     required this.abrirDetalleDireccion,
+    required this.generateRouteCar,
   });
 
   @override
@@ -222,7 +224,11 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                             ? ContentFilter(
                                 aplicarFiltros: widget.aplicarFiltros,
                               )
-                            : ContentSearch(),
+                            : ContentSearch(
+                                buscarDireccion: widget.buscarDireccion,
+                                abrirDetalleDireccion: widget.abrirDetalleDireccion,
+                                generateRouteCar: widget.generateRouteCar,
+                              ),
                       ),
                     );
                   },
