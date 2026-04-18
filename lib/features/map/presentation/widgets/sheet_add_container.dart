@@ -14,6 +14,9 @@ class SheetAddContainer extends StatefulWidget {
   final double maxChildSize;
   final VoidCallback? onClosed;
   final ValueChanged<Contenedor> add;
+  final Future<void> Function(double lat, double lon)? buscarDireccion;
+  final VoidCallback? abrirDetalleDireccion;
+  final Future<void> Function()? generateRouteCar;
 
   const SheetAddContainer({
     super.key,
@@ -24,6 +27,9 @@ class SheetAddContainer extends StatefulWidget {
     this.maxChildSize = .7,
     this.onClosed,
     required this.add,
+    this.buscarDireccion,
+    this.abrirDetalleDireccion,
+    this.generateRouteCar,
   });
 
   @override
@@ -203,6 +209,10 @@ class SheetAddContainerState extends State<SheetAddContainer> {
                                         contenedor: contenedoresCercanos[index],
                                         ir: widget.add,
                                         deleteFavorito: () {}, 
+                                        bajarSheet: collapse,
+                                        buscarDireccion: widget.buscarDireccion,
+                                        abrirDetalleDireccion: widget.abrirDetalleDireccion,
+                                        generateRouteCar: widget.generateRouteCar,
                                         //TODO: implementar eliminar favorito desde la carta de detalles recientes
                                       ),
                                     );
