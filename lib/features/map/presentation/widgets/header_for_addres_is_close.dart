@@ -33,7 +33,7 @@ class HeaderForAddressIsClose extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(address,
+                Text(_addressOnly(address),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 CircleIcon(
@@ -46,5 +46,10 @@ class HeaderForAddressIsClose extends StatelessWidget{
         ),
       ),
     );
+  }
+
+  String _addressOnly(String value) {
+    final firstPart = value.split(',').first.trim();
+    return firstPart.isEmpty ? value : firstPart;
   }
 }
