@@ -493,6 +493,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
         ),
         const SizedBox.expand(),
 
+        // Seccion de permisos de ubicacion
         if (!_hasLocationPermission)
           if (!_nativeRouteReady || !_nativeNavigationStarted)
             Positioned.fill(
@@ -504,8 +505,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Text(
-                          'Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
+                        child: Text('Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.white),
                         ),
@@ -527,6 +527,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
             ),
 
+        // Botones flotantes para opciones de mapa y centrado de camara
         if (!_nativeRouteReady || !_nativeNavigationStarted)
           Positioned(
             right: 24,
