@@ -36,6 +36,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   final LayerLink _searchBarLink = LayerLink();
 
   final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
+  bool _collapseFilterOnClose = true;
 
   @override
   void initState() {
@@ -72,6 +73,11 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   // Reseteo sheet a tamaño inicial
   Future<void> _collapse() async {
     await _sheet?.collapseSheet();
+  }
+
+  void _openFilter() {
+    _collapseFilterOnClose = _sheet?.isCollapsed ?? true;
+    widget.closeFilter();
   }
 
   // Agrando el sheet a su tamaño maximo
@@ -186,7 +192,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                           )
                         : SerchBar(
                             key: _keySearchBar,
-                            changeHeader: widget.closeFilter,
+                            changeHeader: _openFilter,
                             expandir: expand,
                             onSubmitted: widget.buscarDireccion,
                             detalleDireccion: widget.abrirDetalleDireccion,
@@ -246,8 +252,9 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                         OutlinedButton(
                           onPressed: () {
                             widget.closeFilter();
-                            //TODO: if sheet is collapset, collaps else no
-                            _collapse();
+                            if (_collapseFilterOnClose) {
+                              _collapse();
+                            }
                           },
                           child: Text('Cerrar'),
                         ),
