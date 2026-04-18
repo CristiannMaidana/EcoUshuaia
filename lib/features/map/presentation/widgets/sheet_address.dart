@@ -51,7 +51,7 @@ class SheetAddressState extends State<SheetAddress> {
   FlotanteSheetState? get _sheet => context.findAncestorStateOfType<FlotanteSheetState>();
 
   bool _showBottomActions = true;
-  int _selectedRouteProfile = 0;
+  int _selectedRouteProfile = -1;
   bool generarRuta = false;
   double? _lastPreviewSheetHeight;
   String? _lastPreviewSheetState;
