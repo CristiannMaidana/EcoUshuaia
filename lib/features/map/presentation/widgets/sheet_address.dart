@@ -51,7 +51,7 @@ class SheetAddressState extends State<SheetAddress> {
   FlotanteSheetState? get _sheet => context.findAncestorStateOfType<FlotanteSheetState>();
 
   bool _showBottomActions = true;
-  bool botonSeleccionado = true;
+  int _selectedRouteProfile = 0;
   bool generarRuta = false;
   double? _lastPreviewSheetHeight;
   String? _lastPreviewSheetState;
@@ -372,6 +372,7 @@ class SheetAddressState extends State<SheetAddress> {
                     ],
                   ),
                   // Contenido del sheet
+                  //Cambiar color a icons seleccionados
                   Expanded(
                     child: sheet.isCollapsed
                         ? CustomScrollView(
@@ -407,36 +408,42 @@ class SheetAddressState extends State<SheetAddress> {
                                               setState(() {
                                                 widget.generateRouteCar();
                                                 _showBottomActions = !_showBottomActions;
-                                                botonSeleccionado = !botonSeleccionado;
+                                                _selectedRouteProfile = 0;
                                                 generarRuta = !generarRuta;
                                               });
                                             },
                                             icon: const Icon(Icons.directions_car),
-                                            color: botonSeleccionado
-                                                ? Colors.black
-                                                : Colors.blue.shade300,
+                                            color: _selectedRouteProfile == 0
+                                                ? Colors.blue.shade300
+                                                : Colors.grey.shade700,
                                           ),
                                           IconButton(
                                             onPressed: () {
                                               setState((){
                                                 widget.generateRouteBike();
                                                 _showBottomActions = !_showBottomActions;
+                                                _selectedRouteProfile = 1;
                                                 generarRuta = !generarRuta;
                                               });
                                             },
                                             icon: const Icon(Icons.directions_bike),
-                                            color: Colors.grey.shade700,
+                                            color: _selectedRouteProfile == 1
+                                                ? Colors.blue.shade300
+                                                : Colors.grey.shade700,
                                           ),
                                           IconButton(
                                             onPressed: () {
                                               setState(() {
                                                 widget.generateRouteWalk();
                                                 _showBottomActions = !_showBottomActions;
+                                                _selectedRouteProfile = 2;
                                                 generarRuta = !generarRuta;
                                               });
                                             },
                                             icon: const Icon(Icons.directions_walk),
-                                            color: Colors.grey.shade700,
+                                            color: _selectedRouteProfile == 2
+                                                ? Colors.blue.shade300
+                                                : Colors.grey.shade700,
                                           ),
                                         ],
                                       ),
