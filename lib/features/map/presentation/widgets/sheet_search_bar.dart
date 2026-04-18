@@ -221,7 +221,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                 ),
               ),
 
-              // Contenido para cierre de filtros inamovible inferior
+              // Contenido para botones inamovible inferior
               if (widget.cambio)
                 Container(
                   height: 56,
@@ -246,6 +246,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                         OutlinedButton(
                           onPressed: () {
                             widget.closeFilter();
+                            //TODO: if sheet is collapset, collaps else no
                             _collapse();
                           },
                           child: Text('Cerrar'),
