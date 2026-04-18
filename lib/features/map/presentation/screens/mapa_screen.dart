@@ -540,7 +540,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   backgroundColor: camarone500,
                   child: Image.asset('assets/icons/mapa/maps-style.png'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 FloatingActionButton(
                   heroTag: 'fab-center-camera',
                   onPressed: _centerNativeTurnByTurnCamera,
