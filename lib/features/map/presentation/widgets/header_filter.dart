@@ -24,11 +24,11 @@ class HeaderFilter extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.only(left: 16, bottom: 20, right: 16),
             child: Row(
               children: [
                 //Titulo
-                Text('Filtros', style: Theme.of(context).textTheme.titleLarge),
+                Text('Filtros', style: Theme.of(context).textTheme.headlineLarge),
                 const Spacer(),
                 
                 //Boton limpiar filtros
