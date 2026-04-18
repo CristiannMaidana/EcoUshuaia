@@ -534,26 +534,22 @@ class _MapaScreenStatePage extends State<MapaPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Row(
-                  children: [
-                    FloatingActionButton(
-                      heroTag: 'fab-map-style',
-                      onPressed: () => _mostrarOpciones(context),
-                      backgroundColor: camarone500,
-                      child: Image.asset('assets/icons/mapa/maps-style.png'),
-                    ),
-                    const SizedBox(width: 20),
-                    FloatingActionButton(
-                      heroTag: 'fab-center-camera',
-                      onPressed: _centerNativeTurnByTurnCamera,
-                      backgroundColor: camarone500,
-                      child: const Icon(
-                        Icons.my_location,
-                        color: Colors.black,
-                        size: 32,
-                      ),
-                    ),
-                  ],
+                FloatingActionButton(
+                  heroTag: 'fab-map-style',
+                  onPressed: () => _mostrarOpciones(context),
+                  backgroundColor: camarone500,
+                  child: Image.asset('assets/icons/mapa/maps-style.png'),
+                ),
+                const SizedBox(height: 20),
+                FloatingActionButton(
+                  heroTag: 'fab-center-camera',
+                  onPressed: _centerNativeTurnByTurnCamera,
+                  backgroundColor: camarone500,
+                  child: const Icon(
+                    Icons.my_location,
+                    color: Colors.black,
+                    size: 32,
+                  ),
                 ),
               ],
             ),
