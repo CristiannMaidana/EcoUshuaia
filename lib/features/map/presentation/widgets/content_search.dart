@@ -5,7 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ContentSearch extends StatefulWidget {
-  const ContentSearch({super.key});
+  final Future<void> Function(double lat, double lon)? buscarDireccion;
+  final VoidCallback? abrirDetalleDireccion;
+  final Future<void> Function()? generateRouteCar;
+
+  const ContentSearch({
+    super.key,
+    this.buscarDireccion,
+    this.abrirDetalleDireccion,
+    this.generateRouteCar,
+  });
 
   @override
   State<ContentSearch> createState() => ContentSearchState();
@@ -38,6 +47,9 @@ class ContentSearchState extends State<ContentSearch> {
                             child: CartaDetallesRecientes(
                               contenedor: contenedor,
                               deleteFavorito: () => vmFavoritos.removeFavoritoById(contenedor.idContenedor),
+                              buscarDireccion: widget.buscarDireccion,
+                              abrirDetalleDireccion: widget.abrirDetalleDireccion,
+                              generateRouteCar: widget.generateRouteCar,
                             ),
                           ),
                         )
