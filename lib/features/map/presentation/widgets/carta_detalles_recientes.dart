@@ -10,12 +10,20 @@ class CartaDetallesRecientes extends StatelessWidget{
   final Contenedor? contenedor;
   final ValueChanged<Contenedor>? ir;
   final VoidCallback deleteFavorito;
+  final Future<void> Function()? bajarSheet;
+  final Future<void> Function(double lat, double lon)? buscarDireccion;
+  final VoidCallback? abrirDetalleDireccion;
+  final Future<void> Function()? generateRouteCar;
 
   const CartaDetallesRecientes({
     super.key,
     this.contenedor,
     this.ir,
     required this.deleteFavorito,
+    this.bajarSheet,
+    this.buscarDireccion,
+    this.abrirDetalleDireccion,
+    this.generateRouteCar,
   });
 
   @override
@@ -80,12 +88,31 @@ class CartaDetallesRecientes extends StatelessWidget{
                 ),
               ),
               IconButton(
-                onPressed: (contenedor == null || ir == null)
+                onPressed: contenedor == null
                     ? null
-                    : () {
+                    : ()  async {
                         final current = contenedor!;
-                        ir!(current);
+                        final coord = current.coordenada;
+                        if (coord == null) return;
+
+                        final bajarSheet = this.bajarSheet;
+                        if (bajarSheet != null) {
+                          await bajarSheet();
+                        }
+                        ir?.call(current);
                         vmContenedores.removeCercanoById(current.idContenedor);
+                        final buscarDireccion = this.buscarDireccion;
+                        if (buscarDireccion != null) {
+                          await buscarDireccion(
+                            coord.latitud,
+                            coord.longitud,
+                          );
+                        }
+                        abrirDetalleDireccion?.call();
+                        final generateRouteCar = this.generateRouteCar;
+                        if (generateRouteCar != null) {
+                          await generateRouteCar();
+                        }
                       },
                 icon: Icon(Icons.arrow_forward),
                 style: IconButton.styleFrom(
