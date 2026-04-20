@@ -1,4 +1,4 @@
-//import 'package:eco_ushuaia/ui/mapaUshuaia.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:flutter/material.dart';
 
 class CustomContenedoresUsuario extends StatefulWidget {
@@ -29,7 +29,11 @@ class _CustomContenedoresUsuarioState extends State<CustomContenedoresUsuario> w
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(36),
-            //child: MapaUshuaia()
+            child: MapboxNavigationMapView(
+              latitude: -54.8070,
+              longitude: -68.3047,
+              zoom: 13,
+            ),
           ),
         ),
       ],
