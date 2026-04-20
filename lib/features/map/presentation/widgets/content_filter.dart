@@ -57,7 +57,16 @@ class _ContentFilterState extends State<ContentFilter> {
               title: 'Accesos rapidos',
               initiallyOpen: true,
               child: Wrap(
-                
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.start,
+                children: labelsGenericsFilter.map((label) => CustomButtonFilter(
+                  label: label, 
+                  onTap: widget.aplicarFiltros, 
+                  tipoDeBoton: 'G_$label',
+                  //TODO: change for the correct ids of type of filter
+                  idEntidades: List.generate(3, (index) => index)
+                )).toList(),
               )
             ),
           ),
