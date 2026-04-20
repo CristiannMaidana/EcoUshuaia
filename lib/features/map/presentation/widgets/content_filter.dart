@@ -49,6 +49,18 @@ class _ContentFilterState extends State<ContentFilter> {
       color: camarone100,
       child: Column(
         children: [
+          // Seccion de filtros generales
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+            child: ExpansionTileCustom(
+              title: 'Accesos rapidos',
+              initiallyOpen: true,
+              child: Wrap(
+                
+              )
+            ),
+          ),
+
           // Seccion de tipo de residuos
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
