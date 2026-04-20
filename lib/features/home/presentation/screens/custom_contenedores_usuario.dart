@@ -2,7 +2,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_
 import 'package:flutter/material.dart';
 
 class CustomContenedoresUsuario extends StatefulWidget {
-  const CustomContenedoresUsuario({Key? key}) : super(key: key);
+  const CustomContenedoresUsuario({super.key});
 
   @override
   State<CustomContenedoresUsuario> createState() => _CustomContenedoresUsuarioState();
