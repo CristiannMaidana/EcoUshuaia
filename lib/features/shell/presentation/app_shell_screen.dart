@@ -9,6 +9,7 @@ import 'package:eco_ushuaia/features/settings/presentation/settings_screen.dart'
 import 'package:eco_ushuaia/features/shell/data/repositories/usuario_repository_imp.dart';
 import 'package:eco_ushuaia/features/shell/data/sources/usuarios_remote_data_sources.dart';
 import 'package:eco_ushuaia/features/shell/domain/repositories/usuario_repository.dart';
+import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +50,24 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen> {
     _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
   }
 
+  void _selectTab(int idx) {
+    if (idx == _selectedIndex) {
+      if (_shouldResetTabOnSelect(idx)) {
+        _resetTabToRoot(idx);
+      }
+      return;
+    }
+
+    setState(() {
+      _selectedIndex = idx;
+      _loadedTabs[idx] = true;
+    });
+
+    if (_shouldResetTabOnSelect(idx)) {
+      _resetTabToRoot(idx);
+    }
+  }
+
   Widget _buildTabNavigator(int index) {
     if (!_loadedTabs[index]) {
       return const SizedBox.shrink();
@@ -84,30 +103,20 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen> {
               domicilioVm!..syncWithUserId(usuarioVm.usuario?.idDireccion),
         ),
       ],
-      child: Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: List.generate(_pageBuilders.length, _buildTabNavigator),
-        ),
-        bottomNavigationBar: ButtomNavBar(
-          selectedIndex: _selectedIndex,
-          onTabSelected: (idx) {
-            if (idx == _selectedIndex) {
-              if (_shouldResetTabOnSelect(idx)) {
-                _resetTabToRoot(idx);
-              }
-              return;
-            }
-
-            setState(() {
-              _selectedIndex = idx;
-              _loadedTabs[idx] = true;
-            });
-
-            if (_shouldResetTabOnSelect(idx)) {
-              _resetTabToRoot(idx);
-            }
-          },
+      child: NotificationListener<ShellTabSelectionNotification>(
+        onNotification: (notification) {
+          _selectTab(notification.index);
+          return true;
+        },
+        child: Scaffold(
+          body: IndexedStack(
+            index: _selectedIndex,
+            children: List.generate(_pageBuilders.length, _buildTabNavigator),
+          ),
+          bottomNavigationBar: ButtomNavBar(
+            selectedIndex: _selectedIndex,
+            onTabSelected: _selectTab,
+          ),
         ),
       ),
     );
