@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class HeaderFilter extends StatelessWidget{
   Widget build(BuildContext context) {
     final vmButtonFilter = context.read<ButtonFilterViewmodel>();
     final vmContenedor = context.read<ContenedorViewModel>();
+    final vmFavoritos = context.read<UsuarioContenedoresFavoritosViewModel>();
 
     return Column(
       children: [
@@ -55,9 +57,14 @@ class HeaderFilter extends StatelessWidget{
                   height: 36, 
                   width: 93,
                   child: ElevatedButton(
-                    onPressed: () async{
+                    onPressed: () async {
                       collapse();
-                      await vmContenedor.applyFilter(vmButtonFilter.filtros);
+                      await vmContenedor.applyFilter(
+                        vmButtonFilter.filtros,
+                        filtrarFavoritos: vmButtonFilter.isSelected('Favoritos')
+                            ? vmFavoritos.filtrarContenedoresFavoritos
+                            : null,
+                      );
                       aplicarFiltros();
                     }, 
                     child: const Text('Aplicar', style: TextStyle(fontSize: 13),)
