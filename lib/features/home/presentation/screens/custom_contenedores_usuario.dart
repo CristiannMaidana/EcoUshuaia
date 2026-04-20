@@ -32,14 +32,6 @@ class _CustomContenedoresUsuarioState extends State<CustomContenedoresUsuario> w
             //child: MapaUshuaia()
           ),
         ),
-        FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: Colors.grey[300],
-          foregroundColor: Colors.black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),),
-          child: Text('Filtrar', style: Theme.of(context).textTheme.labelLarge),
-        ),
       ],
     );
   }
