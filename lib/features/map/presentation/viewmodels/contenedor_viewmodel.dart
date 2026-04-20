@@ -77,9 +77,14 @@ class ContenedorViewModel extends ChangeNotifier {
   }
 
   // Metodo para actualizar la lista de contenedores visibles en base a lo que esta cargado
-  Future<void> applyFilter(Map<dynamic, List<int>> idMap) async {
+  Future<void> applyFilter(
+    Map<dynamic, List<int>> idMap, {
+    List<Contenedor> Function(List<Contenedor>)? filtrarFavoritos,
+  }) async {
     List<Contenedor> result = [];
-    _hasActiveFilters = idMap.values.any((ids) => ids.isNotEmpty);
+    final hasFavoritosFilter = filtrarFavoritos != null;
+    _hasActiveFilters =
+        idMap.values.any((ids) => ids.isNotEmpty) || hasFavoritosFilter;
 
     // --- separar grupos ---
     final idsResiduos = idMap[1]; // puede ser null/empty
@@ -127,7 +132,15 @@ class ContenedorViewModel extends ChangeNotifier {
       }
     } else {
       // solo H, o nada seleccionado
-      result = unionH.isNotEmpty ? unionH : (_hasActiveFilters ? <Contenedor>[] : _items);
+      result = unionH.isNotEmpty
+          ? unionH
+          : (_hasActiveFilters && !hasFavoritosFilter
+                ? <Contenedor>[]
+                : _items);
+    }
+
+    if (filtrarFavoritos != null) {
+      result = filtrarFavoritos(result);
     }
 
     _contenedorFiltrado = result;
