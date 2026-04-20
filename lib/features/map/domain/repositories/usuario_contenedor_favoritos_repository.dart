@@ -10,4 +10,6 @@ abstract class UsuarioContenedorFavoritosRepository {
   });
 
   Future<void> deleteById(int idUsuarioRegistroContenedor);
+
+  Future<List<int>> favContainersIdsByUsuario();
 }
