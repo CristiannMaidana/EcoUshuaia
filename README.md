@@ -186,4 +186,11 @@ flutter pub get
 
 ## Documentacion adicional
 
-Este README resume el panorama general del repositorio. La documentación técnica extendida, como arquitectura detallada, integración nativa, configuración por entornos y flujos de desarrollo, puede organizarse en la carpeta `/docs`.
+Este README resume el panorama general del repositorio. La documentacion tecnica complementaria se encuentra en [`/docs`](./docs/README.md).
+
+- [Arquitectura](./docs/arquitectura.md)
+- [Integracion iOS y Mapbox](./docs/integracion-ios-mapbox.md)
+- [Configuracion](./docs/configuracion.md)
+- [Desarrollo local](./docs/desarrollo-local.md)
+- [Backend esperado](./docs/backend-esperado.md)
+- [Roadmap tecnico](./docs/roadmap-tecnico.md)
