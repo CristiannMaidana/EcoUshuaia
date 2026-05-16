@@ -12,10 +12,10 @@ class CalendarioWidget extends StatefulWidget {
   const CalendarioWidget({super.key});
 
   @override
-  State<CalendarioWidget> createState() => _CalendarioWidgetState();
+  State<CalendarioWidget> createState() => CalendarioWidgetState();
 }
 
-class _CalendarioWidgetState extends State<CalendarioWidget> {
+class CalendarioWidgetState extends State<CalendarioWidget> {
   CalendarFormat _format = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -29,6 +29,16 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   void initState() {
     super.initState();
     _yearSelected = _focusedDay.year;
+  }
+
+  void goToday() {
+    setState(() {
+      _focusedDay = DateTime.now();
+      _selectedDay = null;
+    });
+    final vm = context.read<CalendarioViewmodel>();
+    vm.setVisibleMonth(_focusedDay);
+    vm.setSelectedDay(null);
   }
 
   void _goPrevMonth() {
@@ -88,15 +98,7 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
                 _yearSelected = _focusedDay.year;
                 _monthSeleceted = true;
               }),
-              onToday: () {
-                setState(() {
-                  _focusedDay = DateTime.now();
-                  _selectedDay = null;
-                });
-                final vm = context.read<CalendarioViewmodel>();
-                vm.setVisibleMonth(_focusedDay);
-                vm.setSelectedDay(null);
-              },
+              onToday: goToday,
               onPrev: _goPrevMonth,
               onNext: _goNextMonth,
               onNotifications: () {
