@@ -21,6 +21,7 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProviderStateMixin {
+  final GlobalKey<CalendarioWidgetState> _calendarKey = GlobalKey<CalendarioWidgetState>();
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
   final GlobalKey _filterBtnKey = GlobalKey();
   Calendarios? _selectedCal;
@@ -203,13 +204,30 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                   ),
-                  child: CalendarioWidget(),
+                  child: CalendarioWidget(key: _calendarKey),
                 ),
                 const SizedBox(height: 400),
               ],
             ),
 
             CustomNovedades(expand:  _onNovedadTap),
+            Positioned(
+              right: 24,
+              bottom: 24,
+              child: SafeArea(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                  ),
+                  child: TextButton(
+                    onPressed: () => _calendarKey.currentState?.goToday(),
+                    child: Text('Hoy', style: Theme.of(context).textTheme.labelMedium),
+                  ),
+                ),
+              ),
+            ),
             
             //Sheet de detalle de noticia
             DragSheetContainer(
