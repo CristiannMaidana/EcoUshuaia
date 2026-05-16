@@ -104,7 +104,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
     final daysInMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 0).day;
     final leadingDays = firstDayOfMonth.weekday - DateTime.monday;
     final weekRows = ((leadingDays + daysInMonth) / 7).ceil();
-    final calendarHeight = (95 + (weekRows * 50));
+    final calendarHeight = (80 + (weekRows * 50));
 
     return ChangeNotifierProvider<CategoriaNoticiasViewmodel>(
       create: (ctx) => CategoriaNoticiasViewmodel(
@@ -193,26 +193,20 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
         ),
         body: Stack(
           children: [
-            ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                AnimatedContainer(
-                  margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  height: calendarHeight.toDouble(),
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFCFEFC),
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                  ),
-                  child: CalendarioWidget(
-                    key: _calendarKey,
-                    onDaySelectedOpenSheet: () => _novedadesKey.currentState?.expandToInitial(),
-                    onDaySelectedCloseSheet: () => _novedadesKey.currentState?.collapse(),
-                  ),
-                ),
-                const SizedBox(height: 400),
-              ],
+            AnimatedContainer(
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              height: calendarHeight.toDouble(),
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: Color(0xFFFCFEFC),
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+              ),
+              child: CalendarioWidget(
+                key: _calendarKey,
+                onDaySelectedOpenSheet: () => _novedadesKey.currentState?.expandToInitial(),
+                onDaySelectedCloseSheet: () => _novedadesKey.currentState?.collapse(),
+              ),
             ),
 
             CustomNovedades(key: _novedadesKey, expand:  _onNovedadTap),
