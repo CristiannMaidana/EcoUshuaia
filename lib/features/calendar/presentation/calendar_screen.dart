@@ -40,7 +40,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
     final daysInMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 0).day;
     final leadingDays = firstDayOfMonth.weekday - DateTime.monday;
     final weekRows = ((leadingDays + daysInMonth) / 7).ceil();
-    final calendarHeight = (135 + (weekRows * 50));
+    final calendarHeight = (125 + (weekRows * 50));
 
     return ChangeNotifierProvider<CategoriaNoticiasViewmodel>(
       create: (ctx) => CategoriaNoticiasViewmodel(
