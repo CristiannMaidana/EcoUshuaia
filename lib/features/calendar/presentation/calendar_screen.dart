@@ -72,15 +72,6 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                       borderRadius: BorderRadius.circular(22),
                       border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                     ),
-                    child: IconButton(icon: const Icon(Icons.notifications), onPressed: () {},),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                    ),
                     child: IconButton(
                       icon: const Icon(Icons.add, color: Colors.black, size: 22,),
                       onPressed: () {
@@ -109,6 +100,15 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                         );
                       },
                     ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                    ),
+                    child: IconButton(icon: const Icon(Icons.notifications), onPressed: () {},),
                   ),
                 ],
               ),
