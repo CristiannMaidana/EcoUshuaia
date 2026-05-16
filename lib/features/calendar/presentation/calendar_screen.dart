@@ -64,42 +64,53 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
           actions: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              child: Container(
-                decoration: _Decoration(context),
-                child: TextButton(
-                  onPressed: () {
-                    showGeneralDialog< void >(
-                      context: context,
-                      barrierDismissible: true,
-                      barrierLabel: 'Nuevo recordatorio',
-                      barrierColor: Colors.black45,
-                      transitionDuration: const Duration(milliseconds: 280),
-                      pageBuilder: (_, __, ___) => Center(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: NewReminder(),
-                        ),
-                      ),
-                      transitionBuilder: (_, anim, __, child) {
-                        final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
-                        return FadeTransition(
-                          opacity: curved,
-                          child: ScaleTransition(
-                            scale: Tween(begin: 0.95, end: 1.0).animate(curved),
-                            child: child,
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                    ),
+                    child: IconButton(icon: const Icon(Icons.notifications), onPressed: () {},),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.add, color: Colors.black, size: 22,),
+                      onPressed: () {
+                        showGeneralDialog< void >(
+                          context: context,
+                          barrierDismissible: true,
+                          barrierLabel: 'Nuevo recordatorio',
+                          barrierColor: Colors.black45,
+                          transitionDuration: const Duration(milliseconds: 280),
+                          pageBuilder: (_, __, ___) => Center(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: NewReminder(),
+                            ),
                           ),
+                          transitionBuilder: (_, anim, __, child) {
+                            final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+                            return FadeTransition(
+                              opacity: curved,
+                              child: ScaleTransition(
+                                scale: Tween(begin: 0.95, end: 1.0).animate(curved),
+                                child: child,
+                              ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.add, color: Colors.black, size: 22,),
-                      SizedBox(width: 8,),
-                      Text('Recordatorio', style: Theme.of(context).textTheme.labelMedium,)
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
@@ -136,13 +147,4 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
       ),
     );
   }
-}
-
-BoxDecoration _Decoration(BuildContext context) {
-  final borderColor = Colors.grey[400]!;
-  return BoxDecoration(
-    color: Colors.grey[300],
-    borderRadius: BorderRadius.circular(14),
-    border: Border.all(color: borderColor, width: 1),
-  );
 }
