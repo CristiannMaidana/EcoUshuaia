@@ -1,6 +1,7 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
@@ -34,6 +35,12 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
+    final visibleMonth = context.watch<CalendarioViewmodel>().visibleMonth;
+    final firstDayOfMonth = DateTime(visibleMonth.year, visibleMonth.month, 1);
+    final daysInMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 0).day;
+    final leadingDays = firstDayOfMonth.weekday - DateTime.monday;
+    final weekRows = ((leadingDays + daysInMonth) / 7).ceil();
+    final calendarHeight = (115 + (weekRows * 50));
 
     return ChangeNotifierProvider<CategoriaNoticiasViewmodel>(
       create: (ctx) => CategoriaNoticiasViewmodel(
@@ -102,9 +109,10 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             ListView(
               padding: EdgeInsets.zero,
               children: [
-                Container(
+                AnimatedContainer(
                   margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  height: 415,
+                  height: calendarHeight.toDouble(),
+                  duration: const Duration(milliseconds: 200),
                   decoration: BoxDecoration(
                     color: Colors.grey[350],
                     borderRadius: BorderRadius.circular(22),
@@ -130,7 +138,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             DragSheetContainer(
               key: _sheetKey,
               child: DetailNews(newCalendar: _selectedCal, onClose: _closeSheet),
-            ),          
+            ),
           ],
         ),
       ),
