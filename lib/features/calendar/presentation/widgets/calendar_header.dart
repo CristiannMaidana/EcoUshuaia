@@ -86,7 +86,6 @@ class CalendarHeader extends StatelessWidget {
               padding: const EdgeInsets.only(right: 15),
               child: Row(
                 children: [
-                  IconButton(icon: const Icon(Icons.notifications), onPressed: onNotifications),
                   TextButton(
                     onPressed: onFilter,
                     child: Container(
