@@ -114,17 +114,9 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                   height: calendarHeight.toDouble(),
                   duration: const Duration(milliseconds: 200),
                   decoration: BoxDecoration(
-                    color: Colors.grey[350],
+                    color: Color(0xFFFCFEFC),
                     borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: Colors.grey[400]!, width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                   ),
                   child: CalendarioWidget(), 
                 ),
