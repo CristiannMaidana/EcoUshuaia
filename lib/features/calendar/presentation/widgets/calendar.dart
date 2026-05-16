@@ -168,9 +168,9 @@ class Calendar extends StatelessWidget {
       child: Text(
         '${day.day}',
         style: TextStyle(
-          fontSize: 14,
-          fontWeight: fontWeight,
-          color: textColor ?? Colors.black87,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: textColor ?? const Color(0xFF6B7280),
         ),
       ),
     );
