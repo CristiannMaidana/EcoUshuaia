@@ -72,38 +72,7 @@ class CalendarHeader extends StatelessWidget {
             ),
           ],
         ),
-
-        // acciones
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                children: [
-                  TextButton(
-                    onPressed: onToday,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      decoration: _Decoration(context),
-                      child: Text('Hoy', style: textTheme.labelMedium),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ],
-    );
-  }
-
-  BoxDecoration _Decoration(BuildContext context) {
-    final borderColor = Colors.grey[400]!;
-    return BoxDecoration(
-      color: Colors.grey[300],
-      borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: borderColor, width: 1),
     );
   }
 }
