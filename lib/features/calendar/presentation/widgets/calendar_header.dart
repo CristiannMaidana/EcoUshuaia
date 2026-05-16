@@ -41,7 +41,7 @@ class CalendarHeader extends StatelessWidget {
 
     return Column(
       children: [
-        // seleccion mes + botón HOY
+        // seleccion mes + chevrons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -66,38 +66,27 @@ class CalendarHeader extends StatelessWidget {
                 ),
               ),
             ),
-            TextButton(
-              onPressed: onToday,
-              child: Container(
-                margin: const EdgeInsets.only(right: 15),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                decoration: _Decoration(context),
-                child: Text('Hoy', style: textTheme.labelMedium),
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Row(
+                children: [
+                  IconButton(icon: const Icon(Icons.chevron_left, size: 30), onPressed: onPrev),
+                  IconButton(icon: const Icon(Icons.chevron_right, size: 30), onPressed: onNext),
+                ],
               ),
             ),
           ],
         ),
 
-        // chevrons izq/der + acciones (filtro / notificaciones)
+        // acciones
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // chevrons
-            Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: Row(
-                children: [
-                  IconButton(icon: const Icon(Icons.chevron_left), onPressed: onPrev),
-                  IconButton(icon: const Icon(Icons.chevron_right), onPressed: onNext),
-                ],
-              ),
-            ),
-
-            // filtro + notificaciones
             Padding(
               padding: const EdgeInsets.only(right: 15),
               child: Row(
                 children: [
+                  IconButton(icon: const Icon(Icons.notifications), onPressed: onNotifications),
                   TextButton(
                     onPressed: onFilter,
                     child: Container(
@@ -113,7 +102,14 @@ class CalendarHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  IconButton(icon: const Icon(Icons.notifications), onPressed: onNotifications),
+                  TextButton(
+                    onPressed: onToday,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      decoration: _Decoration(context),
+                      child: Text('Hoy', style: textTheme.labelMedium),
+                    ),
+                  ),
                 ],
               ),
             ),
