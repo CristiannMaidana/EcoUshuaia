@@ -52,7 +52,14 @@ class CalendarHeader extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: leftInsetTitle),
-                      child: Text(title, textAlign: TextAlign.start, style: textTheme.titleLarge),
+                      child: Text(title, 
+                        textAlign: TextAlign.start, 
+                        style: textTheme.titleLarge?.copyWith(
+                          fontSize: 22, 
+                          fontWeight: FontWeight.w700, 
+                          color: const Color(0xFF111827)
+                        )
+                      ),
                     ),
                     const Icon(Icons.arrow_drop_down),
                   ],
