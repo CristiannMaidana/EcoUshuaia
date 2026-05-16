@@ -11,32 +11,38 @@ class FilterWidget extends StatelessWidget {
     final vm = context.watch<CategoriaNoticiasViewmodel>();
 
     return Container(
+      width: 250,
+      height: 480,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black54, width: 1),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        runAlignment: WrapAlignment.start,
-        spacing: 8,
-        runSpacing: 8,
-        children: vm.items.map((item) {
-          final label       = item.categoria;
-          final color       = _hexToColor(item.colorHex);
-          final idCategoria = item.idCategoriaNoticias;
-          final isSelected  = vm.isSelected(idCategoria);
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Selecciona tipo de noticia:', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: vm.items.map((item) {
+              final label       = item.categoria;
+              final color       = _hexToColor(item.colorHex);
+              final idCategoria = item.idCategoriaNoticias;
+              final isSelected  = vm.isSelected(idCategoria);
 
-          return FilterToggleButton(
-            categoria: label,
-            dotColor: color,
-            selected: isSelected,
-            onPressed: () {
-              vm.toggleCategoria(idCategoria);
-            },
-          );
-        }).toList(),
+              return FilterToggleButton(
+                categoria: label,
+                dotColor: color,
+                selected: isSelected,
+                onPressed: () {
+                  vm.toggleCategoria(idCategoria);
+                },
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }
