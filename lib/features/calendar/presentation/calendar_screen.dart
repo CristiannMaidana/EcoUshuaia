@@ -73,7 +73,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             child: Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: top),
+                padding: EdgeInsets.only(top: top, left: pos.dx - 200 + (size.width / 2)),
                 child: Material(
                   color: Colors.transparent,
                   child: ChangeNotifierProvider<CategoriaNoticiasViewmodel>.value(
