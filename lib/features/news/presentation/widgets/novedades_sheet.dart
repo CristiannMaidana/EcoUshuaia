@@ -16,7 +16,7 @@ class CustomNovedades extends StatefulWidget {
 
 class CustomNovedadesState extends State<CustomNovedades> {
   static const double _initialChildSize = 0.0;
-  static const double _openChildSize = 0.4;
+  static const double _openChildSize = 0.5;
   static const double _minChildSize = 0.0;
   static const double _maxChildSize = 0.8;
   static const double _epsilon = 0.01;
