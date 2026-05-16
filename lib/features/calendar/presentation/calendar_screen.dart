@@ -23,6 +23,7 @@ class CalenderScreen extends StatefulWidget {
 class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProviderStateMixin {
   final GlobalKey<CalendarioWidgetState> _calendarKey = GlobalKey<CalendarioWidgetState>();
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
+  final GlobalKey<CustomNovedadesState> _novedadesKey = GlobalKey<CustomNovedadesState>();
   final GlobalKey _filterBtnKey = GlobalKey();
   Calendarios? _selectedCal;
   OverlayEntry? _filterEntry;
@@ -204,13 +205,13 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                   ),
-                  child: CalendarioWidget(key: _calendarKey),
+                  child: CalendarioWidget(key: _calendarKey, onDaySelectedOpenSheet: () => _novedadesKey.currentState?.expandToInitial()),
                 ),
                 const SizedBox(height: 400),
               ],
             ),
 
-            CustomNovedades(expand:  _onNovedadTap),
+            CustomNovedades(key: _novedadesKey, expand:  _onNovedadTap),
             Positioned(
               right: 24,
               bottom: 24,
