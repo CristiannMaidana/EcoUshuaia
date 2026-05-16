@@ -66,7 +66,7 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(n.titulo,
+                                  Text(n.titulo.toUpperCase(),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context).textTheme.bodyMedium,
