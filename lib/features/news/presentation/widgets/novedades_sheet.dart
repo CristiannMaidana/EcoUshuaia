@@ -137,9 +137,6 @@ Widget build(BuildContext context) {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: _resetAndCollapse,
-            child: Container(
-              color: Colors.black.withOpacity(0.07),
-            ),
           ),
         ),
 
