@@ -123,107 +123,112 @@ class _DetailNewsState extends State<DetailNews> {
 
     final String categoria  = (catId != null) ? (cats.labelFor(catId) ?? 'Sin categoría') : 'Sin categoría';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //Header
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Botones
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CircleIcon(icon: Icons.map, onPressed: widget.onClose),
-                  const SizedBox(width: 10),
-                  CircleIcon(icon: Icons.add, onPressed: widget.onClose),
-                  const SizedBox(width: 10),
-                  CircleIcon(icon: Icons.close, onPressed: widget.onClose),
-                ],
-              ),
-              //Texto Categorias
-              Container(
-                width: 150,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.grey[200],
-                ),
-                child: Row(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //Header
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Botones
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Icon(Icons.message_sharp),
+                    CircleIcon(icon: Icons.map, onPressed: widget.onClose),
                     const SizedBox(width: 10),
-                    Text("${categoria}", style: Theme.of(context).textTheme.labelMedium),
+                    CircleIcon(icon: Icons.add, onPressed: widget.onClose),
+                    const SizedBox(width: 10),
+                    CircleIcon(icon: Icons.close, onPressed: widget.onClose),
                   ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              //Titulo Noticia
-              Text(c.titulo, style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-        //Datos fecha
-        lineDivider(),
-        Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(DateFormat('dd/MM/yy').format(c.fecha), style: Theme.of(context).textTheme.labelMedium,),
-                // Alterna entre "Detalle de fecha" y boton salir
+                //Texto Categorias
                 Container(
-                  key: _anchorKey,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 160),
-                    transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: ScaleTransition(scale: anim, child: child)),
-                    child: _showDateDetail
-                        ? CircleIcon(
-                            key: const ValueKey('close-circle'),
-                            icon: Icons.close,
-                            onPressed: () => _toggleDateDetail(false),
-                          )
-                        : DetailButton(
-                            key: const ValueKey('detail-button'),
-                            onPressed: () => _toggleDateDetail(true),
-                          ),
+                  width: 150,
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey[200],
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.message_sharp),
+                      const SizedBox(width: 10),
+                      Text("${categoria}", style: Theme.of(context).textTheme.labelMedium),
+                    ],
                   ),
                 ),
+                const SizedBox(height: 10),
+                //Titulo Noticia
+                Text(c.titulo, style: Theme.of(context).textTheme.headlineSmall),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-        ),
-        //Datos residuo o nada
-        lineDivider(),
-        Container(
-          color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: InfoGrid(
-              items: [
-                InfoItem('Zona', 'Centro'),
-                InfoItem('Categoría', 'Orgánicos'),
-                InfoItem('Responsable', 'Higiene Urbana'),
-                InfoItem('Contacto', '0800-XXX-1234'),
-              ],
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //Datos fecha
+                  lineDivider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(DateFormat('dd/MM/yy').format(c.fecha), style: Theme.of(context).textTheme.labelMedium,),
+                        // Alterna entre "Detalle de fecha" y boton salir
+                        Container(
+                          key: _anchorKey,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 160),
+                            transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: ScaleTransition(scale: anim, child: child)),
+                            child: _showDateDetail
+                                ? CircleIcon(
+                                    key: const ValueKey('close-circle'),
+                                    icon: Icons.close,
+                                    onPressed: () => _toggleDateDetail(false),
+                                  )
+                                : DetailButton(
+                                    key: const ValueKey('detail-button'),
+                                    onPressed: () => _toggleDateDetail(true),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //Datos residuo o nada
+                  lineDivider(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: InfoGrid(
+                      items: [
+                        InfoItem('Zona', 'Centro'),
+                        InfoItem('Categoría', 'Orgánicos'),
+                        InfoItem('Responsable', 'Higiene Urbana'),
+                        InfoItem('Contacto', '0800-XXX-1234'),
+                      ],
+                    ),
+                  ),
+                  //Texto de novedad
+                  lineDivider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: Text(c.cuerpo, style: Theme.of(context).textTheme.labelMedium),
+                  ),
+                  const Spacer(),
+                ],
+              ),
             ),
           ),
-        ),
-        //Texto de novedad
-        lineDivider(),
-        Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Text(c.cuerpo, style: Theme.of(context).textTheme.labelMedium),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
