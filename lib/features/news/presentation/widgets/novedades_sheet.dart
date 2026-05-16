@@ -8,15 +8,16 @@ import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 class CustomNovedades extends StatefulWidget {
   final ValueChanged<Calendarios> expand;
 
-  const CustomNovedades({Key? key, required this.expand}) : super(key: key);
+  const CustomNovedades({super.key, required this.expand});
 
   @override
-  State<CustomNovedades> createState() => _CustomNovedadesState();
+  State<CustomNovedades> createState() => CustomNovedadesState();
 }
 
-class _CustomNovedadesState extends State<CustomNovedades> {
-  static const double _initialChildSize = 0.4;
-  static const double _minChildSize = 0.4;
+class CustomNovedadesState extends State<CustomNovedades> {
+  static const double _initialChildSize = 0.0;
+  static const double _openChildSize = 0.4;
+  static const double _minChildSize = 0.0;
   static const double _maxChildSize = 0.8;
   static const double _epsilon = 0.01;
 
@@ -32,11 +33,19 @@ class _CustomNovedadesState extends State<CustomNovedades> {
 
     _draggableController.addListener(() {
       final size = _draggableController.size;
-      final expanded = size > (_initialChildSize + _epsilon);
+      final expanded = size > (_minChildSize + _epsilon);
       if (expanded != _isExpanded) {
         setState(() => _isExpanded = expanded);
       }
     });
+  }
+
+  void expandToInitial() {
+    _draggableController.animateTo(
+      _openChildSize,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _scrollListener() {
@@ -73,7 +82,7 @@ class _CustomNovedadesState extends State<CustomNovedades> {
 
   void _bajarSheet() {
     _draggableController.animateTo(
-      _initialChildSize,
+      _openChildSize,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
