@@ -219,7 +219,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
             CustomNovedades(key: _novedadesKey, expand:  _onNovedadTap),
             Positioned(
               right: 24,
-              bottom: 24,
+              bottom: 14,
               child: SafeArea(
                 child: Container(
                   decoration: BoxDecoration(
