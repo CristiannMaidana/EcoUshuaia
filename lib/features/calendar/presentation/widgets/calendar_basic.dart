@@ -9,9 +9,14 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CalendarioWidget extends StatefulWidget {
-  const CalendarioWidget({super.key, this.onDaySelectedOpenSheet});
+  const CalendarioWidget({
+    super.key, 
+    this.onDaySelectedOpenSheet, 
+    this.onDaySelectedCloseSheet
+  });
 
   final VoidCallback? onDaySelectedOpenSheet;
+  final VoidCallback? onDaySelectedCloseSheet;
 
   @override
   State<CalendarioWidget> createState() => CalendarioWidgetState();
@@ -118,12 +123,17 @@ class CalendarioWidgetState extends State<CalendarioWidget> {
                 rowHeight: 50,
                 headerVisible: false,
                 onDaySelected: (sel, foc) {
+                  final hasEvents = _eventsOfFiltered(context, sel).isNotEmpty;
                   setState(() {
                     _selectedDay = sel;
                     _focusedDay = foc;
                   });
                   context.read<CalendarioViewmodel>().setSelectedDay(sel);
-                  widget.onDaySelectedOpenSheet?.call();
+                  if (hasEvents) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      widget.onDaySelectedOpenSheet?.call();
+                    });
+                  }
                 },
                 onPageChanged: (foc) {
                   _focusedDay = foc;
