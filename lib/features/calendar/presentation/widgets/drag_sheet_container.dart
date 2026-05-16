@@ -131,7 +131,7 @@ class DragSheetContainerState extends State<DragSheetContainer> {
               _attachScrollController(scrollController);
 
               return GestureDetector(
-                onTap: () { expand(); },
+                onTap: () => expand(),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
                   child: Stack(
