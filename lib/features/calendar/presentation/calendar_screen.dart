@@ -205,7 +205,11 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                   ),
-                  child: CalendarioWidget(key: _calendarKey, onDaySelectedOpenSheet: () => _novedadesKey.currentState?.expandToInitial()),
+                  child: CalendarioWidget(
+                    key: _calendarKey,
+                    onDaySelectedOpenSheet: () => _novedadesKey.currentState?.expandToInitial(),
+                    onDaySelectedCloseSheet: () => _novedadesKey.currentState?.collapse(),
+                  ),
                 ),
                 const SizedBox(height: 400),
               ],
@@ -223,7 +227,10 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                     border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                   ),
                   child: TextButton(
-                    onPressed: () => _calendarKey.currentState?.goToday(),
+                    onPressed: () {
+                      _calendarKey.currentState?.goToday();
+                      _novedadesKey.currentState?.collapse();
+                    },
                     child: Text('Hoy', style: Theme.of(context).textTheme.labelMedium),
                   ),
                 ),
