@@ -65,6 +65,9 @@ class Calendar extends StatelessWidget {
       startingDayOfWeek: startingDayOfWeek,
       headerVisible: headerVisible,
       rowHeight: rowHeight,
+      calendarStyle: const CalendarStyle(
+        outsideDaysVisible: false,
+      ),
 
       // Selección
       selectedDayPredicate: (day) => isSameDay(selectedDay, day),
