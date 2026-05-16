@@ -8,10 +8,8 @@ class CalendarHeader extends StatelessWidget {
     required this.onToday,
     required this.onPrev,
     required this.onNext,
-    this.onFilter,
     this.onNotifications,
     this.leftInsetTitle = 30.0,
-    this.filterKey,
   });
 
   /// Texto del mes 
@@ -28,12 +26,9 @@ class CalendarHeader extends StatelessWidget {
   final VoidCallback onNext;
 
   /// Acciones de la derecha
-  final VoidCallback? onFilter;
   final VoidCallback? onNotifications;
 
   final double leftInsetTitle;
-
-  final Key? filterKey;
 
   @override
   Widget build(BuildContext context) {
@@ -86,21 +81,6 @@ class CalendarHeader extends StatelessWidget {
               padding: const EdgeInsets.only(right: 15),
               child: Row(
                 children: [
-                  TextButton(
-                    onPressed: onFilter,
-                    child: Container(
-                      key: filterKey,
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      decoration: _Decoration(context),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.edit_calendar_sharp, color: Colors.black),
-                          const SizedBox(width: 5),
-                          Text('Filtro', style: textTheme.labelMedium),
-                        ],
-                      ),
-                    ),
-                  ),
                   TextButton(
                     onPressed: onToday,
                     child: Container(
