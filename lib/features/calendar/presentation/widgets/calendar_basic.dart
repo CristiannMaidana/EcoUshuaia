@@ -3,7 +3,6 @@ import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_header.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -26,20 +25,10 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
   bool _monthSeleceted = false;
   late int _yearSelected;
 
-  // Ancla y overlay para el panel de Filtro
-  final GlobalKey _filterBtnKey = GlobalKey();
-  OverlayEntry? _filterEntry;
-
   @override
   void initState() {
     super.initState();
     _yearSelected = _focusedDay.year;
-  }
-
-  @override
-  void dispose() {
-    _hideFilter();
-    super.dispose();
   }
 
   void _goPrevMonth() {
@@ -60,68 +49,6 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
     final firstOfMonth = DateTime(year, month, 1);
     final lastOfMonth  = DateTime(year, month + 1, 0);
     return lastOfMonth.isBefore(_firstDay) || firstOfMonth.isAfter(_lastDay);
-  }
-
-  // Boton de filtro: mostrar/ocultar panel
-  void _toggleFilter() {
-    if (_filterEntry == null) {
-      _showFilterBelow();
-    } else {
-      _hideFilter();
-    }
-  }
-
-  // Mostrar el panel de filtro debajo del botón
-  void _showFilterBelow() {
-    final overlay = Overlay.of(context);
-    // ignore: unnecessary_null_comparison
-    if (overlay == null) return;
-
-    // Posición del botón "Filtro"
-    final box   = _filterBtnKey.currentContext?.findRenderObject() as RenderBox?;
-    final pos   = box?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final size  = box?.size ?? const Size(0, 0);
-    final top   = pos.dy + size.height + 6; // justo debajo
-
-    final catsVm = context.read<CategoriaNoticiasViewmodel>();
-
-    _filterEntry = OverlayEntry(
-      builder: (_) => Stack(
-        children: [
-          // Creo fondo que detecta taps fuera del panel para cerrarlo
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _hideFilter,
-              child: Container(color: Colors.transparent),
-            ),
-          ),
-          // Creo panel anclado debajo del botón
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.only(top: top),
-                child: Material(
-                  color: Colors.transparent,
-                  child: ChangeNotifierProvider<CategoriaNoticiasViewmodel>.value(
-                    value: catsVm,
-                    child: const FilterWidget(),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    overlay.insert(_filterEntry!);
-  }
-  // Ocultar el panel de filtro
-  void _hideFilter() {
-    _filterEntry?.remove();
-    _filterEntry = null;
   }
 
   // Devuelve los eventos del día, filtrados por categorías seleccionadas
@@ -172,11 +99,6 @@ class _CalendarioWidgetState extends State<CalendarioWidget> {
               },
               onPrev: _goPrevMonth,
               onNext: _goNextMonth,
-              // Metodo boton 
-              onFilter: _toggleFilter,
-              // Key del botón filtro
-              filterKey: _filterBtnKey,
-
               onNotifications: () {
                 // TODO: acción de notificaciones
               },
