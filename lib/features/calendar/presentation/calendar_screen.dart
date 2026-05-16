@@ -112,84 +112,91 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
       )..load(),
       child: Scaffold(
         backgroundColor: camarone50,
-        appBar: AppBar(
-          backgroundColor: camarone50,
-          toolbarHeight: 60,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('Calendario', style: Theme.of(context).textTheme.bodyLarge),
-                Text('$fechaHoy', style: Theme.of(context).textTheme.labelMedium),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => _novedadesKey.currentState?.collapse(),
+            child: AppBar(
+              backgroundColor: camarone50,
+              toolbarHeight: 60,
+              title: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('Calendario', style: Theme.of(context).textTheme.bodyLarge),
+                    Text('$fechaHoy', style: Theme.of(context).textTheme.labelMedium),
+                  ],
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.add, color: Colors.black, size: 22,),
+                          onPressed: () {
+                            showGeneralDialog< void >(
+                              context: context,
+                              barrierDismissible: true,
+                              barrierLabel: 'Nuevo recordatorio',
+                              barrierColor: Colors.black45,
+                              transitionDuration: const Duration(milliseconds: 280),
+                              pageBuilder: (_, __, ___) => Center(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: NewReminder(),
+                                ),
+                              ),
+                              transitionBuilder: (_, anim, __, child) {
+                                final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+                                return FadeTransition(
+                                  opacity: curved,
+                                  child: ScaleTransition(
+                                    scale: Tween(begin: 0.95, end: 1.0).animate(curved),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Builder(
+                        builder: (context) => Container(
+                          key: _filterBtnKey,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                          ),
+                          child: IconButton(icon: const Icon(Icons.edit_calendar_sharp), onPressed: () => _toggleFilter(context)),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                        ),
+                        child: IconButton(icon: const Icon(Icons.notifications), onPressed: () {},),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              child: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.add, color: Colors.black, size: 22,),
-                      onPressed: () {
-                        showGeneralDialog< void >(
-                          context: context,
-                          barrierDismissible: true,
-                          barrierLabel: 'Nuevo recordatorio',
-                          barrierColor: Colors.black45,
-                          transitionDuration: const Duration(milliseconds: 280),
-                          pageBuilder: (_, __, ___) => Center(
-                            child: Material(
-                              color: Colors.transparent,
-                              child: NewReminder(),
-                            ),
-                          ),
-                          transitionBuilder: (_, anim, __, child) {
-                            final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
-                            return FadeTransition(
-                              opacity: curved,
-                              child: ScaleTransition(
-                                scale: Tween(begin: 0.95, end: 1.0).animate(curved),
-                                child: child,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Builder(
-                    builder: (context) => Container(
-                      key: _filterBtnKey,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                      ),
-                      child: IconButton(icon: const Icon(Icons.edit_calendar_sharp), onPressed: () => _toggleFilter(context)),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                    ),
-                    child: IconButton(icon: const Icon(Icons.notifications), onPressed: () {},),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
         body: Stack(
           children: [
