@@ -41,11 +41,17 @@ class CustomNovedadesState extends State<CustomNovedades> {
   }
 
   void expandToInitial() {
+    if (!_draggableController.isAttached) return;
     _draggableController.animateTo(
       _openChildSize,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<void> collapse() async {
+    if (!_draggableController.isAttached) return;
+    await _resetAndCollapse();
   }
 
   void _scrollListener() {
@@ -81,6 +87,7 @@ class CustomNovedadesState extends State<CustomNovedades> {
   }
 
   void _bajarSheet() {
+    if (!_draggableController.isAttached) return;
     _draggableController.animateTo(
       _openChildSize,
       duration: const Duration(milliseconds: 400),
@@ -141,6 +148,8 @@ Widget build(BuildContext context) {
         initialChildSize: _initialChildSize,
         minChildSize: _minChildSize,
         maxChildSize: _maxChildSize,
+        snap: true,
+        snapSizes: const [_initialChildSize, _openChildSize, _maxChildSize],
         builder: (context, scrollController) {
           if (_localController != scrollController) {
             _localController?.removeListener(_scrollListener);
