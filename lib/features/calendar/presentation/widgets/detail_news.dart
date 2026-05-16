@@ -147,18 +147,21 @@ class _DetailNewsState extends State<DetailNews> {
                 ),
                 //Texto Categorias
                 Container(
-                  width: 150,
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     color: Colors.grey[200],
                   ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.message_sharp),
-                      const SizedBox(width: 10),
-                      Text("${categoria}", style: Theme.of(context).textTheme.labelMedium),
-                    ],
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 110),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.message_sharp),
+                        const SizedBox(width: 10),
+                        Text("${categoria}", style: Theme.of(context).textTheme.labelMedium),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
