@@ -6,6 +6,7 @@ import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/drag_sheet_container.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_widget.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/new_reminder.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/novedades_sheet.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,9 @@ class CalenderScreen extends StatefulWidget {
 
 class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProviderStateMixin {
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
+  final GlobalKey _filterBtnKey = GlobalKey();
   Calendarios? _selectedCal;
+  OverlayEntry? _filterEntry;
 
   void _onNovedadTap(Calendarios c) {
     setState(() => _selectedCal = c);
@@ -30,6 +33,65 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
 
   void _closeSheet() {
     _sheetKey.currentState?.collapse();
+  }
+
+  @override
+  void dispose() {
+    _hideFilter();
+    super.dispose();
+  }
+
+  void _toggleFilter(BuildContext context) {
+    if (_filterEntry == null) {
+      _showFilterBelow(context);
+    } else {
+      _hideFilter();
+    }
+  }
+
+  void _showFilterBelow(BuildContext context) {
+    final overlay = Overlay.of(context);
+    final box = _filterBtnKey.currentContext?.findRenderObject() as RenderBox?;
+    final pos = box?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final size = box?.size ?? const Size(0, 0);
+    final top = pos.dy + size.height + 6;
+    final catsVm = context.read<CategoriaNoticiasViewmodel>();
+
+    _filterEntry = OverlayEntry(
+      builder: (_) => Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _hideFilter,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: top),
+                child: Material(
+                  color: Colors.transparent,
+                  child: ChangeNotifierProvider<CategoriaNoticiasViewmodel>.value(
+                    value: catsVm,
+                    child: const FilterWidget(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    overlay.insert(_filterEntry!);
+  }
+
+  void _hideFilter() {
+    _filterEntry?.remove();
+    _filterEntry = null;
   }
 
   @override
@@ -102,6 +164,18 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                     ),
                   ),
                   const SizedBox(width: 10),
+                  Builder(
+                    builder: (context) => Container(
+                      key: _filterBtnKey,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                      ),
+                      child: IconButton(icon: const Icon(Icons.edit_calendar_sharp), onPressed: () => _toggleFilter(context)),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -129,7 +203,7 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                   ),
-                  child: CalendarioWidget(), 
+                  child: CalendarioWidget(),
                 ),
                 const SizedBox(height: 400),
               ],
