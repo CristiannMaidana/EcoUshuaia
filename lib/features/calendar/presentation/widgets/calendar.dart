@@ -90,23 +90,23 @@ class Calendar extends StatelessWidget {
           );
         },
         todayBuilder: (context, day, focusedDay) {
-          final base = Theme.of(context).colorScheme.primary;
+          final base = Color(0xFFE8F6EF);
           return _dayCell(
             context,
             day,
-            bgColor: base.withOpacity(0.22),
+            bgColor: base,
             border: Border.all(color: base, width: 1.2),
             margin: cellMargin,
           );
         },
         selectedBuilder: (context, day, focusedDay) {
-          final base = Theme.of(context).colorScheme.primary;
+          final base = Color(0xFF2F9E74);
           return _dayCell(
             context,
             day,
-            bgColor: base.withOpacity(0.28),
-            border: Border.all(color: base, width: 1.6),
-            textColor: base,
+            bgColor: base,
+            border: Border.all(color: base, width: 1.2),
+            textColor: Colors.white,
             fontWeight: FontWeight.w700,
             margin: cellMargin,
           );
