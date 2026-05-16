@@ -65,20 +65,20 @@ class Calendar extends StatelessWidget {
       startingDayOfWeek: startingDayOfWeek,
       headerVisible: headerVisible,
       rowHeight: rowHeight,
-      daysOfWeekHeight: 26,
+      daysOfWeekHeight: 24,
       calendarStyle: const CalendarStyle(
         outsideDaysVisible: false,
       ),
       daysOfWeekStyle: const DaysOfWeekStyle(
         weekdayStyle: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: Color(0xFF111827),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF6B7280),
         ),
         weekendStyle: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: Color(0xFF111827),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF6B7280),
         ),
       ),
 
@@ -167,7 +167,7 @@ class Calendar extends StatelessWidget {
     Color? bgColor,
     Color? textColor,
     BoxBorder? border,
-    FontWeight fontWeight = FontWeight.w600,
+    FontWeight fontWeight = FontWeight.w700,
     EdgeInsets margin = const EdgeInsets.all(6),
   }) {
     return Container(
@@ -181,8 +181,8 @@ class Calendar extends StatelessWidget {
       child: Text(
         '${day.day}',
         style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
           color: textColor ?? const Color(0xFF6B7280),
         ),
       ),
