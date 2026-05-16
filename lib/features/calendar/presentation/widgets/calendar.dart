@@ -65,8 +65,21 @@ class Calendar extends StatelessWidget {
       startingDayOfWeek: startingDayOfWeek,
       headerVisible: headerVisible,
       rowHeight: rowHeight,
+      daysOfWeekHeight: 26,
       calendarStyle: const CalendarStyle(
         outsideDaysVisible: false,
+      ),
+      daysOfWeekStyle: const DaysOfWeekStyle(
+        weekdayStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF111827),
+        ),
+        weekendStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF111827),
+        ),
       ),
 
       // Selección
