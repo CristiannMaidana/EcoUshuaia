@@ -7,11 +7,11 @@ class EyePasswordLottie extends StatelessWidget {
   final VoidCallback onTap;
 
   const EyePasswordLottie({
-    Key? key,
+    super.key,
     required this.isClosed,
     required this.onTap,
     this.size = 24,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
