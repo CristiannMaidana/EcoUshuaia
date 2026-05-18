@@ -5,7 +5,11 @@ class AvatarLottie extends StatelessWidget {
   final FocusNode focusNode;
   final double size;
 
-  const AvatarLottie({Key? key, required this.focusNode, this.size = 24}) : super(key: key);
+  const AvatarLottie({
+    super.key, 
+    required this.focusNode, 
+    this.size = 24
+  });
 
   @override
   Widget build(BuildContext context) {
