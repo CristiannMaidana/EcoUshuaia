@@ -3,7 +3,11 @@ import 'package:lottie/lottie.dart';
 
 class EmailValidateLottie extends StatelessWidget {
   final double size;
-  const EmailValidateLottie({Key? key, this.size = 24}) : super(key: key);
+
+  const EmailValidateLottie({
+    super.key, 
+    this.size = 24
+  });
 
   @override
   Widget build(BuildContext context) {
