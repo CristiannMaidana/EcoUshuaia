@@ -6,10 +6,10 @@ class NotificationLottie extends StatelessWidget {
   final List notifications;
 
   const NotificationLottie({
-    Key? key,
+    super.key,
     required this.notifications,
     this.size = 44,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
