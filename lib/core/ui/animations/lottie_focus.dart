@@ -8,12 +8,12 @@ class LottieFocus extends StatefulWidget {
   final bool repeat;
 
   const LottieFocus({
-    Key? key,
+    super.key,
     required this.asset,
     required this.focusNode,
     this.size = 24,
     this.repeat = false,
-  }) : super(key: key);
+  });
 
   @override
   State<LottieFocus> createState() => _LottieFocusState();
