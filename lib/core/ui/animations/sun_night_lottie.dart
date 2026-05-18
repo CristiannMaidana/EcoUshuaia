@@ -5,7 +5,11 @@ class SunNightLottie extends StatelessWidget {
   final bool isNight;
   final double size;
 
-  const SunNightLottie({Key? key, required this.isNight, this.size = 36}) : super(key: key);
+  const SunNightLottie({
+    super.key, 
+    required this.isNight, 
+    this.size = 36
+  });
 
   @override
   Widget build(BuildContext context) {
