@@ -7,11 +7,11 @@ class LottieTapOnce extends StatefulWidget {
   final VoidCallback? onTapEnd;
 
   const LottieTapOnce({
-    Key? key,
+    super.key,
     required this.asset,
     this.size = 36,
     this.onTapEnd,
-  }) : super(key: key);
+  });
 
   @override
   State<LottieTapOnce> createState() => _LottieTapOnceState();
