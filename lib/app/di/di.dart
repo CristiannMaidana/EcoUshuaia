@@ -43,70 +43,70 @@ List<SingleChildWidget> _coreProviders() => [
   ),
   Provider<SecureStorageServices>(create: (_) => SecureStorageServices()),
   ProxyProvider2<http.Client, SecureStorageServices, ApiClient>(
-    update: (_, client, secureStorage, __) => ApiClient(client, secureStorage),
+    update: (_, client, secureStorage, _) => ApiClient(client, secureStorage),
   ),
 ];
 
 List<SingleChildWidget> _residuosProviders() => [
   ProxyProvider<ApiClient, ResiduosRemoteDataSource>(
-    update: (_, api, __) => ResiduosRemoteDataSource(api),
+    update: (_, api, _) => ResiduosRemoteDataSource(api),
   ),
   ProxyProvider<ResiduosRemoteDataSource, ResiduoRepository>(
-    update: (_, ds, __) => ResiduoRepositoryImp(ds),
+    update: (_, ds, _) => ResiduoRepositoryImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _contenedoresProviders() => [
   ProxyProvider<ApiClient, ContenedorRemoteDataSource>(
-    update: (_, api, __) => ContenedorRemoteDataSource(api),
+    update: (_, api, _) => ContenedorRemoteDataSource(api),
   ),
   ProxyProvider<ContenedorRemoteDataSource, ContenedorRepository>(
-    update: (_, ds, __) => ContenedorRepositoryImp(ds),
+    update: (_, ds, _) => ContenedorRepositoryImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _usuariosContenedoresFavoritosProviders() => [
   ProxyProvider<ApiClient, UsuarioContenedorFavoritosRemoteDataSource>(
-    update: (_, api, __) => UsuarioContenedorFavoritosRemoteDataSource(api),
+    update: (_, api, _) => UsuarioContenedorFavoritosRemoteDataSource(api),
   ),
   ProxyProvider<UsuarioContenedorFavoritosRemoteDataSource, UsuarioContenedorFavoritosRepository>(
-    update: (_, ds, __) => UsuarioContenedorFavoritosRepositoryImp(ds),
+    update: (_, ds, _) => UsuarioContenedorFavoritosRepositoryImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _usuariosCreateProviders() => [
   ProxyProvider<ApiClient, UsuariosCreateRemoteDataSource>(
-    update: (_, api, __) => UsuariosCreateRemoteDataSource(api),
+    update: (_, api, _) => UsuariosCreateRemoteDataSource(api),
   ),
   ProxyProvider<UsuariosCreateRemoteDataSource, UsuariosCreateRepository>(
-    update: (_, ds, __) => UsuariosCreateRepositoryImp(ds),
+    update: (_, ds, _) => UsuariosCreateRepositoryImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _domiciliosProviders() => [
   ProxyProvider<ApiClient, DomicilioRemoteDataSource>(
-    update: (_, api, __) => DomicilioRemoteDataSource(api),
+    update: (_, api, _) => DomicilioRemoteDataSource(api),
   ),
   ProxyProvider<DomicilioRemoteDataSource, DomicilioRepository>(
-    update: (_, ds, __) => DomicilioRepositoryImp(ds),
+    update: (_, ds, _) => DomicilioRepositoryImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _authProviders() => [
   ProxyProvider2<ApiClient, SecureStorageServices, AuthUsuarioRemoteDataSources>(
-    update: (_, api, secureStorage, __) => AuthUsuarioRemoteDataSources(api, secureStorage),
+    update: (_, api, secureStorage, _) => AuthUsuarioRemoteDataSources(api, secureStorage),
   ),
   ProxyProvider<AuthUsuarioRemoteDataSources, AuthUsuarioRepository>(
-    update: (_, ds, __) => AuthUsuarioRepositoryImp(ds),
+    update: (_, ds, _) => AuthUsuarioRepositoryImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _calendarioProviders() => [
   ProxyProvider<ApiClient, CalendarioRemoteDataSources>(
-    update: (_, api, __) => CalendarioRemoteDataSources(api),
+    update: (_, api, _) => CalendarioRemoteDataSources(api),
   ),
   ProxyProvider<CalendarioRemoteDataSources, CalendarioRepository>(
-    update: (_, ds, __) => CalendarioRepositoryImp(ds),
+    update: (_, ds, _) => CalendarioRepositoryImp(ds),
   ),
   ChangeNotifierProvider<CalendarioViewmodel>(
     create: (ctx) =>
@@ -116,19 +116,19 @@ List<SingleChildWidget> _calendarioProviders() => [
 
 List<SingleChildWidget> _categoriaNoticiasProviders() => [
   ProxyProvider<ApiClient, CategoriaNoticiasRemoteDataSources>(
-    update: (_, api, __) => CategoriaNoticiasRemoteDataSources(api),
+    update: (_, api, _) => CategoriaNoticiasRemoteDataSources(api),
   ),
   ProxyProvider<CategoriaNoticiasRemoteDataSources, CategoriaNoticiasRepositories>(
-    update: (_, ds, __) => CategoriaNoticiasImp(ds),
+    update: (_, ds, _) => CategoriaNoticiasImp(ds),
   ),
 ];
 
 List<SingleChildWidget> _categoriaResiduosProviders() => [
   ProxyProvider<ApiClient, CategoriaResiduosRemoteDataSource>(
-    update: (_, api, __) => CategoriaResiduosRemoteDataSource(api),
+    update: (_, api, _) => CategoriaResiduosRemoteDataSource(api),
   ),
   ProxyProvider<CategoriaResiduosRemoteDataSource, CategoriaResiduosRepository>(
-    update: (_, ds, __) => CategoriaResiduosRepositoryImp(ds),
+    update: (_, ds, _) => CategoriaResiduosRepositoryImp(ds),
   ),
 ];
 
