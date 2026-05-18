@@ -12,6 +12,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: buildAppProviders(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'EcoUshuaia',
         theme: appTheme,
         home: const AuthBootstrapScreen(),
