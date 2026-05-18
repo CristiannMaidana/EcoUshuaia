@@ -5,7 +5,11 @@ class EmailLottie extends StatelessWidget {
   final FocusNode focusNode;
   final double size;
 
-  const EmailLottie({Key? key, required this.focusNode, this.size = 24}) : super(key: key);
+  const EmailLottie({
+    super.key, 
+    required this.focusNode, 
+    this.size = 24
+  });
 
   @override
   Widget build(BuildContext context) {
