@@ -118,7 +118,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey =
       GlobalKey<SheetAddContainerState>();
 
-  final GlobalKey<SheetAddressState> _sheetAddressKey = GlobalKey<SheetAddressState>();
+  final GlobalKey<SheetAddressState> _sheetAddressKey =
+      GlobalKey<SheetAddressState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -352,18 +353,21 @@ class _MapaScreenStatePage extends State<MapaPage> {
   void initState() {
     super.initState();
     Future.microtask(() async {
+      if (!mounted) return;
       final ok = await _perms.ensureWhenInUsePermission(context);
       if (!mounted) return;
       setState(() => _hasLocationPermission = ok);
 
       if (ok && _mapController != null) {
         await _mapController!.enableUserPuck();
+        if (!mounted) return;
 
         final vm = context.read<ContenedorViewModel>();
         await _mapController!.showContenedores(vm.items);
       }
 
       if (ok) {
+        if (!mounted) return;
         await _getCoordenates(updateAddress: false);
       }
     });
@@ -375,11 +379,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
     setState(() => _hasLocationPermission = ok);
     if (ok && _mapController != null) {
       await _mapController!.enableUserPuck();
+      if (!mounted) return;
 
       final vm = context.read<ContenedorViewModel>();
       await _mapController!.showContenedores(vm.items);
     }
     if (ok) {
+      if (!mounted) return;
       await _getCoordenates(updateAddress: false);
     }
   }
@@ -387,7 +393,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Future<void> _mostrarOpciones(BuildContext context) async {
     final estilo = await showModalBottomSheet(
       context: context,
-      barrierColor: Colors.black.withOpacity(.4),
+      barrierColor: const Color.fromRGBO(0, 0, 0, 0.4),
       backgroundColor: camarone50,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -505,7 +511,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Text('Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
+                        child: Text(
+                          'Necesitamos tu ubicación para mostrarte en el mapa y guiarte a contenedores cercanos.',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.white),
                         ),

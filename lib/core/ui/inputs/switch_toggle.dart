@@ -2,12 +2,9 @@ import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class SwitchToggle extends StatefulWidget {
-  final ValueChanged<bool> ? onChanged;
-  
-  const SwitchToggle({
-    super.key, 
-    this.onChanged
-  });
+  final ValueChanged<bool>? onChanged;
+
+  const SwitchToggle({super.key, this.onChanged});
 
   @override
   State<SwitchToggle> createState() => _SwitchToggleState();
@@ -20,7 +17,7 @@ class _SwitchToggleState extends State<SwitchToggle> {
   Widget build(BuildContext context) {
     return Switch(
       value: habilitado,
-      activeColor: camarone600,
+      activeThumbColor: camarone600,
       activeTrackColor: camarone300,
       inactiveThumbColor: camarone600,
       inactiveTrackColor: Colors.white,

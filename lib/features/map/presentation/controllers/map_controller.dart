@@ -51,7 +51,9 @@ class MapController {
   // Metodo para obtener la distancia entre dos puntos.
   Future<double> getMetros(double lon, double lat) async {
     final pos = await geo.Geolocator.getCurrentPosition(
-      desiredAccuracy: geo.LocationAccuracy.high,
+      locationSettings: const geo.LocationSettings(
+        accuracy: geo.LocationAccuracy.high,
+      ),
     );
 
     return geo.Geolocator.distanceBetween(
@@ -64,7 +66,9 @@ class MapController {
 
   Future<Map<String, double>> getPoint() async {
     final pos = await geo.Geolocator.getCurrentPosition(
-      desiredAccuracy: geo.LocationAccuracy.high,
+      locationSettings: const geo.LocationSettings(
+        accuracy: geo.LocationAccuracy.high,
+      ),
     );
     return <String, double>{'lon': pos.longitude, 'lat': pos.latitude};
   }

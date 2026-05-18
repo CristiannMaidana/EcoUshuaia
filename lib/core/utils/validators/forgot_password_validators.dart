@@ -8,14 +8,14 @@ String? validarEmailPassword(String? value) {
   }
   if (!value.endsWith('@gmail.com') && !value.endsWith('@hotmail.com')) {
     return 'El email debe ser gmail.com o hotmail.com';
-  }
-  else {
-    //Aca deberia traer todos los emails de la base de datos y comparar si el email ingresado ya existe, 
-    //si existe enviar un mail 
-    if (value == 'Cristian@gmail.com'){
+  } else {
+    //Aca deberia traer todos los emails de la base de datos y comparar si el email ingresado ya existe,
+    //si existe enviar un mail
+    if (value == 'Cristian@gmail.com') {
       return null;
+    } else {
+      return 'Este mail no esta registrado';
     }
-    else return 'Este mail no esta registrado';
   }
 }
 
@@ -29,7 +29,7 @@ String? validarCelular(String? value) {
 
   // Comprobar si solo hay dígitos y la longitud
   if (!RegExp(r'^\d+$').hasMatch(input)) {
-    return 'El número debe contener solo dígitos'; 
+    return 'El número debe contener solo dígitos';
   }
 
   if (input.length < 10 || input.length > 13) {
