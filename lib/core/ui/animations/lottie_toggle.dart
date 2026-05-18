@@ -7,11 +7,11 @@ class LottieToggle extends StatefulWidget {
   final double size;
 
   const LottieToggle({
-    Key? key,
+    super.key,
     required this.asset,
     required this.isOn,
     this.size = 24,
-  }) : super(key: key);
+  });
 
   @override
   State<LottieToggle> createState() => _LottieToggleState();
