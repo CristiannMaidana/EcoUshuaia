@@ -9,13 +9,13 @@ class CustomLottiesNav extends StatelessWidget {
   final bool isTouched;
 
   const CustomLottiesNav({
-    Key? key,
+    super.key,
     required this.size,
     required this.nombreInicio,
     required this.nombreTouch,
     required this.controller,
     required this.isTouched,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
