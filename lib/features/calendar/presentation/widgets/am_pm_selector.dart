@@ -6,6 +6,7 @@ class AmPmSelector extends StatelessWidget {
   final double height;
 
   const AmPmSelector({
+    super.key,
     required this.isAm,
     required this.onChanged,
     required this.height,
