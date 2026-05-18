@@ -3,7 +3,11 @@ import 'package:lottie/lottie.dart';
 
 class ChevronLottie extends StatelessWidget {
   final double size;
-  const ChevronLottie({Key? key, this.size = 24}) : super(key: key);
+
+  const ChevronLottie({
+    super.key, 
+    this.size = 24
+  });
 
   @override
   Widget build(BuildContext context) {
