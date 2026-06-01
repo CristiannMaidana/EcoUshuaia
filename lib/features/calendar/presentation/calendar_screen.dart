@@ -21,8 +21,10 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
-  final GlobalKey<CalendarioWidgetState> _calendarKey = GlobalKey<CalendarioWidgetState>();
-  final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
+  final GlobalKey<CalendarioWidgetState> _calendarKey =
+      GlobalKey<CalendarioWidgetState>();
+  final GlobalKey<DragSheetContainerState> _sheetKey =
+      GlobalKey<DragSheetContainerState>();
   final GlobalKey _filterBtnKey = GlobalKey();
   Calendarios? _selectedCal;
   OverlayEntry? _filterEntry;
@@ -101,8 +103,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
     final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
-    final visibleMonth = context.watch<CalendarioViewmodel>().visibleMonth;
+    final calendarioVm = context.watch<CalendarioViewmodel>();
+    final visibleMonth = calendarioVm.visibleMonth;
+    final selectedDay = calendarioVm.selectedDay;
     final firstDayOfMonth = DateTime(visibleMonth.year, visibleMonth.month, 1);
     final daysInMonth = DateTime(
       visibleMonth.year,
@@ -112,6 +117,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
     final leadingDays = firstDayOfMonth.weekday - DateTime.monday;
     final weekRows = ((leadingDays + daysInMonth) / 7).ceil();
     final calendarHeight = (85 + (weekRows * 50));
+    final bool showSelectedDay =
+        selectedDay != null &&
+        selectedDay.year == visibleMonth.year &&
+        selectedDay.month == visibleMonth.month;
+    final String newsHeaderText = showSelectedDay
+        ? DateFormat('d MMMM', locale).format(selectedDay)
+        : DateFormat('MMMM', locale).format(visibleMonth);
 
     return ChangeNotifierProvider<CategoriaNoticiasViewmodel>(
       create: (ctx) =>
@@ -253,6 +265,17 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   child: CalendarioWidget(key: _calendarKey),
                 ),
 
+                //Texto noticias
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, bottom: 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text( 'Noticias de: $newsHeaderText',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),         
+
                 //News list
                 Expanded(
                   child: Padding(
@@ -278,7 +301,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     onPressed: () {
                       _calendarKey.currentState?.goToday();
                     },
-                    child: Text('Hoy',
+                    child: Text(
+                      'Hoy',
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ),
