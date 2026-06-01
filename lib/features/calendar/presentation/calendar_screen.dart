@@ -216,7 +216,10 @@ class _CalenderScreenState extends State<CalenderScreen> with SingleTickerProvid
               ),
             ),
 
+            //Sheet of news for selected day
             CustomNovedades(key: _novedadesKey, expand:  _onNovedadTap),
+            
+            //Button "Hoy"
             Positioned(
               right: 24,
               bottom: 14,
