@@ -55,8 +55,9 @@ class _CustomNovedadesState extends State<CustomNovedades> {
     final catsVm = context.watch<CategoriaNoticiasViewmodel>();
 
     final DateTime? selectedDay = calVm.selectedDay;
-    final DateTime effectiveDay = selectedDay ?? DateTime.now();
-    final List<Calendarios> baseData = calVm.eventsOf(effectiveDay);
+    final List<Calendarios> baseData = selectedDay != null
+        ? calVm.eventsOf(selectedDay)
+        : calVm.eventsInMonth(calVm.visibleMonth);
     final selectedIds = catsVm.selectedIds;
 
     final List<Calendarios> data = selectedIds.isEmpty
