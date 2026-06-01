@@ -123,6 +123,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
           preferredSize: const Size.fromHeight(60),
           child: AppBar(
             backgroundColor: camarone50,
+            surfaceTintColor: Colors.transparent,
+            scrolledUnderElevation: 0,
             toolbarHeight: 60,
             title: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -250,7 +252,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   ),
                   child: CalendarioWidget(key: _calendarKey),
                 ),
-                
+
                 //News list
                 Expanded(
                   child: Padding(
