@@ -235,6 +235,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
           children: [
             Column(
               children: [
+                //Calendar
                 AnimatedContainer(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 15,
@@ -249,6 +250,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   ),
                   child: CalendarioWidget(key: _calendarKey),
                 ),
+                
+                //News list
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
