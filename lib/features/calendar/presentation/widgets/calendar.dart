@@ -66,9 +66,7 @@ class Calendar extends StatelessWidget {
       headerVisible: headerVisible,
       rowHeight: rowHeight,
       daysOfWeekHeight: 24,
-      calendarStyle: const CalendarStyle(
-        outsideDaysVisible: false,
-      ),
+      calendarStyle: const CalendarStyle(outsideDaysVisible: false),
       daysOfWeekStyle: const DaysOfWeekStyle(
         weekdayStyle: TextStyle(
           fontSize: 12,
@@ -92,13 +90,10 @@ class Calendar extends StatelessWidget {
 
       calendarBuilders: CalendarBuilders<Calendarios>(
         defaultBuilder: (context, day, focusedDay) {
-          final evs = eventLoader(day);
-          final has = evs.isNotEmpty;
-
           return _dayCell(
             context,
             day,
-            bgColor: has ? (const Color(0xFFE6F5EA)).withOpacity(0.18) : null,
+            bgColor: Colors.white,
             margin: cellMargin,
           );
         },
@@ -131,7 +126,7 @@ class Calendar extends StatelessWidget {
           if (evs.isEmpty) return const SizedBox.shrink();
 
           final cats = context.watch<CategoriaNoticiasViewmodel>();
-          
+
           final colors = evs
               .map((e) => cats.colorFor(e.categoriaNoticiaId) ?? Colors.grey)
               .toList();
@@ -144,15 +139,17 @@ class Calendar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: show
-                  .map((c) => Container(
-                        width: 7,
-                        height: 7,
-                        margin: const EdgeInsets.symmetric(horizontal: 1),
-                        decoration: BoxDecoration(
-                          color: c,
-                          shape: BoxShape.circle,
-                        ),
-                      ))
+                  .map(
+                    (c) => Container(
+                      width: 7,
+                      height: 7,
+                      margin: const EdgeInsets.symmetric(horizontal: 1),
+                      decoration: BoxDecoration(
+                        color: c,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           );
