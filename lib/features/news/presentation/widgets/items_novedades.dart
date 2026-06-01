@@ -43,7 +43,7 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
               GestureDetector(
                 onTap: () => widget.expand(n),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   color: Colors.transparent,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
