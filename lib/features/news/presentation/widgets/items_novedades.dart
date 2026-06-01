@@ -69,11 +69,9 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
                                   Text(n.titulo.toUpperCase(),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style: Theme.of(context).textTheme.labelMedium,
                                   ),
-                                  Text(hora, style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                    color: const Color.fromARGB(255, 156, 156, 163),
-                                  )),
+                                  Text(hora, style: Theme.of(context).textTheme.bodyMedium),
                                 ],
                               ),
                             ),
@@ -82,14 +80,12 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text('$mes $dia',
-                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                    color: const Color.fromARGB(255, 156, 156, 163),
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium
                                 ),
                                 const SizedBox(width: 20),
                                 Icon(Icons.arrow_forward_ios,
                                   size: 16,
-                                  color: Colors.grey[400],
+                                  color: Colors.black,
                                 ),
                               ],
                             ),
