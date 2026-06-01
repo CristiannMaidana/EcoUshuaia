@@ -96,7 +96,7 @@ class _CustomNovedadesState extends State<CustomNovedades> {
         if (_showJumpTop)
           Positioned(
             right: 16,
-            bottom: 16,
+            bottom: 10,
             child: FloatingActionButton(
               backgroundColor: const Color.fromRGBO(0, 0, 0, 0.8),
               mini: true,
