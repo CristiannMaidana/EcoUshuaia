@@ -22,7 +22,7 @@ class CustomNovedadesState extends State<CustomNovedades> {
   static const double _epsilon = 0.01;
 
   bool _mostrarFlecha = false;
-  bool _isExpanded = false;
+  bool _isAtMaxExtent = false;
   ScrollController? _localController;
   late DraggableScrollableController _draggableController;
 
@@ -33,9 +33,9 @@ class CustomNovedadesState extends State<CustomNovedades> {
 
     _draggableController.addListener(() {
       final size = _draggableController.size;
-      final expanded = size > (_minChildSize + _epsilon);
-      if (expanded != _isExpanded) {
-        setState(() => _isExpanded = expanded);
+      final isAtMaxExtent = size >= (_maxChildSize - _epsilon);
+      if (isAtMaxExtent != _isAtMaxExtent) {
+        setState(() => _isAtMaxExtent = isAtMaxExtent);
       }
     });
   }
@@ -102,118 +102,118 @@ class CustomNovedadesState extends State<CustomNovedades> {
     super.dispose();
   }
 
-@override
-Widget build(BuildContext context) {
-  // VM de calendarios
-  final calVm = context.watch<CalendarioViewmodel>();
-  // VM de categorías (para saber qué filtros están activos)
-  final catsVm = context.watch<CategoriaNoticiasViewmodel>();
+  @override
+  Widget build(BuildContext context) {
+    // VM de calendarios
+    final calVm = context.watch<CalendarioViewmodel>();
+    // VM de categorías (para saber qué filtros están activos)
+    final catsVm = context.watch<CategoriaNoticiasViewmodel>();
 
-  final DateTime? sel = calVm.selectedDay;
+    final DateTime? sel = calVm.selectedDay;
 
-  // Si no hay seleccionado, es hoy
-  final DateTime effectiveDay = sel ?? DateTime.now();
+    // Si no hay seleccionado, es hoy
+    final DateTime effectiveDay = sel ?? DateTime.now();
 
-  // Base de datos (sin filtrar): SOLO ese día, no todo el mes
-  final List<Calendarios> baseData = calVm.eventsOf(effectiveDay);
+    // Base de datos (sin filtrar): SOLO ese día, no todo el mes
+    final List<Calendarios> baseData = calVm.eventsOf(effectiveDay);
 
-  // IDs de categorías visibles
-  final selectedIds = catsVm.selectedIds;
+    // IDs de categorías visibles
+    final selectedIds = catsVm.selectedIds;
 
-  // Aplicar filtro de categorías
-  final List<Calendarios> data = selectedIds.isEmpty
-      ? <Calendarios>[]
-      : baseData
-          .where((e) => selectedIds.contains(e.categoriaNoticiaId))
-          .toList();
+    // Aplicar filtro de categorías
+    final List<Calendarios> data = selectedIds.isEmpty
+        ? <Calendarios>[]
+        : baseData
+              .where((e) => selectedIds.contains(e.categoriaNoticiaId))
+              .toList();
 
-  // Si HAY un día seleccionado explícito y no hay datos, escondemos el body
-  final bool hasContentForSelectedDay = (sel != null && data.isEmpty);
+    // Si HAY un día seleccionado explícito y no hay datos, escondemos el body
+    final bool hasContentForSelectedDay = (sel != null && data.isEmpty);
 
-  return Stack(
-    children: [
-      if (_isExpanded)
-        Positioned.fill(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _resetAndCollapse,
+    return Stack(
+      children: [
+        if (_isAtMaxExtent)
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _resetAndCollapse,
+            ),
           ),
-        ),
 
-      DraggableScrollableSheet(
-        controller: _draggableController,
-        initialChildSize: _initialChildSize,
-        minChildSize: _minChildSize,
-        maxChildSize: _maxChildSize,
-        snap: true,
-        snapSizes: const [_initialChildSize, _openChildSize, _maxChildSize],
-        builder: (context, scrollController) {
-          if (_localController != scrollController) {
-            _localController?.removeListener(_scrollListener);
-            _localController = scrollController;
-            _localController!.addListener(_scrollListener);
-          }
-          return SafeArea(
-            top: false,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(22),
-                  topRight: Radius.circular(22),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
+        DraggableScrollableSheet(
+          controller: _draggableController,
+          initialChildSize: _initialChildSize,
+          minChildSize: _minChildSize,
+          maxChildSize: _maxChildSize,
+          snap: true,
+          snapSizes: const [_initialChildSize, _openChildSize, _maxChildSize],
+          builder: (context, scrollController) {
+            if (_localController != scrollController) {
+              _localController?.removeListener(_scrollListener);
+              _localController = scrollController;
+              _localController!.addListener(_scrollListener);
+            }
+            return SafeArea(
+              top: false,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(22),
+                    topRight: Radius.circular(22),
                   ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: _bajarSheet,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 12, bottom: 8),
-                      width: 40,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(4),
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+                ),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: _bajarSheet,
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 12, bottom: 8),
+                        width: 40,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: hasContentForSelectedDay
-                        ? const SizedBox.shrink()
-                        : ListView(
-                            controller: scrollController,
-                            children: [
-                              ItemsNovedades(
-                                listaNovedades: data,
-                                expand: widget.expand,
-                              ),
-                            ],
-                          ),
-                  ),
-                ],
+                    Expanded(
+                      child: hasContentForSelectedDay
+                          ? const SizedBox.shrink()
+                          : ListView(
+                              controller: scrollController,
+                              children: [
+                                ItemsNovedades(
+                                  listaNovedades: data,
+                                  expand: widget.expand,
+                                ),
+                              ],
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+
+        if (_mostrarFlecha)
+          Positioned(
+            right: 24,
+            bottom: 48,
+            child: FloatingActionButton(
+              backgroundColor: Colors.black.withOpacity(0.8),
+              mini: true,
+              onPressed: _resetAndCollapse,
+              child: const Icon(
+                Icons.keyboard_arrow_up,
+                color: Colors.white,
+                size: 32,
               ),
             ),
-          );
-        },
-      ),
-
-      if (_mostrarFlecha)
-        Positioned(
-          right: 24,
-          bottom: 48,
-          child: FloatingActionButton(
-            backgroundColor: Colors.black.withOpacity(0.8),
-            mini: true,
-            onPressed: _resetAndCollapse,
-            child: const Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 32),
           ),
-        ),
-    ],
-  );
-}}
+      ],
+    );
+  }
+}
