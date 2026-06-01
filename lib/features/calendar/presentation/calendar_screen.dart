@@ -267,12 +267,37 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
                 //Texto noticias
                 Padding(
-                  padding: const EdgeInsets.only(left: 15, bottom: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text( 'Noticias de: $newsHeaderText',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text( 'Noticias de: $newsHeaderText',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+
+                      // Boton "Hoy"
+                      SafeArea(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              _calendarKey.currentState?.goToday();
+                            },
+                            child: Text('Hoy',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),         
 
@@ -284,30 +309,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   ),
                 ),
               ],
-            ),
-
-            //Button "Hoy"
-            Positioned(
-              right: 24,
-              bottom: 14,
-              child: SafeArea(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      _calendarKey.currentState?.goToday();
-                    },
-                    child: Text(
-                      'Hoy',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                  ),
-                ),
-              ),
             ),
 
             //Sheet de detalle de noticia
