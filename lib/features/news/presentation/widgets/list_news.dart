@@ -17,6 +17,7 @@ class CustomNovedades extends StatefulWidget {
 class _CustomNovedadesState extends State<CustomNovedades> {
   late final ScrollController _scrollController;
   bool _showJumpTop = false;
+  String? _lastScrollTarget;
 
   @override
   void initState() {
@@ -55,6 +56,17 @@ class _CustomNovedadesState extends State<CustomNovedades> {
     final catsVm = context.watch<CategoriaNoticiasViewmodel>();
 
     final DateTime? selectedDay = calVm.selectedDay;
+    final String scrollTarget = selectedDay != null
+        ? 'day:${selectedDay.toIso8601String()}'
+        : 'month:${calVm.visibleMonth.year}-${calVm.visibleMonth.month}';
+    if (_lastScrollTarget != scrollTarget) {
+      _lastScrollTarget = scrollTarget;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(0);
+        }
+      });
+    }
     final List<Calendarios> baseData = selectedDay != null
         ? calVm.eventsOf(selectedDay)
         : calVm.eventsInMonth(calVm.visibleMonth);
