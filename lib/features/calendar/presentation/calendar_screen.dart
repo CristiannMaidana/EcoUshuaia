@@ -273,7 +273,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text( 'Noticias de: $newsHeaderText',
+                        child: Text('Noticias de: $newsHeaderText',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
@@ -285,11 +285,17 @@ class _CalenderScreenState extends State<CalenderScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(22),
-                            border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                            border: Border.all(
+                              color: Color(0xFFE7EFE5),
+                              width: 1,
+                            ),
                           ),
                           child: TextButton(
                             onPressed: () {
                               _calendarKey.currentState?.goToday();
+                              context
+                                  .read<CalendarioViewmodel>()
+                                  .setSelectedDay(DateTime.now());
                             },
                             child: Text('Hoy',
                               style: Theme.of(context).textTheme.labelMedium,
@@ -299,7 +305,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       ),
                     ],
                   ),
-                ),         
+                ),
 
                 //News list
                 Expanded(
