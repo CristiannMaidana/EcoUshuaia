@@ -30,7 +30,6 @@ class CustomNovedades extends StatelessWidget {
         selectedDay == null || data.isNotEmpty;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
       child: ListView(
         padding: const EdgeInsets.only(top: 12),
         children: [
