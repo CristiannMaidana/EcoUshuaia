@@ -164,33 +164,29 @@ class CustomNovedadesState extends State<CustomNovedades> {
                   ),
                   boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
                 ),
-                child: Column(
+                child: ListView(
+                  controller: scrollController,
                   children: [
                     GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: _bajarSheet,
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 12, bottom: 8),
-                        width: 40,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          borderRadius: BorderRadius.circular(4),
+                      child: Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 12, bottom: 8),
+                          width: 40,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: hasContentForSelectedDay
-                          ? const SizedBox.shrink()
-                          : ListView(
-                              controller: scrollController,
-                              children: [
-                                ItemsNovedades(
-                                  listaNovedades: data,
-                                  expand: widget.expand,
-                                ),
-                              ],
-                            ),
-                    ),
+                    if (!hasContentForSelectedDay)
+                      ItemsNovedades(
+                        listaNovedades: data,
+                        expand: widget.expand,
+                      ),
                   ],
                 ),
               ),
