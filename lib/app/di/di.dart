@@ -19,16 +19,19 @@ import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository
 import 'package:eco_ushuaia/features/map/data/repositories/horario_recoleccion_filtros_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/residuo_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/usuario_contenedor_favoritos_repository_imp.dart';
+import 'package:eco_ushuaia/features/map/data/repositories/zona_mapa_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/categoria_residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/horario_recoleccion_filtros_remote_data_sources.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/usuario_contenedor_favoritos_remote_data_source.dart';
+import 'package:eco_ushuaia/features/map/data/sources/remote/zona_mapa_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/zona_mapa_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -69,9 +72,10 @@ List<SingleChildWidget> _usuariosContenedoresFavoritosProviders() => [
   ProxyProvider<ApiClient, UsuarioContenedorFavoritosRemoteDataSource>(
     update: (_, api, _) => UsuarioContenedorFavoritosRemoteDataSource(api),
   ),
-  ProxyProvider<UsuarioContenedorFavoritosRemoteDataSource, UsuarioContenedorFavoritosRepository>(
-    update: (_, ds, _) => UsuarioContenedorFavoritosRepositoryImp(ds),
-  ),
+  ProxyProvider<
+    UsuarioContenedorFavoritosRemoteDataSource,
+    UsuarioContenedorFavoritosRepository
+  >(update: (_, ds, _) => UsuarioContenedorFavoritosRepositoryImp(ds)),
 ];
 
 List<SingleChildWidget> _usuariosCreateProviders() => [
@@ -93,8 +97,13 @@ List<SingleChildWidget> _domiciliosProviders() => [
 ];
 
 List<SingleChildWidget> _authProviders() => [
-  ProxyProvider2<ApiClient, SecureStorageServices, AuthUsuarioRemoteDataSources>(
-    update: (_, api, secureStorage, _) => AuthUsuarioRemoteDataSources(api, secureStorage),
+  ProxyProvider2<
+    ApiClient,
+      SecureStorageServices,
+    AuthUsuarioRemoteDataSources
+  >(
+    update: (_, api, secureStorage, _) =>
+        AuthUsuarioRemoteDataSources(api, secureStorage),
   ),
   ProxyProvider<AuthUsuarioRemoteDataSources, AuthUsuarioRepository>(
     update: (_, ds, _) => AuthUsuarioRepositoryImp(ds),
@@ -118,9 +127,10 @@ List<SingleChildWidget> _categoriaNoticiasProviders() => [
   ProxyProvider<ApiClient, CategoriaNoticiasRemoteDataSources>(
     update: (_, api, _) => CategoriaNoticiasRemoteDataSources(api),
   ),
-  ProxyProvider<CategoriaNoticiasRemoteDataSources, CategoriaNoticiasRepositories>(
-    update: (_, ds, _) => CategoriaNoticiasImp(ds),
-  ),
+  ProxyProvider<
+    CategoriaNoticiasRemoteDataSources,
+    CategoriaNoticiasRepositories
+  >(update: (_, ds, _) => CategoriaNoticiasImp(ds)),
 ];
 
 List<SingleChildWidget> _categoriaResiduosProviders() => [
@@ -136,8 +146,18 @@ List<SingleChildWidget> _horarioRecoleccionFiltrosProviders() => [
   ProxyProvider<ApiClient, HorarioRecoleccionFiltrosRemoteDataSources>(
     update: (_, api, _) => HorarioRecoleccionFiltrosRemoteDataSources(api),
   ),
-  ProxyProvider<HorarioRecoleccionFiltrosRemoteDataSources, HorarioRecoleccionFiltrosRepository>(
-    update: (_, ds, _) => HorarioRecoleccionFiltrosRepositoryImp(ds),
+  ProxyProvider<
+    HorarioRecoleccionFiltrosRemoteDataSources,
+    HorarioRecoleccionFiltrosRepository
+  >(update: (_, ds, _) => HorarioRecoleccionFiltrosRepositoryImp(ds)),
+];
+
+List<SingleChildWidget> _zonasMapaProviders() => [
+  ProxyProvider<ApiClient, ZonaMapaRemoteDataSource>(
+    update: (_, api, _) => ZonaMapaRemoteDataSource(api),
+  ),
+  ProxyProvider<ZonaMapaRemoteDataSource, ZonaMapaRepository>(
+    update: (_, ds, _) => ZonaMapaRepositoryImp(ds),
   ),
 ];
 
@@ -153,4 +173,5 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._categoriaNoticiasProviders(),
   ..._categoriaResiduosProviders(),
   ..._horarioRecoleccionFiltrosProviders(),
+  ..._zonasMapaProviders(),
 ];
