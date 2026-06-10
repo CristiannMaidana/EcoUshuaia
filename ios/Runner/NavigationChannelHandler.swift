@@ -95,11 +95,9 @@ final class NavigationChannelHandler {
             mapView?.clearZones()
             result(["event": "zonesCleared"])
         case "hideZones":
-            mapView?.hideZones()
-            result(["event": "zonesHidden"])
+            hideZones(arguments: call.arguments, result: result)
         case "showAllZones":
-            mapView?.showAllZones()
-            result(["event": "allZonesShown"])
+            showAllZones(arguments: call.arguments, result: result)
         case "showMyZone":
             showMyZone(arguments: call.arguments, result: result)
         case "showAffectedZones":
@@ -254,6 +252,16 @@ final class NavigationChannelHandler {
         ])
     }
 
+    private func hideZones(arguments: Any?, result: @escaping FlutterResult) {
+        mapView?.hideZones(sheetBottomInset: zoneSheetHeight(arguments: arguments))
+        result(["event": "zonesHidden"])
+    }
+
+    private func showAllZones(arguments: Any?, result: @escaping FlutterResult) {
+        mapView?.showAllZones(sheetBottomInset: zoneSheetHeight(arguments: arguments))
+        result(["event": "allZonesShown"])
+    }
+
     private func showMyZone(arguments: Any?, result: @escaping FlutterResult) {
         guard let args = arguments as? [String: Any],
               let zoneId = Self.intValue(args["zoneId"] ?? args["idZona"] ?? args["id_zona"]) else {
@@ -261,7 +269,7 @@ final class NavigationChannelHandler {
             return
         }
 
-        mapView?.showMyZone(zoneId)
+        mapView?.showMyZone(zoneId, sheetBottomInset: zoneSheetHeight(arguments: arguments))
         result([
             "event": "myZoneShown",
             "zoneId": zoneId
@@ -283,6 +291,14 @@ final class NavigationChannelHandler {
             "zoneIds": zoneIds,
             "activeZoneId": activeZoneId as Any
         ])
+    }
+
+    private func zoneSheetHeight(arguments: Any?) -> CGFloat? {
+        guard let args = arguments as? [String: Any],
+              let sheetHeight = Self.doubleValue(args["sheetHeight"]) else {
+            return nil
+        }
+        return CGFloat(max(0, sheetHeight))
     }
 
     private func setMapStyle(arguments: Any?, result: @escaping FlutterResult) {
