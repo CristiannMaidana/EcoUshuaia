@@ -192,26 +192,46 @@ class MapboxNavigationMapViewBridge {
     return _invokeMap('clearZones');
   }
 
-  Future<Map<String, dynamic>?> hideZones() {
-    return _invokeMap('hideZones');
+  Future<Map<String, dynamic>?> hideZones({double? sheetHeight}) {
+    final args = <String, dynamic>{};
+    if (sheetHeight != null) {
+      args['sheetHeight'] = sheetHeight;
+    }
+    return _invokeMap('hideZones', args);
   }
 
-  Future<Map<String, dynamic>?> showAllZones() {
-    return _invokeMap('showAllZones');
+  Future<Map<String, dynamic>?> showAllZones({double? sheetHeight}) {
+    final args = <String, dynamic>{};
+    if (sheetHeight != null) {
+      args['sheetHeight'] = sheetHeight;
+    }
+    return _invokeMap('showAllZones', args);
   }
 
-  Future<Map<String, dynamic>?> showMyZone({required int zoneId}) {
-    return _invokeMap('showMyZone', <String, dynamic>{'zoneId': zoneId});
+  Future<Map<String, dynamic>?> showMyZone({
+    required int zoneId,
+    double? sheetHeight,
+  }) {
+    final args = <String, dynamic>{'zoneId': zoneId};
+    if (sheetHeight != null) {
+      args['sheetHeight'] = sheetHeight;
+    }
+    return _invokeMap('showMyZone', args);
   }
 
   Future<Map<String, dynamic>?> showAffectedZones({
     required List<int> zoneIds,
     int? activeZoneId,
+    double? sheetHeight,
   }) {
-    return _invokeMap('showAffectedZones', <String, dynamic>{
+    final args = <String, dynamic>{
       'zoneIds': zoneIds,
       'activeZoneId': activeZoneId,
-    });
+    };
+    if (sheetHeight != null) {
+      args['sheetHeight'] = sheetHeight;
+    }
+    return _invokeMap('showAffectedZones', args);
   }
 
   Future<Map<String, dynamic>?> getNavigationState() {
