@@ -52,18 +52,24 @@ struct ContainerPinPayload {
 final class ContainerPinsCoordinator {
     static let annotationManagerId = "container-pins-manager"
     private static let annotationImageName = "container-pin-marker"
+    private static let fullSizeZoomThreshold: Double = 13.2
+    private static let hiddenZoomThreshold: Double = 12.0
 
     private weak var navigationMapView: NavigationMapView?
     private var pointAnnotationManager: PointAnnotationManager?
     private var styleLoadedCancelable: AnyCancelable?
+    private var cameraChangedCancelable: AnyCancelable?
     private var currentContainers: [ContainerPinPayload] = []
     private var isStyleLoaded = false
+    private var lastAppliedIconSize: Double?
+    private var lastAppliedIconOpacity: Double?
 
     var onContainerSelected: ((Int) -> Void)?
 
     init(navigationMapView: NavigationMapView) {
         self.navigationMapView = navigationMapView
         observeStyleLoaded()
+        observeCameraChanged()
     }
 
     func setContainers(_ containers: [ContainerPinPayload]) {
@@ -83,6 +89,15 @@ final class ContainerPinsCoordinator {
             guard let self else { return }
             self.isStyleLoaded = true
             self.renderContainersIfPossible()
+            self.updateContainerAppearanceForCurrentZoom(force: true)
+        }
+    }
+
+    private func observeCameraChanged() {
+        guard let navigationMapView else { return }
+
+        cameraChangedCancelable = navigationMapView.mapView.mapboxMap.onCameraChanged.observe { [weak self] _ in
+            self?.updateContainerAppearanceForCurrentZoom()
         }
     }
 
@@ -90,7 +105,9 @@ final class ContainerPinsCoordinator {
         guard isStyleLoaded else { return }
 
         let annotations = currentContainers.map(makeAnnotation(from:))
-        annotationManager().annotations = annotations
+        let manager = annotationManager()
+        manager.annotations = annotations
+        updateContainerAppearanceForCurrentZoom(force: true)
     }
 
     private func annotationManager() -> PointAnnotationManager {
@@ -111,6 +128,54 @@ final class ContainerPinsCoordinator {
 
         pointAnnotationManager = manager
         return manager
+    }
+
+    private func updateContainerAppearanceForCurrentZoom(force: Bool = false) {
+        guard isStyleLoaded,
+              let navigationMapView else {
+            return
+        }
+
+        let zoom = navigationMapView.mapView.mapboxMap.cameraState.zoom
+        let iconSize = containerIconSize(for: zoom)
+        let iconOpacity = containerIconOpacity(for: zoom)
+
+        guard force ||
+                lastAppliedIconSize != iconSize ||
+                lastAppliedIconOpacity != iconOpacity else {
+            return
+        }
+
+        let manager = annotationManager()
+        manager.iconSize = iconSize
+        manager.iconOpacity = iconOpacity
+
+        lastAppliedIconSize = iconSize
+        lastAppliedIconOpacity = iconOpacity
+    }
+
+    private func containerIconSize(for zoom: Double) -> Double {
+        if zoom <= Self.hiddenZoomThreshold {
+            return 0.0
+        }
+        if zoom >= Self.fullSizeZoomThreshold {
+            return 1.0
+        }
+
+        let progress = (zoom - Self.hiddenZoomThreshold) / (Self.fullSizeZoomThreshold - Self.hiddenZoomThreshold)
+        return max(0.0, min(1.0, progress))
+    }
+
+    private func containerIconOpacity(for zoom: Double) -> Double {
+        if zoom <= Self.hiddenZoomThreshold {
+            return 0.0
+        }
+        if zoom >= Self.fullSizeZoomThreshold {
+            return 1.0
+        }
+
+        let progress = (zoom - Self.hiddenZoomThreshold) / (Self.fullSizeZoomThreshold - Self.hiddenZoomThreshold)
+        return max(0.0, min(1.0, progress))
     }
 
     private func makeAnnotation(from container: ContainerPinPayload) -> PointAnnotation {
