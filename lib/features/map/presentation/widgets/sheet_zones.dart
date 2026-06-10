@@ -14,10 +14,10 @@ class SheetZones extends StatefulWidget {
   final double initialChildSize;
   final double minChildSize;
   final double maxChildSize;
-  final Future<void> Function() onHideZones;
-  final Future<void> Function() onShowAllZones;
-  final Future<void> Function() onShowMyZone;
-  final Future<void> Function() onShowAffectedZones; // Change for list of zones
+  final Future<void> Function(double sheetHeight) onHideZones;
+  final Future<void> Function(double sheetHeight) onShowAllZones;
+  final Future<void> Function(double sheetHeight) onShowMyZone;
+  final Future<void> Function(double sheetHeight) onShowAffectedZones; // Change for list of zones
 
   const SheetZones({
     super.key,
@@ -70,13 +70,19 @@ class SheetZonesState extends State<SheetZones> {
   }
 
   Future<void> _runMode(_ZoneSheetMode mode) async {
+    final sheetHeight = _currentSheetHeight();
     final action = switch (mode) {
       _ZoneSheetMode.hidden => widget.onHideZones,
       _ZoneSheetMode.all => widget.onShowAllZones,
       _ZoneSheetMode.mine => widget.onShowMyZone,
       _ZoneSheetMode.affected => widget.onShowAffectedZones,
     };
-    await action();
+    await action(sheetHeight);
+  }
+
+  double _currentSheetHeight() {
+    final size = _controller.isAttached ? _controller.size : widget.maxChildSize;
+    return (MediaQuery.sizeOf(context).height * size).roundToDouble();
   }
 
   Future<void> _previewModeChange(_ZoneSheetMode mode) async {
