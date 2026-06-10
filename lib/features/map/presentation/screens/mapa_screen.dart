@@ -542,6 +542,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                //Button texture of map
                 FloatingActionButton(
                   heroTag: 'fab-map-style',
                   onPressed: () => _mostrarOpciones(context),
@@ -549,6 +550,21 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   child: Image.asset('assets/icons/mapa/maps-style.png'),
                 ),
                 const SizedBox(height: 10),
+                // Button zones on map
+                FloatingActionButton(
+                  heroTag: 'fab-add-zones',
+                  onPressed: () {
+                    //TODO: open sheet of option of zones
+                  },
+                  backgroundColor: camarone500,
+                  child: const Icon(
+                    Icons.layers_rounded,
+                    color: Colors.black,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                // Button center camera
                 FloatingActionButton(
                   heroTag: 'fab-center-camera',
                   onPressed: _centerNativeTurnByTurnCamera,
