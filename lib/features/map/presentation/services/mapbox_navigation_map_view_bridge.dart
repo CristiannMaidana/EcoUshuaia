@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/zona_mapa.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 
 class MapboxNavigationMapViewBridge {
@@ -178,6 +179,41 @@ class MapboxNavigationMapViewBridge {
     });
   }
 
+  Future<Map<String, dynamic>?> setZones(List<ZonaMapa> zonas) {
+    return _invokeMap('setZones', <String, dynamic>{
+      'zones': zonas
+          .where((zona) => zona.coordenada != null)
+          .map(_zoneToMap)
+          .toList(growable: false),
+    });
+  }
+
+  Future<Map<String, dynamic>?> clearZones() {
+    return _invokeMap('clearZones');
+  }
+
+  Future<Map<String, dynamic>?> hideZones() {
+    return _invokeMap('hideZones');
+  }
+
+  Future<Map<String, dynamic>?> showAllZones() {
+    return _invokeMap('showAllZones');
+  }
+
+  Future<Map<String, dynamic>?> showMyZone({required int zoneId}) {
+    return _invokeMap('showMyZone', <String, dynamic>{'zoneId': zoneId});
+  }
+
+  Future<Map<String, dynamic>?> showAffectedZones({
+    required List<int> zoneIds,
+    int? activeZoneId,
+  }) {
+    return _invokeMap('showAffectedZones', <String, dynamic>{
+      'zoneIds': zoneIds,
+      'activeZoneId': activeZoneId,
+    });
+  }
+
   Future<Map<String, dynamic>?> getNavigationState() {
     return _invokeMap('getNavigationState');
   }
@@ -215,5 +251,30 @@ class MapboxNavigationMapViewBridge {
       case MapStyle.Terreno:
         return 'outdoors';
     }
+  }
+
+  static Map<String, dynamic> _zoneToMap(ZonaMapa zona) {
+    final geometry = zona.coordenada!;
+    return <String, dynamic>{
+      'idZona': zona.idZona,
+      'nombreZona': zona.nombreZona,
+      'colorZona': zona.colorZona,
+      'coordenada': <String, dynamic>{
+        'type': geometry.type,
+        'coordinates': geometry.coordinates
+            .map(
+              (polygon) => polygon
+                  .map(
+                    (ring) => ring
+                        .map((point) => <double>[point.longitud, point.latitud])
+                        .toList(growable: false),
+                  )
+                  .toList(growable: false),
+            )
+            .toList(growable: false),
+      },
+      'idMapa': zona.idMapa,
+      'idCalendario': zona.idCalendario,
+    };
   }
 }
