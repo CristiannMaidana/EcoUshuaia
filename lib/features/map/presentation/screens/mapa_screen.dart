@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_reposito
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/zona_mapa_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_container_pins_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_navigation_map_view_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
@@ -14,6 +15,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recolec
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_turn_by_turn.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
@@ -23,6 +25,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dar
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_zones.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
@@ -70,6 +73,10 @@ class MapaScreen extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => MapSearchViewModel(AddressSearchService()),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) =>
+              ZonaMapaViewModel(ctx.read<ZonaMapaRepository>())..load(),
+        ),
       ],
       child: MapaPage(),
     );
@@ -77,7 +84,7 @@ class MapaScreen extends StatelessWidget {
 }
 
 class MapaPage extends StatefulWidget {
-  const MapaPage({Key? key}) : super(key: key);
+  const MapaPage({super.key});
 
   @override
   State<MapaPage> createState() => _MapaScreenStatePage();
@@ -98,6 +105,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   MapStyle _estiloActual = MapStyle.Estandar;
 
   ContenedorViewModel? _vm;
+  ZonaMapaViewModel? _zonaVm;
 
   Contenedor? _contenedorSeleccionado;
 
@@ -120,6 +128,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   final GlobalKey<SheetAddressState> _sheetAddressKey =
       GlobalKey<SheetAddressState>();
+
+  final GlobalKey<SheetZonesState> _sheetZonesKey =
+      GlobalKey<SheetZonesState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -203,6 +214,26 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
+  void _onZonaVmChanged() {
+    _syncZonesToNative();
+  }
+
+  Future<void> _syncZonesToNative() async {
+    final bridge = _nativeNavigationBridge;
+    final vm = _zonaVm;
+    if (bridge == null || vm == null) return;
+
+    final zonas = vm.items
+        .where((zona) => zona.coordenada != null)
+        .toList(growable: false);
+    if (zonas.isEmpty) {
+      await bridge.clearZones();
+      return;
+    }
+
+    await bridge.setZones(zonas);
+  }
+
   // Callback que recibe el contenedor tocado desde MapController
   void _onContenedorTap(Contenedor c) {
     setState(() {
@@ -229,6 +260,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
     MapboxNavigationMapViewBridge bridge,
   ) async {
     _nativeNavigationBridge = bridge;
+    final zonaVm = context.read<ZonaMapaViewModel>();
+    if (_zonaVm != zonaVm) {
+      _zonaVm?.removeListener(_onZonaVmChanged);
+      _zonaVm = zonaVm..addListener(_onZonaVmChanged);
+    }
+    await _syncZonesToNative();
   }
 
   Future<void> _onMapboxContainerPinsReady(
@@ -349,6 +386,53 @@ class _MapaScreenStatePage extends State<MapaPage> {
     return _paintNativeRoute(profile: 'cycling');
   }
 
+  Future<void> _testHideZones() async {
+    await _syncZonesToNative();
+    await _nativeNavigationBridge?.hideZones();
+  }
+
+  Future<void> _testShowAllZones() async {
+    await _syncZonesToNative();
+    await _nativeNavigationBridge?.showAllZones();
+  }
+
+  Future<void> _testShowMyZone() async {
+    final usuarioZoneId = context.read<UsuarioViewModel>().usuario?.idZona;
+    await _syncZonesToNative();
+    final zonas =
+        _zonaVm?.items
+            .where((zona) => zona.coordenada != null)
+            .toList(growable: false) ??
+        const [];
+    if (zonas.isEmpty) return;
+
+    final zoneId = zonas.any((zona) => zona.idZona == usuarioZoneId)
+        ? usuarioZoneId
+        : zonas.first.idZona;
+    if (zoneId == null) return;
+
+    await _nativeNavigationBridge?.showMyZone(zoneId: zoneId);
+  }
+
+  Future<void> _testShowAffectedZones() async {
+    await _syncZonesToNative();
+    final zonas =
+        _zonaVm?.items
+            .where((zona) => zona.coordenada != null)
+            .toList(growable: false) ??
+        const [];
+    if (zonas.isEmpty) return;
+
+    final zoneIds = zonas
+        .take(2)
+        .map((zona) => zona.idZona)
+        .toList(growable: false);
+    await _nativeNavigationBridge?.showAffectedZones(
+      zoneIds: zoneIds,
+      activeZoneId: zoneIds.first,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -433,6 +517,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   @override
   void dispose() {
     _vm?.removeListener(_onVmChanged);
+    _zonaVm?.removeListener(_onZonaVmChanged);
     super.dispose();
   }
 
@@ -534,7 +619,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
             ),
 
-        // Botones flotantes para opciones de mapa y centrado de camara
         if (!_nativeRouteReady || !_nativeNavigationStarted)
           Positioned(
             right: 24,
@@ -553,9 +637,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 // Button zones on map
                 FloatingActionButton(
                   heroTag: 'fab-add-zones',
-                  onPressed: () {
-                    //TODO: open sheet of option of zones
-                  },
+                  onPressed: () => _sheetZonesKey.currentState?.expand(),
                   backgroundColor: camarone500,
                   child: const Icon(
                     Icons.layers_rounded,
@@ -622,6 +704,16 @@ class _MapaScreenStatePage extends State<MapaPage> {
               cancelNavigation: _cancelNativeNavigation,
               cancelSetCamera: _centerNativeTurnByTurnCamera,
             ),
+          ),
+
+        //Sheet for zones options
+        if (!_nativeRouteReady || !_nativeNavigationStarted)
+          SheetZones(
+            key: _sheetZonesKey,
+            onHideZones: _testHideZones,
+            onShowAllZones: _testShowAllZones,
+            onShowMyZone: _testShowMyZone,
+            onShowAffectedZones: _testShowAffectedZones,
           ),
 
         //Sheet de detalles de contenedor seleccionado
