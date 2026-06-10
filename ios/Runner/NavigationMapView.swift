@@ -150,6 +150,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
     private var destinationPreviewManager: PointAnnotationManager?
     private var destinationPreviewCoordinate: CLLocationCoordinate2D?
     private var hiddenAnnotationLayerVisibilityById: [String: String] = [:]
+    private var lastKnownUserCoordinate: CLLocationCoordinate2D?
     private var zoneStyleLoadedCancelable: AnyCancelable?
     private var zoneCameraChangedCancelable: AnyCancelable?
     private var areZoneLayersReady = false
@@ -195,6 +196,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         super.init(frame: frame)
 
         setupMap()
+        bindUserLocationUpdates()
         bindTurnByTurnCameraLock()
     }
 
@@ -227,6 +229,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         super.init(coder: coder)
 
         setupMap()
+        bindUserLocationUpdates()
         bindTurnByTurnCameraLock()
     }
 
@@ -351,28 +354,39 @@ final class NativeMapView: UIView, FlutterPlatformView {
         renderZonesIfPossible(force: true)
     }
 
-    func hideZones() {
+    func hideZones(sheetBottomInset: CGFloat? = nil) {
         zoneDisplayMode = .hidden
         myZoneId = nil
         affectedZoneIds.removeAll()
         activeZoneId = nil
         renderZonesIfPossible(force: true)
+        focusUserLocationForZonesIfPossible(sheetBottomInset: sheetBottomInset)
     }
 
-    func showAllZones() {
+    func showAllZones(sheetBottomInset: CGFloat? = nil) {
         zoneDisplayMode = .all
         myZoneId = nil
         affectedZoneIds.removeAll()
         activeZoneId = nil
         renderZonesIfPossible(force: true)
+        focusZonesOverviewIfPossible(
+            visibleZonesForCurrentState(),
+            sheetBottomInset: sheetBottomInset,
+            closer: false
+        )
     }
 
-    func showMyZone(_ zoneId: Int) {
+    func showMyZone(_ zoneId: Int, sheetBottomInset: CGFloat? = nil) {
         zoneDisplayMode = .myZone
         myZoneId = zoneId
         affectedZoneIds.removeAll()
         activeZoneId = zoneId
         renderZonesIfPossible(force: true)
+        focusZonesOverviewIfPossible(
+            visibleZonesForCurrentState(),
+            sheetBottomInset: sheetBottomInset,
+            closer: true
+        )
     }
 
     func showAffectedZones(_ zoneIds: [Int], activeZoneId: Int? = nil) {
@@ -548,6 +562,24 @@ final class NativeMapView: UIView, FlutterPlatformView {
             .store(in: &cancellables)
     }
 
+    private func bindUserLocationUpdates() {
+        let navigation = runtime.navigationProvider.navigation()
+        let routeProgress = navigation.routeProgress
+            .map(\.?.routeProgress)
+            .eraseToAnyPublisher()
+
+        navigation.locationMatching
+            .combineLatest(routeProgress)
+            .map { state, routeProgress in
+                routeProgress == nil ? state.location.coordinate : state.enhancedLocation.coordinate
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] coordinate in
+                self?.lastKnownUserCoordinate = coordinate
+            }
+            .store(in: &cancellables)
+    }
+
     private func configureTurnByTurnCamera(restrictZoomOut: Bool = true) {
         guard let viewportDataSource = navigationMapView.navigationCamera.viewportDataSource as? MobileViewportDataSource else {
             return
@@ -592,6 +624,99 @@ final class NativeMapView: UIView, FlutterPlatformView {
             routeId: routeIds.map { String(describing: $0) }.joined(separator: "|"),
             coordinates: coordinates
         )
+    }
+
+    private func focusZonesOverviewIfPossible(
+        _ zones: [ZonePolygonPayload],
+        sheetBottomInset: CGFloat?,
+        closer: Bool
+    ) {
+        guard !keepsTurnByTurnCameraCentered else {
+            return
+        }
+        guard navigationMapView.bounds.width > 0, navigationMapView.bounds.height > 0 else {
+            return
+        }
+
+        let coordinates = zones.flatMap { zone in
+            zone.geometry.coordinates.flatMap { polygon in
+                polygon.flatMap { $0 }
+            }
+        }
+        guard !coordinates.isEmpty else {
+            return
+        }
+
+        let padding = closer
+            ? UIEdgeInsets(
+                top: 80,
+                left: 16,
+                bottom: max(0, sheetBottomInset ?? 0) + 24,
+                right: 16
+            )
+            : UIEdgeInsets(
+                top: 96,
+                left: 24,
+                bottom: max(0, sheetBottomInset ?? 0) + 32,
+                right: 24
+            )
+        let initialCameraOptions = CameraOptions(
+            padding: padding,
+            bearing: 0,
+            pitch: 0
+        )
+
+        do {
+            navigationMapView.navigationCamera.stop()
+            let cameraOptions = try navigationMapView.mapView.mapboxMap.camera(
+                for: coordinates,
+                camera: initialCameraOptions,
+                coordinatesPadding: nil,
+                maxZoom: nil,
+                offset: nil
+            )
+            navigationMapView.mapView.camera.ease(to: cameraOptions, duration: 0.35)
+        } catch {
+            return
+        }
+    }
+
+    private func focusUserLocationForZonesIfPossible(sheetBottomInset: CGFloat?) {
+        guard !keepsTurnByTurnCameraCentered else {
+            return
+        }
+        guard navigationMapView.bounds.width > 0, navigationMapView.bounds.height > 0 else {
+            return
+        }
+        guard let coordinate = lastKnownUserCoordinate, isValidCoordinate(coordinate) else {
+            return
+        }
+
+        let padding = UIEdgeInsets(
+            top: 96,
+            left: 24,
+            bottom: max(0, sheetBottomInset ?? 0) + 32,
+            right: 24
+        )
+        let initialCameraOptions = CameraOptions(
+            padding: padding,
+            bearing: 0,
+            pitch: 0
+        )
+
+        do {
+            navigationMapView.navigationCamera.stop()
+            let cameraOptions = try navigationMapView.mapView.mapboxMap.camera(
+                for: [coordinate],
+                camera: initialCameraOptions,
+                coordinatesPadding: nil,
+                maxZoom: 15,
+                offset: nil
+            )
+            navigationMapView.mapView.camera.ease(to: cameraOptions, duration: 0.35)
+        } catch {
+            return
+        }
     }
 
     private func destinationPreviewAnnotationManager() -> PointAnnotationManager {
