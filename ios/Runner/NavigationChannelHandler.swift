@@ -89,6 +89,21 @@ final class NavigationChannelHandler {
         case "clearDestinationPreview":
             mapView?.clearDestinationPreview()
             result(["event": "destinationPreviewCleared"])
+        case "setZones":
+            setZones(arguments: call.arguments, result: result)
+        case "clearZones":
+            mapView?.clearZones()
+            result(["event": "zonesCleared"])
+        case "hideZones":
+            mapView?.hideZones()
+            result(["event": "zonesHidden"])
+        case "showAllZones":
+            mapView?.showAllZones()
+            result(["event": "allZonesShown"])
+        case "showMyZone":
+            showMyZone(arguments: call.arguments, result: result)
+        case "showAffectedZones":
+            showAffectedZones(arguments: call.arguments, result: result)
         case "getNavigationState":
             result(runtime.navigationCore.currentPayload())
         default:
@@ -224,6 +239,52 @@ final class NavigationChannelHandler {
         ])
     }
 
+    private func setZones(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let rawZones = args["zones"] as? [[String: Any]] else {
+            result(FlutterError(code: "invalid_zones_args", message: "Zones payload is invalid.", details: nil))
+            return
+        }
+
+        let zones = rawZones.compactMap(ZonePolygonPayload.init(dictionary:))
+        mapView?.setZones(zones)
+        result([
+            "event": "zonesUpdated",
+            "count": zones.count
+        ])
+    }
+
+    private func showMyZone(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let zoneId = Self.intValue(args["zoneId"] ?? args["idZona"] ?? args["id_zona"]) else {
+            result(FlutterError(code: "invalid_my_zone_args", message: "My zone arguments are invalid.", details: nil))
+            return
+        }
+
+        mapView?.showMyZone(zoneId)
+        result([
+            "event": "myZoneShown",
+            "zoneId": zoneId
+        ])
+    }
+
+    private func showAffectedZones(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let rawZoneIds = args["zoneIds"] as? [Any] ?? args["zonesIds"] as? [Any] ?? args["idsZona"] as? [Any] else {
+            result(FlutterError(code: "invalid_affected_zones_args", message: "Affected zones arguments are invalid.", details: nil))
+            return
+        }
+
+        let zoneIds = rawZoneIds.compactMap(Self.intValue)
+        let activeZoneId = Self.intValue(args["activeZoneId"] ?? args["active_zone_id"])
+        mapView?.showAffectedZones(zoneIds, activeZoneId: activeZoneId)
+        result([
+            "event": "affectedZonesShown",
+            "zoneIds": zoneIds,
+            "activeZoneId": activeZoneId as Any
+        ])
+    }
+
     private func setMapStyle(arguments: Any?, result: @escaping FlutterResult) {
         guard let args = arguments as? [String: Any],
               let styleIdentifier = args["style"] as? String else {
@@ -285,6 +346,16 @@ final class NavigationChannelHandler {
         }
         if let number = value as? NSNumber {
             return number.doubleValue
+        }
+        return nil
+    }
+
+    private static func intValue(_ value: Any?) -> Int? {
+        if let int = value as? Int {
+            return int
+        }
+        if let number = value as? NSNumber {
+            return number.intValue
         }
         return nil
     }
