@@ -17,7 +17,8 @@ class SheetZones extends StatefulWidget {
   final Future<void> Function(double sheetHeight) onHideZones;
   final Future<void> Function(double sheetHeight) onShowAllZones;
   final Future<void> Function(double sheetHeight) onShowMyZone;
-  final Future<void> Function(double sheetHeight) onShowAffectedZones; // Change for list of zones
+  final Future<void> Function(double sheetHeight)
+  onShowAffectedZones; // Change for list of zones
 
   const SheetZones({
     super.key,
@@ -36,9 +37,10 @@ class SheetZones extends StatefulWidget {
 
 class SheetZonesState extends State<SheetZones> {
   late final DraggableScrollableController _controller;
-  _ZoneSheetMode _appliedMode = _ZoneSheetMode.all;
-  _ZoneSheetMode _draftMode = _ZoneSheetMode.all;
-  _ZoneSheetMode _previewMode = _ZoneSheetMode.all;
+  ScrollController? _sheetScrollController;
+  _ZoneSheetMode _appliedMode = _ZoneSheetMode.hidden;
+  _ZoneSheetMode _draftMode = _ZoneSheetMode.hidden;
+  _ZoneSheetMode _previewMode = _ZoneSheetMode.hidden;
   bool _isApplying = false;
 
   ScrollPhysics get sheetPhysics => const ClampingScrollPhysics();
@@ -62,10 +64,12 @@ class SheetZonesState extends State<SheetZones> {
         _previewMode = _appliedMode;
       });
     }
+    _resetScrollToTop();
     await _animateTo(widget.maxChildSize);
   }
 
   Future<void> collapse() async {
+    _resetScrollToTop();
     await _animateTo(widget.minChildSize);
   }
 
@@ -81,8 +85,16 @@ class SheetZonesState extends State<SheetZones> {
   }
 
   double _currentSheetHeight() {
-    final size = _controller.isAttached ? _controller.size : widget.maxChildSize;
+    final size = _controller.isAttached
+        ? _controller.size
+        : widget.maxChildSize;
     return (MediaQuery.sizeOf(context).height * size).roundToDouble();
+  }
+
+  void _resetScrollToTop() {
+    final controller = _sheetScrollController;
+    if (controller == null || !controller.hasClients) return;
+    controller.jumpTo(0);
   }
 
   Future<void> _previewModeChange(_ZoneSheetMode mode) async {
@@ -228,6 +240,7 @@ class SheetZonesState extends State<SheetZones> {
         minChildSize: widget.minChildSize,
         maxChildSize: widget.maxChildSize,
         builder: (context, scrollController) {
+          _sheetScrollController = scrollController;
           return Material(
             color: Colors.transparent,
             child: DecoratedBox(
