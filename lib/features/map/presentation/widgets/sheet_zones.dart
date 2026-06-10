@@ -130,10 +130,17 @@ class SheetZonesState extends State<SheetZones> {
                           children: [
                             BarraAgarre(),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Mapa', style: Theme.of(context).textTheme.labelMedium),
+                                    Text('Zonas', style: Theme.of(context).textTheme.headlineSmall),
+                                  ],
+                                ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding: const EdgeInsets.only(right: 8.0),
                                   child: CircleIcon(
                                     onPressed: collapse,
                                     icon: Icons.close,
