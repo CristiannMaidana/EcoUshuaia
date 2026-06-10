@@ -1,4 +1,6 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
@@ -478,7 +480,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final estilo = await showModalBottomSheet(
       context: context,
       barrierColor: const Color.fromRGBO(0, 0, 0, 0.4),
-      backgroundColor: camarone50,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -491,14 +493,33 @@ class _MapaScreenStatePage extends State<MapaPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Estilo de mapa',
-                  style: Theme.of(context).textTheme.headlineLarge,
+                BarraAgarre(),
+                const SizedBox(height: 12),
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Estilo de mapa',
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                        Text(
+                          'Elegi como queres ver el mapa.',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
+                    CircleIcon(
+                      icon: Icons.close,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Elegi como queres ver el mapa.',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+                
+                const SizedBox(height: 20),
                 MapStylePicker(seleccionado: _estiloActual),
               ],
             ),
