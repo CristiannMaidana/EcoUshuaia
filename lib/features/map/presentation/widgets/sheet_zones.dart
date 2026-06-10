@@ -19,6 +19,7 @@ class SheetZones extends StatefulWidget {
   final Future<void> Function(double sheetHeight) onShowMyZone;
   final Future<void> Function(double sheetHeight)
   onShowAffectedZones; // Change for list of zones
+  final Future<void> Function()? onClosed;
 
   const SheetZones({
     super.key,
@@ -29,6 +30,7 @@ class SheetZones extends StatefulWidget {
     required this.onShowAllZones,
     required this.onShowMyZone,
     required this.onShowAffectedZones,
+    this.onClosed,
   });
 
   @override
@@ -71,6 +73,7 @@ class SheetZonesState extends State<SheetZones> {
   Future<void> collapse() async {
     _resetScrollToTop();
     await _animateTo(widget.minChildSize);
+    await widget.onClosed?.call();
   }
 
   Future<void> _runMode(_ZoneSheetMode mode) async {
