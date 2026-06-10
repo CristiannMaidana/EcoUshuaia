@@ -5,11 +5,9 @@ enum MapStyle { Estandar, Satelite, Oscuro, Terreno }
 
 class MapStylePicker extends StatelessWidget {
   final MapStyle? seleccionado;
+  final ValueChanged<MapStyle>? onChanged;
 
-  const MapStylePicker({
-    Key? key,
-    required this.seleccionado,
-  }) : super(key: key);
+  const MapStylePicker({super.key, required this.seleccionado, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +36,7 @@ class MapStylePicker extends StatelessWidget {
       activeColor: camarone600,
       splashRadius: 20,
       onChanged: (style) {
-        if (style != null) Navigator.pop(context, style);
+        if (style != null) onChanged?.call(style);
       },
     );
   }
