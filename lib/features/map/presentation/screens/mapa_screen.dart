@@ -388,17 +388,17 @@ class _MapaScreenStatePage extends State<MapaPage> {
     return _paintNativeRoute(profile: 'cycling');
   }
 
-  Future<void> _testHideZones() async {
+  Future<void> _testHideZones(double sheetHeight) async {
     await _syncZonesToNative();
-    await _nativeNavigationBridge?.hideZones();
+    await _nativeNavigationBridge?.hideZones(sheetHeight: sheetHeight);
   }
 
-  Future<void> _testShowAllZones() async {
+  Future<void> _testShowAllZones(double sheetHeight) async {
     await _syncZonesToNative();
-    await _nativeNavigationBridge?.showAllZones();
+    await _nativeNavigationBridge?.showAllZones(sheetHeight: sheetHeight);
   }
 
-  Future<void> _testShowMyZone() async {
+  Future<void> _testShowMyZone(double sheetHeight) async {
     final usuarioZoneId = context.read<UsuarioViewModel>().usuario?.idZona;
     await _syncZonesToNative();
     final zonas =
@@ -413,10 +413,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
         : zonas.first.idZona;
     if (zoneId == null) return;
 
-    await _nativeNavigationBridge?.showMyZone(zoneId: zoneId);
+    await _nativeNavigationBridge?.showMyZone(
+      zoneId: zoneId,
+      sheetHeight: sheetHeight,
+    );
   }
 
-  Future<void> _testShowAffectedZones() async {
+  Future<void> _testShowAffectedZones(double sheetHeight) async {
     await _syncZonesToNative();
     final zonas =
         _zonaVm?.items
@@ -432,6 +435,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     await _nativeNavigationBridge?.showAffectedZones(
       zoneIds: zoneIds,
       activeZoneId: zoneIds.first,
+      sheetHeight: sheetHeight,
     );
   }
 
@@ -477,7 +481,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
   }
 
   Future<void> _mostrarOpciones(BuildContext context) async {
-    final estilo = await showModalBottomSheet(
+    var estiloSeleccionado = _estiloActual;
+
+    await showModalBottomSheet<void>(
       context: context,
       barrierColor: const Color.fromRGBO(0, 0, 0, 0.4),
       backgroundColor: Colors.white,
@@ -485,54 +491,60 @@ class _MapaScreenStatePage extends State<MapaPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BarraAgarre(),
-                const SizedBox(height: 12),
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    BarraAgarre(),
+                    const SizedBox(height: 12),
+                    // Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Estilo de mapa',
-                          style: Theme.of(context).textTheme.headlineLarge,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Estilo de mapa',
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                            Text(
+                              'Elegi como queres ver el mapa.',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Elegi como queres ver el mapa.',
-                          style: Theme.of(context).textTheme.labelMedium,
+                        CircleIcon(
+                          icon: Icons.close,
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
                     ),
-                    CircleIcon(
-                      icon: Icons.close,
-                      onPressed: () => Navigator.of(context).pop(),
+
+                    const SizedBox(height: 20),
+                    MapStylePicker(
+                      seleccionado: estiloSeleccionado,
+                      onChanged: (style) async {
+                        setModalState(() => estiloSeleccionado = style);
+                        if (!mounted) return;
+                        setState(() => _estiloActual = style);
+                        await _nativeNavigationBridge?.setMapStyle(style);
+                      },
                     ),
                   ],
                 ),
-                
-                const SizedBox(height: 20),
-                MapStylePicker(seleccionado: _estiloActual),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
-
-    if (!mounted || estilo == null) return;
-
-    setState(() => _estiloActual = estilo);
-
-    await _nativeNavigationBridge?.setMapStyle(estilo);
   }
 
   @override
