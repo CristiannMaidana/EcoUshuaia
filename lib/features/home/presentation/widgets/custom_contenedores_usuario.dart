@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/mini_map.dart';
 import 'package:flutter/material.dart';
@@ -9,59 +10,92 @@ class CustomContenedoresUsuario extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Text('Contenedores favoritos', style: Theme.of(context).textTheme.headlineSmall),
         ),
 
-        //Section of map
-        Container(
+        //Section of map and text
+        Container(                
+          margin: const EdgeInsets.symmetric(horizontal: 15),
           decoration: BoxDecoration(
-            color: Colors.amberAccent
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(36),
+            border: Border.all(width: 1.5, color: Colors.grey[400]!),          
           ),
           child: Column(
             children: [
-              Container(
-                height: 290,
-                margin: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(36),
-                  border: Border.all(width: 1.5, color: Colors.grey[400]!),
-                ),
+              // Map
+              SizedBox(
+                height: 200,
                 child: Column(
                   children: [
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(36),
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
                         child: const MiniMap(),
                       ),
                     ),
                   ],
                 ),
               ),
+              lineDivider(),
               SizedBox(height: 10),
-              Column(
-                children: [
-                  Text('Tus ubicaciones', style: Theme.of(context).textTheme.titleMedium),
-                  Text('Entrá directo a tus contenedores, a tu zona y a las búsquedas recientes.', style: Theme.of(context).textTheme.bodyMedium),
-                  Row(
-                    children: [
-                      CardTouch(
-                        title: 'Mi zona', 
-                        infoText: 'Miércoles · 08:00 · Zona Centro.',
-                        width: 200,
-                      ),
-                      CardTouch(
-                        title: 'Estado de zona', 
-                        infoText: 'Sin alertas críticas activas en tu zona principal.',
-                        width: 200,
-                      )
-                    ],
-                  )
-                ],
+              // Text and buttos
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Tus ubicaciones', style: Theme.of(context).textTheme.titleMedium),
+                    Text('Entrá directo a tus contenedores, a tu zona y a las búsquedas recientes.', style: Theme.of(context).textTheme.bodyMedium),
+                    // Cards with navigation
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CardTouch(
+                          title: 'Mi zona', 
+                          infoText: 'Centro · servicios y avisos personalizados',
+                          width: 180,
+                        ),
+                        CardTouch(
+                          title: 'Favoritos', 
+                          infoText: '3 puntos guardados para acceso rápido',
+                          width: 180,
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    // Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: (){}, 
+                          child: Row(
+                            children: [
+                              Text('Abrir mapa'),
+                              SizedBox(width: 10,),
+                              Icon(Icons.arrow_forward_ios_outlined),
+                            ],
+                          )
+                        ),
+                        const SizedBox(width: 10),
+                        OutlinedButton(
+                          onPressed: () {},
+                          child:  Row(
+                            children: [
+                              Icon(Icons.add),
+                              SizedBox(width: 10,),
+                              Text('Buscar direccion'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ],
           ),
