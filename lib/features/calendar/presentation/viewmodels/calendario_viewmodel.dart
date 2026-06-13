@@ -72,4 +72,15 @@ class CalendarioViewmodel extends ChangeNotifier {
       n.fecha.year == ym.year && n.fecha.month == ym.month
     ).toList();
   }
+
+  List<Calendarios> eventsFromDay(DateTime day) {
+    final from = _key(day);
+    final to = DateTime(day.year, day.month + 1, 0);
+    final result = _items.where((n) {
+      final eventDay = _key(n.fecha);
+      return !eventDay.isBefore(from) && !eventDay.isAfter(to);
+    }).toList();
+    result.sort((a, b) => a.fecha.compareTo(b.fecha));
+    return result;
+  }
 }
