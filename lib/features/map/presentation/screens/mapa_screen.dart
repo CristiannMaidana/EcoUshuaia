@@ -15,6 +15,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_resid
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
@@ -112,6 +113,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Contenedor? _contenedorSeleccionado;
 
   bool _cambio = false;
+  MapQuickAction? _pendingQuickAction;
 
   //Variable para manejar el tamaño del sheet
   final GlobalKey<SheetSearchBarState> _filterKey =
@@ -258,6 +260,58 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
+  Future<void> _openQuickFavoritos() async {
+    final contenedorVm = context.read<ContenedorViewModel>();
+    final favoritosVm = context.read<UsuarioContenedoresFavoritosViewModel>();
+    final idUsuario = context.read<UsuarioViewModel>().usuario?.idUsuario;
+
+    if (contenedorVm.items.isEmpty && !contenedorVm.loading) {
+      await contenedorVm.load();
+    }
+    if (idUsuario != null && !favoritosVm.loadedOnce && !favoritosVm.loading) {
+      await favoritosVm.loadByUsuario(idUsuario);
+    }
+
+    await contenedorVm.applyFilter(
+      const <dynamic, List<int>>{},
+      filtrarFavoritos: favoritosVm.filtrarContenedoresFavoritos,
+    );
+  }
+
+  Future<void> _openQuickMyZone() async {
+    final zonaVm = context.read<ZonaMapaViewModel>();
+    if (zonaVm.items.isEmpty && !zonaVm.loading) {
+      await zonaVm.load();
+    }
+    await _testShowMyZone(0);
+  }
+
+  void _openQuickSearchAddress() {
+    _filterKey.currentState?.openSearch();
+  }
+
+  Future<void> _runPendingQuickAction() async {
+    final action = _pendingQuickAction;
+    if (action == null || !mounted) return;
+
+    switch (action) {
+      case MapQuickAction.myZone:
+        if (_nativeNavigationBridge == null) return;
+        await _openQuickMyZone();
+        _pendingQuickAction = null;
+        break;
+      case MapQuickAction.favoritos:
+        await _openQuickFavoritos();
+        _pendingQuickAction = null;
+        break;
+      case MapQuickAction.searchAddress:
+        if (_filterKey.currentState == null) return;
+        _openQuickSearchAddress();
+        _pendingQuickAction = null;
+        break;
+    }
+  }
+
   Future<void> _onMapboxNavigationMapReady(
     MapboxNavigationMapViewBridge bridge,
   ) async {
@@ -268,6 +322,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _zonaVm = zonaVm..addListener(_onZonaVmChanged);
     }
     await _syncZonesToNative();
+    await _runPendingQuickAction();
   }
 
   Future<void> _onMapboxContainerPinsReady(
@@ -288,6 +343,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     } else {
       await bridge.setContainers(data);
     }
+    await _runPendingQuickAction();
   }
 
   void _onMapboxContainerSelected(int idContenedor) {
@@ -577,6 +633,14 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final quickActionVm = context.watch<MapQuickActionViewmodel>();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final action = quickActionVm.consumePendingAction();
+      if (action == null || !mounted) return;
+      _pendingQuickAction = action;
+      await _runPendingQuickAction();
+    });
+
     final direccionSeleccionada = (_addressLat == 0 && _addressLon == 0)
         ? ''
         : context.watch<MapSearchViewModel>().getDireccionFromPoint(
