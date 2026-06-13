@@ -48,6 +48,17 @@ class CalendarioWidgetState extends State<CalendarioWidget> {
     vm.setSelectedDay(null);
   }
 
+  void selectDay(DateTime day) {
+    final selected = DateTime(day.year, day.month, day.day);
+    setState(() {
+      _focusedDay = selected;
+      _selectedDay = selected;
+    });
+    final vm = context.read<CalendarioViewmodel>();
+    vm.setVisibleMonth(selected);
+    vm.setSelectedDay(selected);
+  }
+
   void _goPrevMonth() {
     if (_isMonthDisabled(_focusedDay.year, _focusedDay.month - 1)) return;
     setState(() => _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1, 1));
