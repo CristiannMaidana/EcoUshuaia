@@ -14,7 +14,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CalenderScreen extends StatefulWidget {
-  const CalenderScreen({super.key});
+  final Calendarios? initialNews;
+
+  const CalenderScreen({super.key, this.initialNews});
 
   @override
   State<CalenderScreen> createState() => _CalenderScreenState();
@@ -28,6 +30,17 @@ class _CalenderScreenState extends State<CalenderScreen> {
   final GlobalKey _filterBtnKey = GlobalKey();
   Calendarios? _selectedCal;
   OverlayEntry? _filterEntry;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final initialNews = widget.initialNews;
+      if (initialNews == null) return;
+      _calendarKey.currentState?.selectDay(initialNews.fecha);
+      _onNovedadTap(initialNews);
+    });
+  }
 
   void _onNovedadTap(Calendarios c) {
     setState(() => _selectedCal = c);
@@ -106,6 +119,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
     final locale = Localizations.localeOf(context).toString();
     final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
     final calendarioVm = context.watch<CalendarioViewmodel>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pendingNews = calendarioVm.consumePendingOpenedNews();
+      if (pendingNews == null) return;
+      _calendarKey.currentState?.selectDay(pendingNews.fecha);
+      _onNovedadTap(pendingNews);
+    });
     final visibleMonth = calendarioVm.visibleMonth;
     final selectedDay = calendarioVm.selectedDay;
     final firstDayOfMonth = DateTime(visibleMonth.year, visibleMonth.month, 1);
