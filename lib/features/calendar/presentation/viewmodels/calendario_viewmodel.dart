@@ -25,6 +25,7 @@ class CalendarioViewmodel extends ChangeNotifier {
   DateTime get visibleMonth => _visibleMonth;
 
   final Map<DateTime, List<Calendarios>> _eventsByDay = {};
+  Calendarios? _pendingOpenedNews;
   DateTime _key(DateTime d) => DateTime(d.year, d.month, d.day);
 
   List<Calendarios> eventsOf(DateTime day) => _eventsByDay[_key(day)] ?? [];
@@ -82,5 +83,18 @@ class CalendarioViewmodel extends ChangeNotifier {
     }).toList();
     result.sort((a, b) => a.fecha.compareTo(b.fecha));
     return result;
+  }
+
+  void openNews(Calendarios news) {
+    _pendingOpenedNews = news;
+    _selectedDay = _key(news.fecha);
+    _visibleMonth = DateTime(news.fecha.year, news.fecha.month, 1);
+    notifyListeners();
+  }
+
+  Calendarios? consumePendingOpenedNews() {
+    final news = _pendingOpenedNews;
+    _pendingOpenedNews = null;
+    return news;
   }
 }
