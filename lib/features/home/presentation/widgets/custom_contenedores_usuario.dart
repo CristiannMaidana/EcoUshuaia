@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/mini_map.dart';
 import 'package:flutter/material.dart';
 
@@ -11,24 +12,56 @@ class CustomContenedoresUsuario extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-          child: Text('Contenedores favoritos', style: Theme.of(context).textTheme.headlineLarge),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Text('Contenedores favoritos', style: Theme.of(context).textTheme.headlineSmall),
         ),
+
+        //Section of map
         Container(
-          height: 325,
-          margin: const EdgeInsets.symmetric(horizontal: 25),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(36),
-            border: Border.all(width: 1.5, color: Colors.grey[400]!),
+            color: Colors.amberAccent
           ),
           child: Column(
             children: [
-              Expanded(
-                child: ClipRRect(
+              Container(
+                height: 290,
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(36),
-                  child: const MiniMap(),
+                  border: Border.all(width: 1.5, color: Colors.grey[400]!),
                 ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(36),
+                        child: const MiniMap(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Column(
+                children: [
+                  Text('Tus ubicaciones', style: Theme.of(context).textTheme.titleMedium),
+                  Text('Entrá directo a tus contenedores, a tu zona y a las búsquedas recientes.', style: Theme.of(context).textTheme.bodyMedium),
+                  Row(
+                    children: [
+                      CardTouch(
+                        title: 'Mi zona', 
+                        infoText: 'Miércoles · 08:00 · Zona Centro.',
+                        width: 200,
+                      ),
+                      CardTouch(
+                        title: 'Estado de zona', 
+                        infoText: 'Sin alertas críticas activas en tu zona principal.',
+                        width: 200,
+                      )
+                    ],
+                  )
+                ],
               ),
             ],
           ),
