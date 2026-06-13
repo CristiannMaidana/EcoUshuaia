@@ -3,7 +3,7 @@ import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noti
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/core/ui/animations/notification_lottie.dart';
-import 'package:eco_ushuaia/features/home/presentation/widgets/custom_contenedores_usuario.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
 import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               QuickActions(),
-              CustomContenedoresUsuario(),
+              QuickMap(),
               DayNews(news: calendarioVm.eventsOf(DateTime.now())),
               CustomNovedadesHome(news: calendarioVm.eventsFromDay(DateTime.now())),
             ],
