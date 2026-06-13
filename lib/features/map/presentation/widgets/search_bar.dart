@@ -36,6 +36,10 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin 
     _focus.unfocus();
   }
 
+  void focusField() {
+    _focus.requestFocus();
+  }
+
   @override
   void dispose() {
     _controller.dispose();
