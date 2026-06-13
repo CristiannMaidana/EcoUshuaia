@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -84,37 +85,13 @@ class DayNews extends StatelessWidget {
                   : List.generate(items.length, (index) {
                 final item = items[index];
 
-                return GestureDetector(
+                return CardTouche(
+                  title: item.titulo,
+                  infoText: '${DateFormat('dd/MM/yyyy').format(item.fecha)} · ${_formatDuration(item.hora)} · ${_formatDuration(item.duracion)}',
+                  subtitle: item.subtitulo ?? '',
                   onTap: () {
                     // Path to go to the news selected of the day
                   },
-                  child: Container(
-                    width: 260,
-                    margin: const EdgeInsets.only(top: 10, right: 12),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      border: Border.all(width: 1.5, color: Colors.grey[400]!),
-                    ),
-                    // Text
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.titulo, style: Theme.of(context).textTheme.titleMedium),
-                        const SizedBox(height: 10),
-                        Text('${DateFormat('dd/MM/yyyy').format(item.fecha)} · ${_formatDuration(item.hora)} · ${_formatDuration(item.duracion)}',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 10),
-                        Text(item.subtitulo ?? '',
-                          style: Theme.of(context).textTheme.bodySmall,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
                 );
               }),
             ),
