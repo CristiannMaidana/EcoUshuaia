@@ -1,7 +1,9 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/shell/presentation/app_shell_screen.dart';
+import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/new_news_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -82,6 +84,10 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
                 infoText: '${DateFormat('dd/MM/yyyy').format(item.fecha)} · $hora · ${_formatDuration(item.duracion)}',
                 fecha: item.fecha,
                 color: categoriaVm.colorFor(item.categoriaNoticiaId) ?? camarone400,
+                onTap: () {
+                  context.read<CalendarioViewmodel>().openNews(item);
+                  const ShellTabSelectionNotification(1).dispatch(context);
+                },
               );
             }),
           ],
