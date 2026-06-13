@@ -6,6 +6,7 @@ class CustomNewNews extends StatelessWidget {
   final String infoText;
   final DateTime fecha;
   final Color color;
+  final VoidCallback onTap;
 
   const CustomNewNews({
     super.key,
@@ -14,6 +15,7 @@ class CustomNewNews extends StatelessWidget {
     required this.infoText,
     required this.fecha,
     required this.color,
+    required this.onTap,
   });
 
   // Method for the text of days left to the header
@@ -37,9 +39,7 @@ class CustomNewNews extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        
-      },
+      onTap: onTap,
       child: Container(
         height: 80,
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
