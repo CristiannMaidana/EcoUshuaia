@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CardTouche extends StatelessWidget {
+class CardTouch extends StatelessWidget {
   final String title;
   final String infoText;
   final String? subtitle;
   final VoidCallback? onTap;
+  final double width;
 
-  const CardTouche({
+  const CardTouch({
     super.key,
     required this.title,
     required this.infoText,
     this.subtitle,
     this.onTap,
+    required this.width,
   });
 
   @override
@@ -19,7 +21,7 @@ class CardTouche extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 260,
+        width: width,
         margin: const EdgeInsets.only(top: 10, right: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
