@@ -1,7 +1,10 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/mini_map.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
+import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class QuickMap extends StatelessWidget {
   const QuickMap({super.key});
@@ -58,11 +61,19 @@ class QuickMap extends StatelessWidget {
                           title: 'Mi zona', 
                           infoText: 'Centro · servicios y avisos personalizados',
                           width: 180,
+                          onTap: () {
+                            context.read<MapQuickActionViewmodel>().openMyZone();
+                            const ShellTabSelectionNotification(2).dispatch(context);
+                          },
                         ),
                         CardTouch(
                           title: 'Favoritos', 
-                          infoText: '3 puntos guardados para acceso rápido',
+                          infoText: 'Tus contenedores guardados.(3)',
                           width: 180,
+                          onTap: () {
+                            context.read<MapQuickActionViewmodel>().openFavoritos();
+                            const ShellTabSelectionNotification(2).dispatch(context);
+                          },
                         )
                       ],
                     ),
@@ -72,7 +83,9 @@ class QuickMap extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                          onPressed: (){}, 
+                          onPressed: (){
+                            const ShellTabSelectionNotification(2).dispatch(context);
+                          }, 
                           child: Row(
                             children: [
                               Text('Abrir mapa'),
@@ -83,7 +96,10 @@ class QuickMap extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.read<MapQuickActionViewmodel>().openSearchAddress();
+                            const ShellTabSelectionNotification(2).dispatch(context);
+                          },
                           child:  Row(
                             children: [
                               Icon(Icons.add),
