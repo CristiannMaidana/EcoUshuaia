@@ -1,19 +1,41 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/shell/presentation/app_shell_screen.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/new_news_item.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CustomNovedadesHome extends StatefulWidget{
-  //Deberia traer las novedades desde la base de datos, o ya que esten aca?
-  const CustomNovedadesHome({Key? key}) : super(key: key);
+  final List<Calendarios> news;
+  
+  const CustomNovedadesHome({
+    super.key,
+    required this.news,
+  });
 
   @override
   State<CustomNovedadesHome> createState() => _CustomNovedadesScreenState();
 }
 
 class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with SingleTickerProviderStateMixin {
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+
+    if (minutes == 0) {
+      return '${hours}h';
+    }
+
+    return '${hours}h ${minutes}m';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final items = widget.news;
+    final categoriaVm = context.watch<CategoriaNoticiasViewmodel>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -25,7 +47,7 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text('Novedades', style: Theme.of(context).textTheme.headlineLarge),
+                child: Text('Proximos eventos', style: Theme.of(context).textTheme.headlineSmall),
               ),
               TextButton(
                 onPressed: () {
@@ -50,9 +72,17 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
         ),
         Column(
           children: [
-            ...List.generate(3, (index) {
-              //Necesita ser cargado con datos de la base de datos
-              return CustomNewNews();
+            ...List.generate(items.length, (index) {
+              final item = items[index];
+              final hora = '${item.hora.inHours.toString().padLeft(2, '0')}:${(item.hora.inMinutes % 60).toString().padLeft(2, '0')}';
+              
+              return CustomNewNews(
+                titulo: item.titulo,
+                subtitulo: item.subtitulo,
+                infoText: '${DateFormat('dd/MM/yyyy').format(item.fecha)} · $hora · ${_formatDuration(item.duracion)}',
+                fecha: item.fecha,
+                color: categoriaVm.colorFor(item.categoriaNoticiaId) ?? camarone400,
+              );
             }),
           ],
         )
