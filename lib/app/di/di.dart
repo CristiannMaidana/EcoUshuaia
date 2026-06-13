@@ -32,6 +32,7 @@ import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/zona_mapa_repository.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -158,6 +159,9 @@ List<SingleChildWidget> _zonasMapaProviders() => [
   ),
   ProxyProvider<ZonaMapaRemoteDataSource, ZonaMapaRepository>(
     update: (_, ds, _) => ZonaMapaRepositoryImp(ds),
+  ),
+  ChangeNotifierProvider<MapQuickActionViewmodel>(
+    create: (_) => MapQuickActionViewmodel(),
   ),
 ];
 
