@@ -1,16 +1,19 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/core/ui/animations/notification_lottie.dart';
-import 'package:eco_ushuaia/features/home/presentation/screens/custom_contenedores_usuario.dart';
-import 'package:eco_ushuaia/features/home/presentation/screens/user_data_screen.dart';
-import 'package:eco_ushuaia/features/home/presentation/screens/materiales_info_screen.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/custom_contenedores_usuario.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/materiales_info_screen.dart';
 import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget{
 
   const HomeScreen({
-    Key? key,
-  }): super(key: key);
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(context){
+    final calendarioVm = context.watch<CalendarioViewmodel>();
+
     return Scaffold(
       backgroundColor: camarone50,
       appBar: AppBar(
@@ -46,8 +51,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomDatosUsuario(),
+            QuickActions(),
             CustomContenedoresUsuario(),
+            DayNews(news: calendarioVm.eventsOf(DateTime.now())),
             CustomMaterialesInfo(),
             CustomNovedadesHome(),
           ],
