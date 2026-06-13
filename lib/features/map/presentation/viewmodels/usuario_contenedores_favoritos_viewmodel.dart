@@ -21,6 +21,7 @@ class UsuarioContenedoresFavoritosViewModel extends ChangeNotifier {
   String? get error => _error;
   Set<int> get favoritosIds => _favoritosByContenedorId.keys.toSet();
   List<Contenedor> get favoritos => _favoritos;
+  int getFavoritosCount() => _favoritosByContenedorId.length;
 
   bool isFavorito(int idContenedor) => _favoritosByContenedorId.containsKey(idContenedor);
   UsuarioContenedorFavoritos? favoritoRelacionByContenedorId(int idContenedor) => _favoritosByContenedorId[idContenedor];
