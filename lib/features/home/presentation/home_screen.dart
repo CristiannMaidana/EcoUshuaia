@@ -7,6 +7,7 @@ import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
 import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/waste_instructions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +55,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              QuickActions(),
+              QuickActions(
+                goWasteGuide: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const WasteInstructionsScreen(),
+                    ),
+                  );
+                },
+              ),
               QuickMap(),
               DayNews(news: calendarioVm.eventsOf(DateTime.now())),
               CustomNovedadesHome(news: calendarioVm.eventsFromDay(DateTime.now())),
