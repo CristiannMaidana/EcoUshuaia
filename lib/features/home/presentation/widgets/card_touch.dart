@@ -22,7 +22,7 @@ class CardTouch extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width,
-        margin: const EdgeInsets.only(top: 10, right: 12),
+        margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
