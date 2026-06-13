@@ -3,8 +3,8 @@ import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/mini_map.dart';
 import 'package:flutter/material.dart';
 
-class CustomContenedoresUsuario extends StatelessWidget {
-  const CustomContenedoresUsuario({super.key});
+class QuickMap extends StatelessWidget {
+  const QuickMap({super.key});
 
   @override
   Widget build(BuildContext context) {
