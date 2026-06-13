@@ -89,6 +89,13 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     sheet?.expandSheet();
   }
 
+  void openSearch() {
+    expand();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _keySearchBar.currentState?.focusField();
+    });
+  }
+
   // Construye la lista de sugerencias de direcciones
   Widget _buildSuggestions() {
     final sb = _keySearchBar.currentState;
