@@ -102,7 +102,7 @@ class DetailsMaterial extends StatelessWidget {
                 description,
                 style: const TextStyle(
                   fontSize: 12,
-                  height: 1.4,
+                  height: 1.2,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF6B7280),
                 ),
