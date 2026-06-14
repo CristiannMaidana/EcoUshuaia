@@ -6,6 +6,7 @@ import 'package:eco_ushuaia/core/ui/animations/notification_lottie.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
 import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
 import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/waste_instructions_screen.dart';
@@ -81,6 +82,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               QuickActions(
+                goMyZone: () {
+                  context.read<MapQuickActionViewmodel>().openMyZone();
+                  const ShellTabSelectionNotification(2).dispatch(context);
+                },
                 goCalendar: () {
                   const ShellTabSelectionNotification(1).dispatch(context);
                 },
