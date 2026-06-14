@@ -13,8 +13,8 @@ class DetailMaterialTip {
 }
 
 class DetailMaterialCard extends StatelessWidget {
-  final String iconText;
-  final Color iconBackgroundColor;
+  final String? iconText;
+  final Color? iconBackgroundColor;
   final String title;
   final String description;
   final String tag;
@@ -27,8 +27,8 @@ class DetailMaterialCard extends StatelessWidget {
 
   const DetailMaterialCard({
     super.key,
-    required this.iconText,
-    required this.iconBackgroundColor,
+    this.iconText,
+    this.iconBackgroundColor,
     required this.title,
     required this.description,
     required this.tag,
@@ -42,6 +42,11 @@ class DetailMaterialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasIconData =
+        iconText != null &&
+        iconText!.trim().isNotEmpty &&
+        iconBackgroundColor != null;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -64,56 +69,84 @@ class DetailMaterialCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: iconBackgroundColor,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        iconText,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
+                child: hasIconData
+                    ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              height: 1.03,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -.4,
-                              color: Color(0xFF111827),
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: iconBackgroundColor,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              iconText!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            description,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              height: 1.45,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF6B7280),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title,
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    height: 1.03,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: -.4,
+                                    color: Color(0xFF111827),
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  description,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    height: 1.45,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF6B7280),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
+                      )
+                    : Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                height: 1.03,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -.4,
+                                color: Color(0xFF111827),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              description,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                height: 1.45,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF6B7280),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
               ),
               const SizedBox(width: 12),
               Container(
