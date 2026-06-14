@@ -34,7 +34,31 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         backgroundColor: camarone50,
         appBar: AppBar(
           backgroundColor: camarone50,
-          title: const Text('Eco Ushuaia', style: TextStyle(color: Colors.black)),
+          toolbarHeight: 110,
+          // Text of header
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('EcoUshuaia',
+                style: Theme.of(context).textTheme.labelMedium
+              ),
+              const SizedBox(height: 2),
+              Text('Inicio',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text('Una entrada visual y útil para mapa, zona, calendario, alertas y actividad reciente.',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
           actions: [
             Container(
               padding: EdgeInsets.only(right: 20),
