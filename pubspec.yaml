@@ -74,6 +74,7 @@ flutter:
     - assets/icons/settings/user/
     - assets/icons/settings/system/
     - assets/icons/mapa/
+    - lib/features/waste_instructions/presentation/data/info_recicly_data.json
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
