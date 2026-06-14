@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/frequent_materials.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/learn_waste.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,9 @@ class WasteInstructionsScreen extends StatelessWidget{
         padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
         child: Column(
           children: [
-            LearnWaste()
+            LearnWaste(),
+            SizedBox(height: 20),
+            FrequentMaterials(),
           ],
         ),
       ),
