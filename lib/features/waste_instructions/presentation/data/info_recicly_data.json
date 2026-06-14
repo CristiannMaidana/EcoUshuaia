@@ -1,0 +1,328 @@
+{
+  "guide_version": "1.0.0",
+  "locale": "es-AR",
+  "title": "Guía de residuos",
+  "description": "Contenido guía para navegación local de la app EcoUshuaia.",
+  "sections": [
+    {
+      "id": "como_separar",
+      "title": "Cómo separar",
+      "subtitle": "Consejos básicos para preparar residuos antes de reciclar.",
+      "icon": "checklist_rounded",
+      "type": "guide_detail",
+      "summary": "Separar correctamente mejora la calidad del reciclaje y evita contaminar materiales aprovechables.",
+      "intro": "Antes de llevar residuos a un contenedor o punto de recepción, conviene prepararlos de forma simple: vaciar, limpiar cuando haga falta y separar por tipo de material.",
+      "chips": [
+        "Vaciar",
+        "Separar",
+        "Lavar",
+        "Secar",
+        "No mezclar"
+      ],
+      "cards": [
+        {
+          "title": "Vaciar antes de reciclar",
+          "body": "No dejar restos de comida, líquidos ni sustancias dentro de envases, frascos o recipientes."
+        },
+        {
+          "title": "Separar por material",
+          "body": "Siempre que sea posible, agrupar plástico, papel, cartón, vidrio y metales por separado."
+        },
+        {
+          "title": "Lavar lo necesario",
+          "body": "No hace falta dejar los residuos impecables, pero sí retirar restos evidentes que puedan contaminar otros materiales."
+        },
+        {
+          "title": "Secar antes de guardar",
+          "body": "El papel y el cartón pierden valor si están mojados o húmedos."
+        },
+        {
+          "title": "Reducir volumen",
+          "body": "Aplastar botellas o plegar cajas ayuda a ahorrar espacio durante el traslado y la disposición."
+        }
+      ],
+      "common_mistakes": [
+        "Mezclar reciclables con residuos orgánicos.",
+        "Guardar envases con restos de comida o bebida.",
+        "Depositar papel o cartón húmedo.",
+        "Sumar residuos peligrosos a contenedores comunes."
+      ],
+      "cta": {
+        "label": "Ver materiales",
+        "target": "ver_materiales"
+      }
+    },
+    {
+      "id": "ver_materiales",
+      "title": "Ver materiales",
+      "subtitle": "Consultá materiales frecuentes y cómo descartarlos correctamente.",
+      "icon": "category_rounded",
+      "type": "materials_index",
+      "summary": "Listado rápido de materiales habituales con una orientación breve para decidir cómo prepararlos.",
+      "intro": "Las condiciones de aceptación pueden variar según el sistema local, pero estas recomendaciones funcionan como guía general para una correcta separación.",
+      "materials": [
+        {
+          "id": "plastico",
+          "name": "Plástico",
+          "short_description": "Botellas, envases y recipientes plásticos de uso cotidiano.",
+          "accepted_examples": [
+            "Botellas de bebidas",
+            "Envases de limpieza vacíos",
+            "Recipientes plásticos rígidos"
+          ],
+          "basic_preparation": [
+            "Vaciar",
+            "Enjuagar si tiene restos",
+            "Secar",
+            "Aplastar si es posible"
+          ],
+          "avoid": [
+            "Envases con restos de comida abundantes",
+            "Material plástico mezclado con otros residuos",
+            "Elementos contaminados con aceites o químicos"
+          ],
+          "destination_hint": "Contenedor reciclable o punto habilitado según el sistema local."
+        },
+        {
+          "id": "papel_carton",
+          "name": "Papel y cartón",
+          "short_description": "Papeles, cajas y cartones limpios y secos.",
+          "accepted_examples": [
+            "Diarios y revistas",
+            "Cajas de cartón limpias",
+            "Papel de oficina"
+          ],
+          "basic_preparation": [
+            "Mantener seco",
+            "Doblar o plegar",
+            "Separar de residuos húmedos"
+          ],
+          "avoid": [
+            "Cartón con grasa",
+            "Papel mojado",
+            "Material con restos de comida"
+          ],
+          "destination_hint": "Contenedor reciclable siempre que esté seco y limpio."
+        },
+        {
+          "id": "vidrio",
+          "name": "Vidrio",
+          "short_description": "Botellas y frascos de vidrio sin contenido.",
+          "accepted_examples": [
+            "Botellas de vidrio",
+            "Frascos de conserva",
+            "Envases de bebidas"
+          ],
+          "basic_preparation": [
+            "Vaciar",
+            "Enjuagar",
+            "Separar tapas si corresponde"
+          ],
+          "avoid": [
+            "Vidrio mezclado con residuos orgánicos",
+            "Elementos cortantes sueltos sin protección",
+            "Frascos con contenido aún dentro"
+          ],
+          "destination_hint": "Contenedor o punto destinado a vidrio."
+        },
+        {
+          "id": "metales",
+          "name": "Metales",
+          "short_description": "Latas y envases metálicos vacíos.",
+          "accepted_examples": [
+            "Latas de bebidas",
+            "Latas de alimentos limpias",
+            "Algunos envases metálicos livianos"
+          ],
+          "basic_preparation": [
+            "Vaciar",
+            "Enjuagar",
+            "Secar"
+          ],
+          "avoid": [
+            "Latas con restos orgánicos",
+            "Elementos cortantes sin cuidado",
+            "Mezclar con residuos peligrosos"
+          ],
+          "destination_hint": "Contenedor reciclable o punto específico según disponibilidad."
+        },
+        {
+          "id": "organicos",
+          "name": "Orgánicos",
+          "short_description": "Restos biodegradables de origen vegetal o alimentario.",
+          "accepted_examples": [
+            "Cáscaras",
+            "Restos de frutas y verduras",
+            "Posos de café"
+          ],
+          "basic_preparation": [
+            "Separar del reciclable seco",
+            "Conservar aparte",
+            "Usar compostaje si existe"
+          ],
+          "avoid": [
+            "Mezclar con plástico, vidrio o metales",
+            "Guardar junto a papel o cartón",
+            "Depositar en reciclables secos"
+          ],
+          "destination_hint": "Compostaje o circuito específico, si existe."
+        }
+      ],
+      "cta": {
+        "label": "Ver materiales frecuentes",
+        "target": "materiales_frecuentes"
+      }
+    },
+    {
+      "id": "residuos_especiales",
+      "title": "Residuos especiales",
+      "subtitle": "Identificá qué residuos necesitan puntos de recepción específicos.",
+      "icon": "error_outline_rounded",
+      "type": "special_waste",
+      "summary": "Algunos residuos no deben ir a contenedores comunes porque requieren manejo diferenciado o seguro.",
+      "intro": "Cuando un residuo puede ser peligroso, contaminante o difícil de tratar, lo correcto es usar un punto de recepción especial.",
+      "items": [
+        {
+          "name": "Electrónicos",
+          "description": "Aparatos, cables, pequeños electrodomésticos y componentes eléctricos.",
+          "why_special": "Pueden contener materiales recuperables y sustancias que requieren tratamiento adecuado.",
+          "do_not_do": "No dejarlos en contenedores comunes."
+        },
+        {
+          "name": "Pilas y baterías",
+          "description": "Pilas domésticas, baterías recargables y acumuladores.",
+          "why_special": "Pueden liberar sustancias dañinas si se desechan incorrectamente.",
+          "do_not_do": "No mezclarlas con residuos comunes ni reciclables secos."
+        },
+        {
+          "name": "Medicamentos vencidos",
+          "description": "Comprimidos, frascos y envases con restos de medicamentos.",
+          "why_special": "Requieren disposición segura para evitar riesgos sanitarios y ambientales.",
+          "do_not_do": "No arrojarlos al contenedor común ni al desagüe."
+        },
+        {
+          "name": "Químicos domésticos",
+          "description": "Pinturas, solventes, limpiadores concentrados y otros productos peligrosos.",
+          "why_special": "Pueden contaminar suelo, agua o dañar a quienes manipulan residuos.",
+          "do_not_do": "No volcarlos ni mezclarlos con reciclables."
+        },
+        {
+          "name": "Voluminosos",
+          "description": "Muebles, colchones, grandes objetos y restos de gran tamaño.",
+          "why_special": "Suelen requerir circuitos específicos de retiro o puntos especiales.",
+          "do_not_do": "No abandonarlos junto a contenedores comunes."
+        }
+      ],
+      "cta": {
+        "label": "Ver dónde llevarlo",
+        "target": "donde_llevarlo"
+      }
+    },
+    {
+      "id": "que_no_va",
+      "title": "Qué no va",
+      "subtitle": "Evitá errores comunes en contenedores de reciclaje.",
+      "icon": "block_rounded",
+      "type": "negative_guide",
+      "summary": "Hay residuos que parecen reciclables, pero si están sucios, mezclados o son especiales, no deben ir al contenedor común.",
+      "intro": "Una mala separación puede arruinar materiales que sí podrían recuperarse. Por eso conviene revisar estos errores frecuentes.",
+      "not_allowed_examples": [
+        {
+          "title": "Papel o cartón mojado",
+          "body": "Pierde calidad y puede contaminar otros materiales reciclables."
+        },
+        {
+          "title": "Envases con restos de comida",
+          "body": "Atraen suciedad, olores y arruinan el resto del contenido del contenedor."
+        },
+        {
+          "title": "Pilas, baterías o electrónicos",
+          "body": "Son residuos especiales y requieren otro circuito."
+        },
+        {
+          "title": "Químicos o envases peligrosos sin tratamiento",
+          "body": "No deben mezclarse con reciclables comunes."
+        },
+        {
+          "title": "Vidrios rotos sueltos",
+          "body": "Pueden representar un riesgo si no se manipulan correctamente."
+        }
+      ],
+      "cta": {
+        "label": "Ver residuos especiales",
+        "target": "residuos_especiales"
+      }
+    },
+    {
+      "id": "donde_llevarlo",
+      "title": "Dónde llevarlo",
+      "subtitle": "Descubrí si va a un contenedor común o a un punto especial.",
+      "icon": "place_rounded",
+      "type": "disposal_destination",
+      "summary": "No todos los residuos siguen el mismo camino. Algunos pueden ir a contenedores comunes y otros necesitan puntos diferenciados.",
+      "intro": "Esta guía sirve para decidir de forma rápida el destino probable de un residuo antes de salir al mapa.",
+      "destination_rules": [
+        {
+          "title": "Contenedor común de reciclables",
+          "body": "Para materiales secos, limpios y aceptados por el sistema local, como ciertos plásticos, papeles, cartones, vidrios o metales."
+        },
+        {
+          "title": "Punto especial",
+          "body": "Para electrónicos, pilas, baterías, químicos, medicamentos, voluminosos u otros residuos que no van en contenedores comunes."
+        },
+        {
+          "title": "Circuito orgánico o compostaje",
+          "body": "Para restos biodegradables, si existe un sistema específico disponible."
+        }
+      ],
+      "decision_help": [
+        "Si el residuo está limpio y es un material reciclable habitual, probablemente va a contenedor reciclable.",
+        "Si el residuo es peligroso, electrónico o grande, probablemente requiere un punto especial.",
+        "Si tenés dudas, revisá primero la ficha del material dentro de la guía."
+      ],
+      "cta": {
+        "label": "Ver mapa",
+        "target": "map_points"
+      }
+    },
+    {
+      "id": "materiales_frecuentes",
+      "title": "Materiales frecuentes",
+      "subtitle": "Accedé rápido a los residuos más comunes de la guía.",
+      "icon": "inventory_2_rounded",
+      "type": "quick_access",
+      "summary": "Una selección corta para llegar rápido a los materiales que más suelen consultarse.",
+      "intro": "Pensado para consultas rápidas sin recorrer toda la guía.",
+      "quick_items": [
+        {
+          "material_id": "plastico",
+          "label": "Plástico"
+        },
+        {
+          "material_id": "papel_carton",
+          "label": "Papel y cartón"
+        },
+        {
+          "material_id": "vidrio",
+          "label": "Vidrio"
+        },
+        {
+          "material_id": "metales",
+          "label": "Metales"
+        },
+        {
+          "material_id": "organicos",
+          "label": "Orgánicos"
+        },
+        {
+          "material_id": "electronicos",
+          "label": "Electrónicos"
+        }
+      ],
+      "cta": {
+        "label": "Abrir materiales",
+        "target": "ver_materiales"
+      }
+    }
+  ]
+}
