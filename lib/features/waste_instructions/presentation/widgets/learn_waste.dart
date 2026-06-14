@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/card_dynamic.dart';
 import 'package:flutter/material.dart';
 
 class LearnWaste extends StatelessWidget{
-  const LearnWaste({super.key});
+  final FutureOr<void> Function()? goMaterials;
+
+  const LearnWaste({
+    super.key,
+    this.goMaterials,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +51,9 @@ class LearnWaste extends StatelessWidget{
             icon: Icons.category_rounded,
             iconBackgroundColor: const Color(0xFFE5F5ED),
             iconColor: const Color(0xFF237655),
+            onTap: () async {
+              await goMaterials?.call();
+            },
           ),
           CardTouch(
             title: 'Residuos especiales', 
