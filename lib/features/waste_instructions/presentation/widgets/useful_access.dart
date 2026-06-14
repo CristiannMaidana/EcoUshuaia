@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/screens/info_recicly_screen.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/card_dynamic.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +23,11 @@ class UsefulAccess extends StatelessWidget{
             child: Row(
               children: [
                CardTouch(title: 'Cómo separar', 
-                    infoText: 'Consejos básicos para preparar residuos antes de reciclar.', 
-                    width: 250
+                  infoText: 'Consejos básicos para preparar residuos antes de reciclar.', 
+                  width: 250,
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => InfoReciclyScreen()));
+                  },
                 ),
                 SizedBox(width: 10,),
                 CardTouch(title: 'Que no va', 
