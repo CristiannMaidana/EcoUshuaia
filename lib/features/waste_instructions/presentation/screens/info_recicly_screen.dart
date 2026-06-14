@@ -113,7 +113,9 @@ class _InfoReciclyScreenState extends State<InfoReciclyScreen> {
               tag: section.tag,
               chips: section.chips,
               tips: section.tips,
-              onBackPressed: () {},
+              onBackPressed: () {
+                Navigator.pop(context);
+              },
               onViewContainersPressed: () {},
               primaryButtonText: section.ctaLabel,
             ),
