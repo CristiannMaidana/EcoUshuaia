@@ -12,6 +12,7 @@ class WasteInstructionsScreen extends StatelessWidget{
     return Scaffold(
       backgroundColor: camarone50,
       appBar: AppBar(
+        backgroundColor: camarone50,
         title: Text('EcoUshuaia'),
       ),
       body: Padding(
