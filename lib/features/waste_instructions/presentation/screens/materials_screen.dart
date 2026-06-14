@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/card_dynamic.dart';
 import 'package:flutter/material.dart';
 
 class MaterialsScreen extends StatelessWidget{
@@ -8,6 +9,7 @@ class MaterialsScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: camarone50,
       appBar: AppBar(
         backgroundColor: camarone50,
         toolbarHeight: 110,
@@ -37,10 +39,27 @@ class MaterialsScreen extends StatelessWidget{
         ),      
       ),
       body: SingleChildScrollView(
-          child: Column(
-            children: [
-
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                // Section materiales frecuents select
+                CardDynamic(
+                  widget: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header
+                      Text('Materiales frecuentes', style: Theme.of(context).textTheme.titleLarge,),
+                      SizedBox(height: 10,),
+                      Text('Elegí un material para ver recomendaciones rápidas de separación y descarte.',
+                        style: Theme.of(context).textTheme.bodyMedium,  
+                      ),
+                    
+                    ],
+                  )
+                )
+              ],
+            ),
           ),
       ),
     );
