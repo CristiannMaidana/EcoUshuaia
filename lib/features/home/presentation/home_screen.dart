@@ -7,6 +7,7 @@ import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
 import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
+import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/waste_instructions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,6 +81,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               QuickActions(
+                goCalendar: () {
+                  const ShellTabSelectionNotification(1).dispatch(context);
+                },
                 goWasteGuide: () {
                   Navigator.push(
                     context,
