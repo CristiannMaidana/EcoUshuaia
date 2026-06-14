@@ -194,3 +194,11 @@ Este README resume el panorama general del repositorio. La documentacion tecnica
 - [Desarrollo local](./docs/desarrollo-local.md)
 - [Backend esperado](./docs/backend-esperado.md)
 - [Roadmap tecnico](./docs/roadmap-tecnico.md)
+
+## Licencia
+
+Este repositorio es propietario.
+
+- Copyright (c) 2026 Eco Ushuaia. Todos los derechos reservados.
+- No se concede permiso para usar, copiar, modificar, distribuir ni crear trabajos derivados sin autorizacion previa por escrito.
+- Ver [`LICENSE`](./LICENSE) para el texto completo.
