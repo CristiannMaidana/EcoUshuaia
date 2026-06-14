@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/screens/materials_screen.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/card_dynamic.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,14 @@ class FrequentMaterials extends StatelessWidget{
                 ],
               ),
               TextButton(
-                onPressed: (){}, 
+                onPressed: (){
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (_) => MaterialsScreen()
+                    )
+                  );
+                }, 
                 child: Text('Ver todos')
               )
             ],
