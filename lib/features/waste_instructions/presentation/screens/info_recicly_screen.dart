@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/theme.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/detail_material_card.dart';
 import 'package:flutter/material.dart';
 
 class InfoReciclyScreen extends StatelessWidget{
@@ -37,7 +38,43 @@ class InfoReciclyScreen extends StatelessWidget{
           ]
         )
       ),
-      body: Column(children: [],),
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+             DetailMaterialCard(
+              title: 'Consejos generales',
+              description: 'Una vista de entrada para usuarios que todavía no saben bien cómo separar.',
+              tag: 'Frecuente',
+              chips: const ['Lavar', 'Secar', 'Separar', 'No mezclar'],
+              tips: const [
+                DetailMaterialTip(
+                  mark: '1',
+                  title: 'Vaciar antes de reciclar',
+                  description:
+                      'No dejar restos de comida o líquidos dentro del residuo.',
+                ),
+    
+                DetailMaterialTip(
+                  mark: '2',
+                  title: 'Lavar y secar',
+                  description:
+                      'Un residuo limpio evita contaminar al resto del material reciclable.',
+                ),
+    
+                DetailMaterialTip(
+                  mark: '3',
+                  title: 'No mezclar especiales',
+                  description:
+                      'Electrónicos, peligrosos o sanitarios deben ir a puntos específicos.',
+                ),
+              ],
+              onBackPressed: () {},
+              onViewContainersPressed: () {},
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
