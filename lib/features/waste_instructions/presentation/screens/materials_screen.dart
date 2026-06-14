@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/data/materials_data.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/card_dynamic.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/detail_material_card.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/details_material.dart';
@@ -9,38 +10,6 @@ class MaterialsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: change for data of the API
-    final materials = [
-      (
-        iconText: 'P',
-        iconBackgroundColor: const Color(0xFFEAB308),
-        tag: 'Frecuente',
-        title: 'Plástico',
-        description: 'Botellas, envases y recipientes limpios.',
-      ),
-      (
-        iconText: 'PC',
-        iconBackgroundColor: const Color(0xFF1E3A8A),
-        tag: 'Seco',
-        title: 'Papel y cartón',
-        description: 'Sólo si está seco y sin restos de comida.',
-      ),
-      (
-        iconText: 'V',
-        iconBackgroundColor: const Color(0xFF065F46),
-        tag: 'Común',
-        title: 'Vidrio',
-        description: 'Botellas y frascos sin contenido ni tapas.',
-      ),
-      (
-        iconText: 'O',
-        iconBackgroundColor: const Color(0xFF7C4A19),
-        tag: 'Biodegradable',
-        title: 'Orgánico',
-        description: 'Restos de comida y residuos biodegradables.',
-      ),
-    ];
-
     return Scaffold(
       backgroundColor: camarone50,
       appBar: AppBar(
@@ -104,7 +73,7 @@ class MaterialsScreen extends StatelessWidget {
                         return GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: materials.length,
+                          itemCount: wasteMaterials.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: crossAxisCount,
@@ -113,7 +82,7 @@ class MaterialsScreen extends StatelessWidget {
                                 mainAxisExtent: 150,
                               ),
                           itemBuilder: (context, index) {
-                            final material = materials[index];
+                            final material = wasteMaterials[index];
 
                             return DetailsMaterial(
                               iconText: material.iconText,
