@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/auth_usuario_repository.dart';
@@ -73,161 +74,196 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Consumer<AuthUsuarioViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
+            backgroundColor: camarone50,
             appBar: AppBar(
+              backgroundColor: camarone50,
               title: Text(
                 'EcoUshuaia',
-                style: Theme.of(context).textTheme.displayLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
             body: Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(15),
-              child: Container(
-                decoration: containerInputsLogin,
-                constraints: const BoxConstraints(maxHeight: 700),
-                width: 600,
-                padding: const EdgeInsets.all(20),
-                child: IntrinsicHeight(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Título y subtítulo
-                        Text(
-                          'Iniciar sesión',
-                          style: Theme.of(context).textTheme.displaySmall,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '¡Bienvenido de nuevo! Por favor, ingresa tus credenciales para continuar.',
-                          style: Theme.of(context).textTheme.labelMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 20),
-                        
-                        // Formulario de login
-                        Form(
-                          key: _formKey,
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('INICIO DE SESIÓN',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.66,
+                      color: const Color(0xFF23825E),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text('Volvé a tu cuenta',
+                    style: TextStyle(
+                      fontSize: 34,
+                      height: 0.98,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1.7,
+                      color: const Color(0xFF111827),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text('Ingresá para retomar tu mapa, tus ubicaciones guardadas y las novedades de tu zona.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  // Section of form
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      decoration: containerInputsLogin,
+                      constraints: const BoxConstraints(maxHeight: 560),
+                      width: 600,
+                      padding: const EdgeInsets.all(15),
+                      child: IntrinsicHeight(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.only(top: 10),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Campo de correo electrónico
-                              TextFormFieldCustom(
-                                controller: _emailController,
-                                focusNode: _emailFocusNode,
-                                titulo: 'Correo electrónico',
-                                labelText: 'nombre@correo.com',
-                                prefixIcon: AvatarLottie(focusNode: _emailFocusNode),
-                                validate: validarEmail,
-                                keyboardType: TextInputType.emailAddress,
+                              // Título y subtítulo
+                              const SizedBox(height: 12),
+                              Text(
+                                '¡Bienvenido de nuevo! Por favor, ingresa tus credenciales para continuar.',
+                                style: Theme.of(context).textTheme.labelMedium,
+                                textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 16),
-                              // Campo de contraseña
-                              TextFormFieldCustom(
-                                controller: _passwordController,
-                                obscureText: _obscurePassword,
-                                titulo: 'Contraseña',
-                                labelText: 'Ingrese su contraseña',
-                                prefixIcon: EyePasswordLottie(
-                                  isClosed: _obscurePassword,
-                                  onTap: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
+                              const SizedBox(height: 20),
+                              
+                              // Formulario de login
+                              Form(
+                                key: _formKey,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Campo de correo electrónico
+                                    TextFormFieldCustom(
+                                      controller: _emailController,
+                                      focusNode: _emailFocusNode,
+                                      titulo: 'Correo electrónico',
+                                      labelText: 'nombre@correo.com',
+                                      prefixIcon: AvatarLottie(focusNode: _emailFocusNode),
+                                      validate: validarEmail,
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    // Campo de contraseña
+                                    TextFormFieldCustom(
+                                      controller: _passwordController,
+                                      obscureText: _obscurePassword,
+                                      titulo: 'Contraseña',
+                                      labelText: 'Ingrese su contraseña',
+                                      prefixIcon: EyePasswordLottie(
+                                        isClosed: _obscurePassword,
+                                        onTap: () {
+                                          setState(() {
+                                            _obscurePassword = !_obscurePassword;
+                                          });
+                                        },
+                                      ),
+                                      validate: validarPassword,
+                                    ),
+                                  ],
                                 ),
-                                validate: validarPassword,
+                              ),
+                              const SizedBox(height: 6),
+                              
+                              // Texto debajo del formulario
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Checkbox y texto de "Recordarme"
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _recordarme,
+                                        onChanged: (bool? valor) {
+                                          setState(() {
+                                            _recordarme = valor ?? false;
+                                          });
+                                        },
+                                      ),
+                                      Text(
+                                        'Recordarme',
+                                        style: Theme.of(context).textTheme.labelMedium,
+                                      ),
+                                    ],
+                                  ),
+                                  
+                                  // Botón para ir a la pantalla de "Olvidé mi contraseña"
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                                      );
+                                    },
+                                    child: Text(
+                                      '¿Olvidaste tu contraseña?',
+                                      style: Theme.of(context).textTheme.labelMedium,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              
+                              // Botón de login 
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
+                                child: StandardButton(
+                                  texto: vm.loading ? 'Ingresando...' : 'Ingresar',
+                                  onPressed: () => _onLoginPressed(vm),
+                                  width: double.infinity,
+                                  height: 52,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              
+                              // Sección de login social
+                              SocialLoginSection(
+                                onGooglePressed: () {},
+                                onApplePressed: () {},
+                              ),
+                              const SizedBox(height: 20),
+                              
+                              // Texto para ir a la pantalla de registro
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '¿No ténes cuenta?',
+                                    style: Theme.of(context).textTheme.labelMedium,
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RegisterScreen()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Crear cuenta',
+                                      style: Theme.of(context).textTheme.labelMedium,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        
-                        // Texto debajo del formulario
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Checkbox y texto de "Recordarme"
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _recordarme,
-                                  onChanged: (bool? valor) {
-                                    setState(() {
-                                      _recordarme = valor ?? false;
-                                    });
-                                  },
-                                ),
-                                Text(
-                                  'Recordarme',
-                                  style: Theme.of(context).textTheme.labelMedium,
-                                ),
-                              ],
-                            ),
-                            
-                            // Botón para ir a la pantalla de "Olvidé mi contraseña"
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
-                                );
-                              },
-                              child: Text(
-                                '¿Olvidaste tu contraseña?',
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        
-                        // Botón de login 
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: StandardButton(
-                            texto: vm.loading ? 'Ingresando...' : 'Ingresar',
-                            onPressed: () => _onLoginPressed(vm),
-                            width: double.infinity,
-                            height: 52,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        
-                        // Sección de login social
-                        SocialLoginSection(
-                          onGooglePressed: () {},
-                          onApplePressed: () {},
-                        ),
-                        const SizedBox(height: 20),
-                        
-                        // Texto para ir a la pantalla de registro
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '¿No ténes cuenta?',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => RegisterScreen()),
-                                );
-                              },
-                              child: Text(
-                                'Crear cuenta',
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           );
