@@ -120,32 +120,30 @@ class DetailMaterialCard extends StatelessWidget {
                           ),
                         ],
                       )
-                    : Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                height: 1.03,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -.4,
-                                color: Color(0xFF111827),
-                              ),
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              height: 1.03,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -.4,
+                              color: Color(0xFF111827),
                             ),
-                            const SizedBox(height: 5),
-                            Text(
-                              description,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                height: 1.45,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF6B7280),
-                              ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            description,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              height: 1.45,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF6B7280),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
               ),
               const SizedBox(width: 12),
