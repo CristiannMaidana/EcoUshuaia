@@ -3,8 +3,8 @@ import 'theme.dart';
 
 final ThemeData appTheme = ThemeData(
   fontFamily: 'Roboto',
-  scaffoldBackgroundColor: camarone300,
-  appBarTheme: const AppBarTheme(backgroundColor: camarone300),
+  scaffoldBackgroundColor: camarone50,
+  appBarTheme: const AppBarTheme(backgroundColor: camarone50),
 
   // textTheme: TextTheme(
   //   displayLarge: logo,
