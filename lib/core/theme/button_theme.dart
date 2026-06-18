@@ -8,10 +8,9 @@ final ButtonStyle botonEstandar = ElevatedButton.styleFrom(
     borderRadius: BorderRadius.circular(25),
   ),
   side: BorderSide(
-    color: camarone500,
-    width: .5,
+    color: camarone700,
+    width: 1,
   ),
   shadowColor: camarone950,
   elevation: 5,
-  minimumSize: const Size(150, 50),
 );
