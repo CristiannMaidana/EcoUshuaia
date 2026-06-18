@@ -1,4 +1,3 @@
- import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
@@ -32,9 +31,7 @@ class MaterialsScreen extends StatelessWidget {
           final categoriasVm = context.watch<CategoriaResiduosViewmodel>();
 
           return Scaffold(
-            backgroundColor: camarone50,
             appBar: AppBar(
-              backgroundColor: camarone50,
               toolbarHeight: 110,
               // Text of header
               title: Column(
