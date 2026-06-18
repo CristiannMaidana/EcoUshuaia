@@ -12,3 +12,15 @@ final ButtonStyle botonEstandar = ElevatedButton.styleFrom(
     width: 1,
   ),
 );
+
+final ButtonStyle buttonSecundary = ElevatedButton.styleFrom(
+  backgroundColor: Colors.white,
+  foregroundColor: Colors.black,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(25),
+  ),
+  side: BorderSide(
+    color: Colors.black38,
+    width: 1,
+  ),
+);
