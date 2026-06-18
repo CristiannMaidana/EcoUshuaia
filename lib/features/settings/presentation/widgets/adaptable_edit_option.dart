@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
@@ -106,9 +105,7 @@ class _AdaptableEditOptionState extends State<AdaptableEditOption> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: camarone50,
       appBar: AppBar(
-        backgroundColor: camarone50,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
@@ -197,17 +194,13 @@ class _AdaptableEditOptionState extends State<AdaptableEditOption> {
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton(
-                        onPressed: _saving ? null : () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade100,
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          onPressed: _saving ? null : () => Navigator.pop(context),
+                          child: Text('Cancelar',
+                            style: Theme.of(context).textTheme.labelLarge,
                           ),
-                        ),
-                        child: Text('Cancelar',
-                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ),
                     ),
