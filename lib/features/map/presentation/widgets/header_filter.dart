@@ -36,7 +36,6 @@ class HeaderFilter extends StatelessWidget{
                 //Boton limpiar filtros
                 SizedBox(
                   height: 36, 
-                  width: 93,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
