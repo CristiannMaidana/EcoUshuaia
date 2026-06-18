@@ -125,10 +125,10 @@ class QuickMap extends StatelessWidget {
                                   const ShellTabSelectionNotification(2).dispatch(context);
                                 },
                                 child: Row(
-                                  children: [
-                                    Icon(Icons.add),
-                                    SizedBox(width: 10,),
+                                  children: [                                    
                                     Text('Buscar direccion'),
+                                    SizedBox(width: 10,),
+                                    Icon(Icons.add),
                                   ],
                                 ),
                               ),
