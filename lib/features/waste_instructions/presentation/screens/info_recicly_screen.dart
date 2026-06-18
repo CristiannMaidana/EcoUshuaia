@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/detail_material_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,16 +47,14 @@ class _InfoReciclyScreenState extends State<InfoReciclyScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Scaffold(
-            backgroundColor: camarone50,
-            appBar: AppBar(backgroundColor: camarone50),
+            appBar: AppBar(),
             body: const Center(child: CircularProgressIndicator()),
           );
         }
 
         if (snapshot.hasError || !snapshot.hasData) {
           return Scaffold(
-            backgroundColor: camarone50,
-            appBar: AppBar(backgroundColor: camarone50),
+            appBar: AppBar(),
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -74,9 +71,7 @@ class _InfoReciclyScreenState extends State<InfoReciclyScreen> {
         final section = snapshot.data!;
 
         return Scaffold(
-          backgroundColor: camarone50,
           appBar: AppBar(
-            backgroundColor: camarone50,
             toolbarHeight: 110,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
