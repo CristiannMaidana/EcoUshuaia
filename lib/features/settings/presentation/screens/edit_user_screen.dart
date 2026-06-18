@@ -20,7 +20,8 @@ class EditUserScreen extends StatefulWidget {
   State<EditUserScreen> createState() => _EditUserScreenState();
 }
 
-class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProviderStateMixin {
+class _EditUserScreenState extends State<EditUserScreen>
+    with SingleTickerProviderStateMixin {
   ({String calle, String numero}) _splitAddress(String address) {
     final raw = address.trim();
     final numeroMatch = RegExp(r'\b\d+\b').firstMatch(raw);
@@ -50,7 +51,8 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
 
   @override
   Widget build(context) {
-    final usuario = context.watch<UsuarioViewModel>().usuario ?? widget.initialUser;
+    final usuario =
+        context.watch<UsuarioViewModel>().usuario ?? widget.initialUser;
     final domicilio = context.watch<DomicilioViewModel>().domicilio;
     final domicilioViewModel = context.read<DomicilioViewModel>();
     final usuarioViewModel = context.read<UsuarioViewModel>();
@@ -65,10 +67,11 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
 
     if (usuario == null) {
       return Scaffold(
-        backgroundColor: camarone50,
         appBar: AppBar(
-          backgroundColor: camarone50,
-          title: Text('Editar perfil', style: Theme.of(context).textTheme.headlineLarge),
+          title: Text(
+            'Editar perfil',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
           centerTitle: false,
         ),
         body: const Center(child: CircularProgressIndicator()),
@@ -76,10 +79,11 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
     }
 
     return Scaffold(
-      backgroundColor: camarone50,
       appBar: AppBar(
-        backgroundColor: camarone50,
-        title: Text('Editar perfil', style: Theme.of(context).textTheme.headlineLarge),
+        title: Text(
+          'Editar perfil',
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
         centerTitle: false,
       ),
       body: SingleChildScrollView(
@@ -88,12 +92,19 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Datos personales', style: Theme.of(context).textTheme.headlineSmall,),
+              Text(
+                'Datos personales',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 5, vertical: 10),
+                padding: EdgeInsetsGeometry.symmetric(
+                  horizontal: 5,
+                  vertical: 10,
+                ),
                 child: Column(
                   children: [
-                    CustomCardOptionSettings(titulo: 'Nombre completo',
+                    CustomCardOptionSettings(
+                      titulo: 'Nombre completo',
                       subtitulo: usuario.nombreCompleto,
                       icon: Icon(Icons.person_outline, size: 25),
                       actionSetting: () {
@@ -102,13 +113,15 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                           infoText:
                               'Verificá que el nombre y el apellido estén escritos correctamente, ya que se usarán para identificar tu cuenta.',
                           fields: [
-                            AdaptableEditField(keyName: 'nombre',
+                            AdaptableEditField(
+                              keyName: 'nombre',
                               label: 'Nombre',
                               hintText: 'Ingrese un nuevo nombre completo',
                               initialValue: usuario.nombreUsuario,
                               validator: nombreValidator,
                             ),
-                            AdaptableEditField(keyName: 'apellido',
+                            AdaptableEditField(
+                              keyName: 'apellido',
                               label: 'Apellido',
                               hintText: 'Ingrese un nuevo apellido',
                               initialValue: usuario.apellidoUsuario,
@@ -122,7 +135,9 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                             );
                             if (!mounted) return;
                             messenger.showSnackBar(
-                              const SnackBar(content: Text('Nombre actualizado')),
+                              const SnackBar(
+                                content: Text('Nombre actualizado'),
+                              ),
                             );
                           },
                         );
@@ -132,15 +147,18 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                     ),
-                    CustomCardOptionSettings(titulo: 'Correo electrónico',
+                    CustomCardOptionSettings(
+                      titulo: 'Correo electrónico',
                       subtitulo: usuario.email,
                       icon: Icon(Icons.mail_outline, size: 25),
                       actionSetting: () {
                         _openEditPage(
-                          screenTitle: 'Editar correo', 
-                          infoText: 'Verificá que el correo esté escrito correctamente, ya que se usará para iniciar sesión, recuperar tu cuenta y recibir información importante.',
+                          screenTitle: 'Editar correo',
+                          infoText:
+                              'Verificá que el correo esté escrito correctamente, ya que se usará para iniciar sesión, recuperar tu cuenta y recibir información importante.',
                           fields: [
-                            AdaptableEditField(keyName: 'email',
+                            AdaptableEditField(
+                              keyName: 'email',
                               label: 'Correo electrónico',
                               hintText: 'Ingrese un nuevo correo electrónico',
                               initialValue: usuario.email,
@@ -153,7 +171,9 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                             );
                             if (!mounted) return;
                             messenger.showSnackBar(
-                              const SnackBar(content: Text('Correo actualizado')),
+                              const SnackBar(
+                                content: Text('Correo actualizado'),
+                              ),
                             );
                           },
                         );
@@ -163,22 +183,25 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                     ),
-                    CustomCardOptionSettings(titulo: 'Teléfono',
+                    CustomCardOptionSettings(
+                      titulo: 'Teléfono',
                       subtitulo: 'numero usuario',
                       icon: Icon(Icons.smartphone_outlined, size: 25),
                       actionSetting: () {
                         _openEditPage(
-                          screenTitle: 'Editar teléfono', 
-                          infoText: 'Verificá que el número de teléfono esté escrito correctamente, ya que podrá usarse para contacto, validaciones y datos asociados a tu cuenta.',
+                          screenTitle: 'Editar teléfono',
+                          infoText:
+                              'Verificá que el número de teléfono esté escrito correctamente, ya que podrá usarse para contacto, validaciones y datos asociados a tu cuenta.',
                           fields: [
-                            AdaptableEditField(keyName: 'phone',
+                            AdaptableEditField(
+                              keyName: 'phone',
                               label: 'Teléfono',
                               hintText: 'Ingrese un nuevo número de teléfono',
                               validator: validarCelular,
                             ),
-                          ]
+                          ],
                         );
-                      }, 
+                      },
                       color: Colors.blueGrey.withValues(alpha: 0.2),
                       bottom: true,
                       switchWidget: false,
@@ -188,19 +211,29 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                 ),
               ),
               SizedBox(height: 20),
-                      
-              Text('Mi informacion util', style: Theme.of(context).textTheme.headlineSmall,),
+
+              Text(
+                'Mi informacion util',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 5, vertical: 10),
+                padding: EdgeInsetsGeometry.symmetric(
+                  horizontal: 5,
+                  vertical: 10,
+                ),
                 child: Column(
                   children: [
-                    CustomCardOptionSettings(titulo: 'Domicilio principal',
+                    CustomCardOptionSettings(
+                      titulo: 'Domicilio principal',
                       subtitulo: domicilioTexto,
                       icon: Icon(Icons.location_on_outlined, size: 25),
                       actionSetting: () async {
                         final idDomicilio = usuario.idDireccion;
                         if (idDomicilio != null && domicilio == null) {
-                          await domicilioViewModel.loadById(idDomicilio, forceRefresh: true);
+                          await domicilioViewModel.loadById(
+                            idDomicilio,
+                            forceRefresh: true,
+                          );
                         }
                         if (!context.mounted) return;
 
@@ -214,16 +247,18 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                                 initialAddress: domicilioActual == null
                                     ? null
                                     : [
-                                        domicilioActual.calle,
-                                        domicilioActual.numero,
-                                        domicilioActual.ciudad,
-                                      ]
-                                      .where(
-                                        (value) => value.trim().isNotEmpty,
-                                      )
-                                      .join(', '),
-                                initialLat: domicilioActual?.coordenada?.latitud,
-                                initialLon: domicilioActual?.coordenada?.longitud,
+                                            domicilioActual.calle,
+                                            domicilioActual.numero,
+                                            domicilioActual.ciudad,
+                                          ]
+                                          .where(
+                                            (value) => value.trim().isNotEmpty,
+                                          )
+                                          .join(', '),
+                                initialLat:
+                                    domicilioActual?.coordenada?.latitud,
+                                initialLon:
+                                    domicilioActual?.coordenada?.longitud,
                                 onSave: (address, lat, lon) async {
                                   final id = usuario.idDireccion;
                                   if (id == null) {
@@ -282,8 +317,10 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                     ),
-                    CustomCardOptionSettings(titulo: 'Favoritos', 
-                      subtitulo: 'Contenedores y lugares de reciclaje guardados.', 
+                    CustomCardOptionSettings(
+                      titulo: 'Favoritos',
+                      subtitulo:
+                          'Contenedores y lugares de reciclaje guardados.',
                       icon: Icon(Icons.favorite_outline, size: 25),
                       actionSetting: () {},
                       color: camarone600.withValues(alpha: 0.2),
@@ -291,8 +328,9 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                     ),
-                    CustomCardOptionSettings(titulo: 'Recordatorios activos', 
-                      subtitulo: 'Avisos de calendario y eventos personales.', 
+                    CustomCardOptionSettings(
+                      titulo: 'Recordatorios activos',
+                      subtitulo: 'Avisos de calendario y eventos personales.',
                       icon: Icon(Icons.calendar_today_outlined, size: 25),
                       actionSetting: () {},
                       color: Colors.orangeAccent.withValues(alpha: 0.2),
@@ -304,14 +342,22 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                 ),
               ),
               SizedBox(height: 20),
-                                                              
-              Text('Actividad y acciones de cuenta', style: Theme.of(context).textTheme.headlineSmall,),
+
+              Text(
+                'Actividad y acciones de cuenta',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 5, vertical: 10),
+                padding: EdgeInsetsGeometry.symmetric(
+                  horizontal: 5,
+                  vertical: 10,
+                ),
                 child: Column(
                   children: [
-                    CustomCardOptionSettings(titulo: 'Búsquedas recientes', 
-                      subtitulo: 'Direcciones y zonas consultadas recientemente.', 
+                    CustomCardOptionSettings(
+                      titulo: 'Búsquedas recientes',
+                      subtitulo:
+                          'Direcciones y zonas consultadas recientemente.',
                       icon: Icon(Icons.av_timer_outlined, size: 25),
                       actionSetting: () {},
                       color: Colors.blueGrey.withValues(alpha: 0.2),
@@ -319,39 +365,49 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                     ),
-                    CustomCardOptionSettings(titulo: 'Cambiar contraseña', 
-                      subtitulo: 'Actualizar credenciales de acceso de forma segura.', 
+                    CustomCardOptionSettings(
+                      titulo: 'Cambiar contraseña',
+                      subtitulo:
+                          'Actualizar credenciales de acceso de forma segura.',
                       icon: Icon(Icons.lock_outlined, size: 25),
                       actionSetting: () {
                         _openEditPage(
-                          screenTitle: 'Editar contraseña', 
-                          infoText: 'Elegí una contraseña segura y fácil de recordar para vos. Se usará para proteger el acceso a tu cuenta y a tu información personal.',      
+                          screenTitle: 'Editar contraseña',
+                          infoText:
+                              'Elegí una contraseña segura y fácil de recordar para vos. Se usará para proteger el acceso a tu cuenta y a tu información personal.',
                           fields: [
-                            AdaptableEditField(keyName: 'current_password',
+                            AdaptableEditField(
+                              keyName: 'current_password',
                               label: 'Contraseña actual',
                               hintText: 'Ingrese su contraseña actual',
                               obscureText: true,
                               validator: validarPasswordActual,
                             ),
-                            AdaptableEditField(keyName: 'new_password',
+                            AdaptableEditField(
+                              keyName: 'new_password',
                               label: 'Nueva contraseña',
                               hintText: 'Ingrese una nueva contraseña',
                               obscureText: true,
                               validator: contrasennaValidator,
                             ),
-                            AdaptableEditField(keyName: 'confirm_password',
+                            AdaptableEditField(
+                              keyName: 'confirm_password',
                               label: 'Confirmar nueva contraseña',
                               hintText: 'Reingrese nueva contraseña',
                               obscureText: true,
                             ),
                           ],
                           onSave: (values) async {
-                            final currentPassword = values['current_password'] ?? '';
+                            final currentPassword =
+                                values['current_password'] ?? '';
                             final newPassword = values['new_password'] ?? '';
-                            final confirmPassword = values['confirm_password'] ?? '';
+                            final confirmPassword =
+                                values['confirm_password'] ?? '';
 
                             if (newPassword != confirmPassword) {
-                              throw ArgumentError('La confirmación no coincide con la nueva contraseña');
+                              throw ArgumentError(
+                                'La confirmación no coincide con la nueva contraseña',
+                              );
                             }
 
                             await usuarioViewModel.updateUserPassword(
@@ -360,7 +416,9 @@ class _EditUserScreenState extends State<EditUserScreen> with SingleTickerProvid
                             );
                             if (!mounted) return;
                             messenger.showSnackBar(
-                              const SnackBar(content: Text('Contraseña actualizada')),
+                              const SnackBar(
+                                content: Text('Contraseña actualizada'),
+                              ),
                             );
                           },
                         );
