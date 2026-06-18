@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class AdaptableEditOptionContainer extends StatelessWidget{
@@ -14,9 +13,7 @@ class AdaptableEditOptionContainer extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: camarone50,
       appBar: AppBar(
-        backgroundColor: camarone50,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
