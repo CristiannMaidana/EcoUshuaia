@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
@@ -149,11 +148,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
           CategoriaNoticiasViewmodel(ctx.read<CategoriaNoticiasRepositories>())
             ..load(),
       child: Scaffold(
-        backgroundColor: camarone50,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: AppBar(
-            backgroundColor: camarone50,
             surfaceTintColor: Colors.transparent,
             scrolledUnderElevation: 0,
             toolbarHeight: 60,
