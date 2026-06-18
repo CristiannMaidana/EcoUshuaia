@@ -220,12 +220,6 @@ class _ContentEditAddresState extends State<ContentEditAddres> {
                         height: 48,
                         child: OutlinedButton(
                           onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.grey.shade100,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
                           child: Text('Cancelar',
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
