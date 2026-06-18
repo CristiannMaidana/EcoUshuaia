@@ -11,6 +11,4 @@ final ButtonStyle botonEstandar = ElevatedButton.styleFrom(
     color: camarone700,
     width: 1,
   ),
-  shadowColor: camarone950,
-  elevation: 5,
 );
