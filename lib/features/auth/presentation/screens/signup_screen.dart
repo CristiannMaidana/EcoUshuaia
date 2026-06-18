@@ -152,14 +152,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Consumer<UsuariosCreateViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              title: Text('Crear cuenta',
+                style: Theme.of(context).textTheme.displayLarge
+              ),
+            ),
             body: Center(
               child: Column(
                 children: [
                   // Titulo y descripcion
-                  Text('Crear cuenta',
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
                   SizedBox(height: 12),
                   Text('Registrate para guardar domicilio, contenedores favoritos, recordatorios y personalizar tu experiencia.',
                     style: Theme.of(context).textTheme.labelMedium,
@@ -330,7 +331,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 20),
+                                      const SizedBox(height: 10),
 
                                       // Boton de registro
                                       StandardButton(
