@@ -74,9 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Consumer<AuthUsuarioViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
-            backgroundColor: camarone50,
             appBar: AppBar(
-              backgroundColor: camarone50,
               title: Text(
                 'EcoUshuaia',
                 style: Theme.of(context).textTheme.headlineLarge,
@@ -155,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       validate: validarEmail,
                                       keyboardType: TextInputType.emailAddress,
                                     ),
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 10),
                                     // Campo de contraseña
                                     TextFormFieldCustom(
                                       controller: _passwordController,
@@ -233,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onGooglePressed: () {},
                                 onApplePressed: () {},
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 5),
                               
                               // Texto para ir a la pantalla de registro
                               Row(
