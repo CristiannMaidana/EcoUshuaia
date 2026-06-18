@@ -2,7 +2,6 @@ import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
-import 'package:eco_ushuaia/features/shell/presentation/app_shell_screen.dart';
 import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/new_news_item.dart';
 import 'package:flutter/material.dart';
@@ -51,23 +50,11 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text('Proximos eventos', style: Theme.of(context).textTheme.headlineSmall),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context, 
-                    MaterialPageRoute(builder: (context) => ContainerHomeScreen(initialIndex: 1,)), 
-                    (route) => false
-                  );
+                  const ShellTabSelectionNotification(1).dispatch(context);
                 },
-                 style: TextButton.styleFrom(
-                  backgroundColor: camarone400,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: Colors.grey[400]!, width: 1),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                 child: Text('Ver todas', style: Theme.of(context).textTheme.labelLarge),
+                child: Text('Ver todas'),
               ),
             ],
           ),
