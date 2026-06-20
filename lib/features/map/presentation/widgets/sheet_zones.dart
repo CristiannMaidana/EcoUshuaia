@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/zona_mapa.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
@@ -373,31 +372,15 @@ class SheetZonesState extends State<SheetZones> {
                                       onPressed: _isApplying
                                           ? null
                                           : _cancelChanges,
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: camarone800,
-                                        side: const BorderSide(
-                                          color: camarone300,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 12,
-                                        ),
-                                      ),
                                       child: const Text('Cancelar'),
                                     ),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
-                                    child: FilledButton(
+                                    child: ElevatedButton(
                                       onPressed: hasZones && !_isApplying
                                           ? _applyChanges
                                           : null,
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: camarone500,
-                                        foregroundColor: colorNegro,
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 12,
-                                        ),
-                                      ),
                                       child: const Text('Aplicar'),
                                     ),
                                   ),
