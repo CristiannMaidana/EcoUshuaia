@@ -104,7 +104,7 @@ class _EditUserScreenState extends State<EditUserScreen>
                 child: Column(
                   children: [
                     CustomCardOptionSettings(
-                      titulo: 'Nombre completo',
+                      titulo: 'Nombre',
                       subtitulo: usuario.nombreCompleto,
                       icon: Icon(Icons.person_outline, size: 25),
                       actionSetting: () {
