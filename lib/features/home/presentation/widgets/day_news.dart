@@ -1,8 +1,11 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/card_touch.dart';
+import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DayNews extends StatelessWidget {
   final List<Calendarios>? news;
@@ -92,7 +95,8 @@ class DayNews extends StatelessWidget {
                     infoText: '${DateFormat('dd/MM/yyyy').format(item.fecha)} · ${_formatDuration(item.hora)} · ${_formatDuration(item.duracion)}',
                     subtitle: item.subtitulo ?? '',
                     onTap: () {
-                      // Path to go to the news selected of the day
+                      context.read<CalendarioViewmodel>().openNews(item);
+                      const ShellTabSelectionNotification(1).dispatch(context);
                     },
                     width: 260,
                   ),
