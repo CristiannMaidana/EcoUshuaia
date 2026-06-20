@@ -161,7 +161,7 @@ class ContainerDetailState extends State<ContainerDetail> {
           controller: _draggableController,
           initialChildSize: 0.0,
           minChildSize: 0.0,
-          maxChildSize: 0.49,
+          maxChildSize: 0.47,
           builder: (context, scrollController) {
             return SafeArea(
               top: false,
@@ -188,22 +188,18 @@ class ContainerDetailState extends State<ContainerDetail> {
                         ),
                         child: Column(
                           children: [
+                            // Barra agarre
                             Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               child: BarraAgarre(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                left: 14,
-                                right: 14,
-                                bottom: 8,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
                               child: Column(
                                 children: [
                                   //Header del widget (Icon - Texto - Boton cerrar)
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -211,57 +207,36 @@ class ContainerDetailState extends State<ContainerDetail> {
                                           Container(
                                             padding: EdgeInsets.all(7),
                                             decoration: BoxDecoration(
-                                              color: const Color.fromRGBO(
-                                                0,
-                                                128,
-                                                0,
-                                                0.2,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(16),
-                                              ),
+                                              color: const Color.fromRGBO(0, 128, 0, 0.2,),
+                                              borderRadius: BorderRadius.all(Radius.circular(18),),
                                             ),
-                                            child: Icon(
-                                              Icons.location_on_outlined,
-                                              size: 40,
+                                            child: Icon(Icons.location_on_outlined,
+                                              size: 38,
                                               color: Colors.green,
                                             ),
                                           ),
                                           SizedBox(width: 8),
                                           // Informacion basica del contenedor (Zona y nombre)
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 10,
-                                                ),
-                                                child: Text(
-                                                  'Zona: ${widget.container?.idZona}',
-                                                  style: Theme.of(
-                                                    context,
-                                                  ).textTheme.titleMedium,
+                                                padding: const EdgeInsets.only(left: 10,),
+                                                child: Text('Zona: ${widget.container?.idZona}',
+                                                  style: Theme.of(context).textTheme.titleMedium,
                                                 ),
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 10,
-                                                ),
-                                                child: Text(
-                                                  widget
-                                                          .container
-                                                          ?.nombreContenedor ??
-                                                      'Contenedor numero',
-                                                  style: Theme.of(
-                                                    context,
-                                                  ).textTheme.bodyMedium,
+                                                padding: const EdgeInsets.only(left: 10),
+                                                child: Text(widget.container?.nombreContenedor ??'Contenedor numero',
+                                                  style: Theme.of(context).textTheme.bodyMedium,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
+                                      // Icons of actions
                                       Row(
                                         children: [
                                           CircleIcon(
@@ -269,28 +244,16 @@ class ContainerDetailState extends State<ContainerDetail> {
                                             color: widget.container == null
                                                 ? Colors.grey
                                                 : vmUsuarioFavoritos.isFavorito(
-                                                    widget
-                                                        .container!
-                                                        .idContenedor,
+                                                    widget.container!.idContenedor,
                                                   )
                                                 ? Colors.yellow.shade400
                                                 : Colors.grey,
                                             onPressed: () {
-                                              final idContenedor = widget
-                                                  .container
-                                                  ?.idContenedor;
+                                              final idContenedor = widget.container?.idContenedor;
                                               if (idContenedor == null) return;
-                                              vmUsuarioFavoritos.isFavorito(
-                                                    idContenedor,
-                                                  )
-                                                  ? vmUsuarioFavoritos
-                                                        .removeFavoritoById(
-                                                          idContenedor,
-                                                        )
-                                                  : vmUsuarioFavoritos
-                                                        .addFavorito(
-                                                          idContenedor,
-                                                        );
+                                              vmUsuarioFavoritos.isFavorito(idContenedor)
+                                                  ? vmUsuarioFavoritos.removeFavoritoById(idContenedor)
+                                                  : vmUsuarioFavoritos.addFavorito(idContenedor);
                                             },
                                           ),
                                           SizedBox(width: 20),
@@ -311,8 +274,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                     children: [
                                       Expanded(
                                         child: DataContainer(
-                                          contenido:
-                                              residuo?.nombre ?? 'Desconocido',
+                                          contenido: residuo?.nombre ?? 'Desconocido',
                                           icon: Icons.circle,
                                           colorIcon: residuo == null
                                               ? Colors.grey
@@ -322,9 +284,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       SizedBox(width: 8),
                                       SizedBox(
                                         child: DataContainer(
-                                          contenido:
-                                              (widget.container?.idContenedor)
-                                                  .toString(),
+                                          contenido:(widget.container?.idContenedor).toString(),
                                           icon: Icons.my_library_books_outlined,
                                           colorIcon: Colors.black,
                                         ),
@@ -357,22 +317,14 @@ class ContainerDetailState extends State<ContainerDetail> {
                                           titulo: 'Direccion:',
                                           descripcion: direccion.isNotEmpty
                                               ? direccion
-                                              : widget
-                                                        .container
-                                                        ?.descripcionUbicacion ??
-                                                    'direccion',
+                                              : widget.container?.descripcionUbicacion ??'direccion',
                                         ),
                                       ),
                                       SizedBox(width: 8),
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Próx. recolección',
-                                          descripcion:
-                                              (widget
-                                                          .container
-                                                          ?.capacidadTotal ??
-                                                      'Desconocido')
-                                                  .toString(),
+                                          descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
                                         ),
                                       ),
                                     ],
@@ -383,24 +335,14 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Nivel de llenado',
-                                          descripcion:
-                                              (widget
-                                                          .container
-                                                          ?.capacidadTotal ??
-                                                      'Desconocido')
-                                                  .toString(),
+                                          descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
                                         ),
                                       ),
                                       SizedBox(width: 8),
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Estado',
-                                          descripcion:
-                                              (widget
-                                                          .container
-                                                          ?.capacidadTotal ??
-                                                      'Desconocido')
-                                                  .toString(),
+                                          descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
                                         ),
                                       ),
                                     ],
@@ -411,78 +353,57 @@ class ContainerDetailState extends State<ContainerDetail> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          side: const BorderSide(
-                                            color: Colors.grey,
+                                      SizedBox(
+                                        height: 50,
+                                        child: OutlinedButton(
+                                          onPressed: () {},
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.notifications_none,
+                                                color: Colors.black,
+                                                size: 24,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text('Recordarme'),
+                                            ],
                                           ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              24,
-                                            ),
-                                          ),
-                                          minimumSize: const Size(0, 52),
-                                        ),
-                                        onPressed: () {},
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              Icons.notifications_none,
-                                              color: Colors.black,
-                                              size: 24,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              'Recordarme',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.labelLarge,
-                                            ),
-                                          ],
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          final coord =
-                                              widget.container?.coordenada;
-                                          if (coord == null) return;
-
-                                          _bajarSheet();
-                                          final buscarDireccion =
-                                              widget.buscarDireccion;
-                                          if (buscarDireccion != null) {
-                                            await buscarDireccion(
-                                              coord.latitud,
-                                              coord.longitud,
-                                            );
-                                          }
-                                          widget.abrirDetalleDireccion?.call();
-                                          final generateRouteCar =
-                                              widget.generateRouteCar;
-                                          if (generateRouteCar != null) {
-                                            await generateRouteCar();
-                                          }
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              Icons.map_outlined,
-                                              color: Colors.black,
-                                              size: 24,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              'Navegar',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.labelLarge,
-                                            ),
-                                          ],
+                                      SizedBox(
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            final coord =
+                                                widget.container?.coordenada;
+                                            if (coord == null) return;
+                                        
+                                            _bajarSheet();
+                                            final buscarDireccion =
+                                                widget.buscarDireccion;
+                                            if (buscarDireccion != null) {
+                                              await buscarDireccion(
+                                                coord.latitud,
+                                                coord.longitud,
+                                              );
+                                            }
+                                            widget.abrirDetalleDireccion?.call();
+                                            final generateRouteCar =
+                                                widget.generateRouteCar;
+                                            if (generateRouteCar != null) {
+                                              await generateRouteCar();
+                                            }
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.map_outlined,
+                                                color: Colors.white,
+                                                size: 24,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text('Navegar'),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
