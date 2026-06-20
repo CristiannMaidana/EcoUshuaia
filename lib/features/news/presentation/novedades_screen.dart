@@ -42,14 +42,12 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text('Proximos eventos', style: Theme.of(context).textTheme.headlineSmall),
-              ),
+              Text('Proximos eventos', style: Theme.of(context).textTheme.headlineSmall),
+
               ElevatedButton(
                 onPressed: () {
                   const ShellTabSelectionNotification(1).dispatch(context);
