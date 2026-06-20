@@ -39,6 +39,7 @@ class PerfilOptionSettings extends StatelessWidget {
             ),
             SizedBox(width: 10),
 
+            // Text of data user
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,30 +51,20 @@ class PerfilOptionSettings extends StatelessWidget {
               )
             ),
 
-            SizedBox(width: 10),
-
-
-            SizedBox(
-              width: 117,
-              height: 40,
-                child: ElevatedButton(
-                onPressed: user == null
-                    ? null
-                    : () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditUserScreen(initialUser: user),
-                          ),
-                        );
-                      },
-                style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ), 
-                child: Text('Ver perfil', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black),),),
-            )
+            // Button go to settings user data
+            ElevatedButton(
+              onPressed: user == null
+                  ? null
+                  : () {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditUserScreen(initialUser: user),
+                    ),
+                  );
+                },
+              child: Text('Ver perfil'),
+            ),
           ],
         ),
       ),
