@@ -85,14 +85,17 @@ class DayNews extends StatelessWidget {
                   : List.generate(items.length, (index) {
                 final item = items[index];
 
-                return CardTouch(
-                  title: item.titulo,
-                  infoText: '${DateFormat('dd/MM/yyyy').format(item.fecha)} · ${_formatDuration(item.hora)} · ${_formatDuration(item.duracion)}',
-                  subtitle: item.subtitulo ?? '',
-                  onTap: () {
-                    // Path to go to the news selected of the day
-                  },
-                  width: 260,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: CardTouch(
+                    title: item.titulo,
+                    infoText: '${DateFormat('dd/MM/yyyy').format(item.fecha)} · ${_formatDuration(item.hora)} · ${_formatDuration(item.duracion)}',
+                    subtitle: item.subtitulo ?? '',
+                    onTap: () {
+                      // Path to go to the news selected of the day
+                    },
+                    width: 260,
+                  ),
                 );
               }),
             ),
