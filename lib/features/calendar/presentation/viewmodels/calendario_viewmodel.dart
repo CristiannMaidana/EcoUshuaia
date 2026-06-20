@@ -75,8 +75,9 @@ class CalendarioViewmodel extends ChangeNotifier {
   }
 
   List<Calendarios> eventsFromDay(DateTime day) {
-    final from = _key(day);
-    final to = DateTime(day.year, day.month + 1, 0);
+    final requestDay = day.add(const Duration(days: 1));
+    final from = _key(requestDay);
+    final to = DateTime(requestDay.year, requestDay.month + 1, 0);
     final result = _items.where((n) {
       final eventDay = _key(n.fecha);
       return !eventDay.isBefore(from) && !eventDay.isAfter(to);
