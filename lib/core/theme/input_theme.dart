@@ -4,7 +4,7 @@ import 'colors.dart';
 final InputDecorationTheme appInputDecorationTheme = InputDecorationTheme(
   floatingLabelBehavior: FloatingLabelBehavior.never,
   contentPadding: EdgeInsets.all(20),
-  fillColor: camarone50,
+  fillColor: Colors.white,
   filled: true,
   focusedBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(25),
