@@ -69,11 +69,11 @@ class _ButtomNavBarState extends State<ButtomNavBar> with TickerProviderStateMix
     final double screenWidth = MediaQuery.of(context).size.width;
     final int itemCount = nombresInicio.length;
 
-    double lottieSize = 40;
-    double minLottieSize = 40; 
+    double lottieSize = 30;
+    double minLottieSize = 30; 
     double fontSize = 15;
     double minFontSize = 15;
-    double textPadding = 7;
+    double textPadding = 0;
     double horizPadding = 8;
 
     // Calculá el ancho requerido por el texto más largo (en fuente máxima)
@@ -106,12 +106,16 @@ class _ButtomNavBarState extends State<ButtomNavBar> with TickerProviderStateMix
     }
 
     //Calculo la altura del contenedor
-    double baseHeight = 90;
-    double containerHeight = lottieSize + fontSize + textPadding + 30 ;
+    double baseHeight = 80;
+    double containerHeight = lottieSize + fontSize + textPadding;
     if (containerHeight < baseHeight) containerHeight = baseHeight;
 
     return Container(
-      color: Colors.white,
+      padding: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey.shade400, width: 1))
+      ),
       height: containerHeight, 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
