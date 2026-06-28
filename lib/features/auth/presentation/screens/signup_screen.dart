@@ -353,34 +353,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             onPressed: () => _onRegisterPressed(vm),
                                           ),
                                           const SizedBox(height: 20),
-                      
-                                          // Seccion login con redes sociales
-                                          SocialLoginSection(
-                                            onGooglePressed: () {},
-                                            onApplePressed: () {},
-                                          ),
-                                          const SizedBox(height: 20),
-                      
-                                          //Seccion para ir a la pagina de login
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text('¿Ya tenés cuenta?', 
-                                                style: Theme.of(context).textTheme.labelMedium,
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                                                    (route) => false,
-                                                  );
-                                                },
-                                                child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                      ],
                                       ),
                                     ),
                                   ],
@@ -390,6 +363,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                    
+                  // Otras opciones de login o back to page login
+                  Padding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                    child: Column(
+                      children: [
+                        // Seccion login con redes sociales  
+                        SocialLoginSection(
+                          onGooglePressed: () {},
+                          onApplePressed: () {},
+                        ),
+                        const SizedBox(height: 20),
+
+                        //Seccion para ir a la pagina de login
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('¿Ya tenés cuenta?', 
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                                  (route) => false,
+                                );
+                              },
+                              child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
