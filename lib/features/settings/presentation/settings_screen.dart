@@ -25,9 +25,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Configuracion',
-          style: Theme.of(context).textTheme.displayLarge,
+        title: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Configuracion',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold,),
+                ),
+                Text('Personalizá tu experiencia en EcoUshuaia.', style: Theme.of(context).textTheme.labelLarge,)
+              ],
+            ),
+          ],
         ),
       ),
       body: Center(
@@ -37,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsetsGeometry.all(10),
+                margin: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
