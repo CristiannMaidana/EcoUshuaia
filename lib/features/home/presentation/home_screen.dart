@@ -9,6 +9,7 @@ import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dar
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
 import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
 import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
+import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/waste_instructions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,15 +21,22 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
-  final List listaNotificaciones=List.empty(); //Simula ser la lista de todas las notificaciones de la base de dato
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  final List listaNotificaciones = List.empty(); //Simula ser la lista de todas las notificaciones de la base de dato
 
   @override
   Widget build(context) {
     final calendarioVm = context.watch<CalendarioViewmodel>();
+    final usuarioVm = context.watch<UsuarioViewModel>();
+    final nombreUsuario = usuarioVm.usuario?.nombreUsuario.trim();
+    final saludoUsuario = nombreUsuario != null && nombreUsuario.isNotEmpty
+        ? '¡Hola, $nombreUsuario!'
+        : '¡Hola, Usuario!';
 
     return ChangeNotifierProvider(
-      create: (context) => CategoriaNoticiasViewmodel(context.read<CategoriaNoticiasRepositories>())..load(),
+      create: (context) => CategoriaNoticiasViewmodel(
+        context.read<CategoriaNoticiasRepositories>(),
+      )..load(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
@@ -39,19 +47,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('EcoUshuaia',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: camarone700
-                    )
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(color: camarone700)
                   ),
                   const SizedBox(height: 6),
-                  Text('¡Hola, Test User!',
+                  Text(saludoUsuario,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text('Bienvenido a tu ciudad más limpia',
-                    style: Theme.of(context).textTheme.bodySmall
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -60,19 +66,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           actions: [
             Container(
               padding: EdgeInsets.only(right: 20),
-              child:  Container(
+              child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: Colors.white,
-                  border: Border.all(
-                    width: 1
-                  )
+                  border: Border.all(width: 1),
                 ),
-                child: NotificationLottie(notifications: listaNotificaciones)
-                ),
-            )
+                child: NotificationLottie(notifications: listaNotificaciones),
+              ),
+            ),
           ],
-        ),    
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +100,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
               QuickMap(),
               DayNews(news: calendarioVm.eventsOf(DateTime.now())),
-              CustomNovedadesHome(news: calendarioVm.eventsFromDay(DateTime.now())),
+              CustomNovedadesHome(
+                news: calendarioVm.eventsFromDay(DateTime.now()),
+              ),
             ],
           ),
         ),
