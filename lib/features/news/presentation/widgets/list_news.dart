@@ -86,7 +86,7 @@ class _CustomNovedadesState extends State<CustomNovedades> {
         ClipRRect(
           child: ListView(
             controller: _scrollController,
-            padding: const EdgeInsets.only(top: 12, bottom: 88),
+            padding: const EdgeInsets.only(top: 12),
             children: [
               if (hasContentForSelectedDay)
                 ItemsNovedades(listaNovedades: data, expand: widget.expand),
