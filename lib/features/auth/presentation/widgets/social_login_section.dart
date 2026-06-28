@@ -34,7 +34,7 @@ class SocialLoginSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             //Boton de Google
-            ElevatedButton(
+            OutlinedButton(
               onPressed: onGooglePressed,
               child: Row(
                 children: [
@@ -48,7 +48,7 @@ class SocialLoginSection extends StatelessWidget {
               ),
             ),
             //Boton de Apple
-            ElevatedButton(
+            OutlinedButton(
               onPressed: onApplePressed,
               child: Row(
                 children: [
