@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/core/ui/animations/email_validate_lottie.dart';
@@ -154,7 +155,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text('Crear cuenta',
-                style: Theme.of(context).textTheme.displayLarge
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: camarone950
+                ),
               ),
             ),
             body: Center(
@@ -168,212 +172,222 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
 
                   // Contenedor del formulario
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Column(
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(22)),
+                        border: Border.all(width: .3, color: Colors.grey[300]!)
+                      ),
+                      child: Expanded(
+                        child: SingleChildScrollView(
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                const SizedBox(height: 20),
-                                Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 25),
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      // Inputs de nombre y apellido
-                                      IntrinsicHeight(
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: TextFormFieldCustom(
-                                                controller: nombreController,
-                                                prefixIcon: AvatarLottie(focusNode: _userFocusNode),
-                                                validate: nombreValidator,
-                                                titulo: 'Nombre',
-                                                labelText: 'Tu nombre',
-                                                focusNode: _userFocusNode,
-                                              ),
-                                            ),
-                                            SizedBox(width: 16),
-                                            Expanded(
-                                              child: TextFormFieldCustom(
-                                                controller: apellidoController,
-                                                validate: apellidoValidator,
-                                                titulo: 'Apellido',
-                                                labelText: 'Tu apellido',
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      // Input de email
-                                      TextFormFieldCustom(
-                                        fieldKey: _emailFieldKey,
-                                        controller: emailController,
-                                        focusNode: _emailFocusNode,
-                                        titulo: 'Correo electrónico',
-                                        labelText: 'nombre@correo.com',
-                                        validate: emailConfirmValidator,
-                                        keyboardType: TextInputType.emailAddress,
-                                        prefixIcon: emailNoAceptado
-                                            ? EmailLottie(focusNode: _emailFocusNode)
-                                            : EmailValidateLottie(),
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      // Input de contraseña
-                                      TextFormFieldCustom(
-                                        controller: passwordController,
-                                        obscureText: _obscurePassword,
-                                        titulo: 'Contraseña',
-                                        labelText: 'Ingresá tu contraseña',
-                                        validate: contrasennaValidator,
-                                        prefixIcon: EyePasswordLottie(
-                                          isClosed: _obscurePassword,
-                                          onTap: () {
-                                            setState(() {
-                                              _obscurePassword = !_obscurePassword;
-                                            });
-                                          },
-                                        ),
-                                        onTap: () {
-                                          if (mensajePassword) {
-                                            mensajePassword = false;
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) => Showdialogpassword(),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      // Input para repetir contraseña
-                                      TextFormFieldCustom(
-                                        obscureText: _obscurePasswordTwo,
-                                        titulo: 'Repetir contraseña',
-                                        labelText: 'Repetí tu contraseña',
-                                        validate: (value) => repetirContrasennaValidator(value, passwordController.text),
-                                        prefixIcon: EyePasswordLottie(
-                                          isClosed: _obscurePasswordTwo,
-                                          onTap: () {
-                                            setState(() {
-                                              _obscurePasswordTwo = !_obscurePasswordTwo;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      // Seccion de direccion
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    const SizedBox(height: 20),
+                                    Container(
+                                      margin: EdgeInsets.symmetric(horizontal: 15),
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
                                         children: [
-                                          Text('Ingrese su dirección',
-                                            style: Theme.of(context).textTheme.bodyLarge,
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Container(
-                                            width: double.infinity,
-                                            constraints: const BoxConstraints(minHeight: 52, maxHeight: 52),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border.all(color: Colors.grey.shade400),
-                                              borderRadius: BorderRadius.circular(24),
-                                            ),
-                                            child: Material(
-                                              color: Colors.transparent,
-                                              child: ListTile(
-                                                onTap: () {_openAddressSelector();},
-                                                minVerticalPadding: 0,
-                                                minTileHeight: 52,
-                                                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(24),
-                                                ),
-                                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                                title: Text(_selectedAddress ?? 'Ir a ingresar dirección',
-                                                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                                    color: Colors.grey.shade700,
+                                          // Inputs de nombre y apellido
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: TextFormFieldCustom(
+                                                    controller: nombreController,
+                                                    prefixIcon: AvatarLottie(focusNode: _userFocusNode),
+                                                    validate: nombreValidator,
+                                                    titulo: 'Nombre',
+                                                    labelText: 'Tu nombre',
+                                                    focusNode: _userFocusNode,
                                                   ),
                                                 ),
-                                                trailing: const Icon(Icons.arrow_forward_ios,
-                                                  size: 18,
+                                                SizedBox(width: 16),
+                                                Expanded(
+                                                  child: TextFormFieldCustom(
+                                                    controller: apellidoController,
+                                                    validate: apellidoValidator,
+                                                    titulo: 'Apellido',
+                                                    labelText: 'Tu apellido',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                      
+                                          // Input de email
+                                          TextFormFieldCustom(
+                                            fieldKey: _emailFieldKey,
+                                            controller: emailController,
+                                            focusNode: _emailFocusNode,
+                                            titulo: 'Correo electrónico',
+                                            labelText: 'nombre@correo.com',
+                                            validate: emailConfirmValidator,
+                                            keyboardType: TextInputType.emailAddress,
+                                            prefixIcon: emailNoAceptado
+                                                ? EmailLottie(focusNode: _emailFocusNode)
+                                                : EmailValidateLottie(),
+                                          ),
+                                          const SizedBox(height: 16),
+                      
+                                          // Input de contraseña
+                                          TextFormFieldCustom(
+                                            controller: passwordController,
+                                            obscureText: _obscurePassword,
+                                            titulo: 'Contraseña',
+                                            labelText: 'Ingresá tu contraseña',
+                                            validate: contrasennaValidator,
+                                            prefixIcon: EyePasswordLottie(
+                                              isClosed: _obscurePassword,
+                                              onTap: () {
+                                                setState(() {
+                                                  _obscurePassword = !_obscurePassword;
+                                                });
+                                              },
+                                            ),
+                                            onTap: () {
+                                              if (mensajePassword) {
+                                                mensajePassword = false;
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => Showdialogpassword(),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                          const SizedBox(height: 16),
+                      
+                                          // Input para repetir contraseña
+                                          TextFormFieldCustom(
+                                            obscureText: _obscurePasswordTwo,
+                                            titulo: 'Repetir contraseña',
+                                            labelText: 'Repetí tu contraseña',
+                                            validate: (value) => repetirContrasennaValidator(value, passwordController.text),
+                                            prefixIcon: EyePasswordLottie(
+                                              isClosed: _obscurePasswordTwo,
+                                              onTap: () {
+                                                setState(() {
+                                                  _obscurePasswordTwo = !_obscurePasswordTwo;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                      
+                                          // Seccion de direccion
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Ingrese su dirección',
+                                                style: Theme.of(context).textTheme.bodyLarge,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Container(
+                                                width: double.infinity,
+                                                constraints: const BoxConstraints(minHeight: 52, maxHeight: 52),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  border: Border.all(color: Colors.grey.shade400),
+                                                  borderRadius: BorderRadius.circular(24),
+                                                ),
+                                                child: Material(
+                                                  color: Colors.transparent,
+                                                  child: ListTile(
+                                                    onTap: () {_openAddressSelector();},
+                                                    minVerticalPadding: 0,
+                                                    minTileHeight: 52,
+                                                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(24),
+                                                    ),
+                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                                    title: Text(_selectedAddress ?? 'Ir a ingresar dirección',
+                                                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                                        color: Colors.grey.shade700,
+                                                      ),
+                                                    ),
+                                                    trailing: const Icon(Icons.arrow_forward_ios,
+                                                      size: 18,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+                      
+                                          // Checkbox de terminos y condiciones
+                                          Row(
+                                            children: [
+                                              Checkbox(
+                                                value: false,
+                                                onChanged: (bool? valor) {
+                                                  setState(() {});
+                                                },
+                                              ),
+                                              Expanded(
+                                                child: Text('Acepto los términos de uso y la política de privacidad.',
+                                                  style: Theme.of(context).textTheme.bodySmall,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                      
+                                          // Boton de registro
+                                          StandardButton(
+                                            texto: vm.loading
+                                                ? 'Creando...'
+                                                : 'Crear cuenta',
+                                            onPressed: () => _onRegisterPressed(vm),
+                                          ),
+                                          const SizedBox(height: 20),
+                      
+                                          // Seccion login con redes sociales
+                                          SocialLoginSection(
+                                            onGooglePressed: () {},
+                                            onApplePressed: () {},
+                                          ),
+                                          const SizedBox(height: 20),
+                      
+                                          //Seccion para ir a la pagina de login
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text('¿Ya tenés cuenta?', 
+                                                style: Theme.of(context).textTheme.labelMedium,
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                                                    (route) => false,
+                                                  );
+                                                },
+                                                child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 6),
-
-                                      // Checkbox de terminos y condiciones
-                                      Row(
-                                        children: [
-                                          Checkbox(
-                                            value: false,
-                                            onChanged: (bool? valor) {
-                                              setState(() {});
-                                            },
-                                          ),
-                                          Expanded(
-                                            child: Text('Acepto los términos de uso y la política de privacidad.',
-                                              style: Theme.of(context).textTheme.bodySmall,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-
-                                      // Boton de registro
-                                      StandardButton(
-                                        texto: vm.loading
-                                            ? 'Creando...'
-                                            : 'Crear cuenta',
-                                        onPressed: () => _onRegisterPressed(vm),
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      // Seccion login con redes sociales
-                                      SocialLoginSection(
-                                        onGooglePressed: () {},
-                                        onApplePressed: () {},
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      //Seccion para ir a la pagina de login
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text('¿Ya tenés cuenta?', 
-                                            style: Theme.of(context).textTheme.labelMedium,
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => LoginScreen()),
-                                                (route) => false,
-                                              );
-                                            },
-                                            child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
