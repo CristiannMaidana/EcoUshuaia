@@ -28,7 +28,6 @@ class CardTouch extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 10),
         Text(
           infoText,
           style: Theme.of(context).textTheme.bodySmall,
