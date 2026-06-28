@@ -49,13 +49,13 @@ class QuickMap extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(36),
-                  border: Border.all(width: 1.5, color: Colors.grey[400]!),
+                  border: Border.all(width: .3, color: Colors.grey[300]!),
                 ),
                 child: Column(
                   children: [
                     // Map
                     SizedBox(
-                      height: 200,
+                      height: 160,
                       child: Column(
                         children: [
                           Expanded(
@@ -68,10 +68,9 @@ class QuickMap extends StatelessWidget {
                       ),
                     ),
                     lineDivider(),
-                    SizedBox(height: 10),
                     // Text and buttos
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
