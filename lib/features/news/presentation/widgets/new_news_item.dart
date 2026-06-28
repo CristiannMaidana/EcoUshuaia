@@ -45,8 +45,8 @@ class CustomNewNews extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(36),
-          border: Border.all(width: 1.5, color: Colors.grey[400]!),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(width: .3, color: Colors.grey[300]!),
         ),
         child: Center(
           child: Padding(
