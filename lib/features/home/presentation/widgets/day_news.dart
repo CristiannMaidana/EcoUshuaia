@@ -49,11 +49,11 @@ class DayNews extends StatelessWidget {
                       Container(
                         width: 400,
                         margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: const BorderRadius.all(Radius.circular(20)),
-                          border: Border.all(width: 1.5, color: Colors.grey[400]!),
+                          border: Border.all(width: .3, color: Colors.grey[300]!),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,12 +63,13 @@ class DayNews extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('Hoy', style: Theme.of(context).textTheme.titleMedium),
+                                // Container
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                                   decoration: BoxDecoration(
                                     color: camarone50,
                                     borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                    border: Border.all(width: 1.5, color: Colors.grey[400]!),
+                                    border: Border.all(width: .3, color: Colors.grey[300]!),
                                   ),
                                   child: Text('Sin novedades', style: Theme.of(context).textTheme.titleMedium),
                                 )
