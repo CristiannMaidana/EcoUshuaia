@@ -128,7 +128,7 @@ class QuickMap extends StatelessWidget {
                                   children: [                                    
                                     Text('Buscar direccion'),
                                     SizedBox(width: 10,),
-                                    Icon(Icons.add),
+                                    Icon(Icons.search),
                                   ],
                                 ),
                               ),
