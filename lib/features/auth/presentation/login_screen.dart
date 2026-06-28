@@ -130,10 +130,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               // Título y subtítulo
                               const SizedBox(height: 12),
-                              Text(
-                                '¡Bienvenido de nuevo! Por favor, ingresa tus credenciales para continuar.',
-                                style: Theme.of(context).textTheme.labelMedium,
-                                textAlign: TextAlign.center,
+                              Column(
+                                children: [
+                                  Text('¡Bienvenido de nuevo!',
+                                    style: Theme.of(context).textTheme.headlineSmall,
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Text('Ingresá tus credenciales para continuar.', 
+                                    style: Theme.of(context).textTheme.labelLarge,
+                                  )
+                                ],
                               ),
                               const SizedBox(height: 20),
                               
