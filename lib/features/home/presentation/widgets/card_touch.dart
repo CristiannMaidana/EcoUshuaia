@@ -49,7 +49,7 @@ class CardTouch extends StatelessWidget {
       child: Container(
         width: width,
         margin: const EdgeInsets.only(top: 10),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.all(Radius.circular(20)),
