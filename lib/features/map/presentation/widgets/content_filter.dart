@@ -46,146 +46,143 @@ class _ContentFilterState extends State<ContentFilter> {
   Widget build(BuildContext context) {
     final vmResiduos = context.watch<ResiduoViewmodel>();
     
-    return Container(
-      color: camarone100,
-      child: Column(
-        children: [
-          // Seccion de filtros generales
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            child: ExpansionTileCustom(
-              title: 'Accesos rapidos',
-              initiallyOpen: true,
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.start,
-                children: labelsGenericsFilter.map((label) => CustomButtonFilter(
-                  label: label, 
-                  onTap: widget.aplicarFiltros, 
-                  tipoDeBoton: 'G_$label',
-                  //TODO: change for the correct ids of type of filter
-                  idEntidades: List.generate(3, (index) => index)
-                )).toList(),
-              )
-            ),
+    return Column(
+      children: [
+        // Seccion de filtros generales
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+          child: ExpansionTileCustom(
+            title: 'Accesos rapidos',
+            initiallyOpen: true,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.start,
+              children: labelsGenericsFilter.map((label) => CustomButtonFilter(
+                label: label, 
+                onTap: widget.aplicarFiltros, 
+                tipoDeBoton: 'G_$label',
+                //TODO: change for the correct ids of type of filter
+                idEntidades: List.generate(3, (index) => index)
+              )).toList(),
+            )
           ),
+        ),
 
-          // Seccion de tipo de residuos
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            child: ExpansionTileCustom(
-              title: 'Tipos de residuo',
-              initiallyOpen: true,
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.start,
-                children: vmResiduos.items.map((residuo){
-                  final List<int> id = [];
-                  id.add(residuo.idResiduo);
-                  return CustomButtonFilter(
-                    tipoDeBoton: 1,
-                    label: residuo.nombre, 
-                    icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
-                    onTap: widget.aplicarFiltros,
-                    idEntidades: id,
-                  );
-                }).toList(),
-              )
-            ),
+        // Seccion de tipo de residuos
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+          child: ExpansionTileCustom(
+            title: 'Tipos de residuo',
+            initiallyOpen: true,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.start,
+              children: vmResiduos.items.map((residuo){
+                final List<int> id = [];
+                id.add(residuo.idResiduo);
+                return CustomButtonFilter(
+                  tipoDeBoton: 1,
+                  label: residuo.nombre, 
+                  icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
+                  onTap: widget.aplicarFiltros,
+                  idEntidades: id,
+                );
+              }).toList(),
+            )
           ),
+        ),
 
-          // Seccion estado del contenedor
-          //Padding(
-            //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            //child: ExpansionTileCustom(
-              //title: 'Estado',
-              //initiallyOpen: true,
-              //child: Row(
-                //children: [
-                  //Expanded(
-                    //child: CustomButtonFilter(label: 'Operativo'),
-                  //),
-                  //SizedBox(width: 8),
-                  //Expanded(
-                    //child: CustomButtonFilter(label: 'En mantenimiento'),
-                  //),
-                //],
-              //)
-            //),
+        // Seccion estado del contenedor
+        //Padding(
+          //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+          //child: ExpansionTileCustom(
+            //title: 'Estado',
+            //initiallyOpen: true,
+            //child: Row(
+              //children: [
+                //Expanded(
+                  //child: CustomButtonFilter(label: 'Operativo'),
+                //),
+                //SizedBox(width: 8),
+                //Expanded(
+                  //child: CustomButtonFilter(label: 'En mantenimiento'),
+                //),
+              //],
+            //)
           //),
+        //),
 
-          // Seccion dias de recoleccion
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            child: ExpansionTileCustom(
-              title: 'Recolección',
-              initiallyOpen: true,
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Boton hoy y mañana
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      alignment: WrapAlignment.start,
-                      children: List.generate(2, (i) {
-                        final label = labels[i];
-                        final ids   = _idsForIndex(i);
-                        return CustomButtonFilter(
-                          label: label,
-                          onTap: widget.aplicarFiltros,
-                          tipoDeBoton: 'H_$i',
-                          idEntidades: ids,
-                        );
-                      }),
-                    ),
-                    const SizedBox(height: 8),
+        // Seccion dias de recoleccion
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+          child: ExpansionTileCustom(
+            title: 'Recolección',
+            initiallyOpen: true,
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Boton hoy y mañana
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    alignment: WrapAlignment.start,
+                    children: List.generate(2, (i) {
+                      final label = labels[i];
+                      final ids   = _idsForIndex(i);
+                      return CustomButtonFilter(
+                        label: label,
+                        onTap: widget.aplicarFiltros,
+                        tipoDeBoton: 'H_$i',
+                        idEntidades: ids,
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 8),
 
-                    // Botones franjas horarias
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      alignment: WrapAlignment.start,
-                      children: List.generate(labels.length - 2, (j) {
-                        final i     = j + 2;
-                        final label = labels[i];
-                        final ids   = _idsForIndex(i);
-                        return CustomButtonFilter(
-                          label: label,
-                          onTap: widget.aplicarFiltros,
-                          tipoDeBoton: 'H_$i',
-                          idEntidades: ids,
-                        );
-                      }),
-                    ),
-                  ],
-                ),
+                  // Botones franjas horarias
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    alignment: WrapAlignment.start,
+                    children: List.generate(labels.length - 2, (j) {
+                      final i     = j + 2;
+                      final label = labels[i];
+                      final ids   = _idsForIndex(i);
+                      return CustomButtonFilter(
+                        label: label,
+                        onTap: widget.aplicarFiltros,
+                        tipoDeBoton: 'H_$i',
+                        idEntidades: ids,
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
-          )
-          // Seccion nivel de llenado del contenedor
-          //Padding(
-            //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-            //child: ExpansionTileCustom(
-              //title: 'Nivel de llenado',
-              //initiallyOpen: true,
-              //child: Row(
-                //children: [
-                  //Expanded(child: CustomButtonFilter(label: 'Bajo')),
-                  //SizedBox(width: 8,),
-                  //Expanded(child: CustomButtonFilter(label: 'Medio')),
-                  //SizedBox(width: 8,),
-                  //Expanded(child: CustomButtonFilter(label: 'Alto'))
-                //],
-              //),
+          ),
+        )
+        // Seccion nivel de llenado del contenedor
+        //Padding(
+          //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
+          //child: ExpansionTileCustom(
+            //title: 'Nivel de llenado',
+            //initiallyOpen: true,
+            //child: Row(
+              //children: [
+                //Expanded(child: CustomButtonFilter(label: 'Bajo')),
+                //SizedBox(width: 8,),
+                //Expanded(child: CustomButtonFilter(label: 'Medio')),
+                //SizedBox(width: 8,),
+                //Expanded(child: CustomButtonFilter(label: 'Alto'))
+              //],
             //),
           //),
-        ],
-      ),
+        //),
+      ],
     );
   }
 }
