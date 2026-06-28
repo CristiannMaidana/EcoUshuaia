@@ -53,7 +53,7 @@ class CardTouch extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.all(Radius.circular(20)),
-          border: Border.all(width: 1.5, color: Colors.grey[400]!),
+          border: Border.all(width: .4, color: Colors.grey[400]!),
         ),
         child: icon == null
             ? textContent
