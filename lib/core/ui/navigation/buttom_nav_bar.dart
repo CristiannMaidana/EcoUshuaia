@@ -114,7 +114,7 @@ class _ButtomNavBarState extends State<ButtomNavBar> with TickerProviderStateMix
       padding: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey.shade400, width: 1))
+        border: Border(top: BorderSide(color: Colors.grey[300]!, width: .3))
       ),
       height: containerHeight, 
       child: Row(
