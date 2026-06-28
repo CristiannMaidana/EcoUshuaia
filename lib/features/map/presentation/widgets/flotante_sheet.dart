@@ -345,7 +345,7 @@ class FlotanteSheetState extends State<FlotanteSheet> {
                 top: Radius.circular(widget.topRadius),
                 bottom: Radius.circular(animatedBorde),
               ),
-              border: Border.all(width: 1.0, color: Colors.black54),
+              border: Border.all(width: .5, color: Colors.grey[400]!),
             ),
             child: PrimaryScrollController(
               controller: scrollController,
