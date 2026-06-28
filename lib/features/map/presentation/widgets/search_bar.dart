@@ -63,7 +63,7 @@ class SerchBarState extends State<SerchBar> with SingleTickerProviderStateMixin 
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
-                border: Border.all(width: 1, color: Colors.black54),
+                border: Border.all(width: .3, color: Colors.black54),
               ),
               child: CupertinoSearchTextField(
                 controller: _controller,
