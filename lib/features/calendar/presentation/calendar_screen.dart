@@ -159,12 +159,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Calendario',
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  Text('Calendario',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Text(
-                    fechaHoy,
+                  Text(fechaHoy,
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
                 ],
