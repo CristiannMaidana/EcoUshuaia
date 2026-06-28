@@ -328,7 +328,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 //News list
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 3),
                     child: CustomNovedades(expand: _onNovedadTap),
                   ),
                 ),
