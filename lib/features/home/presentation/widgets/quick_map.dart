@@ -48,19 +48,19 @@ class QuickMap extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(36),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(width: .3, color: Colors.grey[300]!),
                 ),
                 child: Column(
                   children: [
                     // Map
                     SizedBox(
-                      height: 150,
+                      height: 140,
                       child: Column(
                         children: [
                           Expanded(
                             child: ClipRRect(
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                               child: const MiniMap(),
                             ),
                           ),
