@@ -55,7 +55,7 @@ class QuickMap extends StatelessWidget {
                   children: [
                     // Map
                     SizedBox(
-                      height: 160,
+                      height: 150,
                       child: Column(
                         children: [
                           Expanded(
