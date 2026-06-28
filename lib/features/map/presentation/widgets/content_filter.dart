@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/horario_recoleccion_filtros.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
