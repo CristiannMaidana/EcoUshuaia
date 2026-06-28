@@ -77,29 +77,40 @@ class QuickMap extends StatelessWidget {
                         children: [
                           Text('Tus ubicaciones', style: Theme.of(context).textTheme.titleMedium),
                           Text('Entrá directo a tus contenedores, a tu zona y a las búsquedas recientes.', style: Theme.of(context).textTheme.bodyMedium),
-                          // Cards with navigation
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CardTouch(
-                                title: 'Mi zona',
-                                infoText: 'Centro · servicios y avisos personalizados',
-                                width: 180,
-                                onTap: () {
-                                  context.read<MapQuickActionViewmodel>().openMyZone();
-                                  const ShellTabSelectionNotification(2).dispatch(context);
-                                },
-                              ),
-                              CardTouch(
-                                title: 'Favoritos',
-                                infoText: 'Tus contenedores guardados.($favoritosCount)',
-                                width: 180,
-                                onTap: () {
-                                  context.read<MapQuickActionViewmodel>().openFavoritos();
-                                  const ShellTabSelectionNotification(2).dispatch(context);
-                                },
-                              )
-                            ],
+                          // Cards with navigations
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CardTouch(title: 'Mi zona',
+                                  infoText: 'Centro · servicios y avisos personalizados',
+                                  width: 180,
+                                  onTap: () {
+                                    context.read<MapQuickActionViewmodel>().openMyZone();
+                                    const ShellTabSelectionNotification(2).dispatch(context);
+                                  },
+                                ),
+                                SizedBox(width: 10,),
+                                CardTouch(title: 'Favoritos',
+                                  infoText: 'Tus contenedores guardados.($favoritosCount)',
+                                  width: 180,
+                                  onTap: () {
+                                    context.read<MapQuickActionViewmodel>().openFavoritos();
+                                    const ShellTabSelectionNotification(2).dispatch(context);
+                                  },
+                                ),
+                                SizedBox(width: 10,),
+                                CardTouch(title: 'Historial',
+                                  infoText: 'Tus visitas de contenedores, zonas y direcciones.',
+                                  width: 220,
+                                  onTap: () {
+                                    //TODO: go to map page and open history
+                                  },
+                                ),
+                                SizedBox(width: 10,),
+                              ],
+                            ),
                           ),
                           SizedBox(height: 10,),
                           // Buttons
