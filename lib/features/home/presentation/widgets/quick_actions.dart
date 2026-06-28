@@ -17,8 +17,8 @@ class QuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> actions = ['Cerca de mí', 'Mi zona', 'Calendario', 'Guía residuos'];
-    final List<IconData> icons = [Icons.near_me_rounded, Icons.layers_rounded, Icons.calendar_month_rounded, Icons.menu_book_rounded];
+    final List<String> actions = ['Cerca de mí', 'Mi zona', 'Calendario', 'Guía residuos', 'Favoritos'];
+    final List<IconData> icons = [Icons.near_me_rounded, Icons.layers_rounded, Icons.calendar_month_rounded, Icons.menu_book_rounded, Icons.favorite];
     final List<FutureOr<void> Function()?> callbacks = [
       goNearMe,
       goMyZone,
@@ -30,16 +30,18 @@ class QuickActions extends StatelessWidget {
       const Color(0xFF2F9E74),
       const Color(0xFF8B5CF6),
       const Color(0xFFF59E0B),
+      const Color(0xFFE83E8C),
     ];
     final List<Color> backgroundColors = [
       const Color(0xFFEAF2FF),
       const Color(0xFFE8F6EF),
       const Color(0xFFF2EBFF),
       const Color(0xFFFFF4DE),
+      const Color(0xFFFDECF4),
     ];
 
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -52,7 +54,7 @@ class QuickActions extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: List.generate(
-                4, (index) => GestureDetector(
+                5, (index) => GestureDetector(
                   onTap: () async {
                     await callbacks[index]?.call();
                   },
