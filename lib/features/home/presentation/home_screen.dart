@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
@@ -30,28 +31,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       create: (context) => CategoriaNoticiasViewmodel(context.read<CategoriaNoticiasRepositories>())..load(),
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 110,
+          toolbarHeight: 100,
           // Text of header
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+          title: Row(
             children: [
-              Text('EcoUshuaia',
-                style: Theme.of(context).textTheme.labelMedium
-              ),
-              const SizedBox(height: 2),
-              Text('Inicio',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text('Una entrada visual y útil para mapa, zona, calendario, alertas y actividad reciente.',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('EcoUshuaia',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: camarone700
+                    )
+                  ),
+                  const SizedBox(height: 6),
+                  Text('¡Hola, Test User!',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text('Bienvenido a tu ciudad más limpia',
+                    style: Theme.of(context).textTheme.bodySmall
+                  ),
+                ],
               ),
             ],
           ),
