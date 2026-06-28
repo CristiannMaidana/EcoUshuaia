@@ -116,7 +116,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
-    final String fechaHoy = DateFormat('dd/MM/yy').format(DateTime.now());
+    final String fechaHoy = DateFormat(
+      "d 'de' MMMM 'de' y",
+      locale,
+    ).format(DateTime.now());
     final calendarioVm = context.watch<CalendarioViewmodel>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pendingNews = calendarioVm.consumePendingOpenedNews();
@@ -151,7 +154,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: AppBar(
-            surfaceTintColor: Colors.transparent,
             scrolledUnderElevation: 0,
             toolbarHeight: 60,
             title: Padding(
