@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/core/ui/layout/spacing.dart';
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -39,60 +38,67 @@ class _ItemsNovedadesState extends State<ItemsNovedades> with SingleTickerProvid
       
           return Column(
             children: [
-              espacioVerticalMediano,
-              GestureDetector(
-                onTap: () => widget.expand(n),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  color: Colors.transparent,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 4,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: colorCategoria,
-                          borderRadius: BorderRadius.circular(999),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: GestureDetector(
+                  onTap: () => widget.expand(n),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      border: Border.all(width: .3, color: Colors.grey[300]!)
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 4,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: colorCategoria,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(n.titulo.toUpperCase(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context).textTheme.labelMedium,
+                                    ),
+                                    Text(hora, style: Theme.of(context).textTheme.bodyMedium),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Mouth day and icon
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(n.titulo.toUpperCase(),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.labelMedium,
+                                  Text('$mes $dia',
+                                    style: Theme.of(context).textTheme.bodyMedium
                                   ),
-                                  Text(hora, style: Theme.of(context).textTheme.bodyMedium),
+                                  const SizedBox(width: 20),
+                                  Icon(Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: Colors.black,
+                                  ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('$mes $dia',
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                ),
-                                const SizedBox(width: 20),
-                                Icon(Icons.arrow_forward_ios,
-                                  size: 16,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ]
+                      ]
+                    ),
                   ),
                 ),
               ),
