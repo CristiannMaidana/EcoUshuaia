@@ -26,11 +26,19 @@ class HeaderFilter extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 20, right: 16),
+            padding: const EdgeInsets.only(left: 16, bottom: 20, right: 15),
             child: Row(
               children: [
                 //Titulo
-                Text('Filtros', style: Theme.of(context).textTheme.headlineLarge),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Filtros', style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold)
+                    ),
+                    Text('Personalizá lo que ves en el mapa', style: Theme.of(context).textTheme.labelSmall,)
+                  ],
+                ),
                 const Spacer(),
                 
                 //Boton limpiar filtros
