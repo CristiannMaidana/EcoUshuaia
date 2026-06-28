@@ -2,7 +2,6 @@ import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
-import 'package:eco_ushuaia/core/ui/animations/notification_lottie.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
@@ -63,16 +62,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ],
           ),
+          // Bell for notification
           actions: [
-            Container(
-              padding: EdgeInsets.only(right: 20),
+            Padding(
+              padding: EdgeInsets.only(right: 15, top: 20),
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(36),
                   color: Colors.white,
-                  border: Border.all(width: 1),
+                  border: Border.all(width: .3, color: Colors.grey[400]!),
                 ),
-                child: NotificationLottie(notifications: listaNotificaciones),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications_outlined, size: 40,),
+                  onPressed: () {},
+                ),
               ),
             ),
           ],
