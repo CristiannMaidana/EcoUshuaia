@@ -60,11 +60,12 @@ class QuickActions extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    width: 106,
+                    width: 95,
+                    height: 110,
                     decoration: BoxDecoration(
-                      color: backgroundColors[index],
-                      borderRadius: BorderRadius.circular(36),
-                      border: Border.all(width: 1.5, color: Colors.grey[400]!),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(23),
+                      border: Border.all(width: 1, color: Colors.grey[200]!),
                     ),
                     // Button content
                     child: Column(
@@ -72,13 +73,14 @@ class QuickActions extends StatelessWidget {
                       children: [
                         // Icon
                         Container(
-                          height: 40,
-                          width: 40,
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
-                            color: iconsColors[index],
-                            borderRadius: BorderRadius.circular(20),
+                            color: backgroundColors[index],
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(width: 0.3, color: iconsColors[index],)
                           ),
-                          child: Icon(icons[index], color: Colors.white, size: 20),
+                          child: Icon(icons[index], color: iconsColors[index], size: 25),
                         ),
                         const SizedBox(height: 4),
                         // Text
