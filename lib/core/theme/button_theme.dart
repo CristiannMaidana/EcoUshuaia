@@ -9,7 +9,7 @@ final ButtonStyle botonEstandar = ElevatedButton.styleFrom(
   ),
   side: BorderSide(
     color: camarone700,
-    width: 1,
+    width: .5,
   ),
 );
 
@@ -20,7 +20,7 @@ final ButtonStyle buttonSecundary = ElevatedButton.styleFrom(
     borderRadius: BorderRadius.circular(25),
   ),
   side: BorderSide(
-    color: Colors.black38,
-    width: 1,
+    color: Colors.grey[200]!,
+    width: 1.3,
   ),
 );
