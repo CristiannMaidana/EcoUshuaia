@@ -3,7 +3,7 @@ import 'colors.dart';
 
 final BoxDecoration containerInputsLogin = BoxDecoration(
   color: Colors.white,
-  borderRadius: BorderRadius.circular(34),
+  borderRadius: BorderRadius.circular(26),
   border: Border.all(
     color: camarone50,
     width: 1,
@@ -11,8 +11,8 @@ final BoxDecoration containerInputsLogin = BoxDecoration(
   boxShadow: [
     BoxShadow(
       color: camarone950,
-      offset: Offset(0, 7),
-      blurRadius: 10,
+      offset: Offset(0, 1),
+      blurRadius: 3,
     ),
   ],
 );
