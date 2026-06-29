@@ -181,10 +181,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                         ),
                         child: Column(
                           children: [
