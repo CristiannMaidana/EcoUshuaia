@@ -24,7 +24,7 @@ class SheetZones extends StatefulWidget {
     super.key,
     this.initialChildSize = 0.0,
     this.minChildSize = 0.0,
-    this.maxChildSize = 0.5,
+    this.maxChildSize = 0.47,
     required this.onHideZones,
     required this.onShowAllZones,
     required this.onShowMyZone,
@@ -248,7 +248,7 @@ class SheetZonesState extends State<SheetZones> {
             child: DecoratedBox(
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
                 boxShadow: [
                   BoxShadow(
                     color: Color(0x1F000000),
@@ -266,7 +266,7 @@ class SheetZonesState extends State<SheetZones> {
                       onVerticalDragUpdate: dragFromHeader,
                       onVerticalDragEnd: endDragFromHeader,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
                         child: Column(
                           children: [
                             BarraAgarre(),
@@ -296,12 +296,9 @@ class SheetZonesState extends State<SheetZones> {
                                     ],
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: CircleIcon(
-                                    onPressed: _cancelChanges,
-                                    icon: Icons.close,
-                                  ),
+                                CircleIcon(
+                                  onPressed: _cancelChanges,
+                                  icon: Icons.close,
                                 ),
                               ],
                             ),
