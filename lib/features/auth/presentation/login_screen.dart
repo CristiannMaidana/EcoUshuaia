@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/core/theme/theme.dart';
-import 'package:eco_ushuaia/core/ui/buttons/standard_button.dart';
 import 'package:eco_ushuaia/core/ui/animations/eye_password_lottie.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/auth_usuario_repository.dart';
 import 'package:eco_ushuaia/features/auth/presentation/screens/forgot_password_screen.dart';
@@ -218,20 +217,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
                               
                               // Botón de login 
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
-                                child: StandardButton(
-                                  texto: vm.loading ? 'Ingresando...' : 'Ingresar',
-                                  onPressed: () => _onLoginPressed(vm),
-                                  width: double.infinity,
-                                  height: 52,
+                              SizedBox(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                                  child: ElevatedButton(
+                                    onPressed: () => _onLoginPressed(vm), 
+                                    child: Text(vm.loading ? 'Ingresando...' : 'Ingresar',)
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 20),
-                              
+                              const SizedBox(height: 10),
+
                               // Sección de login social
                               SocialLoginSection(
                                 onGooglePressed: () {},
