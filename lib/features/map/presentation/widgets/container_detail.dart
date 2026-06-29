@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
@@ -202,14 +203,14 @@ class ContainerDetailState extends State<ContainerDetail> {
                                         children: [
                                           // Icono location del contenedor
                                           Container(
-                                            padding: EdgeInsets.all(7),
+                                            padding: EdgeInsets.all(6),
                                             decoration: BoxDecoration(
-                                              color: const Color.fromRGBO(0, 128, 0, 0.2,),
-                                              borderRadius: BorderRadius.all(Radius.circular(18),),
+                                              color: camarone100,
+                                              borderRadius: BorderRadius.all(Radius.circular(18)),
                                             ),
                                             child: Icon(Icons.location_on_outlined,
                                               size: 38,
-                                              color: Colors.green,
+                                              color: camarone700
                                             ),
                                           ),
                                           SizedBox(width: 8),
@@ -219,8 +220,10 @@ class ContainerDetailState extends State<ContainerDetail> {
                                             children: [
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10,),
-                                                child: Text('Zona: ${widget.container?.idZona}',
-                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                child: Text('Zona ${widget.container?.idZona}',
+                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                    fontWeight: FontWeight.bold
+                                                  ),
                                                 ),
                                               ),
                                               Padding(
