@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.66,
-                      color: const Color(0xFF23825E),
+                      color: camarone800,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -212,7 +212,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                                     child: Text(
                                       '¿Olvidaste tu contraseña?',
-                                      style: Theme.of(context).textTheme.labelMedium,
+                                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                        color: camarone700
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -242,8 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    '¿No ténes cuenta?',
+                                  Text('¿No ténes cuenta?',
                                     style: Theme.of(context).textTheme.labelMedium,
                                   ),
                                   TextButton(
@@ -253,9 +254,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                         MaterialPageRoute(builder: (context) => RegisterScreen()),
                                       );
                                     },
-                                    child: Text(
-                                      'Crear cuenta',
-                                      style: Theme.of(context).textTheme.labelMedium,
+                                    child: Text('Crear cuenta',
+                                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                        color: camarone700
+                                      ),
                                     ),
                                   ),
                                 ],
