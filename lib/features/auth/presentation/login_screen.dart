@@ -74,9 +74,16 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, vm, _) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                'EcoUshuaia',
-                style: Theme.of(context).textTheme.headlineLarge,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/logo/logo.png',
+                    height: 100,
+                  ),
+                    Text('EcoUshuaia',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold,),
+                  ),
+                ],
               ),
             ),
             body: Container(
