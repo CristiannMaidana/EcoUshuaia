@@ -266,7 +266,7 @@ class SheetZonesState extends State<SheetZones> {
                       onVerticalDragUpdate: dragFromHeader,
                       onVerticalDragEnd: endDragFromHeader,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+                        padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
                         child: Column(
                           children: [
                             BarraAgarre(),
@@ -276,18 +276,24 @@ class SheetZonesState extends State<SheetZones> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Mapa',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.labelMedium,
+                                    Text('Zonas del mapa',
+                                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    Text(
-                                      'Zonas',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.headlineMedium,
+                                    const SizedBox(height: 4),
+                                    Text('Gestiona la visualización de zonas en el mapa.',
+                                      style: Theme.of(context).textTheme.labelMedium,
                                     ),
+                                    if (!zonaVm.loading && zonaVm.error == null) ...[
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        myZone == null
+                                            ? 'No se encontró una zona asignada para tu usuario.'
+                                            : 'Tu zona es ${myZone.nombreZona}.',
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ],
                                   ],
                                 ),
                                 Padding(
@@ -307,15 +313,10 @@ class SheetZonesState extends State<SheetZones> {
                       child: SingleChildScrollView(
                         controller: scrollController,
                         physics: sheetPhysics,
-                        padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 2),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Elegí cómo querés ver las zonas en el mapa.',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            const SizedBox(height: 6),
                             if (zonaVm.loading)
                               const Center(child: CircularProgressIndicator())
                             else if (zonaVm.error != null)
@@ -324,13 +325,6 @@ class SheetZonesState extends State<SheetZones> {
                                 style: Theme.of(context).textTheme.bodyMedium,
                               )
                             else ...[
-                              const SizedBox(height: 2),
-                              Text(
-                                myZone == null
-                                    ? 'No se encontró una zona asignada para tu usuario.'
-                                    : 'Tu zona es ${myZone.nombreZona}.',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
                               const SizedBox(height: 16),
                               DecoratedBox(
                                 decoration: const BoxDecoration(
