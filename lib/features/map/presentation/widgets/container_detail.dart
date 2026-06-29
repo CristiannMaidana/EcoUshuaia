@@ -315,6 +315,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Direccion:',
+                                          icon: Icons.map_outlined,
                                           descripcion: direccion.isNotEmpty
                                               ? direccion
                                               : widget.container?.descripcionUbicacion ??'direccion',
@@ -324,6 +325,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Próx. recolección',
+                                          icon: Icons.calendar_month_outlined,
                                           descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
                                         ),
                                       ),
@@ -335,6 +337,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Nivel de llenado',
+                                          icon: Icons.delete_outline,
                                           descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
                                         ),
                                       ),
@@ -342,6 +345,7 @@ class ContainerDetailState extends State<ContainerDetail> {
                                       Expanded(
                                         child: InfoStateContainer(
                                           titulo: 'Estado',
+                                          icon: Icons.security_outlined,
                                           descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
                                         ),
                                       ),
