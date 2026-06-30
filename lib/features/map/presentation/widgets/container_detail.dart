@@ -105,8 +105,8 @@ class ContainerDetailState extends State<ContainerDetail> {
     super.dispose();
   }
 
-  void _bajarSheet() {
-    _draggableController.animateTo(
+  Future<void> _bajarSheet() {
+    return _draggableController.animateTo(
       SheetOptionsTheme.minChildSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -119,11 +119,6 @@ class ContainerDetailState extends State<ContainerDetail> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-  }
-
-  bool get isExpanded {
-    if (!_draggableController.isAttached) return false;
-    return _draggableController.size > SheetOptionsTheme.minChildSize + 0.001;
   }
 
   // Generates the route and close the sheet
@@ -173,12 +168,14 @@ class ContainerDetailState extends State<ContainerDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Zona ${widget.container?.idZona}',
+                    Text(
+                      'Zona ${widget.container?.idZona}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(widget.container?.nombreContenedor ?? 'Contenedor numero',
+                    Text(
+                      widget.container?.nombreContenedor ?? 'Contenedor numero',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
@@ -208,9 +205,7 @@ class ContainerDetailState extends State<ContainerDetail> {
             ),
             const SizedBox(width: 12),
             // Button of close
-            CircleIcon(icon: Icons.close, 
-              onPressed: _bajarSheet
-            ),
+            CircleIcon(icon: Icons.close, onPressed: _bajarSheet),
           ],
         ),
       ],
@@ -298,7 +293,7 @@ class ContainerDetailState extends State<ContainerDetail> {
               child: InfoStateContainer(
                 titulo: 'Estado',
                 icon: Icons.security_outlined,
-                descripcion: 'Activo'
+                descripcion: 'Activo',
               ),
             ),
           ],
@@ -365,31 +360,18 @@ class ContainerDetailState extends State<ContainerDetail> {
       widget.container?.coordenada?.longitud,
     );
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // If user touch out of the sheet close sheet
-        //TODO: delete and add to widget option sheet
-        if (isExpanded)
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: _bajarSheet,
-            child: const SizedBox.expand(),
-          ),
-        SheetContainerOptionsMap(
-          controller: _draggableController,
-          builder: (context, scrollController) {
-            return SheetOptionsPanel(
-              //TODO: add: onHeaderVerticalDragUpdate and end
-              scrollableBody: true,
-              scrollController: scrollController,
-              header: _buildHeader(context, favoritosVm),
-              body: _buildBody(context, residuo: residuo, direccion: direccion),
-              footer: _buildFooter(context),
-            );
-          },
-        ),
-      ],
+    return SheetContainerOptionsMap(
+      controller: _draggableController,
+      builder: (context, scrollController) {
+        return SheetOptionsPanel(
+          //TODO: add: onHeaderVerticalDragUpdate and end
+          scrollableBody: true,
+          scrollController: scrollController,
+          header: _buildHeader(context, favoritosVm),
+          body: _buildBody(context, residuo: residuo, direccion: direccion),
+          footer: _buildFooter(context),
+        );
+      },
     );
   }
 }
