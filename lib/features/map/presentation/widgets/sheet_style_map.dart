@@ -56,16 +56,12 @@ class _SheetStyleMapState extends State<SheetStyleMap> {
     await widget.onStyleChanged(style);
   }
 
-  void _closeSheet() {
-    if (_controller.isAttached) {
-      _controller
-          .animateTo(
-            SheetOptionsTheme.minChildSize,
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeInOut,
-          );
-      return;
-    }
+  Future<void> _closeSheet() async {
+    await _controller.animateTo(
+      SheetOptionsTheme.minChildSize,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _dragFromHeader(DragUpdateDetails details) {
@@ -121,7 +117,7 @@ class _SheetStyleMapState extends State<SheetStyleMap> {
                   Text(
                     'Estilo de mapa',
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
