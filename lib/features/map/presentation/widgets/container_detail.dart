@@ -364,7 +364,24 @@ class ContainerDetailState extends State<ContainerDetail> {
       controller: _draggableController,
       builder: (context, scrollController) {
         return SheetOptionsPanel(
-          //TODO: add: onHeaderVerticalDragUpdate and end
+          onHeaderVerticalDragUpdate: (details) =>
+              SheetContainerOptionsMap.dragFromHeader(
+                context: context,
+                controller: _draggableController,
+                details: details,
+                minChildSize: SheetOptionsTheme.minChildSize,
+                maxChildSize: SheetOptionsTheme.maxChildSize,
+              ),
+          onHeaderVerticalDragEnd: (details) =>
+              SheetContainerOptionsMap.endDragFromHeader(
+                controller: _draggableController,
+                details: details,
+                minChildSize: SheetOptionsTheme.minChildSize,
+                maxChildSize: SheetOptionsTheme.maxChildSize,
+                expandedChildSize: SheetOptionsTheme.maxChildSize,
+                onClose: _bajarSheet,
+                closeThreshold: 0.44,
+              ),
           scrollableBody: true,
           scrollController: scrollController,
           header: _buildHeader(context, favoritosVm),
