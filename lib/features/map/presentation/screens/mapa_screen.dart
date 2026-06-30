@@ -1,6 +1,4 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
@@ -28,6 +26,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dar
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_style_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_zones.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -536,71 +535,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
-  Future<void> _mostrarOpciones(BuildContext context) async {
-    var estiloSeleccionado = _estiloActual;
-
-    await showModalBottomSheet<void>(
-      context: context,
-      barrierColor: const Color.fromRGBO(0, 0, 0, 0.4),
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BarraAgarre(),
-                    const SizedBox(height: 12),
-                    // Header
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Estilo de mapa',
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                            Text(
-                              'Elegi como queres ver el mapa.',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
-                        CircleIcon(
-                          icon: Icons.close,
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 20),
-                    MapStylePicker(
-                      seleccionado: estiloSeleccionado,
-                      onChanged: (style) async {
-                        setModalState(() => estiloSeleccionado = style);
-                        if (!mounted) return;
-                        setState(() => _estiloActual = style);
-                        await _nativeNavigationBridge?.setMapStyle(style);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
+  Future<void> _changeMapStyle(MapStyle style) async {
+    if (!mounted) return;
+    setState(() => _estiloActual = style);
+    await _nativeNavigationBridge?.setMapStyle(style);
   }
 
   @override
@@ -726,13 +664,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 //Button texture of map
                 FloatingActionButton(
                   heroTag: 'fab-map-style',
-                  onPressed: () => _mostrarOpciones(context),
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.map,
-                    color: camarone900,
-                    size: 30,
+                  onPressed: () => SheetStyleMap.show(
+                    context,
+                    selectedStyle: _estiloActual,
+                    onStyleChanged: _changeMapStyle,
                   ),
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.map, color: camarone900, size: 30),
                 ),
                 const SizedBox(height: 10),
                 // Button zones on map
