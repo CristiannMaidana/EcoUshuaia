@@ -61,6 +61,50 @@ class SheetContainerOptionsMap extends StatelessWidget {
     this.onTapOutside,
   });
 
+  static void dragFromHeader({
+    required BuildContext context,
+    required DraggableScrollableController controller,
+    required DragUpdateDetails details,
+    required double minChildSize,
+    required double maxChildSize,
+  }) {
+    if (!controller.isAttached) return;
+    final height = MediaQuery.sizeOf(context).height;
+    final nextSize = (controller.size - details.delta.dy / height).clamp(
+      minChildSize,
+      maxChildSize,
+    );
+    controller.jumpTo(nextSize);
+  }
+
+  static void endDragFromHeader({
+    required DraggableScrollableController controller,
+    required DragEndDetails details,
+    required double minChildSize,
+    required double maxChildSize,
+    required double expandedChildSize,
+    required Future<void> Function() onClose,
+    double closeThreshold = 0.30,
+  }) {
+    if (!controller.isAttached) return;
+
+    final velocity = details.primaryVelocity ?? 0.0;
+    const velocityThreshold = 900.0;
+    final shouldClose =
+        velocity > velocityThreshold || controller.size < closeThreshold;
+
+    if (shouldClose) {
+      onClose();
+      return;
+    }
+
+    controller.animateTo(
+      expandedChildSize.clamp(minChildSize, maxChildSize),
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   bool _isExpanded() {
     if (!controller.isAttached) {
       return initialChildSize > minChildSize;
