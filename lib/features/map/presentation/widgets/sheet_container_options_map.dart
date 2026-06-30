@@ -47,7 +47,9 @@ class SheetContainerOptionsMap extends StatelessWidget {
   final double initialChildSize;
   final double minChildSize;
   final double maxChildSize;
-  final Widget Function(BuildContext context, ScrollController scrollController) builder;
+  final Future<void> Function()? onTapOutside;
+  final Widget Function(BuildContext context, ScrollController scrollController)
+  builder;
 
   const SheetContainerOptionsMap({
     super.key,
@@ -56,19 +58,56 @@ class SheetContainerOptionsMap extends StatelessWidget {
     this.initialChildSize = SheetOptionsTheme.initialChildSize,
     this.minChildSize = SheetOptionsTheme.minChildSize,
     this.maxChildSize = SheetOptionsTheme.maxChildSize,
+    this.onTapOutside,
   });
+
+  bool _isExpanded() {
+    if (!controller.isAttached) {
+      return initialChildSize > minChildSize;
+    }
+    return controller.size > minChildSize + 0.001;
+  }
+
+  Future<void> _closeSheet() async {
+    if (onTapOutside != null) {
+      await onTapOutside!.call();
+      return;
+    }
+    if (!controller.isAttached) return;
+    await controller.animateTo(
+      minChildSize,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: DraggableScrollableSheet(
-        controller: controller,
-        initialChildSize: initialChildSize,
-        minChildSize: minChildSize,
-        maxChildSize: maxChildSize,
-        builder: builder,
-      ),
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            if (_isExpanded())
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (_) => _closeSheet(),
+                child: const SizedBox.expand(),
+              ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: DraggableScrollableSheet(
+                controller: controller,
+                initialChildSize: initialChildSize,
+                minChildSize: minChildSize,
+                maxChildSize: maxChildSize,
+                builder: builder,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
