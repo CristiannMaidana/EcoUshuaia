@@ -1,7 +1,7 @@
-import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/zona_mapa.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_container_options_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/zone_option_tile.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +22,9 @@ class SheetZones extends StatefulWidget {
 
   const SheetZones({
     super.key,
-    this.initialChildSize = 0.0,
-    this.minChildSize = 0.0,
-    this.maxChildSize = 0.47,
+    this.initialChildSize = SheetOptionsTheme.initialChildSize,
+    this.minChildSize = SheetOptionsTheme.minChildSize,
+    this.maxChildSize = SheetOptionsTheme.maxChildSize,
     required this.onHideZones,
     required this.onShowAllZones,
     required this.onShowMyZone,
@@ -234,165 +234,146 @@ class SheetZonesState extends State<SheetZones> {
       ),
     ];
 
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: DraggableScrollableSheet(
-        controller: _controller,
-        initialChildSize: widget.initialChildSize,
-        minChildSize: widget.minChildSize,
-        maxChildSize: widget.maxChildSize,
-        builder: (context, scrollController) {
-          _sheetScrollController = scrollController;
-          return Material(
-            color: Colors.transparent,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x1F000000),
-                    blurRadius: 18,
-                    offset: Offset(0, -4),
+    return SheetContainerOptionsMap(
+      controller: _controller,
+      initialChildSize: widget.initialChildSize,
+      minChildSize: widget.minChildSize,
+      maxChildSize: widget.maxChildSize,
+      builder: (context, scrollController) {
+        _sheetScrollController = scrollController;
+        return SheetOptionsPanel(
+          scrollableBody: true,
+          scrollController: scrollController,
+          scrollPhysics: sheetPhysics,
+          onHeaderVerticalDragUpdate: dragFromHeader,
+          onHeaderVerticalDragEnd: endDragFromHeader,
+          // Create widget for the header
+          header: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Zonas del mapa',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Gestiona la visualización de zonas en el mapa.',
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                  if (!zonaVm.loading && zonaVm.error == null) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      myZone == null
+                          ? 'No se encontró una zona asignada para tu usuario.'
+                          : 'Tu zona es ${myZone.nombreZona}.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ],
               ),
-              child: SafeArea(
-                top: false,
-                child: Column(
+              CircleIcon(onPressed: _cancelChanges, icon: Icons.close),
+            ],
+          ),
+          // Create widget for the body
+          body: _SheetZonesBody(
+            zonaVm: zonaVm,
+            options: options,
+            draftMode: _draftMode,
+            hasZones: hasZones,
+            isApplying: _isApplying,
+            onPreviewModeChange: _previewModeChange,
+          ),
+          // Create widget for the footer
+          footer: zonaVm.loading || zonaVm.error != null
+              ? null
+              : Row(
                   children: [
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onVerticalDragUpdate: dragFromHeader,
-                      onVerticalDragEnd: endDragFromHeader,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                        child: Column(
-                          children: [
-                            BarraAgarre(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Zonas del mapa',
-                                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text('Gestiona la visualización de zonas en el mapa.',
-                                      style: Theme.of(context).textTheme.labelMedium,
-                                    ),
-                                    if (!zonaVm.loading && zonaVm.error == null) ...[
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        myZone == null
-                                            ? 'No se encontró una zona asignada para tu usuario.'
-                                            : 'Tu zona es ${myZone.nombreZona}.',
-                                        style: Theme.of(context).textTheme.bodySmall,
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                                CircleIcon(
-                                  onPressed: _cancelChanges,
-                                  icon: Icons.close,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _isApplying ? null : _cancelChanges,
+                        child: const Text('Cancelar'),
                       ),
                     ),
+                    const SizedBox(width: 12),
                     Expanded(
-                      child: SingleChildScrollView(
-                        controller: scrollController,
-                        physics: sheetPhysics,
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 2),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (zonaVm.loading)
-                              const Center(child: CircularProgressIndicator())
-                            else if (zonaVm.error != null)
-                              Text(
-                                zonaVm.error!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              )
-                            else ...[
-                              const SizedBox(height: 16),
-                              DecoratedBox(
-                                decoration: const BoxDecoration(
-                                  color: Colors.transparent,
-                                ),
-                                child: Column(
-                                  children: List.generate(options.length, (
-                                    index,
-                                  ) {
-                                    final option = options[index];
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: index == options.length - 1
-                                            ? 0
-                                            : 10,
-                                      ),
-                                      child: ZoneOptionTile(
-                                        title: option.title,
-                                        subtitle: option.subtitle,
-                                        selected: _draftMode == option.mode,
-                                        enabled: hasZones && !_isApplying,
-                                        onTap: () =>
-                                            _previewModeChange(option.mode),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-                              if (_isApplying) ...[
-                                const SizedBox(height: 16),
-                                const LinearProgressIndicator(),
-                              ],
-                              const SizedBox(height: 20),
-                              // Button of actions
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: _isApplying
-                                          ? null
-                                          : _cancelChanges,
-                                      child: const Text('Cancelar'),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: hasZones && !_isApplying
-                                          ? _applyChanges
-                                          : null,
-                                      child: const Text('Aplicar'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ],
-                        ),
+                      child: ElevatedButton(
+                        onPressed: hasZones && !_isApplying
+                            ? _applyChanges
+                            : null,
+                        child: const Text('Aplicar'),
                       ),
                     ),
                   ],
                 ),
+        );
+      },
+    );
+  }
+}
+// Widget of container of diferents zones
+class _SheetZonesBody extends StatelessWidget {
+  final ZonaMapaViewModel zonaVm;
+  final List<_ZoneOptionData> options;
+  final _ZoneSheetMode draftMode;
+  final bool hasZones;
+  final bool isApplying;
+  final ValueChanged<_ZoneSheetMode> onPreviewModeChange;
+
+  const _SheetZonesBody({
+    required this.zonaVm,
+    required this.options,
+    required this.draftMode,
+    required this.hasZones,
+    required this.isApplying,
+    required this.onPreviewModeChange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (zonaVm.loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (zonaVm.error != null) {
+      return Text(zonaVm.error!, style: Theme.of(context).textTheme.bodyMedium);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: List.generate(options.length, (index) {
+            final option = options[index];
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: index == options.length - 1 ? 0 : 10,
               ),
-            ),
-          );
-        },
-      ),
+              child: ZoneOptionTile(
+                title: option.title,
+                subtitle: option.subtitle,
+                selected: draftMode == option.mode,
+                enabled: hasZones && !isApplying,
+                onTap: () => onPreviewModeChange(option.mode),
+              ),
+            );
+          }),
+        ),
+        if (isApplying) ...[
+          const SizedBox(height: 16),
+          const LinearProgressIndicator(),
+        ],
+      ],
     );
   }
 }
 
+// Data of the diferents types of styles of zones
 class _ZoneOptionData {
   final _ZoneSheetMode mode;
   final String title;
