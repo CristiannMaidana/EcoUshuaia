@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
@@ -9,18 +8,18 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/info_state_container.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_container_options_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
 class ContainerDetail extends StatefulWidget {
-  Contenedor? container;
+  final Contenedor? container;
   final Future<double>? Function(double lat, double lon)? distancia;
   final Future<void> Function(double lat, double lon)? buscarDireccion;
   final VoidCallback? abrirDetalleDireccion;
   final Future<void> Function()? generateRouteCar;
 
-  ContainerDetail({
+  const ContainerDetail({
     super.key,
     required this.container,
     this.distancia,
@@ -34,7 +33,7 @@ class ContainerDetail extends StatefulWidget {
 }
 
 class ContainerDetailState extends State<ContainerDetail> {
-  late DraggableScrollableController _draggableController;
+  late final DraggableScrollableController _draggableController;
   Future<double>? _metrosFuture;
   bool _closingByDrag = false;
 
@@ -76,30 +75,26 @@ class ContainerDetailState extends State<ContainerDetail> {
     return '${km.toStringAsFixed(1)} KM';
   }
 
-  // Listener para el cambio de tamaño del sheet
   void _onSheetChange() {
     if (!mounted || !_draggableController.isAttached) return;
 
     final size = _draggableController.size;
-
-    // Si empezó a bajar apenas desde abierto, cerralo completo
     if (!_closingByDrag && size < 0.44) {
       _closingByDrag = true;
       _draggableController
           .animateTo(
-            0.0,
+            SheetOptionsTheme.minChildSize,
             duration: const Duration(milliseconds: 220),
             curve: Curves.easeInOut,
           )
           .whenComplete(() {
             if (mounted) {
-              setState(() {
-                _closingByDrag = false;
-              });
+              setState(() => _closingByDrag = false);
             }
           });
       return;
     }
+
     setState(() {});
   }
 
@@ -112,7 +107,7 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   void _bajarSheet() {
     _draggableController.animateTo(
-      0.0,
+      SheetOptionsTheme.minChildSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -120,7 +115,7 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   void subirSheet() {
     _draggableController.animateTo(
-      0.49,
+      SheetOptionsTheme.maxChildSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -128,21 +123,244 @@ class ContainerDetailState extends State<ContainerDetail> {
 
   bool get isExpanded {
     if (!_draggableController.isAttached) return false;
-    return _draggableController.size > 0 + 0.001;
+    return _draggableController.size > SheetOptionsTheme.minChildSize + 0.001;
+  }
+
+  // Generates the route and close the sheet
+  Future<void> _navigateToContainer() async {
+    final coord = widget.container?.coordenada;
+    if (coord == null) return;
+
+    _bajarSheet();
+    final buscarDireccion = widget.buscarDireccion;
+    if (buscarDireccion != null) {
+      await buscarDireccion(coord.latitud, coord.longitud);
+    }
+    widget.abrirDetalleDireccion?.call();
+    final generateRouteCar = widget.generateRouteCar;
+    if (generateRouteCar != null) {
+      await generateRouteCar();
+    }
+    //TODO: add globalkey for expand the sheet of navbar
+  }
+
+  // -- WIDGETS OF DIFERENTS CONTENT OF THE SHEET --
+  // Widget of header content
+  Widget _buildHeader(BuildContext context, UsuarioContenedoresFavoritosViewModel favoritosVm,) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              // Icon
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: camarone100,
+                  borderRadius: BorderRadius.all(Radius.circular(18)),
+                ),
+                child: const Icon(
+                  Icons.location_on_outlined,
+                  size: 38,
+                  color: camarone700,
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Text of header
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Zona ${widget.container?.idZona}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(widget.container?.nombreContenedor ?? 'Contenedor numero',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Buttons of actions
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Button of fav
+            CircleIcon(icon: Icons.favorite,
+              color: widget.container == null
+                  ? Colors.grey
+                  : favoritosVm.isFavorito(widget.container!.idContenedor)
+                  ? Colors.yellow.shade400
+                  : Colors.grey,
+              onPressed: () {
+                final idContenedor = widget.container?.idContenedor;
+                if (idContenedor == null) return;
+                favoritosVm.isFavorito(idContenedor)
+                    ? favoritosVm.removeFavoritoById(idContenedor)
+                    : favoritosVm.addFavorito(idContenedor);
+              },
+            ),
+            const SizedBox(width: 12),
+            // Button of close
+            CircleIcon(icon: Icons.close, 
+              onPressed: _bajarSheet
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Widget of body content
+  Widget _buildBody(BuildContext context, {required Residuos? residuo, required String direccion,}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Quick info of the container
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Type of trash for the container
+            Expanded(
+              child: DataContainer(
+                contenido: residuo?.nombre ?? 'Desconocido',
+                icon: Icons.circle,
+                colorIcon: residuo == null
+                    ? Colors.grey
+                    : residuo.colorHex.toColor(),
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Id of the container
+            DataContainer(
+              contenido: (widget.container?.idContenedor).toString(),
+              icon: Icons.my_library_books_outlined,
+              colorIcon: Colors.black,
+            ),
+            const SizedBox(width: 8),
+            // Distances of the user location to the container
+            FutureBuilder<double>(
+              future: _metrosFuture,
+              builder: (context, snap) {
+                final text = snap.hasData ? _formatDistance(snap.data!) : '';
+                return DataContainer(
+                  contenido: text,
+                  icon: Icons.location_on_outlined,
+                  colorIcon: Colors.black,
+                );
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Detail of the state of container
+        Row(
+          children: [
+            Expanded(
+              child: InfoStateContainer(
+                titulo: 'Direccion:',
+                icon: Icons.map_outlined,
+                descripcion: direccion.isNotEmpty
+                    ? direccion
+                    : widget.container?.descripcionUbicacion ?? 'direccion',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: InfoStateContainer(
+                titulo: 'Próx. recolección',
+                icon: Icons.calendar_month_outlined,
+                descripcion: (widget.container?.capacidadTotal ?? 'Desconocido')
+                    .toString(),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: InfoStateContainer(
+                titulo: 'Nivel de llenado',
+                icon: Icons.delete_outline,
+                descripcion: (widget.container?.capacidadTotal ?? 'Desconocido')
+                    .toString(),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: InfoStateContainer(
+                titulo: 'Estado',
+                icon: Icons.security_outlined,
+                descripcion: 'Activo'
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Widget of footer content
+  Widget _buildFooter(BuildContext context) {
+    // List of buttons
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        // Button secondary
+        SizedBox(
+          height: 50,
+          child: OutlinedButton(
+            onPressed: () {
+              // TODO: add reminder of calendar and notifique to the user
+            },
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.notifications_none,
+                  color: Colors.black,
+                  size: 24,
+                ),
+                const SizedBox(width: 6),
+                Text('Recordarme'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        // Button primary
+        SizedBox(
+          height: 50,
+          child: ElevatedButton(
+            onPressed: _navigateToContainer,
+            child: Row(
+              children: [
+                const Icon(Icons.map_outlined, color: Colors.white, size: 24),
+                const SizedBox(width: 6),
+                Text('Navegar'),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ResiduoViewmodel>();
     final vmMap = context.watch<MapSearchViewModel>();
-    final vmUsuarioFavoritos = context
-        .watch<UsuarioContenedoresFavoritosViewModel>();
+    final favoritosVm = context.watch<UsuarioContenedoresFavoritosViewModel>();
 
     final idResiduo = widget.container?.idResiduo;
-    final Residuos? residuo = (idResiduo == null)
-        ? null
-        : vm.getResiduo(idResiduo);
-    final String direccion = vmMap.getDireccionFromPoint(
+    final residuo = idResiduo == null ? null : vm.getResiduo(idResiduo);
+    final direccion = vmMap.getDireccionFromPoint(
       widget.container?.coordenada?.latitud,
       widget.container?.coordenada?.longitud,
     );
@@ -150,278 +368,24 @@ class ContainerDetailState extends State<ContainerDetail> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Para cerrar el sheet si toca afuera
+        // If user touch out of the sheet close sheet
+        //TODO: delete and add to widget option sheet
         if (isExpanded)
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: _bajarSheet,
             child: const SizedBox.expand(),
           ),
-
-        DraggableScrollableSheet(
+        SheetContainerOptionsMap(
           controller: _draggableController,
-          initialChildSize: 0.0,
-          minChildSize: 0.0,
-          maxChildSize: 0.47,
           builder: (context, scrollController) {
-            return SafeArea(
-              top: false,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
-                  border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.grey[300]!, width: 1),
-                  ),
-                ),
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(8),
-                  children: [
-                    Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                        ),
-                        child: Column(
-                          children: [
-                            // Barra agarre
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: BarraAgarre(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
-                              child: Column(
-                                children: [
-                                  //Header del widget (Icon - Texto - Boton cerrar)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          // Icono location del contenedor
-                                          Container(
-                                            padding: EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: camarone100,
-                                              borderRadius: BorderRadius.all(Radius.circular(18)),
-                                            ),
-                                            child: Icon(Icons.location_on_outlined,
-                                              size: 38,
-                                              color: camarone700
-                                            ),
-                                          ),
-                                          SizedBox(width: 8),
-                                          // Informacion basica del contenedor (Zona y nombre)
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 10,),
-                                                child: Text('Zona ${widget.container?.idZona}',
-                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                    fontWeight: FontWeight.bold
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 10),
-                                                child: Text(widget.container?.nombreContenedor ??'Contenedor numero',
-                                                  style: Theme.of(context).textTheme.bodyMedium,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      // Icons of actions
-                                      Row(
-                                        children: [
-                                          CircleIcon(
-                                            icon: Icons.favorite,
-                                            color: widget.container == null
-                                                ? Colors.grey
-                                                : vmUsuarioFavoritos.isFavorito(
-                                                    widget.container!.idContenedor,
-                                                  )
-                                                ? Colors.yellow.shade400
-                                                : Colors.grey,
-                                            onPressed: () {
-                                              final idContenedor = widget.container?.idContenedor;
-                                              if (idContenedor == null) return;
-                                              vmUsuarioFavoritos.isFavorito(idContenedor)
-                                                  ? vmUsuarioFavoritos.removeFavoritoById(idContenedor)
-                                                  : vmUsuarioFavoritos.addFavorito(idContenedor);
-                                            },
-                                          ),
-                                          SizedBox(width: 20),
-                                          CircleIcon(
-                                            icon: Icons.close,
-                                            onPressed: _bajarSheet,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16),
-
-                                  //Informacion de contenedores ( Tipo de residuo, id del contenedor, distancia)
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: DataContainer(
-                                          contenido: residuo?.nombre ?? 'Desconocido',
-                                          icon: Icons.circle,
-                                          colorIcon: residuo == null
-                                              ? Colors.grey
-                                              : residuo.colorHex.toColor(),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      SizedBox(
-                                        child: DataContainer(
-                                          contenido:(widget.container?.idContenedor).toString(),
-                                          icon: Icons.my_library_books_outlined,
-                                          colorIcon: Colors.black,
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      SizedBox(
-                                        child: FutureBuilder<double>(
-                                          future: _metrosFuture,
-                                          builder: (context, snap) {
-                                            final text = snap.hasData
-                                                ? _formatDistance(snap.data!)
-                                                : '';
-                                            return DataContainer(
-                                              contenido: text,
-                                              icon: Icons.location_on_outlined,
-                                              colorIcon: Colors.black,
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16),
-
-                                  //Informacion de estado de contenedor
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: InfoStateContainer(
-                                          titulo: 'Direccion:',
-                                          icon: Icons.map_outlined,
-                                          descripcion: direccion.isNotEmpty
-                                              ? direccion
-                                              : widget.container?.descripcionUbicacion ??'direccion',
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: InfoStateContainer(
-                                          titulo: 'Próx. recolección',
-                                          icon: Icons.calendar_month_outlined,
-                                          descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: InfoStateContainer(
-                                          titulo: 'Nivel de llenado',
-                                          icon: Icons.delete_outline,
-                                          descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: InfoStateContainer(
-                                          titulo: 'Estado',
-                                          icon: Icons.security_outlined,
-                                          descripcion:(widget.container?.capacidadTotal ??'Desconocido').toString(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  //Botones de accion
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      SizedBox(
-                                        height: 50,
-                                        child: OutlinedButton(
-                                          onPressed: () {},
-                                          child: Row(
-                                            children: [
-                                              const Icon(Icons.notifications_none,
-                                                color: Colors.black,
-                                                size: 24,
-                                              ),
-                                              const SizedBox(width: 6),
-                                              Text('Recordarme'),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      SizedBox(
-                                        height: 50,
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            final coord =
-                                                widget.container?.coordenada;
-                                            if (coord == null) return;
-                                        
-                                            _bajarSheet();
-                                            final buscarDireccion =
-                                                widget.buscarDireccion;
-                                            if (buscarDireccion != null) {
-                                              await buscarDireccion(
-                                                coord.latitud,
-                                                coord.longitud,
-                                              );
-                                            }
-                                            widget.abrirDetalleDireccion?.call();
-                                            final generateRouteCar =
-                                                widget.generateRouteCar;
-                                            if (generateRouteCar != null) {
-                                              await generateRouteCar();
-                                            }
-                                          },
-                                          child: Row(
-                                            children: [
-                                              const Icon(Icons.map_outlined,
-                                                color: Colors.white,
-                                                size: 24,
-                                              ),
-                                              const SizedBox(width: 6),
-                                              Text('Navegar'),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            return SheetOptionsPanel(
+              //TODO: add: onHeaderVerticalDragUpdate and end
+              scrollableBody: true,
+              scrollController: scrollController,
+              header: _buildHeader(context, favoritosVm),
+              body: _buildBody(context, residuo: residuo, direccion: direccion),
+              footer: _buildFooter(context),
             );
           },
         ),
