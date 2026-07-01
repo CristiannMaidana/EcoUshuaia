@@ -125,8 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Section of forms
                   Container(
                     decoration: containerInputsLogin,
-                    constraints: const BoxConstraints(maxHeight: 560),
-                    width: 600,
                     padding: const EdgeInsets.all(20),
                     child: IntrinsicHeight(
                       child: SingleChildScrollView(
