@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
@@ -60,7 +61,12 @@ class FrequentMaterials extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Text('Ver todos'),
+                      child: Text(
+                        'Ver todos', 
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: camarone700
+                          )
+                        ),
                     ),
                   ],
                 ),
