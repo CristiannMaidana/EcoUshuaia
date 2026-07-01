@@ -6,11 +6,19 @@ final InputDecorationTheme appInputDecorationTheme = InputDecorationTheme(
   contentPadding: EdgeInsets.all(20),
   fillColor: Colors.white,
   filled: true,
+  enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(25),
+    borderSide: BorderSide(color: Colors.black26, width: 1),
+  ),
+  disabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(25),
+    borderSide: BorderSide(color: Colors.black26, width: 1),
+  ),
   focusedBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(
       color: azulBrillante,
-      width: 1.5,
+      width: .3,
     ),
   ),
   border: OutlineInputBorder(
@@ -21,14 +29,14 @@ final InputDecorationTheme appInputDecorationTheme = InputDecorationTheme(
     borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(
       color: rojoError,
-      width: 1.5,
+      width: 1,
     ),
   ),
   errorBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(25),
     borderSide: BorderSide(
       color: rojoError,
-      width: 1.5,
+      width: 1,
     ),
   ),
   errorMaxLines: 10,
