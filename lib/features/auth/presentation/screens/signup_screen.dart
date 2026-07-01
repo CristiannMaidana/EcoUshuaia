@@ -374,7 +374,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onGooglePressed: () {},
                             onApplePressed: () {},
                           ),
-                          const SizedBox(height: 20),
               
                           //Seccion para ir a la pagina de login
                           Row(
@@ -391,10 +390,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     (route) => false,
                                   );
                                 },
-                                child: Text('Ingresar', style: Theme.of(context).textTheme.labelMedium,)
+                                child: Text(
+                                  'Ingresar', 
+                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    color: camarone700
+                                    ),
+                                ),
                               ),
                             ],
                           ),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
