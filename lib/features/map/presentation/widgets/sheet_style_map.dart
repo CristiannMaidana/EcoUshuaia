@@ -64,35 +64,6 @@ class _SheetStyleMapState extends State<SheetStyleMap> {
     );
   }
 
-  void _dragFromHeader(DragUpdateDetails details) {
-    if (!_controller.isAttached) return;
-    final height = MediaQuery.sizeOf(context).height;
-    final nextSize = (_controller.size - details.delta.dy / height).clamp(
-      SheetOptionsTheme.minChildSize,
-      SheetOptionsTheme.maxChildSize,
-    );
-    _controller.jumpTo(nextSize);
-  }
-
-  void _endDragFromHeader(DragEndDetails details) {
-    if (!_controller.isAttached) return;
-
-    final velocity = details.primaryVelocity ?? 0.0;
-    const velocityThreshold = 900.0;
-    final shouldClose = velocity > velocityThreshold || _controller.size < 0.30;
-
-    if (shouldClose) {
-      _closeSheet();
-      return;
-    }
-
-    _controller.animateTo(
-      SheetOptionsTheme.maxChildSize,
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SheetContainerOptionsMap(
@@ -105,8 +76,23 @@ class _SheetStyleMapState extends State<SheetStyleMap> {
           expandBody: false,
           scrollableBody: true,
           scrollController: scrollController,
-          onHeaderVerticalDragUpdate: _dragFromHeader,
-          onHeaderVerticalDragEnd: _endDragFromHeader,
+          onHeaderVerticalDragUpdate: (details) =>
+              SheetContainerOptionsMap.dragFromHeader(
+                context: context,
+                controller: _controller,
+                details: details,
+                minChildSize: SheetOptionsTheme.minChildSize,
+                maxChildSize: .38,
+              ),
+          onHeaderVerticalDragEnd: (details) =>
+              SheetContainerOptionsMap.endDragFromHeader(
+                controller: _controller,
+                details: details,
+                minChildSize: SheetOptionsTheme.minChildSize,
+                maxChildSize: .38,
+                expandedChildSize: .38,
+                onClose: _closeSheet,
+              ),
           // Create widget with content of the header
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
