@@ -147,33 +147,6 @@ class SheetZonesState extends State<SheetZones> {
     await collapse();
   }
 
-  void dragFromHeader(DragUpdateDetails details) {
-    if (!_controller.isAttached) return;
-    final height = MediaQuery.sizeOf(context).height;
-    final nextSize = (_controller.size - details.delta.dy / height).clamp(
-      widget.minChildSize,
-      widget.maxChildSize,
-    );
-    _controller.jumpTo(nextSize);
-  }
-
-  void endDragFromHeader(DragEndDetails details) {
-    if (!_controller.isAttached) return;
-
-    final velocity = details.primaryVelocity ?? 0.0;
-    const velocityThreshold = 900.0;
-
-    final target = velocity > velocityThreshold
-        ? widget.minChildSize
-        : widget.maxChildSize;
-
-    _controller.animateTo(
-      target,
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
   Future<void> _animateTo(double size) async {
     if (!_controller.isAttached) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -245,8 +218,24 @@ class SheetZonesState extends State<SheetZones> {
           scrollableBody: true,
           scrollController: scrollController,
           scrollPhysics: sheetPhysics,
-          onHeaderVerticalDragUpdate: dragFromHeader,
-          onHeaderVerticalDragEnd: endDragFromHeader,
+          onHeaderVerticalDragUpdate: (details) =>
+              SheetContainerOptionsMap.dragFromHeader(
+                context: context,
+                controller: _controller,
+                details: details,
+                minChildSize: widget.minChildSize,
+                maxChildSize: widget.maxChildSize,
+              ),
+          onHeaderVerticalDragEnd: (details) =>
+              SheetContainerOptionsMap.endDragFromHeader(
+                controller: _controller,
+                details: details,
+                minChildSize: widget.minChildSize,
+                maxChildSize: widget.maxChildSize,
+                expandedChildSize: widget.maxChildSize,
+                onClose: collapse,
+                closeThreshold: widget.minChildSize,
+              ),
           // Create widget for the header
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -316,6 +305,7 @@ class SheetZonesState extends State<SheetZones> {
     );
   }
 }
+
 // Widget of container of diferents zones
 class _SheetZonesBody extends StatelessWidget {
   final ZonaMapaViewModel zonaVm;
