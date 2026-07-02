@@ -1,4 +1,5 @@
 import 'package:eco_ushuaia/features/waste_instructions/presentation/screens/materials_screen.dart';
+import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/card_instructions.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/frequent_materials.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/learn_waste.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/widgets/useful_access.dart';
@@ -16,6 +17,8 @@ class WasteInstructionsScreen extends StatelessWidget {
           padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
           child: Column(
             children: [
+              CardInstructions(),
+              SizedBox(height: 20),
               LearnWaste(
                 goMaterials: () {
                   Navigator.push(
