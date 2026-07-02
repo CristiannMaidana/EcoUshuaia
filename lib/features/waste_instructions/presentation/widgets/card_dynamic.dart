@@ -11,11 +11,11 @@ class CardDynamic extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(36),
-        border: Border.all(width: 1.5, color: Colors.grey[400]!),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(width: .3, color: Colors.grey[400]!),
       ),
       child: widget,
     );
