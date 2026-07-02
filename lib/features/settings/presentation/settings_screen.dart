@@ -1,6 +1,8 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/auth_usuario_repository.dart';
+import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:eco_ushuaia/features/auth/presentation/login_screen.dart';
+import 'package:eco_ushuaia/features/settings/presentation/viewmodels/location_permission_settings_viewmodel.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/custom_card_option_settings.dart';
 import 'package:eco_ushuaia/features/settings/presentation/widgets/perfil_option_settings.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
@@ -123,14 +125,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       switchWidget: false,
                       goIcon: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                     ),
-                    CustomCardOptionSettings(
-                      titulo: 'Usar mi ubicación',
-                      subtitulo: 'Mejora rutas, zonas y resultados cercanos.',
-                      icon: Icon(Icons.location_on_outlined, size: 25),
-                      color: Colors.deepPurpleAccent.withValues(alpha: 0.2),
-                      actionSetting: () {},
-                      all: false,
-                      switchWidget: true,
+                    ChangeNotifierProvider(
+                      create: (_) => LocationPermissionSettingsViewModel(
+                        LocationPermissionService.I,
+                      ),
+                      child: Consumer<LocationPermissionSettingsViewModel>(
+                        builder: (context, locationPermissionVm, _) {
+                          return CustomCardOptionSettings(
+                            titulo: 'Usar mi ubicación',
+                            subtitulo: 'Mejora rutas, zonas y resultados cercanos.',
+                            icon: Icon(Icons.location_on_outlined, size: 25),
+                            color: Colors.deepPurpleAccent.withValues(alpha: 0.2),
+                            actionSetting: () {},
+                            onToggle: (value) => locationPermissionVm.onToggleRequested(context, value),
+                            switchValue: locationPermissionVm.enabled,
+                            all: false,
+                            switchWidget: true,
+                          );
+                        },
+                      ),
                     ),
                     CustomCardOptionSettings(
                       titulo: 'Guardar búsquedas recientes',
