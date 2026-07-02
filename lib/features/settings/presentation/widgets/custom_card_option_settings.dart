@@ -13,6 +13,7 @@ class CustomCardOptionSettings extends StatelessWidget {
   final bool? all;
   final VoidCallback? actionSetting;
   final ValueChanged<bool>? onToggle;
+  final bool? switchValue;
 
   const CustomCardOptionSettings({
     super.key,
@@ -27,21 +28,21 @@ class CustomCardOptionSettings extends StatelessWidget {
     this.all,
     this.actionSetting,
     this.onToggle,
+    this.switchValue,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius:
-            all == true
-                ? BorderRadius.circular(24)
-                : BorderRadius.only(
-                  topLeft: top == true ? Radius.circular(24) : Radius.zero,
-                  topRight: top == true ? Radius.circular(24) : Radius.zero,
-                  bottomLeft: bottom == true ? Radius.circular(24) : Radius.zero,
-                  bottomRight: bottom == true ? Radius.circular(24) : Radius.zero,
-                ),
+        borderRadius: all == true
+            ? BorderRadius.circular(24)
+            : BorderRadius.only(
+                topLeft: top == true ? Radius.circular(24) : Radius.zero,
+                topRight: top == true ? Radius.circular(24) : Radius.zero,
+                bottomLeft: bottom == true ? Radius.circular(24) : Radius.zero,
+                bottomRight: bottom == true ? Radius.circular(24) : Radius.zero,
+              ),
         border: Border.all(width: 1, color: Colors.grey.withValues(alpha: 0.2)),
         color: Colors.white,
       ),
@@ -49,19 +50,22 @@ class CustomCardOptionSettings extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Row(
           children: [
-            // Icono dentro de un contenedor 
+            // Icono dentro de un contenedor
             Container(
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(width: 1, color: color.withValues(alpha: 0.1)),
+                border: Border.all(
+                  width: 1,
+                  color: color.withValues(alpha: 0.1),
+                ),
               ),
               padding: EdgeInsets.all(10),
               child: icon,
             ),
 
             SizedBox(width: 12),
-        
+
             // Texto con titulo y subtítulo
             Expanded(
               child: Column(
@@ -83,14 +87,11 @@ class CustomCardOptionSettings extends StatelessWidget {
             ),
 
             SizedBox(width: 12),
-        
+
             // Espacio para el botón de acción
             switchWidget
-                ? SwitchToggle(onChanged: onToggle)
-                : IconButton(
-                    icon: goIcon!,
-                    onPressed: actionSetting,
-                  ),
+                ? SwitchToggle(value: switchValue, onChanged: onToggle)
+                : IconButton(icon: goIcon!, onPressed: actionSetting),
           ],
         ),
       ),
