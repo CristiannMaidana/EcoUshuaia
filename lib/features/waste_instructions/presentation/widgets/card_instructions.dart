@@ -11,7 +11,7 @@ class CardInstructions extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: camarone100,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(width: .3, color: camarone300),
       ),
       child: Row(
