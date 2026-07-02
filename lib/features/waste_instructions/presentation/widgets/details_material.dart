@@ -27,19 +27,12 @@ class DetailsMaterial extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 124),
+          constraints: const BoxConstraints(minHeight: 150),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: const Color(0xFFE7EFE5)),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(17, 24, 39, 0.08),
-                blurRadius: 28,
-                offset: Offset(0, 12),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
