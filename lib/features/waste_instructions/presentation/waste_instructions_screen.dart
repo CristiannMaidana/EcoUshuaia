@@ -11,12 +11,24 @@ class WasteInstructionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('EcoUshuaia')),
+      appBar: AppBar(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Guia de residuos', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Aprendé como separar correctamente cada material.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        )
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
           child: Column(
             children: [
+              SizedBox(height: 20),
               CardInstructions(),
               SizedBox(height: 20),
               LearnWaste(
