@@ -80,6 +80,7 @@ class LocationPermissionSettingsViewModel extends ChangeNotifier
                   style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
+                // Alert info
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
