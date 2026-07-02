@@ -30,7 +30,7 @@ class FrequentMaterials extends StatelessWidget {
         builder: (context) {
           final residuosVm = context.watch<ResiduoViewmodel>();
           final categoriasVm = context.watch<CategoriaResiduosViewmodel>();
-          final previewMaterials = residuosVm.items.take(3).toList();
+          final previewMaterials = residuosVm.items.take(5).toList();
 
           return CardDynamic(
             widget: Column(
@@ -86,7 +86,7 @@ class FrequentMaterials extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 12),
                           child: SizedBox(
-                            width: 250,
+                            width: 180,
                             child: DetailsMaterial(
                               iconText: _iconTextFromName(residuo.nombre),
                               iconBackgroundColor: _colorFromHex(
