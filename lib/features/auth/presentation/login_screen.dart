@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset('assets/images/logo/logo.png',
-                    height: 100,
+                    height: 50,
                   ),
                     Text('EcoUshuaia',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold,),
