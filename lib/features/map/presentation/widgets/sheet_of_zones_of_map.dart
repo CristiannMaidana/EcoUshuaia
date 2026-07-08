@@ -32,6 +32,27 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
     super.dispose();
   }
 
+  Future<void> expandSheet() async {
+    await draggableControllerOfZonesSheet.animateTo(
+      widget.maxSheetSize, 
+      duration: const Duration(milliseconds: 300), 
+      curve: Curves.easeInOut,
+    );
+  }
+
+  Future<void> collapseSheet() async {
+    await draggableControllerOfZonesSheet.animateTo(
+      widget.initialSheetSize, 
+      duration: const Duration(milliseconds: 300), 
+      curve: Curves.easeInOut,
+    );
+  }
+
+  bool isExpandedSheet() {
+    if (!draggableControllerOfZonesSheet.isAttached) return false;
+    return draggableControllerOfZonesSheet.size > widget.initialSheetSize;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
