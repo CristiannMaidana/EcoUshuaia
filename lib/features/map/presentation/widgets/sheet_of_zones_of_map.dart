@@ -55,17 +55,31 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: draggableControllerOfZonesSheet,
-      initialChildSize: widget.initialSheetSize,
-      minChildSize: widget.minSheetSize,
-      maxChildSize: widget.maxSheetSize,
-      builder: (context, scrollControllerDefault){
-        scrollControllerOfZonesSheet = scrollControllerDefault;
-        return Material(
-          color: Colors.white,
-        );
-      }
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Functionality for close the sheet if is expand and touch out of the sheet.
+        if (isExpandedSheet())
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: collapseSheet,
+            child: const SizedBox.expand(),
+          ),
+          
+        // Components of the sheet
+        DraggableScrollableSheet(
+          controller: draggableControllerOfZonesSheet,
+          initialChildSize: widget.initialSheetSize,
+          minChildSize: widget.minSheetSize,
+          maxChildSize: widget.maxSheetSize,
+          builder: (context, scrollControllerDefault){
+            scrollControllerOfZonesSheet = scrollControllerDefault;
+            return Material(
+              color: Colors.white,
+            );
+          }
+        ),
+      ],
     );
   }
 }
