@@ -14,6 +14,18 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   late final ScrollController scrollControllerOfZonesSheet;
 
   @override
+  void initState() {
+    super.initState();
+    draggableControllerOfZonesSheet = DraggableScrollableController();
+  }
+
+  @override
+  void dispose() {
+    draggableControllerOfZonesSheet.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: draggableControllerOfZonesSheet,
