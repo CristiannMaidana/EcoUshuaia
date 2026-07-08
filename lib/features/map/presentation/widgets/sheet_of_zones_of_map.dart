@@ -18,7 +18,7 @@ class SheetOfZonesOfMap extends StatefulWidget {
 
 class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   late final DraggableScrollableController draggableControllerOfZonesSheet;
-  late final ScrollController scrollControllerOfZonesSheet;
+  late ScrollController scrollControllerOfZonesSheet;
 
   @override
   void initState() {
@@ -57,10 +57,13 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: draggableControllerOfZonesSheet,
+      initialChildSize: widget.initialSheetSize,
+      minChildSize: widget.minSheetSize,
+      maxChildSize: widget.maxSheetSize,
       builder: (context, scrollControllerDefault){
         scrollControllerOfZonesSheet = scrollControllerDefault;
         return Material(
-
+          color: Colors.white,
         );
       }
     );
