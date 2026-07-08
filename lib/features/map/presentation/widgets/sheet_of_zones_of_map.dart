@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
 class SheetOfZonesOfMap extends StatefulWidget {
+  final double initialSheetSize;
+  final double minSheetSize;
+  final double maxSheetSize;
+
   const SheetOfZonesOfMap({
-    super.key
+    super.key,
+    this.initialSheetSize = 0.00,
+    this.minSheetSize = 0.00,
+    this.maxSheetSize = 0.47,
   });
 
   @override
