@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:flutter/material.dart';
 
 class SheetForChangeStylesOfMap extends StatefulWidget {
@@ -7,11 +8,17 @@ class SheetForChangeStylesOfMap extends StatefulWidget {
   final double minSheetSize;
   final double maxSheetSize;
 
+  final MapStyle selectedStyle;
+  final Future<void> Function(MapStyle style) onStyleChanged;
+
   const SheetForChangeStylesOfMap ({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.47,
+
+    required this.selectedStyle,
+    required this.onStyleChanged,
   });
 
   @override
@@ -22,6 +29,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
   late final DraggableScrollableController draggableControllerOfStylesMapSheet;
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
+  late MapStyle _selectedStyle;
 
  // Functionality for opacity of sheet
   double get _contentOpacity {
@@ -30,7 +38,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
     final currentSize = draggableControllerOfStylesMapSheet.size;
     
     // La animación de aparición empieza después de este punto
-    final fadeStart = widget.initialSheetSize + 0.15;
+    final fadeStart = widget.initialSheetSize + 0.09;
 
     // Evita división por 0 o rangos inválidos
     if (widget.maxSheetSize <= fadeStart) return 1.0;
@@ -45,6 +53,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
     super.initState();
     draggableControllerOfStylesMapSheet = DraggableScrollableController()
     ..addListener(_onSheetChanged);
+    _selectedStyle = widget.selectedStyle;
   }
 
   @override
@@ -116,6 +125,15 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutCubic,
     );
+  }
+
+
+  // Functions specific to the sheet
+  Future<void> _handleStyleChanged(MapStyle style) async {
+    if (_selectedStyle == style) return;
+
+    setState(() => _selectedStyle = style);
+    await widget.onStyleChanged(style);
   }
 
   @override
@@ -193,6 +211,25 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
                             ),
                           ),
                         ),
+
+                        //BODY
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollControllerDefault,
+                            child: Padding(
+                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MapStylePicker(
+                                    seleccionado: _selectedStyle,
+                                    onChanged: _handleStyleChanged,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        )
                       ]
                     ),
                   ),
