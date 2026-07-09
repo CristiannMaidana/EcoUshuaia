@@ -1,15 +1,23 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final double initialSheetSize;
   final double minSheetSize;
   final double maxSheetSize;
+  final Contenedor selectedContainer;
   
   const SheetOfDetailsOfContainerInMap ({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.47,
+    required this.selectedContainer,
   });
 
   @override
@@ -114,6 +122,8 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
 
   @override
   Widget build (BuildContext context) {
+    final vmUsuarioFavoritos = context.watch<UsuarioContenedoresFavoritosViewModel>();
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -152,7 +162,88 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                     child: Column(
                       children: [
                         // HEADER OF SHEET
-                        
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onVerticalDragUpdate: _dragFromHeaderSheet,
+                          onVerticalDragEnd: _dragEndFromHeaderSheet,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                            child: Column(
+                              children: [
+                                // Grab Bar
+                                BarraAgarre(),
+                                SizedBox(height: 8),
+
+                                // Text of header and button
+                                //Header del widget (Icon - Texto - Boton cerrar)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        // Icono location del contenedor
+                                        Container(
+                                          padding: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: camarone100,
+                                            borderRadius: BorderRadius.all(Radius.circular(18)),
+                                          ),
+                                          child: Icon(Icons.location_on_outlined,
+                                            size: 38,
+                                            color: camarone700
+                                          ),
+                                        ),
+                                        SizedBox(width: 8),
+                                        // Informacion basica del contenedor (Zona y nombre)
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10,),
+                                              child: Text('Zona ${widget.selectedContainer.idZona}',
+                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                  fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10),
+                                              child: Text(widget.selectedContainer.nombreContenedor ??'Contenedor numero',
+                                                style: Theme.of(context).textTheme.bodyMedium,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    // Icons of actions
+                                    Row(
+                                      children: [
+                                        CircleIcon(icon: Icons.favorite,
+                                          color: vmUsuarioFavoritos.isFavorito(
+                                                  widget.selectedContainer.idContenedor,
+                                                )
+                                              ? Colors.yellow.shade400
+                                              : Colors.grey,
+                                          onPressed: () {
+                                            final idContenedor = widget.selectedContainer.idContenedor;
+                                            vmUsuarioFavoritos.isFavorito(idContenedor)
+                                                ? vmUsuarioFavoritos.removeFavoritoById(idContenedor)
+                                                : vmUsuarioFavoritos.addFavorito(idContenedor);
+                                          },
+                                        ),
+                                        SizedBox(width: 20),
+                                        CircleIcon(icon: Icons.close,
+                                          onPressed: collapseSheet,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
