@@ -32,16 +32,16 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
     ..addListener(_onSheetChanged);
   }
 
-  void _onSheetChanged() {
-    if (!mounted) return;
-    setState(() {});
-  }
-
   @override
   void dispose() {
     draggableControllerOfZonesSheet.removeListener(_onSheetChanged);
     draggableControllerOfZonesSheet.dispose();
     super.dispose();
+  }
+
+  void _onSheetChanged() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   Future<void> expandSheet() async {
@@ -69,6 +69,39 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
     return draggableControllerOfZonesSheet.size > widget.initialSheetSize;
   }
 
+  void _dragFromHeaderSheet(DragUpdateDetails detail) {
+    if (!draggableControllerOfZonesSheet.isAttached) return;
+    final heightSheet = MediaQuery.sizeOf(context).height;
+    final nexRangeOfSheet = (draggableControllerOfZonesSheet.size - detail.delta.dy / heightSheet).clamp(
+      widget.minSheetSize,
+      widget.maxSheetSize,
+    );
+    draggableControllerOfZonesSheet.jumpTo(nexRangeOfSheet);
+  }
+
+  void _dragEndFromHeaderSheet(DragEndDetails detail) {
+    if (!draggableControllerOfZonesSheet.isAttached) return;
+
+    final drifVelocityOfHandle = detail.primaryVelocity ?? 0.0;
+    const velocityThreshold = 900.0;
+    final shouldClose = drifVelocityOfHandle > velocityThreshold || draggableControllerOfZonesSheet.size < 0.30;
+
+    if (shouldClose) {
+      collapseSheet();
+      return;
+    }
+
+    final targetToGoSheet = drifVelocityOfHandle > velocityThreshold
+        ? widget.minSheetSize
+        : widget.maxSheetSize;
+
+    draggableControllerOfZonesSheet.animateTo(
+      targetToGoSheet,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     final zonaVm = context.watch<ZonaMapaViewModel>();
@@ -108,6 +141,9 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
                     children: [
                       // HEADER OF SHEET
                       GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onVerticalDragUpdate: _dragFromHeaderSheet,
+                        onVerticalDragEnd: _dragEndFromHeaderSheet,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
                           child: Column(
