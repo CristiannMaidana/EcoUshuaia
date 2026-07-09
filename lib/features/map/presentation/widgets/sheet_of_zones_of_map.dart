@@ -47,6 +47,19 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   double get _expandedSheetSize => widget.maxSheetSize;
   double get _snapMidpoint => (_openedSheetSize + _expandedSheetSize) / 2;
 
+ // Functionality for opacity of sheet
+  double get _contentOpacity {
+    if (!draggableControllerOfZonesSheet.isAttached) return 0.0;
+
+    final currentSize = draggableControllerOfZonesSheet.size - 0.12;
+
+    final opacity =
+        (currentSize - _collapsedSheetSize) /
+        (_openedSheetSize - _collapsedSheetSize);
+
+    return opacity.clamp(0.0, 1.0);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -124,8 +137,8 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
       curve: Curves.easeOutCubic,
     );
   }
- 
- // Functions specific to the sheet
+
+  // Functions specific to the sheet
   double _currentSheetHeight() {
     final size = draggableControllerOfZonesSheet.isAttached
         ? draggableControllerOfZonesSheet.size
@@ -258,127 +271,135 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
                     borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
                     border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
                   ),
-                  child: Column(
-                    children: [
-                      // HEADER OF SHEET
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onVerticalDragUpdate: _dragFromHeaderSheet,
-                        onVerticalDragEnd: _dragEndFromHeaderSheet,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                          child: Column(
-                            children: [
-                              // Grab Bar
-                              BarraAgarre(),
-                              SizedBox(height: 8,),
-                              // Text of header and button
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Text of header
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Zonas del mapa',
-                                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text('Gestiona la visualización de zonas en el mapa.',
-                                        style: Theme.of(context).textTheme.labelMedium,
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(userZone == null
-                                        ? 'No se encontró una zona asignada para tu usuario.'
-                                        : 'Tu zona es: ${userZone.nombreZona}.',
-                                        style: Theme.of(context).textTheme.bodySmall,
-                                      ),
-                                    ],
-                                  ),
-                                  // Button to close header
-                                  CircleIcon(icon: Icons.close,
-                                    onPressed: _cancelChanges,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // BODY
-                      Expanded(
-                        child: SingleChildScrollView(
-                          controller: scrollControllerDefault,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 10),
+                    curve: Curves.easeOutCubic,
+                    opacity: _contentOpacity,
+                    child: Column(
+                      children: [
+                        // HEADER OF SHEET
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onVerticalDragUpdate: _dragFromHeaderSheet,
+                          onVerticalDragEnd: _dragEndFromHeaderSheet,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (zonaVm.loading)
-                                  const Center(child: CircularProgressIndicator())
-                                else if (zonaVm.error != null)
-                                  Text(zonaVm.error!,
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                  )
-                                else ...[
-                                  const SizedBox(height: 16),
-                                  Column(
-                                    children: List.generate(optionsZones.length, (index) {
-                                      final option = optionsZones[index];
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                          bottom: index == optionsZones.length - 1
-                                              ? 0
-                                              : 10,
-                                        ),
-                                        child: ZoneOptionTile(
-                                          title: option.title,
-                                          subtitle: option.subtitle,
-                                          selected: _selectedMode == option.mode,
-                                          enabled: hasZones && !_isApplying,
-                                          onTap: () => _selectMode(option.mode),
-                                        ),
-                                      );
-                                    }),
-                                  ),
-                                  if (_isApplying) ...[
-                                    const SizedBox(height: 16),
-                                    const LinearProgressIndicator(),
-                                  ],
-                                  const SizedBox(height: 20),
+                                // Grab Bar
+                                BarraAgarre(),
+                                SizedBox(height: 8),
 
-                                  // FOOTER
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: OutlinedButton(
-                                          onPressed: _isApplying
-                                              ? null
-                                              : _cancelChanges,
-                                          child: const Text('Cancelar'),
+                                // Text of header and button
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Text of header
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Zonas del mapa',
+                                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold,),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: hasZones && !_isApplying
-                                              ? _applyChanges
-                                              : null,
-                                          child: const Text('Aplicar'),
+                                        const SizedBox(height: 4),
+                                        Text('Gestiona la visualización de zonas en el mapa.',
+                                          style: Theme.of(context).textTheme.labelMedium,),
+                                        const SizedBox(height: 6),
+                                        Text(userZone == null
+                                              ? 'No se encontró una zona asignada para tu usuario.'
+                                              : 'Tu zona es: ${userZone.nombreZona}.',
+                                          style: Theme.of(context).textTheme.bodySmall,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+
+                                    // Button to close header
+                                    CircleIcon(icon: Icons.close,
+                                      onPressed: _cancelChanges,
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
+
+                        // BODY
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollControllerDefault,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (zonaVm.loading)
+                                    const Center(child: CircularProgressIndicator(),)
+                                  else if (zonaVm.error != null)
+                                    Text(zonaVm.error!,
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    )
+                                  else ...[
+                                    const SizedBox(height: 16),
+                                    Column(
+                                      children: List.generate(
+                                        optionsZones.length,
+                                        (index) {
+                                          final option = optionsZones[index];
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                              bottom:index ==optionsZones.length - 1
+                                                  ? 0
+                                                  : 10,
+                                            ),
+                                            child: ZoneOptionTile(
+                                              title: option.title,
+                                              subtitle: option.subtitle,
+                                              selected: _selectedMode == option.mode,
+                                              enabled: hasZones && !_isApplying,
+                                              onTap: () => _selectMode(option.mode),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    if (_isApplying) ...[
+                                      const SizedBox(height: 16),
+                                      const LinearProgressIndicator(),
+                                    ],
+                                    const SizedBox(height: 20),
+
+                                    // FOOTER
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: _isApplying
+                                                ? null
+                                                : _cancelChanges,
+                                            child: const Text('Cancelar'),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed:
+                                                hasZones && !_isApplying
+                                                ? _applyChanges
+                                                : null,
+                                            child: const Text('Aplicar'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
