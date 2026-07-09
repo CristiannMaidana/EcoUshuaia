@@ -16,14 +16,24 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final double initialSheetSize;
   final double minSheetSize;
   final double maxSheetSize;
+  
   final Contenedor selectedContainer;
+  final Future<double>? Function(double lat, double lon)? distances;
+  final Future<void> Function(double lat, double lon)? searchDirection;
+  final VoidCallback? openDetailDirection;
+  final Future<void> Function()? generateRouteWithCar;
   
   const SheetOfDetailsOfContainerInMap ({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.47,
+    
+    required this.distances,
     required this.selectedContainer,
+    required this.searchDirection,
+    required this.openDetailDirection,
+    required this.generateRouteWithCar, 
   });
 
   @override
@@ -32,6 +42,8 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
 
 class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContainerInMap> {
   late final DraggableScrollableController draggableControllerOfDetailsContainerSheet;
+  // TODO: calculate the distance for the user to the container
+  Future<double>? _metrosFuture;
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
 
@@ -146,7 +158,6 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     final Residuos? getResiduoOfContainer = (idResiduoOfContainer == null) ? null : vmResiduos.getResiduo(idResiduoOfContainer);
     
     //Get distance to the container
-    Future<double>? _metrosFuture;
     final String direccion = vmMap.getDireccionFromPoint(
       widget.selectedContainer.coordenada?.latitud,
       widget.selectedContainer.coordenada?.longitud,
@@ -370,6 +381,63 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                   ),
                                 
                                   // FOOTER
+                                  //Botones de accion
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      SizedBox(
+                                        height: 50,
+                                        child: OutlinedButton(
+                                          onPressed: () {},
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.notifications_none,
+                                                color: Colors.black,
+                                                size: 24,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text('Recordarme'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      SizedBox(
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            final coord = widget.selectedContainer.coordenada;
+                                            if (coord == null) return;
+                                        
+                                            collapseSheet();
+                                            final buscarDireccion = widget.searchDirection;
+                                            if (buscarDireccion != null) {
+                                              await buscarDireccion(
+                                                coord.latitud,
+                                                coord.longitud,
+                                              );
+                                            }
+                                            widget.openDetailDirection?.call();
+                                            final generateRouteCar = widget.generateRouteWithCar;
+                                            if (generateRouteCar != null) {
+                                              await generateRouteCar();
+                                            }
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.map_outlined,
+                                                color: Colors.white,
+                                                size: 24,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text('Navegar'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
