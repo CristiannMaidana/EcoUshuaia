@@ -18,13 +18,13 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_turn_by_turn.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/container_detail.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_of_details_of_container_in_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_of_zones_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_style_map.dart';
@@ -93,8 +93,6 @@ class MapaPage extends StatefulWidget {
 }
 
 class _MapaScreenStatePage extends State<MapaPage> {
-  final GlobalKey<ContainerDetailState> _detailKey =
-      GlobalKey<ContainerDetailState>();
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
   MapController? _mapController;
@@ -132,7 +130,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetAddressState> _sheetAddressKey =
       GlobalKey<SheetAddressState>();
 
+  // Keys of sheet
   final GlobalKey<SheetOfZonesOfMapState> _keyOfSheetOfZonesOfMap = GlobalKey<SheetOfZonesOfMapState>();
+  final GlobalKey<SheetOfDetailsOfContainerInMapState> _keyOfSheetOfDetailsContainerOnMap = GlobalKey<SheetOfDetailsOfContainerInMapState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -240,7 +240,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   void _onContenedorTap(Contenedor c) {
     setState(() {
       _contenedorSeleccionado = c;
-      _detailKey.currentState?.subirSheet();
+      _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
   }
 
@@ -653,6 +653,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
             ),
 
+        //Floating buttons
         if (!_nativeRouteReady || !_nativeNavigationStarted)
           Positioned(
             right: 24,
@@ -757,13 +758,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         //Sheet de detalles de contenedor seleccionado
         if (_contenedorSeleccionado != null)
-          ContainerDetail(
-            key: _detailKey,
-            container: _contenedorSeleccionado!,
-            distancia: _getMetros,
-            buscarDireccion: _buscarDireccion,
-            abrirDetalleDireccion: _abrirDetalleDireccion,
-            generateRouteCar: _previewNativeDrivingRoute,
+          SheetOfDetailsOfContainerInMap(
+            key: _keyOfSheetOfDetailsContainerOnMap,
+            selectedContainer: _contenedorSeleccionado!,
+            distances: _getMetros,
+            searchDirection: _buscarDireccion,
+            openDetailDirection: _abrirDetalleDireccion,
+            generateRouteWithCar: _previewNativeDrivingRoute,
           ),
 
         //Sheet para agregar contenedores a la ruta
