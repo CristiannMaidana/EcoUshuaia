@@ -24,10 +24,10 @@ import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_of_details_of_container_in_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_of_zones_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_style_map.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
@@ -133,6 +133,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   // Keys of sheet
   final GlobalKey<SheetOfZonesOfMapState> _keyOfSheetOfZonesOfMap = GlobalKey<SheetOfZonesOfMapState>();
   final GlobalKey<SheetOfDetailsOfContainerInMapState> _keyOfSheetOfDetailsContainerOnMap = GlobalKey<SheetOfDetailsOfContainerInMapState>();
+  final GlobalKey<SheetForChangeStylesOfMapState> _keySheetForChangeStylesOfMap = GlobalKey<SheetForChangeStylesOfMapState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -664,11 +665,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 //Button texture of map
                 FloatingActionButton(
                   heroTag: 'fab-map-style',
-                  onPressed: () => SheetStyleMap.show(
-                    context,
-                    selectedStyle: _estiloActual,
-                    onStyleChanged: _changeMapStyle,
-                  ),
+                  onPressed: () => _keySheetForChangeStylesOfMap.currentState?.expandSheet(),
                   backgroundColor: Colors.white,
                   child: Icon(Icons.map, color: camarone900, size: 30),
                 ),
@@ -797,6 +794,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ],
             ),
           ),
+
+        SheetForChangeStylesOfMap(
+          key: _keySheetForChangeStylesOfMap,
+          selectedStyle: _estiloActual,
+          onStyleChanged: _changeMapStyle,
+        )
       ],
     );
   }
