@@ -1,26 +1,17 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/line_divider.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HeaderFilter extends StatelessWidget{
-  final VoidCallback collapse;
-  final VoidCallback aplicarFiltros;
+  final VoidCallback closeFilter;
   
   const HeaderFilter ({
     super.key,
-    required this.collapse,
-    required this.aplicarFiltros,
+    required this.closeFilter,
   });
 
   @override
   Widget build(BuildContext context) {
-    final vmButtonFilter = context.read<ButtonFilterViewmodel>();
-    final vmContenedor = context.read<ContenedorViewModel>();
-    final vmFavoritos = context.read<UsuarioContenedoresFavoritosViewModel>();
-
     return Column(
       children: [
         Container(
@@ -40,42 +31,9 @@ class HeaderFilter extends StatelessWidget{
                   ],
                 ),
                 const Spacer(),
-                
-                //Boton limpiar filtros
-                SizedBox(
-                  height: 36, 
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: BorderSide(color: Colors.grey)
-                    ),
-                    onPressed: () {
-                      vmButtonFilter.clean();
-                      vmContenedor.clearAllFilter();
-                      aplicarFiltros();
-                    },
-                    child: const Text('Limpiar', style: TextStyle(fontSize: 13))
-                  ),
-                ),
-                const SizedBox(width: 8),
-                
-                //Boton aplicar filtros
-                SizedBox(
-                  height: 36, 
-                  width: 93,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      collapse();
-                      await vmContenedor.applyFilter(
-                        vmButtonFilter.filtros,
-                        filtrarFavoritos: vmButtonFilter.isSelected('Favoritos')
-                            ? vmFavoritos.filtrarContenedoresFavoritos
-                            : null,
-                      );
-                      aplicarFiltros();
-                    }, 
-                    child: const Text('Aplicar', style: TextStyle(fontSize: 13),)
-                  ),
+                CircleIcon(
+                  icon: Icons.close,
+                  onPressed: closeFilter,
                 ),
               ],
             ),
