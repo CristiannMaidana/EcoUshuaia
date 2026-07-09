@@ -210,7 +210,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                           onVerticalDragUpdate: _dragFromHeaderSheet,
                           onVerticalDragEnd: _dragEndFromHeaderSheet,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
                             child: Column(
                               children: [
                                 // Grab Bar
@@ -333,7 +333,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                           child: SingleChildScrollView(
                             controller: scrollControllerDefault,
                             child: Padding(
-                              padding: EdgeInsetsGeometry.fromLTRB(20, 8, 20, 20),
+                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 20, 22),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
