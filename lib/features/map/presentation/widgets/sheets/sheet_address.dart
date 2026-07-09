@@ -341,7 +341,9 @@ class SheetAddressState extends State<SheetAddress> {
                                         // Contenedor para direccion con estilo de tarjeta
                                         Expanded(
                                           child: Text('Como llegar',
-                                            style: Theme.of(context).textTheme.headlineLarge
+                                            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                              fontWeight: FontWeight.bold
+                                            )
                                           ),
                                         ),
 
