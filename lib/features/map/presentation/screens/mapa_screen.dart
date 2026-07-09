@@ -750,7 +750,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             onShowAllZones: _testShowAllZones,
             onShowMyZone: _testShowMyZone,
             onShowAffectedZones: _testShowAffectedZones,
-            //onClosed: _centerNativeTurnByTurnCamera,
+            backToUserLocation: _centerNativeTurnByTurnCamera,
           ),
 
         //Sheet de detalles de contenedor seleccionado
@@ -795,6 +795,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             ),
           ),
 
+        // Sheet of diferentes styles
         SheetForChangeStylesOfMap(
           key: _keySheetForChangeStylesOfMap,
           selectedStyle: _estiloActual,
