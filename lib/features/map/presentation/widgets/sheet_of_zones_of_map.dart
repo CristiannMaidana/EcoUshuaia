@@ -51,11 +51,15 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   double get _contentOpacity {
     if (!draggableControllerOfZonesSheet.isAttached) return 0.0;
 
-    final currentSize = draggableControllerOfZonesSheet.size - 0.12;
+    final currentSize = draggableControllerOfZonesSheet.size;
+    
+    // La animación de aparición empieza después de este punto
+    final fadeStart = _collapsedSheetSize + 0.12;
 
-    final opacity =
-        (currentSize - _collapsedSheetSize) /
-        (_openedSheetSize - _collapsedSheetSize);
+    // Evita división por 0 o rangos inválidos
+    if (_openedSheetSize <= fadeStart) return 1.0;
+    
+    final opacity = (currentSize - fadeStart) / (_openedSheetSize - fadeStart);
 
     return opacity.clamp(0.0, 1.0);
   }
