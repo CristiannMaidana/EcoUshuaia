@@ -18,6 +18,7 @@ class SheetOfZonesOfMap extends StatefulWidget {
   final Future<void> Function(double sheetHeight) onShowAllZones;
   final Future<void> Function(double sheetHeight) onShowMyZone;
   final Future<void> Function(double sheetHeight) onShowAffectedZones;
+  final Future<void> Function() backToUserLocation;
 
   const SheetOfZonesOfMap({
     super.key,
@@ -28,6 +29,7 @@ class SheetOfZonesOfMap extends StatefulWidget {
     required this.onShowAllZones,
     required this.onShowMyZone,
     required this.onShowAffectedZones,
+    required this.backToUserLocation,
   });
 
   @override
@@ -101,6 +103,7 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+    widget.backToUserLocation();
   }
 
   bool isExpandedSheet() {
