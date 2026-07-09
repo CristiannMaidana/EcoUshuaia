@@ -1,20 +1,33 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/zone_option_tile.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// Diferent options of buttons
+enum _ZoneSheetMode { hidden, all, mine, affected }
 
 class SheetOfZonesOfMap extends StatefulWidget {
   final double initialSheetSize;
   final double minSheetSize;
   final double maxSheetSize;
 
+  final Future<void> Function(double sheetHeight) onHideZones;
+  final Future<void> Function(double sheetHeight) onShowAllZones;
+  final Future<void> Function(double sheetHeight) onShowMyZone;
+  final Future<void> Function(double sheetHeight) onShowAffectedZones;
+
   const SheetOfZonesOfMap({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.47,
+    required this.onHideZones,
+    required this.onShowAllZones,
+    required this.onShowMyZone,
+    required this.onShowAffectedZones,
   });
 
   @override
@@ -23,7 +36,11 @@ class SheetOfZonesOfMap extends StatefulWidget {
 
 class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   late final DraggableScrollableController draggableControllerOfZonesSheet;
-  late ScrollController scrollControllerOfZonesSheet;
+
+  _ZoneSheetMode _appliedMode = _ZoneSheetMode.hidden;
+  _ZoneSheetMode _selectedMode = _ZoneSheetMode.hidden;
+
+  bool _isApplying = false;
 
   @override
   void initState() {
@@ -101,12 +118,109 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
       curve: Curves.easeOutCubic,
     );
   }
-  
+ 
+ // Functions specific to the sheet
+  double _currentSheetHeight() {
+    final size = draggableControllerOfZonesSheet.isAttached
+        ? draggableControllerOfZonesSheet.size
+        : widget.maxSheetSize;
+    return MediaQuery.sizeOf(context).height * size;
+  }
+
+  Future<void> _runMode(_ZoneSheetMode mode) async {
+    final sheetHeight = _currentSheetHeight();
+
+    final action = switch (mode) {
+      _ZoneSheetMode.hidden => widget.onHideZones,
+      _ZoneSheetMode.all => widget.onShowAllZones,
+      _ZoneSheetMode.mine => widget.onShowMyZone,
+      _ZoneSheetMode.affected => widget.onShowAffectedZones,
+    };
+
+    await action(sheetHeight);
+  }
+
+  Future<void> _selectMode(_ZoneSheetMode mode) async {
+    if (_isApplying) return;
+    if (_selectedMode == mode) return;
+
+    setState(() => _isApplying = true);
+
+    try {
+      await _runMode(mode);
+
+      if (!mounted) return;
+      setState(() {
+        _selectedMode = mode;
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isApplying = false);
+      }
+    }
+  }
+
+  Future<void> _cancelChanges() async {
+    if (_isApplying) return;
+
+    if (_selectedMode != _appliedMode) {
+      setState(() => _isApplying = true);
+
+      try {
+        await _runMode(_appliedMode);
+      } finally {
+        if (mounted) {
+          setState(() {
+            _selectedMode = _appliedMode;
+            _isApplying = false;
+          });
+        }
+      }
+    }
+
+    await collapseSheet();
+  }
+
+  Future<void> _applyChanges() async {
+    if (_isApplying) return;
+
+    setState(() {
+      _appliedMode = _selectedMode;
+    });
+
+    await collapseSheet();
+  }
+
   @override
   Widget build(BuildContext context) {
     final zonaVm = context.watch<ZonaMapaViewModel>();
     final usuarioZoneId = context.watch<UsuarioViewModel>().usuario?.idZona;
+    final bool hasZones = zonaVm.hasItemsConCoordenadas;
     final userZone = zonaVm.zonaConCoordenadasPorId(usuarioZoneId);
+
+    // Text of buttons of zones options
+    final optionsZones = <_ZoneOptionData>[
+      const _ZoneOptionData(
+        mode: _ZoneSheetMode.all,
+        title: 'Mostrar todas',
+        subtitle: 'Muestra todas las zonas disponibles.',
+      ),
+      const _ZoneOptionData(
+        mode: _ZoneSheetMode.mine,
+        title: 'Mi zona',
+        subtitle: 'Enfoca la zona asignada al usuario.',
+      ),
+      const _ZoneOptionData(
+        mode: _ZoneSheetMode.hidden,
+        title: 'Ocultar zonas',
+        subtitle: 'Oculta las zonas del mapa.',
+      ),
+      const _ZoneOptionData(
+        mode: _ZoneSheetMode.affected,
+        title: 'Elegir zonas',
+        subtitle: 'Seleccioná las zonas que querés ver en el mapa.',
+      ),
+    ];
 
     return Stack(
       fit: StackFit.expand,
@@ -115,13 +229,14 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
         if (isExpandedSheet())
           GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: collapseSheet,
+            onTap: _cancelChanges,
             child: const SizedBox.expand(),
           ),
 
         // -Sheet of zones-
         // Handle of the sheet settings
         Align(
+          alignment: Alignment.bottomCenter,
           child: DraggableScrollableSheet(
             controller: draggableControllerOfZonesSheet,
             initialChildSize: widget.initialSheetSize,
@@ -178,7 +293,7 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
                                   ),
                                   // Button to close header
                                   CircleIcon(icon: Icons.close,
-                                    onPressed: collapseSheet,
+                                    onPressed: _cancelChanges,
                                   ),
                                 ],
                               ),
@@ -186,11 +301,75 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
                           ),
                         ),
                       ),
+
                       // BODY
                       Expanded(
                         child: SingleChildScrollView(
                           controller: scrollControllerDefault,
-                          
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (zonaVm.loading)
+                                  const Center(child: CircularProgressIndicator())
+                                else if (zonaVm.error != null)
+                                  Text(zonaVm.error!,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  )
+                                else ...[
+                                  const SizedBox(height: 16),
+                                  Column(
+                                    children: List.generate(optionsZones.length, (index) {
+                                      final option = optionsZones[index];
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: index == optionsZones.length - 1
+                                              ? 0
+                                              : 10,
+                                        ),
+                                        child: ZoneOptionTile(
+                                          title: option.title,
+                                          subtitle: option.subtitle,
+                                          selected: _selectedMode == option.mode,
+                                          enabled: hasZones && !_isApplying,
+                                          onTap: () => _selectMode(option.mode),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                  if (_isApplying) ...[
+                                    const SizedBox(height: 16),
+                                    const LinearProgressIndicator(),
+                                  ],
+                                  const SizedBox(height: 20),
+
+                                  // FOOTER
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton(
+                                          onPressed: _isApplying
+                                              ? null
+                                              : _cancelChanges,
+                                          child: const Text('Cancelar'),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: hasZones && !_isApplying
+                                              ? _applyChanges
+                                              : null,
+                                          child: const Text('Aplicar'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -203,4 +382,16 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
       ],
     );
   }
+}
+
+class _ZoneOptionData {
+  final _ZoneSheetMode mode;
+  final String title;
+  final String subtitle;
+
+  const _ZoneOptionData({
+    required this.mode,
+    required this.title,
+    required this.subtitle,
+  });
 }
