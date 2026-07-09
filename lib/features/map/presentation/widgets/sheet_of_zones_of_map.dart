@@ -22,8 +22,8 @@ class SheetOfZonesOfMap extends StatefulWidget {
   const SheetOfZonesOfMap({
     super.key,
     this.initialSheetSize = 0.00,
-    this.minSheetSize = 0.00,
-    this.maxSheetSize = 0.47,
+    this.minSheetSize = 0.47,
+    this.maxSheetSize = 0.60,
     required this.onHideZones,
     required this.onShowAllZones,
     required this.onShowMyZone,
@@ -41,6 +41,11 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   _ZoneSheetMode _selectedMode = _ZoneSheetMode.hidden;
 
   bool _isApplying = false;
+
+  double get _collapsedSheetSize => widget.initialSheetSize;
+  double get _openedSheetSize => widget.minSheetSize;
+  double get _expandedSheetSize => widget.maxSheetSize;
+  double get _snapMidpoint => (_openedSheetSize + _expandedSheetSize) / 2;
 
   @override
   void initState() {
@@ -63,10 +68,10 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
 
   Future<void> expandSheet() async {
     if (!draggableControllerOfZonesSheet.isAttached) return;
-    
+
     await draggableControllerOfZonesSheet.animateTo(
-      widget.maxSheetSize, 
-      duration: const Duration(milliseconds: 300), 
+      _openedSheetSize,
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
   }
@@ -75,24 +80,23 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
     if (!draggableControllerOfZonesSheet.isAttached) return;
 
     await draggableControllerOfZonesSheet.animateTo(
-      widget.initialSheetSize, 
-      duration: const Duration(milliseconds: 300), 
+      _collapsedSheetSize,
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
   }
 
   bool isExpandedSheet() {
     if (!draggableControllerOfZonesSheet.isAttached) return false;
-    return draggableControllerOfZonesSheet.size > widget.initialSheetSize;
+    return draggableControllerOfZonesSheet.size > _collapsedSheetSize;
   }
 
   void _dragFromHeaderSheet(DragUpdateDetails detail) {
     if (!draggableControllerOfZonesSheet.isAttached) return;
     final heightSheet = MediaQuery.sizeOf(context).height;
-    final nexRangeOfSheet = (draggableControllerOfZonesSheet.size - detail.delta.dy / heightSheet).clamp(
-      widget.minSheetSize,
-      widget.maxSheetSize,
-    );
+    final nexRangeOfSheet =
+        (draggableControllerOfZonesSheet.size - detail.delta.dy / heightSheet)
+            .clamp(_collapsedSheetSize, _expandedSheetSize);
     draggableControllerOfZonesSheet.jumpTo(nexRangeOfSheet);
   }
 
@@ -101,16 +105,18 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
 
     final drifVelocityOfHandle = detail.primaryVelocity ?? 0.0;
     const velocityThreshold = 900.0;
-    final shouldClose = drifVelocityOfHandle > velocityThreshold || draggableControllerOfZonesSheet.size < 0.30;
+    final shouldClose = drifVelocityOfHandle > velocityThreshold ||
+        draggableControllerOfZonesSheet.size < (_openedSheetSize / 2);
 
     if (shouldClose) {
       collapseSheet();
       return;
     }
 
-    final targetToGoSheet = drifVelocityOfHandle > velocityThreshold
-        ? widget.minSheetSize
-        : widget.maxSheetSize;
+    final targetToGoSheet =
+        draggableControllerOfZonesSheet.size < _snapMidpoint
+            ? _openedSheetSize
+            : _expandedSheetSize;
 
     draggableControllerOfZonesSheet.animateTo(
       targetToGoSheet,
@@ -123,7 +129,7 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   double _currentSheetHeight() {
     final size = draggableControllerOfZonesSheet.isAttached
         ? draggableControllerOfZonesSheet.size
-        : widget.maxSheetSize;
+        : _openedSheetSize;
     return MediaQuery.sizeOf(context).height * size;
   }
 
@@ -239,9 +245,9 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
           alignment: Alignment.bottomCenter,
           child: DraggableScrollableSheet(
             controller: draggableControllerOfZonesSheet,
-            initialChildSize: widget.initialSheetSize,
-            minChildSize: widget.minSheetSize,
-            maxChildSize: widget.maxSheetSize,
+            initialChildSize: _collapsedSheetSize,
+            minChildSize: _collapsedSheetSize,
+            maxChildSize: _expandedSheetSize,
             builder: (context, scrollControllerDefault) {
               // Style of sheet for view
               return SafeArea(
