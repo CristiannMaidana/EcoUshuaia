@@ -88,68 +88,81 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
 
         // -Sheet of zones-
         // Handle of the sheet settings
-        DraggableScrollableSheet(
-          controller: draggableControllerOfZonesSheet,
-          initialChildSize: widget.initialSheetSize,
-          minChildSize: widget.minSheetSize,
-          maxChildSize: widget.maxSheetSize,
-          builder: (context, scrollControllerDefault) {
-            scrollControllerOfZonesSheet = scrollControllerDefault;
-            // Style of sheet for view
-            return SafeArea(
-              top: false,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
-                  border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
-                ),
-                child: ListView(
-                  controller: scrollControllerOfZonesSheet,
-                  padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                  children: [
-                    // HEADER OF SHEET
-                    // Grab Bar
-                    BarraAgarre(),
-                    SizedBox(height: 8,),
-                    // Text of header and button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Text of header
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Zonas del mapa',
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text('Gestiona la visualización de zonas en el mapa.',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            if (!zonaVm.loading && zonaVm.error == null) ...[
-                              const SizedBox(height: 6),
-                              Text(userZone == null
-                                ? 'No se encontró una zona asignada para tu usuario.'
-                                : 'Tu zona es: ${userZone.nombreZona}.',
-                                style: Theme.of(context).textTheme.bodySmall,
+        Align(
+          child: DraggableScrollableSheet(
+            controller: draggableControllerOfZonesSheet,
+            initialChildSize: widget.initialSheetSize,
+            minChildSize: widget.minSheetSize,
+            maxChildSize: widget.maxSheetSize,
+            builder: (context, scrollControllerDefault) {
+              // Style of sheet for view
+              return SafeArea(
+                top: false,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                    border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
+                  ),
+                  child: Column(
+                    children: [
+                      // HEADER OF SHEET
+                      GestureDetector(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                          child: Column(
+                            children: [
+                              // Grab Bar
+                              BarraAgarre(),
+                              SizedBox(height: 8,),
+                              // Text of header and button
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Text of header
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Zonas del mapa',
+                                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text('Gestiona la visualización de zonas en el mapa.',
+                                        style: Theme.of(context).textTheme.labelMedium,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(userZone == null
+                                        ? 'No se encontró una zona asignada para tu usuario.'
+                                        : 'Tu zona es: ${userZone.nombreZona}.',
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                  // Button to close header
+                                  CircleIcon(icon: Icons.close,
+                                    onPressed: collapseSheet,
+                                  ),
+                                ],
                               ),
                             ],
-                          ],
+                          ),
                         ),
-                        // Button to close header
-                        CircleIcon(icon: Icons.close,
-                          onPressed: collapseSheet,
+                      ),
+                      // BODY
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: scrollControllerDefault,
+                          
                         ),
-                      ],
-                    ),
-                  ],
-                )
-              ),
-            );
-          },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
