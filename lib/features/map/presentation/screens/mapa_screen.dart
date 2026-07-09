@@ -25,9 +25,9 @@ import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_add_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_address.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_of_zones_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_search_bar.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_style_map.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/sheet_zones.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
@@ -132,8 +132,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetAddressState> _sheetAddressKey =
       GlobalKey<SheetAddressState>();
 
-  final GlobalKey<SheetZonesState> _sheetZonesKey =
-      GlobalKey<SheetZonesState>();
+  final GlobalKey<SheetOfZonesOfMapState> _keyOfSheetOfZonesOfMap = GlobalKey<SheetOfZonesOfMapState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -676,7 +675,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 // Button zones on map
                 FloatingActionButton(
                   heroTag: 'fab-add-zones',
-                  onPressed: () => _sheetZonesKey.currentState?.expand(),
+                  onPressed: () => _keyOfSheetOfZonesOfMap.currentState?.expandSheet(),
                   backgroundColor: Colors.white,
                   child: const Icon(
                     Icons.layers_rounded,
@@ -747,13 +746,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         //Sheet for zones options
         if (!_nativeRouteReady || !_nativeNavigationStarted)
-          SheetZones(
-            key: _sheetZonesKey,
+          SheetOfZonesOfMap(
+            key: _keyOfSheetOfZonesOfMap,
             onHideZones: _testHideZones,
             onShowAllZones: _testShowAllZones,
             onShowMyZone: _testShowMyZone,
             onShowAffectedZones: _testShowAffectedZones,
-            onClosed: _centerNativeTurnByTurnCamera,
+            //onClosed: _centerNativeTurnByTurnCamera,
           ),
 
         //Sheet de detalles de contenedor seleccionado
