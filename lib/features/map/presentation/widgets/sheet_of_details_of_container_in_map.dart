@@ -18,7 +18,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
 
 class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContainerInMap> {
   late final DraggableScrollableController draggableControllerOfDetailsContainerSheet;
-  
+
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
 
   @override
@@ -102,7 +102,17 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
   @override
   Widget build (BuildContext context) {
     return Stack(
-
+      fit: StackFit.expand,
+      children: [
+        // Functionality for close the sheet if is expand and touch out of the sheet.
+        if (isExpandedSheet())
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: collapseSheet,
+            child: const SizedBox.expand(),
+          ),
+        
+      ],
     );
   }
 }
