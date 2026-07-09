@@ -1,8 +1,14 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/info_state_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -120,9 +126,31 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     );
   }
 
+
+  // Functions specific to the sheet
+  String _formatDistance(double meters) {
+    if (meters.isNaN || meters.isInfinite) return '';
+    if (meters < 1000) return '${meters.round()} M';
+    final km = meters / 1000;
+    return '${km.toStringAsFixed(1)} KM';
+  }
+
   @override
   Widget build (BuildContext context) {
     final vmUsuarioFavoritos = context.watch<UsuarioContenedoresFavoritosViewModel>();
+    final vmResiduos = context.watch<ResiduoViewmodel>();
+    final vmMap = context.watch<MapSearchViewModel>();
+
+    // Get info of the selected residuo
+    final idResiduoOfContainer = widget.selectedContainer.idResiduo;
+    final Residuos? getResiduoOfContainer = (idResiduoOfContainer == null) ? null : vmResiduos.getResiduo(idResiduoOfContainer);
+    
+    //Get distance to the container
+    Future<double>? _metrosFuture;
+    final String direccion = vmMap.getDireccionFromPoint(
+      widget.selectedContainer.coordenada?.latitud,
+      widget.selectedContainer.coordenada?.longitud,
+    );
 
     return Stack(
       fit: StackFit.expand,
@@ -244,6 +272,109 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                             ),
                           ),
                         ),
+                      
+                        // BODY
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollControllerDefault,
+                            child: Padding(
+                              padding: EdgeInsetsGeometry.fromLTRB(20, 16, 20, 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  
+                                  //Informacion de contenedores ( Tipo de residuo, id del contenedor, distancia)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Expanded(
+                                        child: DataContainer(
+                                          contenido: getResiduoOfContainer?.nombre ?? 'Desconocido',
+                                          icon: Icons.circle,
+                                          colorIcon: getResiduoOfContainer == null
+                                              ? Colors.grey
+                                              : getResiduoOfContainer.colorHex.toColor(),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      SizedBox(
+                                        child: DataContainer(
+                                          contenido:(widget.selectedContainer.idContenedor).toString(),
+                                          icon: Icons.my_library_books_outlined,
+                                          colorIcon: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      SizedBox(
+                                        child: FutureBuilder<double>(
+                                          future: _metrosFuture,
+                                          builder: (context, snap) {
+                                            final text = snap.hasData
+                                                ? _formatDistance(snap.data!)
+                                                : '';
+                                            return DataContainer(
+                                              contenido: text,
+                                              icon: Icons.location_on_outlined,
+                                              colorIcon: Colors.black,
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+
+                                  //Informacion de estado de contenedor
+                                  // -Direccion -Prox.Recoleccion
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: InfoStateContainer(
+                                          titulo: 'Direccion:',
+                                          icon: Icons.map_outlined,
+                                          descripcion: direccion.isNotEmpty
+                                              ? direccion
+                                              : widget.selectedContainer.descripcionUbicacion ??'direccion',
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: InfoStateContainer(
+                                          titulo: 'Próx. recolección',
+                                          icon: Icons.calendar_month_outlined,
+                                          descripcion:(widget.selectedContainer.capacidadTotal ??'Desconocido').toString(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  // -Nivel llenado -Estado
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: InfoStateContainer(
+                                          titulo: 'Nivel de llenado',
+                                          icon: Icons.delete_outline,
+                                          descripcion:(widget.selectedContainer.capacidadTotal ??'Desconocido').toString(),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: InfoStateContainer(
+                                          titulo: 'Estado',
+                                          icon: Icons.security_outlined,
+                                          descripcion:(widget.selectedContainer.capacidadTotal ??'Desconocido').toString(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                
+                                  // FOOTER
+                                ],
+                              ),
+                            ),
+                          )
+                        )
                       ],
                     ),
                   ),
