@@ -1,6 +1,8 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_search.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
@@ -77,9 +79,37 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     await _sheet?.collapseSheet();
   }
 
+  void _closeFilter() {
+    widget.closeFilter();
+    if (_collapseFilterOnClose) {
+      _collapse();
+    }
+  }
+
   void _openFilter() {
     _collapseFilterOnClose = _sheet?.isCollapsed ?? true;
     widget.closeFilter();
+  }
+
+  void _cleanFilters() {
+    final vmContenedor = context.read<ContenedorViewModel>();
+    _filterViewmodel.clean();
+    vmContenedor.clearAllFilter();
+    widget.aplicarFiltros();
+  }
+
+  Future<void> _applyFilters() async {
+    final vmContenedor = context.read<ContenedorViewModel>();
+    final vmFavoritos = context.read<UsuarioContenedoresFavoritosViewModel>();
+
+    await _collapse();
+    await vmContenedor.applyFilter(
+      _filterViewmodel.filtros,
+      filtrarFavoritos: _filterViewmodel.isSelected('Favoritos')
+          ? vmFavoritos.filtrarContenedoresFavoritos
+          : null,
+    );
+    widget.aplicarFiltros();
   }
 
   // Agrando el sheet a su tamaño maximo
@@ -197,8 +227,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                     onVerticalDragEnd: _endDragFromHeader,
                     child: widget.cambio
                         ? HeaderFilter(
-                            collapse: _collapse,
-                            aplicarFiltros: widget.aplicarFiltros,
+                            closeFilter: _closeFilter,
                           )
                         : SerchBar(
                             key: _keySearchBar,
@@ -246,7 +275,6 @@ class SheetSearchBarState extends State<SheetSearchBar> {
               // Boton cerrar y texto de filtros aplicados inferior
               if (widget.cambio)
                 Container(
-                  height: 56,
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -264,15 +292,33 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                       children: [
                         // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
                         Text('Ningun filtro activado'),
-                        // Boton secundario cerrar
-                        OutlinedButton(
-                          onPressed: () {
-                            widget.closeFilter();
-                            if (_collapseFilterOnClose) {
-                              _collapse();
-                            }
-                          },
-                          child: Text('Cerrar'),
+                        Row(
+                          children: [
+                            SizedBox(
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  side: BorderSide(color: Colors.grey),
+                                ),
+                                onPressed: _cleanFilters,
+                                child: const Text(
+                                  'Limpiar',
+                                  style: TextStyle(fontSize: 13),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            SizedBox(
+                              width: 93,
+                              child: ElevatedButton(
+                                onPressed: _applyFilters,
+                                child: const Text(
+                                  'Aplicar',
+                                  style: TextStyle(fontSize: 13),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
