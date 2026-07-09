@@ -54,7 +54,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     final currentSize = draggableControllerOfDetailsContainerSheet.size;
     
     // La animación de aparición empieza después de este punto
-    final fadeStart = widget.initialSheetSize + 0.08;
+    final fadeStart = widget.initialSheetSize + 0.15;
 
     // Evita división por 0 o rangos inválidos
     if (widget.maxSheetSize <= fadeStart) return 1.0;
@@ -210,7 +210,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                           onVerticalDragUpdate: _dragFromHeaderSheet,
                           onVerticalDragEnd: _dragEndFromHeaderSheet,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                             child: Column(
                               children: [
                                 // Grab Bar
@@ -283,6 +283,46 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                     ),
                                   ],
                                 ),
+                                SizedBox(height: 24),
+                                //Informacion de contenedores ( Tipo de residuo, id del contenedor, distancia)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(
+                                      child: DataContainer(
+                                        contenido: getResiduoOfContainer?.nombre ?? 'Desconocido',
+                                        icon: Icons.circle,
+                                        colorIcon: getResiduoOfContainer == null
+                                            ? Colors.grey
+                                            : getResiduoOfContainer.colorHex.toColor(),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    SizedBox(
+                                      child: DataContainer(
+                                        contenido:(widget.selectedContainer.idContenedor).toString(),
+                                        icon: Icons.my_library_books_outlined,
+                                        colorIcon: Colors.black,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    SizedBox(
+                                      child: FutureBuilder<double>(
+                                        future: _metrosFuture,
+                                        builder: (context, snap) {
+                                          final text = snap.hasData
+                                              ? _formatDistance(snap.data!)
+                                              : '';
+                                          return DataContainer(
+                                            contenido: text,
+                                            icon: Icons.location_on_outlined,
+                                            colorIcon: Colors.black,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -293,52 +333,10 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                           child: SingleChildScrollView(
                             controller: scrollControllerDefault,
                             child: Padding(
-                              padding: EdgeInsetsGeometry.fromLTRB(20, 16, 20, 20),
+                              padding: EdgeInsetsGeometry.fromLTRB(20, 8, 20, 20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  
-                                  //Informacion de contenedores ( Tipo de residuo, id del contenedor, distancia)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: DataContainer(
-                                          contenido: getResiduoOfContainer?.nombre ?? 'Desconocido',
-                                          icon: Icons.circle,
-                                          colorIcon: getResiduoOfContainer == null
-                                              ? Colors.grey
-                                              : getResiduoOfContainer.colorHex.toColor(),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      SizedBox(
-                                        child: DataContainer(
-                                          contenido:(widget.selectedContainer.idContenedor).toString(),
-                                          icon: Icons.my_library_books_outlined,
-                                          colorIcon: Colors.black,
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      SizedBox(
-                                        child: FutureBuilder<double>(
-                                          future: _metrosFuture,
-                                          builder: (context, snap) {
-                                            final text = snap.hasData
-                                                ? _formatDistance(snap.data!)
-                                                : '';
-                                            return DataContainer(
-                                              contenido: text,
-                                              icon: Icons.location_on_outlined,
-                                              colorIcon: Colors.black,
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16),
-
                                   //Informacion de estado de contenedor
                                   // -Direccion -Prox.Recoleccion
                                   Row(
