@@ -51,11 +51,15 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
   double get _contentOpacity {
     if (!draggableControllerOfDetailsContainerSheet.isAttached) return 0.0;
 
-    final currentSize = draggableControllerOfDetailsContainerSheet.size - 0.12;
+    final currentSize = draggableControllerOfDetailsContainerSheet.size;
+    
+    // La animación de aparición empieza después de este punto
+    final fadeStart = widget.initialSheetSize + 0.08;
 
-    final opacity =
-        (currentSize - widget.initialSheetSize) /
-        (widget.maxSheetSize - widget.minSheetSize);
+    // Evita división por 0 o rangos inválidos
+    if (widget.maxSheetSize <= fadeStart) return 1.0;
+    
+    final opacity = (currentSize - fadeStart) / (widget.maxSheetSize - fadeStart);
 
     return opacity.clamp(0.0, 1.0);
   }
