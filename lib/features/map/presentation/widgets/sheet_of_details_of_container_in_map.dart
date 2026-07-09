@@ -333,7 +333,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                           child: SingleChildScrollView(
                             controller: scrollControllerDefault,
                             child: Padding(
-                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 20, 22),
+                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
