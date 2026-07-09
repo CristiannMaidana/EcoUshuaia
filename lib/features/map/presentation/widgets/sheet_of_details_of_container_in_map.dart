@@ -21,6 +21,19 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
 
+ // Functionality for opacity of sheet
+  double get _contentOpacity {
+    if (!draggableControllerOfDetailsContainerSheet.isAttached) return 0.0;
+
+    final currentSize = draggableControllerOfDetailsContainerSheet.size - 0.12;
+
+    final opacity =
+        (currentSize - widget.initialSheetSize) /
+        (widget.maxSheetSize - widget.minSheetSize);
+
+    return opacity.clamp(0.0, 1.0);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -112,6 +125,42 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
             child: const SizedBox.expand(),
           ),
         
+
+        // -Sheet of zones-
+        // Handle of the sheet settings
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: DraggableScrollableSheet(
+            controller: draggableControllerOfDetailsContainerSheet,
+            initialChildSize: widget.initialSheetSize,
+            minChildSize: widget.minSheetSize,
+            maxChildSize: widget.maxSheetSize,
+            builder: (context, scrollControllerDefault) {
+              // Style of sheet for view
+              return SafeArea(
+                top: false,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                    border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
+                  ),
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 10),
+                    curve: Curves.easeOutCubic,
+                    opacity: _contentOpacity,
+                    child: Column(
+                      children: [
+                        // HEADER OF SHEET
+                        
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+          )
+        )
       ],
     );
   }
