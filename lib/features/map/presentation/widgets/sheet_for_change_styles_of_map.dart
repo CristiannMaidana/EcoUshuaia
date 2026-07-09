@@ -1,3 +1,5 @@
+import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:flutter/material.dart';
 
 class SheetForChangeStylesOfMap extends StatefulWidget {
@@ -17,7 +19,7 @@ class SheetForChangeStylesOfMap extends StatefulWidget {
 }
 
 class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
-    late final DraggableScrollableController draggableControllerOfStylesMapSheet;
+  late final DraggableScrollableController draggableControllerOfStylesMapSheet;
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
 
@@ -121,7 +123,84 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
     return Stack(
       fit: StackFit.expand,
       children: [
-
+        // Functionality for close the sheet if is expand and touch out of the sheet.
+        if (isExpandedSheet())
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: collapseSheet,
+            child: const SizedBox.expand(),
+          ),
+        
+        // SHEET
+        // Handle of the sheet settings
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: DraggableScrollableSheet(
+            controller: draggableControllerOfStylesMapSheet,
+            initialChildSize: widget.initialSheetSize,
+            minChildSize: widget.minSheetSize,
+            maxChildSize: widget.maxSheetSize,
+            builder: (context, scrollControllerDefault) {
+              // Style of sheet for view
+              return SafeArea(
+                top: false,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                    border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
+                  ),
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 10),
+                    curve: Curves.easeOutCubic,
+                    opacity: _contentOpacity,
+                    child: Column(
+                      children: [
+                        // HEADER OF SHEET
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onVerticalDragUpdate: _dragFromHeaderSheet,
+                          onVerticalDragEnd: _dragEndFromHeaderSheet,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const BarraAgarre(),
+                                const SizedBox(height: 12),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Estilo de mapa',
+                                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                            fontWeight: FontWeight.bold
+                                            ),
+                                        ),
+                                        Text('Elegi como queres ver el mapa.',
+                                          style: Theme.of(context).textTheme.labelMedium,
+                                        ),
+                                      ],
+                                    ),
+                                    CircleIcon(icon: Icons.close,
+                                      onPressed: collapseSheet,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
+                  ),
+                ),
+              );
+            }
+          )
+        )
       ],
     );
   }
