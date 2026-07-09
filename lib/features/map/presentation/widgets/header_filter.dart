@@ -17,7 +17,7 @@ class HeaderFilter extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 20, right: 15),
+            padding: const EdgeInsets.only(left: 22, bottom: 20, right: 22),
             child: Row(
               children: [
                 //Titulo
