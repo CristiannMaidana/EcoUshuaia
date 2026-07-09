@@ -15,7 +15,7 @@ class SheetForChangeStylesOfMap extends StatefulWidget {
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
-    this.maxSheetSize = 0.47,
+    this.maxSheetSize = 0.37,
 
     required this.selectedStyle,
     required this.onStyleChanged,
