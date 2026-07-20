@@ -27,6 +27,7 @@ class SheetForChangeStylesOfMap extends StatefulWidget {
 
 class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
   late final DraggableScrollableController draggableControllerOfStylesMapSheet;
+  bool _isSheetOpen = false;
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
   late MapStyle _selectedStyle;
@@ -65,6 +66,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
 
   void _onSheetChanged() {
     if (!mounted) return;
+    _isSheetOpen = draggableControllerOfStylesMapSheet.size > widget.initialSheetSize;
     setState(() {});
   }
 
@@ -90,7 +92,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
 
   bool isExpandedSheet() {
     if (!draggableControllerOfStylesMapSheet.isAttached) return false;
-    return draggableControllerOfStylesMapSheet.size > widget.initialSheetSize;
+    return _isSheetOpen;
   }
 
   void _dragFromHeaderSheet(DragUpdateDetails detail) {

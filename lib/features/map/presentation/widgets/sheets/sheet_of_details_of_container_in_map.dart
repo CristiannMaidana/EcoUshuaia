@@ -42,6 +42,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
 
 class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContainerInMap> {
   late final DraggableScrollableController draggableControllerOfDetailsContainerSheet;
+  bool _isSheetOpen = false;
   // TODO: calculate the distance for the user to the container
   Future<double>? _metrosFuture;
 
@@ -54,7 +55,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     final currentSize = draggableControllerOfDetailsContainerSheet.size;
     
     // La animación de aparición empieza después de este punto
-    final fadeStart = widget.initialSheetSize + 0.15;
+    final fadeStart = widget.initialSheetSize + 0.17;
 
     // Evita división por 0 o rangos inválidos
     if (widget.maxSheetSize <= fadeStart) return 1.0;
@@ -80,6 +81,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
 
   void _onSheetChanged() {
     if (!mounted) return;
+    _isSheetOpen = draggableControllerOfDetailsContainerSheet.size > widget.initialSheetSize;
     setState(() {});
   }
 
@@ -105,7 +107,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
 
   bool isExpandedSheet() {
     if (!draggableControllerOfDetailsContainerSheet.isAttached) return false;
-    return draggableControllerOfDetailsContainerSheet.size > widget.initialSheetSize;
+    return _isSheetOpen;
   }
 
   void _dragFromHeaderSheet(DragUpdateDetails detail) {
