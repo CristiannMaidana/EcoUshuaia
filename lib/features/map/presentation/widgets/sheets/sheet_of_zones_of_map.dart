@@ -43,6 +43,8 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   _ZoneSheetMode _selectedMode = _ZoneSheetMode.hidden;
 
   bool _isApplying = false;
+  bool _wasSheetOpen = false;
+  bool _isClosingSheet = false;
 
   double get _collapsedSheetSize => widget.initialSheetSize;
   double get _openedSheetSize => widget.minSheetSize;
@@ -82,6 +84,18 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
 
   void _onSheetChanged() {
     if (!mounted) return;
+
+    final isSheetOpen = draggableControllerOfZonesSheet.size > _collapsedSheetSize;
+
+    if (isSheetOpen) {
+      _wasSheetOpen = true;
+    } else if (_wasSheetOpen) {
+      _wasSheetOpen = false;
+      if (!_isClosingSheet) {
+        _cancelChanges();
+      }
+    }
+
     setState(() {});
   }
 
@@ -98,12 +112,18 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
   Future<void> collapseSheet() async {
     if (!draggableControllerOfZonesSheet.isAttached) return;
 
-    await draggableControllerOfZonesSheet.animateTo(
-      _collapsedSheetSize,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-    widget.backToUserLocation();
+    _isClosingSheet = true;
+
+    try {
+      await draggableControllerOfZonesSheet.animateTo(
+        _collapsedSheetSize,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      widget.backToUserLocation();
+    } finally {
+      _isClosingSheet = false;
+    }
   }
 
   bool isExpandedSheet() {
@@ -129,7 +149,7 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
         draggableControllerOfZonesSheet.size < (_openedSheetSize / 2);
 
     if (shouldClose) {
-      collapseSheet();
+      _cancelChanges();
       return;
     }
 
