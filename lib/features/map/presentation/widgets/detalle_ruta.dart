@@ -97,10 +97,7 @@ class _DetalleRutaState extends State<DetalleRuta> {
           //Boton para iniciar la navegación
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              elevation: 0,
-              shape: const StadiumBorder(),
               minimumSize: const Size(88, 44),
-              padding: const EdgeInsets.symmetric(horizontal: 18),
             ),
             onPressed: () {
               widget.botonIr();
