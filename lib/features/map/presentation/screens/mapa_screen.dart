@@ -23,7 +23,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.d
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_container.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_address.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_options_of_nav_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_details_of_container_in_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_zones_of_map.dart';
@@ -127,8 +127,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetAddContainerState> _addContainerSheetKey =
       GlobalKey<SheetAddContainerState>();
 
-  final GlobalKey<SheetAddressState> _sheetAddressKey =
-      GlobalKey<SheetAddressState>();
+  // KEYS
+  // Key of content of sheet
+  final GlobalKey<SheetOptionsOfNavToRouteState> _keySheetOptionsOfNavToRoute = GlobalKey<SheetOptionsOfNavToRouteState>();
 
   // Keys of sheet
   final GlobalKey<SheetOfZonesOfMapState> _keyOfSheetOfZonesOfMap = GlobalKey<SheetOfZonesOfMapState>();
@@ -162,7 +163,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   }
 
   void _agregarDireccionNueva(Contenedor contenedor) {
-    _sheetAddressKey.currentState?.addContenedor(contenedor);
+    _keySheetOptionsOfNavToRoute.currentState?.addContenedor(contenedor);
   }
 
   Future<void> _getCoordenates({bool updateAddress = true}) async {
@@ -408,7 +409,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (originLatitude == 0 && originLongitude == 0) return;
     if (_addressLat == 0 && _addressLon == 0) return;
 
-    _sheetAddressKey.currentState?.reportPreviewSheetMetrics();
+    _keySheetOptionsOfNavToRoute.currentState?.reportPreviewSheetMetrics();
 
     final payload = await bridge.previewRoute(
       originLatitude: originLatitude,
@@ -723,8 +724,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
               abrirDetalleDireccion: _abrirDetalleDireccion,
               generateRouteCar: _previewNativeDrivingRoute,
             ),
-            child2: SheetAddress(
-              key: _sheetAddressKey,
+            child2: SheetOptionsOfNavToRoute(
+              key: _keySheetOptionsOfNavToRoute,
               openOptionContainer: _abrirSheetAddContainer,
               tuUbicacion: 'Tu ubicación',
               direccion: direccionSeleccionada.isEmpty
