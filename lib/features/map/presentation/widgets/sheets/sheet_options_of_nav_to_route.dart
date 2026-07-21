@@ -9,6 +9,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/card_of_address_se
 import 'package:eco_ushuaia/features/map/presentation/widgets/button_start_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_for_addres_is_close.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_type_mobility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -402,63 +403,33 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                               opacity: contentOpacity,
                               child: Column(
                                 children: [
-                                  // Botones para elegir tipo perfil de ruta
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
-                                    child:  Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        border: Border.all(width: 1, color: Colors.grey.shade300,),
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.generateRouteCar();
-                                                _showBottomActions = !_showBottomActions;
-                                                _selectedRouteProfile = 0;
-                                                generarRuta = !generarRuta;
-                                              });
-                                            },
-                                            icon: const Icon(Icons.directions_car),
-                                            color: _selectedRouteProfile == 0
-                                                ? Colors.blue.shade300
-                                                : Colors.grey.shade700,
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setState((){
-                                                widget.generateRouteBike();
-                                                _showBottomActions = !_showBottomActions;
-                                                _selectedRouteProfile = 1;
-                                                generarRuta = !generarRuta;
-                                              });
-                                            },
-                                            icon: const Icon(Icons.directions_bike),
-                                            color: _selectedRouteProfile == 1
-                                                ? Colors.blue.shade300
-                                                : Colors.grey.shade700,
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.generateRouteWalk();
-                                                _showBottomActions = !_showBottomActions;
-                                                _selectedRouteProfile = 2;
-                                                generarRuta = !generarRuta;
-                                              });
-                                            },
-                                            icon: const Icon(Icons.directions_walk),
-                                            color: _selectedRouteProfile == 2
-                                                ? Colors.blue.shade300
-                                                : Colors.grey.shade700,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                  // Boton para elegir tipo perfil de ruta
+                                  ButtonsTypeMobility(
+                                    selectedRouteProfile: _selectedRouteProfile,
+                                    onCarPressed: () {
+                                      setState(() {
+                                        widget.generateRouteCar();
+                                        _showBottomActions = !_showBottomActions;
+                                        _selectedRouteProfile = 0;
+                                        generarRuta = !generarRuta;
+                                      });
+                                    },
+                                    onBikePressed: () {
+                                      setState((){
+                                        widget.generateRouteBike();
+                                        _showBottomActions = !_showBottomActions;
+                                        _selectedRouteProfile = 1;
+                                        generarRuta = !generarRuta;
+                                      });
+                                    },
+                                    onWalkPressed: () {
+                                      setState(() {
+                                        widget.generateRouteWalk();
+                                        _showBottomActions = !_showBottomActions;
+                                        _selectedRouteProfile = 2;
+                                        generarRuta = !generarRuta;
+                                      });
+                                    },
                                   ),
                                       
                                   // Lista de paradas agregadas a la ruta
