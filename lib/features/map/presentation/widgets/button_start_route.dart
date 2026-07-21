@@ -18,7 +18,6 @@ class ButtonStartRoute extends StatefulWidget {
 class _ButtonStartRouteState extends State<ButtonStartRoute> {
   num? _totalDistance;
   num? _totalDuration;
-  DateTime? _arrivalTime;
   String? _routeSignature;
 
   @override
@@ -133,7 +132,6 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
     if (widget.routePayload['hasRoute'] != true) {
       _totalDistance = null;
       _totalDuration = null;
-      _arrivalTime = null;
       _routeSignature = null;
       return;
     }
@@ -153,11 +151,6 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
     _routeSignature = nextSignature ?? _routeSignature;
     _totalDistance = nextDistance ?? _totalDistance;
     _totalDuration = nextDuration ?? _totalDuration;
-    if (nextDuration != null) {
-      _arrivalTime = DateTime.now().add(
-        Duration(seconds: nextDuration.round()),
-      );
-    }
   }
 
   String? _routeSignatureFromPayload(Map<String, dynamic> payload) {
@@ -212,15 +205,5 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
 
     final roundedMinutes = minutes.round();
     return '$roundedMinutes ${roundedMinutes == 1 ? 'min' : 'min'}';
-  }
-
-  String _arrivalText() {
-    final arrival = _arrivalTime;
-    if (arrival == null) return '--:--';
-
-    final hour = arrival.hour.toString().padLeft(2, '0');
-    final minute = arrival.minute.toString().padLeft(2, '0');
-
-    return '$hour:$minute';
   }
 }
