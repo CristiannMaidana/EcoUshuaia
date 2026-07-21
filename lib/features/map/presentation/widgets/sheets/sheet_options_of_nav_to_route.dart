@@ -446,7 +446,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                           direccion: direccion,
                                           dragHandle: ReorderableDragStartListener(
                                             index: index,
-                                            child: const _HandleIcon(),
+                                            child: const Icon(Icons.drag_handle, color: Colors.grey)
                                           ),
                                         );
 
@@ -487,19 +487,6 @@ Widget _dismissBg(Alignment alignment) {
     color: Colors.redAccent,
     child: const Icon(Icons.delete, color: Colors.white),
   );
-}
-
-/// Handle visual para arrastrar
-class _HandleIcon extends StatelessWidget {
-  const _HandleIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(left: 8),
-      child: Icon(Icons.drag_handle, color: Colors.grey),
-    );
-  }
 }
 
 abstract final class _RutaItemId {
