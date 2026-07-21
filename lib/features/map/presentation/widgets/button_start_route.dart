@@ -62,32 +62,39 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
         children: [
           //Informacion de tiempo y distancia
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Icon(Icons.timer, size: 20, color: Colors.black87),
-              const SizedBox(width: 8),
-              Text(
-                _minutesText(duration),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black87,
-                ),
+              // Section of time
+              Row(
+                children: [
+                  const Icon(Icons.timer_sharp, size: 40, color: Colors.black87),
+                  const SizedBox(width: 8),
+                  Text(
+                    _minutesText(duration),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              // Section of distances
+              Row(
+                children: [
+                  const Icon(Icons.place, size: 20, color: Colors.black54),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Llegada: ${_arrivalText()} . ${_distanceText(distance)}',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(Icons.place, size: 20, color: Colors.black54),
-              const SizedBox(width: 8),
-              Text(
-                'Llegada: ${_arrivalText()} . ${_distanceText(distance)}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+          
           const SizedBox(height: 10,),
           //Boton para iniciar la navegación
           SizedBox(
