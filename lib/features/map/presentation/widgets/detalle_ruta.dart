@@ -94,25 +94,6 @@ class _DetalleRutaState extends State<DetalleRuta> {
             ],
           ),
 
-          //Informacion de contenedor
-          //TOOD: cambiar para que solo aparezca si eligio un contenedor en parada
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              //TODO: Cambiar color según el tipo de residuo
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(color: Colors.black12, width: 1),
-            ),
-            // TODO: Mostrar la cantidad de residuo que tiene o que puede llevar?
-            child: Text('0.34 kg',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-
           //Boton para iniciar la navegación
           ElevatedButton(
             style: ElevatedButton.styleFrom(
