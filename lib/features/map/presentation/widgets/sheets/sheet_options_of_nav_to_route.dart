@@ -356,14 +356,14 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                           ),
                                         ),
 
-                                        // Boton para agregar parada
-                                        CircleIcon(
-                                          icon: Icons.add,
+                                        // SECTION OF BUTTONS
+                                        // Boton para agregar parada de contenedores
+                                        CircleIcon(icon: Icons.add,
                                           onPressed: widget.openOptionContainer,
                                         ),
                                         SizedBox(width: 10),
-                                        CircleIcon(
-                                          icon: Icons.close,
+                                        // Button for close the sheet
+                                        CircleIcon(icon: Icons.close,
                                           onPressed: () {
                                             _sheet?.showFirstChild();
                                             _sheet?.collapseSheet();
