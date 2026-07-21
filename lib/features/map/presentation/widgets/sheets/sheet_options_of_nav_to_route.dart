@@ -431,7 +431,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                       buildDefaultDragHandles: false,
                                       footer: Padding(
                                         key: const ValueKey('detalle_ruta'),
-                                        padding: const EdgeInsets.fromLTRB(12, 30, 12, 8,),
+                                        padding: const EdgeInsets.fromLTRB(12, 15, 12, 8,),
                                         child: ButtonStartRoute(
                                           botonIr: widget.iniciarRuta,
                                           routePayload: widget.navigationPayload,
