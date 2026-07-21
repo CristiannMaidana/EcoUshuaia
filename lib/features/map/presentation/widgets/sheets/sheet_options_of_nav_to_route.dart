@@ -341,7 +341,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                         // Contenedor para direccion con estilo de tarjeta
                                         Expanded(
                                           child: Text('Como llegar',
-                                            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                               fontWeight: FontWeight.bold
                                             )
                                           ),
