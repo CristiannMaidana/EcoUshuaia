@@ -103,7 +103,7 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
               onPressed: () {
                 widget.botonIr();
               },
-              child: Text('IR', style: Theme.of(context).textTheme.labelLarge),
+              child: Text('IR'),
             ),
           ),
         ],
