@@ -81,13 +81,13 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
               // Section of distances
               Row(
                 children: [
-                  const Icon(Icons.place, size: 20, color: Colors.black54),
+                  const Icon(Icons.place_outlined, size: 40, color: Colors.black87),
                   const SizedBox(width: 8),
                   Text(
                     'Llegada: ${_arrivalText()} . ${_distanceText(distance)}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ],
