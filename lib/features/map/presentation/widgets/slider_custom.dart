@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,42 +53,45 @@ class _SliderCustomState extends State<SliderCustom> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Contenedores cercanos:',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 10),
+          // Text
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Radio',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade700,
+              Text('Buscar en un radio de:',
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(width: 12),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(241, 241, 241, 1),
+                  borderRadius: BorderRadius.all(Radius.circular(22))
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: Center(
+                  child: Text('${(_radiusM / 1000).toStringAsFixed(2)} km',
+                    textAlign: TextAlign.right,
+                    style: Theme.of(context).textTheme.labelMedium
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Slider
+          Row(
+            children: [
               Expanded(
                 child: CupertinoSlider(
+                  activeColor: camarone600,
                   value: _radiusM,
                   min: widget.minRadiusM.toDouble(),
                   max: widget.maxRadiusM.toDouble(),
                   onChanged: (v) => setState(() => _radiusM = v),
                   onChangeEnd: (_) => _loadCercanos(),
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 72,
-                child: Text(
-                  '${(_radiusM / 1000).toStringAsFixed(2)} km',
-                  textAlign: TextAlign.right,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade700,
-                  ),
                 ),
               ),
             ],
