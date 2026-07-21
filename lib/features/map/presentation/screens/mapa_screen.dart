@@ -22,7 +22,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_container.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_options_of_nav_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_details_of_container_in_map.dart';
@@ -124,9 +124,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   double _addressLat = 0;
   Map<String, double> _userPoint = const <String, double>{'lon': 0, 'lat': 0};
 
-  final GlobalKey<SheetAddContainerState> _addContainerSheetKey =
-      GlobalKey<SheetAddContainerState>();
-
   // KEYS
   // Key of content of sheet
   final GlobalKey<SheetOptionsOfNavToRouteState> _keySheetOptionsOfNavToRoute = GlobalKey<SheetOptionsOfNavToRouteState>();
@@ -135,32 +132,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetOfZonesOfMapState> _keyOfSheetOfZonesOfMap = GlobalKey<SheetOfZonesOfMapState>();
   final GlobalKey<SheetOfDetailsOfContainerInMapState> _keyOfSheetOfDetailsContainerOnMap = GlobalKey<SheetOfDetailsOfContainerInMapState>();
   final GlobalKey<SheetForChangeStylesOfMapState> _keySheetForChangeStylesOfMap = GlobalKey<SheetForChangeStylesOfMapState>();
+  final GlobalKey<SheetAddContainersToRouteState> _keySheetAddContainerToRoute = GlobalKey<SheetAddContainersToRouteState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
   bool openSheetAddAddress = false;
-
-  // Metodo para abrir el sheetAddContainer
-  Future<void> _abrirSheetAddContainer() async {
-    if (openSheetAddContainer) return;
-    await _getCoordenates();
-    if (!mounted) return;
-    setState(() => openSheetAddContainer = true);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _addContainerSheetKey.currentState?.expand();
-    });
-  }
-
-  // Metodo para cerrar el sheetAddContainer
-  void _cerrarSheetAddContainer() {
-    if (!openSheetAddContainer) return;
-    final sheetState = _addContainerSheetKey.currentState;
-    if (sheetState == null) {
-      setState(() => openSheetAddContainer = false);
-      return;
-    }
-    sheetState.collapse();
-  }
 
   void _agregarDireccionNueva(Contenedor contenedor) {
     _keySheetOptionsOfNavToRoute.currentState?.addContenedor(contenedor);
@@ -726,7 +702,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             ),
             child2: SheetOptionsOfNavToRoute(
               key: _keySheetOptionsOfNavToRoute,
-              openOptionContainer: _abrirSheetAddContainer,
+              openOptionContainer: () => _keySheetAddContainerToRoute.currentState?.expandSheet(),
               tuUbicacion: 'Tu ubicación',
               direccion: direccionSeleccionada.isEmpty
                   ? 'Dirección seleccionada'
@@ -766,35 +742,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
 
         //Sheet para agregar contenedores a la ruta
-        if (openSheetAddContainer)
-          Positioned.fill(
-            child: Stack(
-              children: [
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: _cerrarSheetAddContainer,
-                  child: const SizedBox.expand(),
-                ),
-
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SheetAddContainer(
-                    key: _addContainerSheetKey,
-                    lon: _addressLon,
-                    lat: _addressLat,
-                    onClosed: () {
-                      if (!mounted) return;
-                      setState(() => openSheetAddContainer = false);
-                    },
-                    add: _agregarDireccionNueva,
-                    buscarDireccion: _buscarDireccion,
-                    abrirDetalleDireccion: _abrirDetalleDireccion,
-                    generateRouteCar: _previewNativeDrivingRoute,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        SheetAddContainersToRoute(
+          key: _keySheetAddContainerToRoute,
+          lon: _addressLon,
+          lat: _addressLat,
+          add: _agregarDireccionNueva,
+          buscarDireccion: _buscarDireccion,
+          abrirDetalleDireccion: _abrirDetalleDireccion,
+          generateRouteCar: _previewNativeDrivingRoute,
+        ),
 
         // Sheet of diferentes styles
         SheetForChangeStylesOfMap(
