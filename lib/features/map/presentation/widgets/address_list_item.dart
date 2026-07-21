@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class AddressListItem extends StatelessWidget {
@@ -18,28 +19,29 @@ class AddressListItem extends StatelessWidget {
       key: key,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       elevation: 0,
+      color: Color.fromRGBO(249, 249, 249, 1),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: Colors.grey.shade300),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 
         leading: CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.green.shade100,
-          child: const Icon(Icons.place, color: Colors.green),
+          radius: 25,
+          backgroundColor: camarone100,
+          child: const Icon(Icons.place, color: camarone700, size: 25,),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
+            Text(title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600,),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            Text('Direccion: $direccion', style: Theme.of(context).textTheme.titleSmall,)
+            const SizedBox(height: 6),
+            Text('Direccion: $direccion', style: Theme.of(context).textTheme.labelMedium,)
           ],
         ),
         trailing: dragHandle,
