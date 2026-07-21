@@ -121,7 +121,23 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      
+      fit: StackFit.expand,
+      children: [
+        // Functionality for close the sheet if is expand and touch out of the sheet.
+        if (isExpandedSheet())
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: collapseSheet,
+            child: const SizedBox.expand(),
+          ),
+        
+
+        // -Sheet of add containers-
+        // Handle of the sheet settings
+        Align(
+          
+        )
+      ],
     );
   }
 }
