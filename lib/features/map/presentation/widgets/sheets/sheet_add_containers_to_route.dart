@@ -1,3 +1,5 @@
+import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:flutter/material.dart';
 
 class SheetAddContainersToRoute extends StatefulWidget {
@@ -156,7 +158,36 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                     curve: Curves.easeOutCubic,
                     child: Column(
                       children: [
-                        
+                        // HEADER OF SHEET
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onVerticalDragUpdate: _dragFromHeaderSheet,
+                          onVerticalDragEnd: _dragEndFromHeaderSheet,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                            child: Column(
+                              children: [
+                                // Grab Bar
+                                BarraAgarre(),
+                                SizedBox(height: 8),
+
+                                // Text of header and button
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Seleccionar parada',
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    SizedBox(width: 20),
+                                    CircleIcon(icon: Icons.close,
+                                      onPressed: collapseSheet,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
