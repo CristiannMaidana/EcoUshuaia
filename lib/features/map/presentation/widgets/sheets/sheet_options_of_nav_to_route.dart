@@ -340,10 +340,19 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                       children: [
                                         // Contenedor para direccion con estilo de tarjeta
                                         Expanded(
-                                          child: Text('Como llegar',
-                                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                              fontWeight: FontWeight.bold
-                                            )
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Cómo llegar',
+                                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                                  fontWeight: FontWeight.bold
+                                                )
+                                              ),
+                                              const SizedBox(height: 5,),
+                                              Text('Elegí la mejor opción para tu ruta', 
+                                                style: Theme.of(context).textTheme.labelMedium,
+                                              )
+                                            ],
                                           ),
                                         ),
 
