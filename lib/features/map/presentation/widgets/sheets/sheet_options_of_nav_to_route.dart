@@ -260,6 +260,17 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     super.dispose();
   }
 
+  void _selectPerfilOfRoute(int perfilRoute) {
+    setState(() {
+      if (perfilRoute == 0) widget.generateRouteCar();
+      if (perfilRoute == 1) widget.generateRouteBike();
+      if (perfilRoute == 2) widget.generateRouteWalk();
+      _showBottomActions = !_showBottomActions;
+      _selectedRouteProfile = perfilRoute;
+      generarRuta = !generarRuta;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final sheet = _sheet!;
@@ -406,30 +417,9 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                   // Boton para elegir tipo perfil de ruta
                                   ButtonsTypeMobility(
                                     selectedRouteProfile: _selectedRouteProfile,
-                                    onCarPressed: () {
-                                      setState(() {
-                                        widget.generateRouteCar();
-                                        _showBottomActions = !_showBottomActions;
-                                        _selectedRouteProfile = 0;
-                                        generarRuta = !generarRuta;
-                                      });
-                                    },
-                                    onBikePressed: () {
-                                      setState((){
-                                        widget.generateRouteBike();
-                                        _showBottomActions = !_showBottomActions;
-                                        _selectedRouteProfile = 1;
-                                        generarRuta = !generarRuta;
-                                      });
-                                    },
-                                    onWalkPressed: () {
-                                      setState(() {
-                                        widget.generateRouteWalk();
-                                        _showBottomActions = !_showBottomActions;
-                                        _selectedRouteProfile = 2;
-                                        generarRuta = !generarRuta;
-                                      });
-                                    },
+                                    onCarPressed: () => _selectPerfilOfRoute(0),
+                                    onBikePressed: () => _selectPerfilOfRoute(1),
+                                    onWalkPressed: () => _selectPerfilOfRoute(2),
                                   ),
                                       
                                   // Lista de paradas agregadas a la ruta
