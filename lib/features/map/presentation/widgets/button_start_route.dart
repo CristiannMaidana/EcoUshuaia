@@ -67,7 +67,7 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
               // Section of time
               Row(
                 children: [
-                  const Icon(Icons.timer_sharp, size: 40, color: Colors.black87),
+                  const Icon(Icons.timer_sharp, size: 35, color: Colors.black87),
                   const SizedBox(width: 8),
                   Column(
                     children: [
@@ -86,7 +86,7 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
               // Section of distances
               Row(
                 children: [
-                  const Icon(Icons.place_outlined, size: 40, color: Colors.black87),
+                  const Icon(Icons.place_outlined, size: 35, color: Colors.black87),
                   const SizedBox(width: 8),
                   Column(
                     children: [
@@ -95,7 +95,7 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      Text('Distancia', 
+                      Text('Distancia',
                         style: Theme.of(context).textTheme.labelSmall
                       ),
                     ],
