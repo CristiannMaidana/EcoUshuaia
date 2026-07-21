@@ -69,12 +69,17 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
                 children: [
                   const Icon(Icons.timer_sharp, size: 40, color: Colors.black87),
                   const SizedBox(width: 8),
-                  Text(
-                    _minutesText(duration),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black87,
-                    ),
+                  Column(
+                    children: [
+                      Text(_minutesText(duration),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text('Tiempo estimado', 
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
                   ),
                 ],
               ),
