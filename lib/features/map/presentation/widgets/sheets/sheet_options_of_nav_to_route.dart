@@ -442,7 +442,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                         final direccion = _direccionForItem(vmMapSearch, item);
                                         final child = CardOfAddressSelected(
                                           key: ValueKey(item.id),
-                                          title: item.title,
+                                          title: item.id == _RutaItemId.direccion ? 'Destino' : item.title,
                                           direccion: direccion,
                                           dragHandle: ReorderableDragStartListener(
                                             index: index,
