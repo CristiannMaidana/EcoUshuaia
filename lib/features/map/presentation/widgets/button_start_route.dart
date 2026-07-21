@@ -65,42 +65,50 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // Section of time
-              Row(
-                children: [
-                  const Icon(Icons.timer_sharp, size: 35, color: Colors.black87),
-                  const SizedBox(width: 8),
-                  Column(
-                    children: [
-                      Text(_minutesText(duration),
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.timer_sharp, size: 35, color: Colors.black87),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_minutesText(duration),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                      ),
-                      Text('Tiempo estimado', 
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ],
-                  ),
-                ],
+                        Text('Tiempo estimado', 
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               // Section of distances
-              Row(
-                children: [
-                  const Icon(Icons.place_outlined, size: 35, color: Colors.black87),
-                  const SizedBox(width: 8),
-                  Column(
-                    children: [
-                      Text(_distanceText(distance),
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.place_outlined, size: 35, color: Colors.black87),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_distanceText(distance),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                      ),
-                      Text('Distancia',
-                        style: Theme.of(context).textTheme.labelSmall
-                      ),
-                    ],
-                  ),
-                ],
+                        Text('Distancia',
+                          style: Theme.of(context).textTheme.labelSmall
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
