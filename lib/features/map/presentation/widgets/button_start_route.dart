@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class DetalleRuta extends StatefulWidget {
+class ButtonStartRoute extends StatefulWidget {
   final Future<void> Function() botonIr;
   final Map<String, dynamic> routePayload;
 
   //TODO: Recibir datos de la ruta, tiempo estimado, distancia, cantidad de residuos, tipo de residuo, etc.
-  const DetalleRuta({
+  const ButtonStartRoute({
     super.key,
     required this.botonIr,
     required this.routePayload,
   });
 
   @override
-  State<DetalleRuta> createState() => _DetalleRutaState();
+  State<ButtonStartRoute> createState() => _ButtonStartRouteState();
 }
 
-class _DetalleRutaState extends State<DetalleRuta> {
+class _ButtonStartRouteState extends State<ButtonStartRoute> {
   num? _totalDistance;
   num? _totalDuration;
   DateTime? _arrivalTime;
@@ -28,7 +28,7 @@ class _DetalleRutaState extends State<DetalleRuta> {
   }
 
   @override
-  void didUpdateWidget(covariant DetalleRuta oldWidget) {
+  void didUpdateWidget(covariant ButtonStartRoute oldWidget) {
     super.didUpdateWidget(oldWidget);
     _syncRouteTotals();
   }
