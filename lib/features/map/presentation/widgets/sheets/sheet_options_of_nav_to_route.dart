@@ -6,7 +6,7 @@ import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_list_item.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/detalle_ruta.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/button_start_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_for_addres_is_close.dart';
 import 'package:flutter/foundation.dart';
@@ -462,7 +462,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                       footer: Padding(
                                         key: const ValueKey('detalle_ruta'),
                                         padding: const EdgeInsets.fromLTRB(12, 30, 12, 8,),
-                                        child: DetalleRuta(
+                                        child: ButtonStartRoute(
                                           botonIr: widget.iniciarRuta,
                                           routePayload: widget.navigationPayload,
                                         ),
