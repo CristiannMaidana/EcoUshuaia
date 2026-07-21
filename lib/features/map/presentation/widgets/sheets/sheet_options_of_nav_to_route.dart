@@ -5,7 +5,7 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.d
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/address_list_item.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/card_of_address_selected.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/button_start_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_for_addres_is_close.dart';
@@ -479,7 +479,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                       itemBuilder: (context, index) {
                                         final item = _rutaItems[index];
                                         final direccion = _direccionForItem(vmMapSearch, item);
-                                        final child = AddressListItem(
+                                        final child = CardOfAddressSelected(
                                           key: ValueKey(item.id),
                                           title: item.title,
                                           direccion: direccion,
