@@ -1,17 +1,34 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/slider_custom.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SheetAddContainersToRoute extends StatefulWidget {
+  final double lon;
+  final double lat;
   final double initialSheetSize;
   final double minSheetSize;
   final double maxSheetSize;
+  final ValueChanged<Contenedor> add;
+  final Future<void> Function(double lat, double lon)? buscarDireccion;
+  final VoidCallback? abrirDetalleDireccion;
+  final Future<void> Function()? generateRouteCar;
 
   const SheetAddContainersToRoute({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.70,
+    required this.lon,
+    required this.lat,
+    required this.add,
+    this.buscarDireccion,
+    this.abrirDetalleDireccion,
+    this.generateRouteCar,
   });
 
   @override
@@ -110,7 +127,7 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
     final currentSize = draggableControllerOfSheetAddContainerToRoute.size;
     
     // La animación de aparición empieza después de este punto
-    final fadeStart = widget.initialSheetSize + 0.17;
+    final fadeStart = widget.initialSheetSize + 0.10;
 
     // Evita división por 0 o rangos inválidos
     if (widget.maxSheetSize <= fadeStart) return 1.0;
@@ -122,6 +139,9 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
 
   @override
   Widget build(BuildContext context) {
+    final vmContenedores = context.watch<ContenedorViewModel>();
+    final contenedoresCercanos = vmContenedores.contenedorCercanos;
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -188,6 +208,61 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                             ),
                           ),
                         ),
+                        
+                        // BODY
+                        Expanded(
+                          child: CustomScrollView(
+                            controller: scrollControllerDefault,
+                            slivers: [
+                              // Slider para modificar radio de contenedores
+                              SliverToBoxAdapter(
+                                child: SliderCustom(
+                                  lon: widget.lon,
+                                  lat: widget.lat,
+                                ),
+                              ),
+
+                              //==== Manejo de estados de conexion del provider ====
+                              // Representacion de la pantalla si esta cargando
+                              if (vmContenedores.loading)
+                                const SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: Center(child: CircularProgressIndicator()),
+                                )
+                              // Representación de la pantalla si ocurrio un error
+                              else if (vmContenedores.error != null)
+                                SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: Center(child: Text(vmContenedores.error!)),
+                                )
+                              // Representación del contenido
+                              else
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                                        child: CartaDetallesRecientes(
+                                          contenedor: contenedoresCercanos[index],
+                                          ir: widget.add,
+                                          deleteFavorito: () {},
+                                          bajarSheet: collapseSheet,
+                                          buscarDireccion: widget.buscarDireccion,
+                                          abrirDetalleDireccion: widget.abrirDetalleDireccion,
+                                          generateRouteCar: widget.generateRouteCar,
+                                          //TODO: implementar eliminar favorito desde la carta de detalles recientes
+                                        ),
+                                      );
+                                    },
+                                    childCount: contenedoresCercanos.length,
+                                  ),
+                                ),
+                              const SliverToBoxAdapter(
+                                child: SizedBox(height: 24)
+                              ),
+                            ],
+                          )
+                        )
                       ],
                     ),
                   ),
