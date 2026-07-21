@@ -135,7 +135,35 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
         // -Sheet of add containers-
         // Handle of the sheet settings
         Align(
-          
+          alignment: Alignment.bottomCenter,
+          child: DraggableScrollableSheet(
+            controller: draggableControllerOfSheetAddContainerToRoute,
+            initialChildSize: widget.initialSheetSize,
+            minChildSize: widget.minSheetSize,
+            maxChildSize: widget.maxSheetSize,
+            builder: (context, scrollControllerDefault) {
+              return SafeArea(
+                top: false,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+                    border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
+                  ),
+                  child: AnimatedOpacity(
+                    opacity: _contentOpacity, 
+                    duration: const Duration(milliseconds: 10),
+                    curve: Curves.easeOutCubic,
+                    child: Column(
+                      children: [
+                        
+                      ],
+                    ),
+                  ),
+                )
+              );
+            }
+          ),
         )
       ],
     );
