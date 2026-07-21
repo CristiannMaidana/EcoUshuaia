@@ -187,13 +187,13 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
   }
 
   String _minutesText(num? seconds) {
-    if (seconds == null) return '-- minutos';
+    if (seconds == null) return '-- min';
 
     final minutes = seconds / 60;
-    if (minutes > 0 && minutes < 1) return '1 minuto';
+    if (minutes > 0 && minutes < 1) return '1 min';
 
     final roundedMinutes = minutes.round();
-    return '$roundedMinutes ${roundedMinutes == 1 ? 'minuto' : 'minutos'}';
+    return '$roundedMinutes ${roundedMinutes == 1 ? 'min' : 'min'}';
   }
 
   String _arrivalText() {
