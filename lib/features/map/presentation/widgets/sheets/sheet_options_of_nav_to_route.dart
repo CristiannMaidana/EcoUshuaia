@@ -485,7 +485,7 @@ Widget _dismissBg(Alignment alignment) {
     alignment: alignment,
     padding: const EdgeInsets.symmetric(horizontal: 16),
     color: Colors.redAccent,
-    child: const Icon(Icons.delete, color: Colors.white),
+    child: const Icon(Icons.delete, color: Colors.white, size: 30,),
   );
 }
 
