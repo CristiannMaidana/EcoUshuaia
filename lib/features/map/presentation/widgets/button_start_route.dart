@@ -56,53 +56,48 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           //Informacion de tiempo y distancia
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              Row(
-                children: [
-                  const Icon(Icons.timer, size: 20, color: Colors.black87),
-                  const SizedBox(width: 8),
-                  Text(
-                    _minutesText(duration),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  const Icon(Icons.place, size: 20, color: Colors.black54),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Llegada: ${_arrivalText()} . ${_distanceText(distance)}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              const Icon(Icons.timer, size: 20, color: Colors.black87),
+              const SizedBox(width: 8),
+              Text(
+                _minutesText(duration),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black87,
+                ),
               ),
             ],
           ),
-
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(Icons.place, size: 20, color: Colors.black54),
+              const SizedBox(width: 8),
+              Text(
+                'Llegada: ${_arrivalText()} . ${_distanceText(distance)}',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10,),
           //Boton para iniciar la navegación
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(88, 44),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                widget.botonIr();
+              },
+              child: Text('IR', style: Theme.of(context).textTheme.labelLarge),
             ),
-            onPressed: () {
-              widget.botonIr();
-            },
-            child: Text('IR', style: Theme.of(context).textTheme.labelLarge),
           ),
         ],
       ),
