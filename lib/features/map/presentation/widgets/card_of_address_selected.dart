@@ -1,12 +1,12 @@
 import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class AddressListItem extends StatelessWidget {
+class CardOfAddressSelected extends StatelessWidget {
   final String title;
   final String direccion;
   final Widget dragHandle;
 
-  const AddressListItem({
+  const CardOfAddressSelected({
     super.key,
     required this.title,
     required this.dragHandle,
