@@ -120,7 +120,14 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
               onPressed: () {
                 widget.botonIr();
               },
-              child: Text('IR'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Iniciar ruta'),
+                  const SizedBox(width: 10),
+                  Icon(Icons.keyboard_arrow_right)
+                ],
+              ),
             ),
           ),
         ],
