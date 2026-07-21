@@ -13,7 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SheetAddress extends StatefulWidget {
+class SheetOptionsOfNavToRoute extends StatefulWidget {
   final VoidCallback openOptionContainer;
   final String tuUbicacion;
   final String direccion;
@@ -27,7 +27,7 @@ class SheetAddress extends StatefulWidget {
   final Future<void> Function() cancelNavigation;
   final Future<void> Function() cancelSetCamera;
 
-  const SheetAddress({
+  const SheetOptionsOfNavToRoute({
     super.key,
     required this.openOptionContainer,
     required this.tuUbicacion,
@@ -44,10 +44,10 @@ class SheetAddress extends StatefulWidget {
   });
 
   @override
-  State<SheetAddress> createState() => SheetAddressState();
+  State<SheetOptionsOfNavToRoute> createState() => SheetOptionsOfNavToRouteState();
 }
 
-class SheetAddressState extends State<SheetAddress> {
+class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
   FlotanteSheetState? get _sheet => context.findAncestorStateOfType<FlotanteSheetState>();
 
   bool _showBottomActions = true;
@@ -235,7 +235,7 @@ class SheetAddressState extends State<SheetAddress> {
   }
 
   @override
-  void didUpdateWidget(covariant SheetAddress oldWidget) {
+  void didUpdateWidget(covariant SheetOptionsOfNavToRoute oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.tuUbicacion == widget.tuUbicacion &&
         oldWidget.direccion == widget.direccion) {
