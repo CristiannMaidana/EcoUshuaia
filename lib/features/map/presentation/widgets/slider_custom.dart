@@ -19,9 +19,9 @@ class SliderCustom extends StatefulWidget {
     super.key,
     required this.lon,
     required this.lat,
-    this.minRadiusM = 100,
+    this.minRadiusM = 0000,
     this.maxRadiusM = 2000,
-    this.initialRadiusM = 500,
+    this.initialRadiusM = 0000,
   });
 
   @override
