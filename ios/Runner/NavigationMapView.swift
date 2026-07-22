@@ -510,6 +510,11 @@ final class NativeMapView: UIView, FlutterPlatformView {
     }
 
     func centerTurnByTurnCamera(restrictZoomOut: Bool = true) {
+        guard keepsTurnByTurnCameraCentered else {
+            centerOnCoordinate(lastKnownUserCoordinate ?? initialCoordinate, zoom: 15)
+            return
+        }
+
         configureTurnByTurnCamera(restrictZoomOut: restrictZoomOut)
         navigationMapView.navigationCamera.viewportPadding = UIEdgeInsets(
             top: 200,
