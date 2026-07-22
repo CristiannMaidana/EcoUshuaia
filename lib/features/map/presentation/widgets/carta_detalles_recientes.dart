@@ -1,29 +1,21 @@
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CartaDetallesRecientes extends StatelessWidget{
+  // TODO: add functionality for the color of fav button to change if is not favorite the container
   final Contenedor? contenedor;
-  final ValueChanged<Contenedor>? ir;
+  final Future<void> Function(Contenedor contenedor)? ir;
   final VoidCallback deleteFavorito;
-  final Future<void> Function()? bajarSheet;
-  final Future<void> Function(double lat, double lon)? buscarDireccion;
-  final VoidCallback? abrirDetalleDireccion;
-  final Future<void> Function()? generateRouteCar;
 
   const CartaDetallesRecientes({
     super.key,
     this.contenedor,
     this.ir,
     required this.deleteFavorito,
-    this.bajarSheet,
-    this.buscarDireccion,
-    this.abrirDetalleDireccion,
-    this.generateRouteCar,
   });
 
   @override
@@ -32,7 +24,6 @@ class CartaDetallesRecientes extends StatelessWidget{
     final Residuos? residuo = (contenedor != null && contenedor!.idResiduo != null)
         ? vmResiduos.getResiduo(contenedor!.idResiduo!)
         : null;
-    final vmContenedores = context.watch<ContenedorViewModel>();
     
     return Container(
       decoration: BoxDecoration(
@@ -92,27 +83,7 @@ class CartaDetallesRecientes extends StatelessWidget{
                     ? null
                     : ()  async {
                         final current = contenedor!;
-                        final coord = current.coordenada;
-                        if (coord == null) return;
-
-                        final bajarSheet = this.bajarSheet;
-                        if (bajarSheet != null) {
-                          await bajarSheet();
-                        }
-                        ir?.call(current);
-                        vmContenedores.removeCercanoById(current.idContenedor);
-                        final buscarDireccion = this.buscarDireccion;
-                        if (buscarDireccion != null) {
-                          await buscarDireccion(
-                            coord.latitud,
-                            coord.longitud,
-                          );
-                        }
-                        abrirDetalleDireccion?.call();
-                        final generateRouteCar = this.generateRouteCar;
-                        if (generateRouteCar != null) {
-                          await generateRouteCar();
-                        }
+                        await ir?.call(current);
                       },
                 icon: Icon(Icons.arrow_forward),
                 style: IconButton.styleFrom(
