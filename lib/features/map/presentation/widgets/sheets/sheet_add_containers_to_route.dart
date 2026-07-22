@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
@@ -205,8 +206,7 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                                             ),
                                           ),
                                           const SizedBox(height: 5),
-                                          Text(
-                                            'Elegí uno o más contenedores para incluir en tu recorrido.', 
+                                          Text('Elegí uno o más contenedores para incluir en tu recorrido.', 
                                             style: Theme.of(context).textTheme.labelMedium,
                                             softWrap: true,
                                             maxLines: null,
@@ -223,6 +223,16 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                                 SliderCustom(
                                   lon: widget.lon,
                                   lat: widget.lat,
+                                ),
+                                // Text of number of containers found
+                                Row(
+                                  children: [
+                                    Icon(Icons.circle, size: 10, color: camarone600,),
+                                    const SizedBox(width: 10),
+                                    Text('${contenedoresCercanos.length} contenedores encontrados', 
+                                      style: Theme.of(context).textTheme.labelLarge
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
