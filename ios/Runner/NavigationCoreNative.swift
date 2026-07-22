@@ -33,8 +33,7 @@ final class NavigationCoreNative {
     }
 
     func calculatePreviewRoute(
-        origin: CLLocationCoordinate2D,
-        destination: CLLocationCoordinate2D,
+        coordinates: [CLLocationCoordinate2D],
         profileIdentifier: ProfileIdentifier
     ) async throws -> [String: Any] {
         tripSession.setToIdle()
@@ -44,7 +43,7 @@ final class NavigationCoreNative {
         resetProgressEmissionState()
 
         let options = NavigationRouteOptions(
-            coordinates: [origin, destination],
+            coordinates: coordinates,
             profileIdentifier: profileIdentifier
         )
         let request = navigationProvider.routingProvider().calculateRoutes(options: options)
