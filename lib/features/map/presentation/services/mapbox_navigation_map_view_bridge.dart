@@ -66,6 +66,7 @@ class MapboxNavigationMapViewBridge {
     required double destinationLatitude,
     required double destinationLongitude,
     String profile = 'automobile',
+    List<Map<String, double>>? routePoints,
   }) {
     return _invokeMap('previewRoute', <String, dynamic>{
       'originLatitude': originLatitude,
@@ -73,6 +74,7 @@ class MapboxNavigationMapViewBridge {
       'destinationLatitude': destinationLatitude,
       'destinationLongitude': destinationLongitude,
       'profile': profile,
+      'routePoints': ?routePoints,
     });
   }
 
