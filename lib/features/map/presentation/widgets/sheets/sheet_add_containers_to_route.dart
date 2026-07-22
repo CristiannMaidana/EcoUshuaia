@@ -267,12 +267,9 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                                         child: CartaDetallesRecientes(
                                           contenedor: contenedoresCercanos[index],
                                           ir: widget.add,
+                                          //TODO: implementar eliminar favorito desde la carta de detalles recientes
                                           deleteFavorito: () {},
                                           bajarSheet: collapseSheet,
-                                          buscarDireccion: widget.buscarDireccion,
-                                          abrirDetalleDireccion: widget.abrirDetalleDireccion,
-                                          generateRouteCar: widget.generateRouteCar,
-                                          //TODO: implementar eliminar favorito desde la carta de detalles recientes
                                         ),
                                       );
                                     },
