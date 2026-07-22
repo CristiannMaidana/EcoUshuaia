@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
@@ -18,7 +19,7 @@ class SheetSearchBar extends StatefulWidget {
   final VoidCallback aplicarFiltros;
   final Future<void> Function(double lat, double lon) buscarDireccion;
   final VoidCallback abrirDetalleDireccion;
-  final Future<void> Function() generateRouteCar;
+  final Future<void> Function(Contenedor contenedor) goToContainer;
 
   SheetSearchBar({
     super.key,
@@ -27,7 +28,7 @@ class SheetSearchBar extends StatefulWidget {
     required this.aplicarFiltros,
     required this.buscarDireccion,
     required this.abrirDetalleDireccion,
-    required this.generateRouteCar,
+    required this.goToContainer,
   });
 
   @override
@@ -261,9 +262,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                                 aplicarFiltros: widget.aplicarFiltros,
                               )
                             : ContentSearch(
-                                buscarDireccion: widget.buscarDireccion,
-                                abrirDetalleDireccion: widget.abrirDetalleDireccion,
-                                generateRouteCar: widget.generateRouteCar,
+                                goToContainer: widget.goToContainer,
                               ),
                       ),
                     );
