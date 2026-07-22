@@ -120,8 +120,7 @@ final class NavigationChannelHandler {
 
         do {
             let payload = try await runtime.navigationCore.calculatePreviewRoute(
-                origin: points.origin,
-                destination: points.destination,
+                coordinates: points,
                 profileIdentifier: profileIdentifier
             )
 
@@ -315,19 +314,35 @@ final class NavigationChannelHandler {
         ])
     }
 
-    private func routeCoordinates(arguments: Any?) -> (origin: CLLocationCoordinate2D, destination: CLLocationCoordinate2D)? {
-        guard let args = arguments as? [String: Any],
-              let originLatitude = Self.doubleValue(args["originLatitude"]),
+    private func routeCoordinates(arguments: Any?) -> [CLLocationCoordinate2D]? {
+        guard let args = arguments as? [String: Any] else {
+            return nil
+        }
+
+        if let rawPoints = args["routePoints"] as? [[String: Any]] {
+            let points = rawPoints.compactMap { point -> CLLocationCoordinate2D? in
+                guard let latitude = Self.doubleValue(point["lat"]),
+                      let longitude = Self.doubleValue(point["lon"]) else {
+                    return nil
+                }
+                return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            }
+            if points.count == rawPoints.count && points.count >= 2 {
+                return points
+            }
+        }
+
+        guard let originLatitude = Self.doubleValue(args["originLatitude"]),
               let originLongitude = Self.doubleValue(args["originLongitude"]),
               let destinationLatitude = Self.doubleValue(args["destinationLatitude"]),
               let destinationLongitude = Self.doubleValue(args["destinationLongitude"]) else {
             return nil
         }
 
-        return (
-            origin: CLLocationCoordinate2D(latitude: originLatitude, longitude: originLongitude),
-            destination: CLLocationCoordinate2D(latitude: destinationLatitude, longitude: destinationLongitude)
-        )
+        return [
+            CLLocationCoordinate2D(latitude: originLatitude, longitude: originLongitude),
+            CLLocationCoordinate2D(latitude: destinationLatitude, longitude: destinationLongitude)
+        ]
     }
 
     private func routeProfile(arguments: Any?) -> ProfileIdentifier {
