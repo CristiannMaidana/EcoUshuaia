@@ -195,10 +195,26 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Seleccionar parada',
-                                      style: Theme.of(context).textTheme.titleMedium,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Agregar parada',
+                                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                              fontWeight: FontWeight.bold
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            'Elegí uno o más contenedores para incluir en tu recorrido.', 
+                                            style: Theme.of(context).textTheme.labelMedium,
+                                            softWrap: true,
+                                            maxLines: null,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    SizedBox(width: 20),
+                                    SizedBox(width: 70),
                                     CircleIcon(icon: Icons.close,
                                       onPressed: collapseSheet,
                                     ),
