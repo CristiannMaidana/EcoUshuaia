@@ -371,7 +371,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     await _mapController?.centerOnUserOnce();
   }
 
-  Future<void> _paintNativeRoute({required String profile}) async {
+  Future<void> _paintNativeRoute({required String profile, List<Map<String, double>>? routePoints}) async {
     final bridge = _nativeNavigationBridge;
     if (bridge == null) return;
 
@@ -393,6 +393,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       destinationLatitude: _addressLat,
       destinationLongitude: _addressLon,
       profile: profile,
+      routePoints: routePoints,
     );
     if (payload != null) _onNativeNavigationPayload(payload);
   }
@@ -405,19 +406,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
       height: height,
       state: state,
     );
-  }
-
-  // Metodos de tipo de transporte para previsualizar ruta
-  Future<void> _previewNativeDrivingRoute() {
-    return _paintNativeRoute(profile: 'automobile');
-  }
-
-  Future<void> _previewNativeWalkingRoute() {
-    return _paintNativeRoute(profile: 'walking');
-  }
-
-  Future<void> _previewNativeCyclingRoute() {
-    return _paintNativeRoute(profile: 'cycling');
   }
 
   Future<void> _testHideZones(double sheetHeight) async {
@@ -698,7 +686,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               aplicarFiltros: _applyFilters,
               buscarDireccion: _buscarDireccion,
               abrirDetalleDireccion: _abrirDetalleDireccion,
-              generateRouteCar: _previewNativeDrivingRoute,
+              generateRouteCar: () => _paintNativeRoute(profile: 'automobile'),
             ),
             child2: SheetOptionsOfNavToRoute(
               key: _keySheetOptionsOfNavToRoute,
@@ -708,9 +696,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
                   ? 'Dirección seleccionada'
                   : direccionSeleccionada,
               userPoint: _userPoint,
-              generateRouteCar: _previewNativeDrivingRoute,
-              generateRouteBike: _previewNativeCyclingRoute,
-              generateRouteWalk: _previewNativeWalkingRoute,
+              destinationPoint: <String, double>{'lon': _addressLon, 'lat': _addressLat},
+              generateRoute: _paintNativeRoute,
               onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
               iniciarRuta: _startNativeNavigation,
               navigationPayload: _nativeNavigationPayload,
@@ -738,7 +725,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             distances: _getMetros,
             searchDirection: _buscarDireccion,
             openDetailDirection: _abrirDetalleDireccion,
-            generateRouteWithCar: _previewNativeDrivingRoute,
+            generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
           ),
 
         //Sheet para agregar contenedores a la ruta
@@ -749,7 +736,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           add: _agregarDireccionNueva,
           buscarDireccion: _buscarDireccion,
           abrirDetalleDireccion: _abrirDetalleDireccion,
-          generateRouteCar: _previewNativeDrivingRoute,
+          generateRouteCar: () => _paintNativeRoute(profile: 'automobile'),
         ),
 
         // Sheet of diferentes styles
