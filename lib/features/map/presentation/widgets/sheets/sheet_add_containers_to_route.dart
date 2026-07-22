@@ -253,7 +253,7 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                                   delegate: SliverChildBuilderDelegate(
                                     (context, index) {
                                       return Padding(
-                                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                                        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                                         child: CartaDetallesRecientes(
                                           contenedor: contenedoresCercanos[index],
                                           ir: widget.add,
