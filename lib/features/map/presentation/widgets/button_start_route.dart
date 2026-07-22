@@ -86,6 +86,7 @@ class _ButtonStartRouteState extends State<ButtonStartRoute> {
                   ],
                 ),
               ),
+              Container(width: 1, height: 40, color: Colors.grey),
               // Section of distances
               Expanded(
                 child: Row(
