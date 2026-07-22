@@ -19,9 +19,8 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
   final String tuUbicacion;
   final String direccion;
   final Map<String, double> userPoint;
-  final Future<void> Function() generateRouteCar;
-  final Future<void> Function() generateRouteBike;
-  final Future<void> Function() generateRouteWalk;
+  final Map<String, double> destinationPoint;
+  final Future<void> Function({required String profile, List<Map<String, double>>? routePoints}) generateRoute;
   final Future<void> Function(double height, String state)? onPreviewSheetMetricsChanged;
   final Future<void> Function() iniciarRuta;
   final Map<String, dynamic> navigationPayload;
@@ -34,9 +33,8 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
     required this.tuUbicacion,
     required this.direccion,
     required this.userPoint,
-    required this.generateRouteCar,
-    required this.generateRouteBike,
-    required this.generateRouteWalk,
+    required this.destinationPoint,
+    required this.generateRoute,
     this.onPreviewSheetMetricsChanged,
     required this.iniciarRuta,
     required this.navigationPayload,
@@ -51,9 +49,7 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
 class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
   FlotanteSheetState? get _sheet => context.findAncestorStateOfType<FlotanteSheetState>();
 
-  bool _showBottomActions = true;
   int _selectedRouteProfile = -1;
-  bool generarRuta = false;
   double? _lastPreviewSheetHeight;
   String? _lastPreviewSheetState;
 
@@ -67,15 +63,73 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
   );
 
   //==== Sincroniza el ValueNotifier con la lista actual ====//
-  void _syncOrder([MapSearchViewModel? vmMapSearch]) {
+  void _syncOrderOfRoute([MapSearchViewModel? vmMapSearch]) {
     final next = List<String>.unmodifiable(
-      _rutaItems.map((item) => _direccionForItem(vmMapSearch, item)).toList(),
+      _rutaItems.map((item) => _getDirectionOfItem(vmMapSearch, item)).toList(),
     );
     if (!listEquals(orderStrings.value, next)) orderStrings.value = next;
   }
 
-  // Obtiene direcciones y en base al elemento en parametro
-  String _direccionForItem(MapSearchViewModel? vmMapSearch, _RutaItem item) {
+  List<Map<String, double>>? _orderedRoutePoints() {
+    final points = <Map<String, double>>[];
+    for (final item in _rutaItems) {
+      double? lat;
+      double? lon;
+      if (item.id == _RutaItemId.tuUbicacion) {
+        lat = widget.userPoint['lat'];
+        lon = widget.userPoint['lon'];
+      } else if (item.id == _RutaItemId.direccion) {
+        lat = widget.destinationPoint['lat'];
+        lon = widget.destinationPoint['lon'];
+      } else {
+        lat = item.contenedor?.coordenada?.latitud;
+        lon = item.contenedor?.coordenada?.longitud;
+      }
+      if (lat == null || lon == null) return null;
+      if (lat == 0 && lon == 0) return null;
+      points.add(<String, double>{'lat': lat, 'lon': lon});
+    }
+    return points.length >= 2 ? List<Map<String, double>>.unmodifiable(points) : null;
+  }
+
+  void _regenerateSelectedRoute() {
+    if (_selectedRouteProfile < 0) return;
+
+    final routePoints = _orderedRoutePoints();
+    if (routePoints == null) return;
+    
+    unawaited(widget.generateRoute(
+      profile: _getProfileOfRoute(_selectedRouteProfile),
+      routePoints: routePoints,
+    ));
+  }
+
+  String _getProfileOfRoute(int perfilRoute) {
+    if (perfilRoute == 1) return 'cycling';
+    if (perfilRoute == 2) return 'walking';
+    return 'automobile';
+  }
+
+  void _listenerOnOrderStringsChanged() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _regenerateSelectedRoute();
+    });
+  }
+
+  void _selectPerfilOfRouteAndGenereteIt(int perfilRoute) {
+    final routePoints = _orderedRoutePoints();
+    
+    setState(() {
+      widget.generateRoute(
+        profile: _getProfileOfRoute(perfilRoute),
+        routePoints: routePoints,
+      );
+      _selectedRouteProfile = perfilRoute;
+    });
+  }
+
+
+  String _getDirectionOfItem(MapSearchViewModel? vmMapSearch, _RutaItem item) {
     if (item.id == _RutaItemId.tuUbicacion) {
       if (vmMapSearch == null) return '';
       return _getDireccionFromUserPoint(vmMapSearch);
@@ -91,11 +145,11 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
   String _getDireccionFromContenedor(MapSearchViewModel vmMapSearch, Contenedor? contenedor) {
     final coord = contenedor?.coordenada;
     if (coord == null) return contenedor?.descripcionUbicacion ?? '';
-    final direccion = vmMapSearch.getDireccionFromPoint(
+    final directionFromPoints = vmMapSearch.getDireccionFromPoint(
       coord.latitud,
       coord.longitud,
     );
-    if (direccion.isNotEmpty) return direccion;
+    if (directionFromPoints.isNotEmpty) return directionFromPoints;
     return contenedor?.descripcionUbicacion ?? '';
   }
 
@@ -111,7 +165,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     if (!_contenedoresRutaIds.add(contenedor.idContenedor)) return;
     setState(() {
       _rutaItems.add(_RutaItem.contenedor(contenedor));
-      _syncOrder();
+      _syncOrderOfRoute();
     });
   }
 
@@ -122,7 +176,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
       final item = _rutaItems.removeAt(oldIndex);
       newIndex = newIndex.clamp(0, _rutaItems.length);
       _rutaItems.insert(newIndex, item);
-      _syncOrder();
+      _syncOrderOfRoute();
     });
   }
 
@@ -133,7 +187,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     setState(() {
       _rutaItems.removeWhere((it) => it.id == item.id);
       _contenedoresRutaIds.remove(contenedor.idContenedor);
-      _syncOrder();
+      _syncOrderOfRoute();
     });
   }
 
@@ -228,11 +282,9 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
         title: widget.direccion,
       ),
     ];
-    _syncOrder();
+    _syncOrderOfRoute();
 
-    orderStrings.addListener(() {
-      debugPrint('Orden actualizado: ${orderStrings.value}');
-    });
+    orderStrings.addListener(_listenerOnOrderStringsChanged);
   }
 
   @override
@@ -250,25 +302,15 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
           item.title = widget.direccion;
         }
       }
-      _syncOrder();
+      _syncOrderOfRoute();
     });
   }
 
   @override
   void dispose() {
+    orderStrings.removeListener(_listenerOnOrderStringsChanged);
     orderStrings.dispose();
     super.dispose();
-  }
-
-  void _selectPerfilOfRoute(int perfilRoute) {
-    setState(() {
-      if (perfilRoute == 0) widget.generateRouteCar();
-      if (perfilRoute == 1) widget.generateRouteBike();
-      if (perfilRoute == 2) widget.generateRouteWalk();
-      _showBottomActions = !_showBottomActions;
-      _selectedRouteProfile = perfilRoute;
-      generarRuta = !generarRuta;
-    });
   }
 
   @override
@@ -276,7 +318,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     final sheet = _sheet!;
     final scrollController = PrimaryScrollController.of(context);
     MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
-    _syncOrder(vmMapSearch);
+    _syncOrderOfRoute(vmMapSearch);
 
     return SafeArea(
       top: false,
@@ -417,9 +459,9 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                   // Boton para elegir tipo perfil de ruta
                                   ButtonsTypeMobility(
                                     selectedRouteProfile: _selectedRouteProfile,
-                                    onCarPressed: () => _selectPerfilOfRoute(0),
-                                    onBikePressed: () => _selectPerfilOfRoute(1),
-                                    onWalkPressed: () => _selectPerfilOfRoute(2),
+                                    onCarPressed: () => _selectPerfilOfRouteAndGenereteIt(0),
+                                    onBikePressed: () => _selectPerfilOfRouteAndGenereteIt(1),
+                                    onWalkPressed: () => _selectPerfilOfRouteAndGenereteIt(2),
                                   ),
                                       
                                   // Lista de paradas agregadas a la ruta
@@ -439,7 +481,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                       ),
                                       itemBuilder: (context, index) {
                                         final item = _rutaItems[index];
-                                        final direccion = _direccionForItem(vmMapSearch, item);
+                                        final direccion = _getDirectionOfItem(vmMapSearch, item);
                                         final child = CardOfAddressSelected(
                                           key: ValueKey(item.id),
                                           title: item.id == _RutaItemId.direccion ? 'Destino' : item.title,
