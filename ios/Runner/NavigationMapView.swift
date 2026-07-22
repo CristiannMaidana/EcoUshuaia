@@ -543,7 +543,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
         navigationMapView.removeRoutes()
         navigationMapView.navigationCamera.update(cameraState: .idle)
         navigationMapView.mapView.mapboxMap.setCamera(
-            to: CameraOptions(center: initialCoordinate, zoom: initialZoom)
+            to: CameraOptions(center: lastKnownUserCoordinate ?? initialCoordinate, zoom: 15)
         )
     }
 
