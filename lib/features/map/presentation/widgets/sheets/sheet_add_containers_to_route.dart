@@ -220,6 +220,10 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                                     ),
                                   ],
                                 ),
+                                SliderCustom(
+                                  lon: widget.lon,
+                                  lat: widget.lat,
+                                ),
                               ],
                             ),
                           ),
@@ -230,14 +234,6 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                           child: CustomScrollView(
                             controller: scrollControllerDefault,
                             slivers: [
-                              // Slider para modificar radio de contenedores
-                              SliverToBoxAdapter(
-                                child: SliderCustom(
-                                  lon: widget.lon,
-                                  lat: widget.lat,
-                                ),
-                              ),
-
                               //==== Manejo de estados de conexion del provider ====
                               // Representacion de la pantalla si esta cargando
                               if (vmContenedores.loading)
