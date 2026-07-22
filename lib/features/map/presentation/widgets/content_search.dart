@@ -1,19 +1,16 @@
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ContentSearch extends StatefulWidget {
-  final Future<void> Function(double lat, double lon)? buscarDireccion;
-  final VoidCallback? abrirDetalleDireccion;
-  final Future<void> Function()? generateRouteCar;
+  final Future<void> Function(Contenedor contenedor) goToContainer;
 
   const ContentSearch({
     super.key,
-    this.buscarDireccion,
-    this.abrirDetalleDireccion,
-    this.generateRouteCar,
+    required this.goToContainer,
   });
 
   @override
@@ -47,9 +44,7 @@ class ContentSearchState extends State<ContentSearch> {
                             child: CartaDetallesRecientes(
                               contenedor: contenedor,
                               deleteFavorito: () => vmFavoritos.removeFavoritoById(contenedor.idContenedor),
-                              buscarDireccion: widget.buscarDireccion,
-                              abrirDetalleDireccion: widget.abrirDetalleDireccion,
-                              generateRouteCar: widget.generateRouteCar,
+                              ir: widget.goToContainer,
                             ),
                           ),
                         )
