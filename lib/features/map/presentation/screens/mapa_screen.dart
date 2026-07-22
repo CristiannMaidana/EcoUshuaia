@@ -530,6 +530,25 @@ class _MapaScreenStatePage extends State<MapaPage> {
     sheet?.showSecondChild();
   }
 
+  Future<void> _goToContainerSelectedOnMap(Contenedor contenedor) async {
+    final coord = contenedor.coordenada;
+    if (coord == null) return;
+
+    await _flotanteKey.currentState?.collapseSheet();
+    await _nativeNavigationBridge?.clearDestinationPreview();
+    await _nativeNavigationBridge?.centerOnCoordinate(
+      latitude: coord.latitud,
+      longitude: coord.longitud,
+    );
+    if (!mounted) return;
+
+    setState(() => _contenedorSeleccionado = contenedor);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
+    });
+  }
+
   Future<double>? _getMetros(double lat, double lon) {
     return _mapController?.getMetros(lon, lat);
   }
@@ -686,7 +705,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
               aplicarFiltros: _applyFilters,
               buscarDireccion: _buscarDireccion,
               abrirDetalleDireccion: _abrirDetalleDireccion,
-              generateRouteCar: () => _paintNativeRoute(profile: 'automobile'),
+              goToContainer: _goToContainerSelectedOnMap,
             ),
             child2: SheetOptionsOfNavToRoute(
               key: _keySheetOptionsOfNavToRoute,
@@ -734,9 +753,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
           lon: _addressLon,
           lat: _addressLat,
           add: _agregarDireccionNueva,
-          buscarDireccion: _buscarDireccion,
-          abrirDetalleDireccion: _abrirDetalleDireccion,
-          generateRouteCar: () => _paintNativeRoute(profile: 'automobile'),
         ),
 
         // Sheet of diferentes styles
