@@ -20,7 +20,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final Contenedor selectedContainer;
   final Future<double>? Function(double lat, double lon)? distances;
   final Future<void> Function(double lat, double lon)? searchDirection;
-  final VoidCallback? openDetailDirection;
+  final Future<void> Function()? openDetailDirection;
   final Future<void> Function()? generateRouteWithCar;
   final VoidCallback? onCloseForSearchContainer;
   
@@ -417,7 +417,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                             final coord = widget.selectedContainer.coordenada;
                                             if (coord == null) return;
                                         
-                                            collapseSheet();
+                                            await collapseSheet();
                                             final buscarDireccion = widget.searchDirection;
                                             if (buscarDireccion != null) {
                                               await buscarDireccion(
@@ -425,7 +425,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                                 coord.longitud,
                                               );
                                             }
-                                            widget.openDetailDirection?.call();
+                                            await widget.openDetailDirection?.call();
                                             final generateRouteCar = widget.generateRouteWithCar;
                                             if (generateRouteCar != null) {
                                               await generateRouteCar();
