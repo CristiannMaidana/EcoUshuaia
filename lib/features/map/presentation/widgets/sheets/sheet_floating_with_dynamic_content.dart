@@ -7,7 +7,6 @@ class SheetFloatingWithDynamicContent extends StatefulWidget {
   final double maxSheetSize;
   final Widget childNavOptions;
   final Widget childSearchBar;
-  final VoidCallback? onCollapsed;
   final List<double> snapPoints;
 
 
@@ -19,7 +18,6 @@ class SheetFloatingWithDynamicContent extends StatefulWidget {
     this.maxSheetSize = 0.80,
     required this.childNavOptions,
     required this.childSearchBar,
-    this.onCollapsed,
     this.snapPoints = const [0.093, 0.55, 0.80],
   });
 
