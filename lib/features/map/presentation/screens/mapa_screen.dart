@@ -18,6 +18,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_turn_by_turn.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_quick_access_on_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
@@ -643,47 +644,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
             ),
 
-        //Floating buttons
+        //Floating buttons of quick actions
         if (!_nativeRouteReady || !_nativeNavigationStarted)
-          Positioned(
-            right: 24,
-            bottom: 110,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                //Button texture of map
-                FloatingActionButton(
-                  heroTag: 'fab-map-style',
-                  onPressed: () => _keySheetForChangeStylesOfMap.currentState?.expandSheet(),
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.map, color: camarone900, size: 30),
-                ),
-                const SizedBox(height: 10),
-                // Button zones on map
-                FloatingActionButton(
-                  heroTag: 'fab-add-zones',
-                  onPressed: () => _keyOfSheetOfZonesOfMap.currentState?.expandSheet(),
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.layers_rounded,
-                    color: camarone900,
-                    size: 30,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                // Button center camera
-                FloatingActionButton(
-                  heroTag: 'fab-center-camera',
-                  onPressed: _centerNativeTurnByTurnCamera,
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.my_location,
-                    color: camarone900,
-                    size: 30,
-                  ),
-                ),
-              ],
-            ),
+          ButtonsQuickAccessOnMap(
+            actionButtonStyleMap: () => _keySheetForChangeStylesOfMap.currentState?.expandSheet(),
+            actionButtonZones: () => _keyOfSheetOfZonesOfMap.currentState?.expandSheet(), 
+            actionButtonCenterCamera: _centerNativeTurnByTurnCamera
           ),
 
         // Barra de navegacion del mapa
