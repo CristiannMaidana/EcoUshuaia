@@ -534,7 +534,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final coord = contenedor.coordenada;
     if (coord == null) return;
 
-    await _flotanteKey.currentState?.collapseSheet();
     await _nativeNavigationBridge?.clearDestinationPreview();
     await _nativeNavigationBridge?.centerOnCoordinate(
       latitude: coord.latitud,
@@ -547,6 +546,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       if (!mounted) return;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
+    await _flotanteKey.currentState?.collapseSheet();
   }
 
   Future<double>? _getMetros(double lat, double lon) {
