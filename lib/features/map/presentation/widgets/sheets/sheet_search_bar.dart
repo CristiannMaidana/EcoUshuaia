@@ -18,7 +18,7 @@ class SheetSearchBar extends StatefulWidget {
   final VoidCallback closeFilter;
   final VoidCallback aplicarFiltros;
   final Future<void> Function(double lat, double lon) buscarDireccion;
-  final VoidCallback abrirDetalleDireccion;
+  final Future<void> Function() abrirDetalleDireccion;
   final Future<void> Function(Contenedor contenedor) goToContainer;
 
   SheetSearchBar({
@@ -185,7 +185,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                         vm.clearSuggestions();
                         _keySearchBar.currentState
                             ?.resetToBase(); // limpia campo
-                        widget.abrirDetalleDireccion();
+                        await widget.abrirDetalleDireccion();
                       },
                     );
                   },
