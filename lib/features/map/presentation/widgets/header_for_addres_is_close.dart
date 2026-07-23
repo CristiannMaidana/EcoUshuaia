@@ -33,8 +33,11 @@ class HeaderForAddressIsClose extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(_addressOnly(address),
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Text(_addressOnly(address),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                  ),
                 ),
                 CircleIcon(
                   icon: Icons.close,
