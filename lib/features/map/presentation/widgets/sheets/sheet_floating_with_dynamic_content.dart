@@ -31,8 +31,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
   late final DraggableScrollableController draggableControllerOfSheetFloatign;
   bool _isSheetOpen = false;
   bool isShowingSecondChild = false;
-
-  double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
+  double? _headerDragStartSize;
 
   @override
   void initState() {
@@ -81,6 +80,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
 
   void dragFromHeaderSheet(DragUpdateDetails detail) {
     if (!draggableControllerOfSheetFloatign.isAttached) return;
+    _headerDragStartSize ??= draggableControllerOfSheetFloatign.size;
     final heightSheet = MediaQuery.sizeOf(context).height;
     final nexRangeOfSheet =
         (draggableControllerOfSheetFloatign.size - detail.delta.dy / heightSheet)
@@ -91,20 +91,40 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
   void dragEndFromHeaderSheet(DragEndDetails detail) {
     if (!draggableControllerOfSheetFloatign.isAttached) return;
 
-    final drifVelocityOfHandle = detail.primaryVelocity ?? 0.0;
-    const velocityThreshold = 900.0;
-    final shouldClose = drifVelocityOfHandle > velocityThreshold ||
-        draggableControllerOfSheetFloatign.size < (widget.maxSheetSize / 2);
+    final currentSize = draggableControllerOfSheetFloatign.size;
+    final dragStartSize = _headerDragStartSize ?? currentSize;
+    _headerDragStartSize = null;
+    final snapPoints = <double>{
+      widget.initialSheetSize,
+      widget.maxSheetSize,
+      ...widget.snapPoints.map(
+        (point) => point
+            .clamp(widget.initialSheetSize, widget.maxSheetSize)
+            .toDouble(),
+      ),
+    }.toList()
+      ..sort();
 
-    if (shouldClose) {
-      collapseSheet();
-      return;
+    late final double targetToGoSheet;
+    const snapTolerance = 0.0005;
+    if (currentSize > dragStartSize + snapTolerance) {
+      targetToGoSheet = snapPoints.firstWhere(
+        (point) => point >= currentSize - snapTolerance,
+        orElse: () => widget.maxSheetSize,
+      );
+    } else if (currentSize < dragStartSize - snapTolerance) {
+      targetToGoSheet = snapPoints.reversed.firstWhere(
+        (point) => point <= currentSize + snapTolerance,
+        orElse: () => widget.initialSheetSize,
+      );
+    } else {
+      targetToGoSheet = snapPoints.reduce(
+        (closest, point) =>
+            (currentSize - point).abs() < (currentSize - closest).abs()
+            ? point
+            : closest,
+      );
     }
-
-    final targetToGoSheet =
-        draggableControllerOfSheetFloatign.size < _snapMidpoint
-            ? widget.initialSheetSize
-            : widget.maxSheetSize;
 
     draggableControllerOfSheetFloatign.animateTo(
       targetToGoSheet,
