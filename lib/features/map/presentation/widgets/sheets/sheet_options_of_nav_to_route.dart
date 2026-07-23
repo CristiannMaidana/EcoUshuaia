@@ -361,7 +361,9 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                               address: widget.direccion,
                               onPressedClose: () {
                                 _sheet?.showFirstChild();
-                                _sheet?.expandSheet(); // Falta arreglar
+                                _sheet?.collapseSheet();
+                                widget.cancelNavigation();
+                                widget.cancelSetCamera();
                               },
                             ),
                           ),
