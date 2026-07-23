@@ -313,6 +313,20 @@ class FlotanteSheetState extends State<FlotanteSheet> {
     );
   }
 
+  Future<void> expandSecondSheet() async {
+    if (!mounted) return;
+    setState(() => _showSecondChild = true);
+
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || !_controller.isAttached) return;
+
+    await _controller.animateTo(
+      _secondChildInitialSize,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     //==== Construcción del Sheet animado =====
