@@ -533,7 +533,7 @@ final class NativeMapView: UIView, FlutterPlatformView {
             viewportDataSource.options.followingCameraOptions = FollowingCameraOptions()
         }
 
-        try? navigationMapView.mapView.mapboxMap.setCameraBounds(with: CameraBoundsOptions())
+        try? navigationMapView.mapView.mapboxMap.setCameraBounds(with: CameraBoundsOptions(minZoom: 0))
     }
 
     func resetAfterNavigationCancel() {
