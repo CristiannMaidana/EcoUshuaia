@@ -528,9 +528,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
   }
 
-  void _abrirDetalleDireccion() {
+  Future<void> _abrirDetalleDireccion() async {
     final sheet = _flotanteKey.currentState;
-    sheet?.showSecondChild();
+    await sheet?.expandSecondSheet();
   }
 
   Future<void> _goToContainerSelectedOnMap(Contenedor contenedor) async {
