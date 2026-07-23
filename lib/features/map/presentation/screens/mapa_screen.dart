@@ -108,6 +108,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   ZonaMapaViewModel? _zonaVm;
 
   Contenedor? _contenedorSeleccionado;
+  bool _containerSelectedFromSearch = false;
 
   bool _cambio = false;
   MapQuickAction? _pendingQuickAction;
@@ -217,6 +218,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   // Callback que recibe el contenedor tocado desde MapController
   void _onContenedorTap(Contenedor c) {
     setState(() {
+      _containerSelectedFromSearch = false;
       _contenedorSeleccionado = c;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
@@ -541,7 +543,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
     if (!mounted) return;
 
-    setState(() => _contenedorSeleccionado = contenedor);
+    setState(() {
+      _containerSelectedFromSearch = true;
+      _contenedorSeleccionado = contenedor;
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
@@ -745,6 +750,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
             searchDirection: _buscarDireccion,
             openDetailDirection: _abrirDetalleDireccion,
             generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
+            onCloseForSearchContainer: _containerSelectedFromSearch
+                ? () => _filterKey.currentState?.expand()
+                : null,
           ),
 
         //Sheet para agregar contenedores a la ruta
