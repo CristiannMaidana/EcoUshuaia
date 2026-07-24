@@ -76,6 +76,11 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     final previousSize = _lastSheetSize;
     _lastSheetSize = currentSize;
 
+    if (sheetFather.isColapsed) {
+      collapse();
+      return;
+    }
+
     final isContracting = previousSize != null && currentSize < previousSize;
     final changeContentSize = sheetFather.widget.initialSheetSize + 0.13;
     if (_showFilterWhenReady) {
@@ -125,7 +130,11 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
   /// Colapsa el contenido visible sin cambiar de hijo.
   Future<void> collapse() async {
-    await _sheetFather?.collapseSheet();
+    _keySearchBar.currentState?.resetToBase();
+    
+    final sheetFather = _sheetFather;
+    if (sheetFather?.isColapsed ?? true) return;
+    await sheetFather?.collapseSheet();
   }
 
   void _closeFilter() {
