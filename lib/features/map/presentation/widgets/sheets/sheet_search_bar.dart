@@ -368,7 +368,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                               width: 110,
                               child: OutlinedButton(
                                 onPressed: _cleanFilters,
-                                child: Text('Cancelar'),
+                                child: Text('Limpiar'),
                               ),
                             ),
                             const SizedBox(width: 8),
