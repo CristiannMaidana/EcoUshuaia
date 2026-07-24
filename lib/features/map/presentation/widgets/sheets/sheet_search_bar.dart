@@ -365,27 +365,18 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                         Row(
                           children: [
                             SizedBox(
+                              width: 110,
                               child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.black,
-                                  side: BorderSide(color: Colors.grey),
-                                ),
                                 onPressed: _cleanFilters,
-                                child: const Text(
-                                  'Limpiar',
-                                  style: TextStyle(fontSize: 13),
-                                ),
+                                child: Text('Cancelar'),
                               ),
                             ),
                             const SizedBox(width: 8),
                             SizedBox(
-                              width: 93,
+                              width: 110,
                               child: ElevatedButton(
                                 onPressed: _applyFilters,
-                                child: const Text(
-                                  'Aplicar',
-                                  style: TextStyle(fontSize: 13),
-                                ),
+                                child: Text('Aplicar'),
                               ),
                             ),
                           ],
