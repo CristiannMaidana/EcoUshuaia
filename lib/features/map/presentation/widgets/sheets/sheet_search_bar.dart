@@ -37,6 +37,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
   final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
   SheetFloatingWithDynamicContentState? _listenedSheetFather;
+  double? _lastSheetSize;
   bool _cambio = false;
   bool _collapseFilterOnClose = true;
   
@@ -55,6 +56,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     if (identical(_listenedSheetFather, sheetFather)) return;
     _listenedSheetFather?.sheetSizeListenable.removeListener(_onSheetChanged);
     _listenedSheetFather = sheetFather;
+    _lastSheetSize = sheetFather?.sheetSizeListenable.value;
     sheetFather?.sheetSizeListenable.addListener(_onSheetChanged);
   }
 
@@ -66,9 +68,18 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   }
 
   void _onSheetChanged() {
-    if (_listenedSheetFather?.isColapsed ?? false) {
+    final sheetFather = _listenedSheetFather;
+    if (sheetFather == null) return;
+
+    final currentSize = sheetFather.sheetSizeListenable.value;
+    final previousSize = _lastSheetSize;
+    _lastSheetSize = currentSize;
+
+    final isContracting = previousSize != null && currentSize < previousSize;
+    final changeContentSize = sheetFather.widget.initialSheetSize + 0.13;
+    if (_cambio && isContracting && currentSize <= changeContentSize) {
       _keySearchBar.currentState?.resetToBase();
-      if (_cambio) setState(() => _cambio = false);
+      setState(() => _cambio = false);
       return;
     }
     if (_cambio) setState(() {});
@@ -83,7 +94,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
       return 0.0;
     }
 
-    final fadeStart = sheetFather.widget.initChildNavOptionsSize - 0.290;
+    final fadeStart = sheetFather.widget.initChildNavOptionsSize - 0.390;
     if (sheetFather.widget.initChildNavOptionsSize <= fadeStart) return 1.0;
 
     final opacity = (controller.size - fadeStart) /
