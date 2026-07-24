@@ -7,9 +7,9 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_view
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/card_of_address_selected.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/button_start_route.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_for_addres_is_close.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_type_mobility.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +47,7 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
 }
 
 class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
-  FlotanteSheetState? get _sheet => context.findAncestorStateOfType<FlotanteSheetState>();
+  SheetFloatingWithDynamicContentState? get _sheetFather => context.findAncestorStateOfType<SheetFloatingWithDynamicContentState>();
 
   int _selectedRouteProfile = -1;
   double? _lastPreviewSheetHeight;
@@ -118,7 +118,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
 
   void _selectPerfilOfRouteAndGenereteIt(int perfilRoute) {
     final routePoints = _orderedRoutePoints();
-    
+
     setState(() {
       widget.generateRoute(
         profile: _getProfileOfRoute(perfilRoute),
@@ -127,7 +127,6 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
       _selectedRouteProfile = perfilRoute;
     });
   }
-
 
   String _getDirectionOfItem(MapSearchViewModel? vmMapSearch, _RutaItem item) {
     if (item.id == _RutaItemId.tuUbicacion) {
@@ -194,32 +193,39 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
   //==== Dragging para el header ====//
   // Actualiza la posición del sheet al arrastrar desde el header con el metodo del padre
   void _dragFromHeader(DragUpdateDetails d) {
-    _sheet?.dragFromHeader(d);
+    _sheetFather?.dragFromHeaderSheet(d);
   }
 
   void _endDragFromHeader(DragEndDetails d) {
-    _sheet?.endDragFromHeader(d);
+    _sheetFather?.dragEndFromHeaderSheet(d);
   }
 
+  /// Muestra este contenido y lo expande al máximo.
   Future<void> expand() async {
-    final sheet = _sheet;
-    sheet?.showSecondChild();
+    final sheetFather = _sheetFather;
+    if (sheetFather == null) return;
+    await sheetFather.expandSheet();
   }
 
-  void reportPreviewSheetMetrics() {
-    final sheet = _sheet;
-    if (sheet == null) return;
-    _reportPreviewSheetMetrics(sheet, schedulePostFrame: false);
+  Future<void> collapse() async {
+    await _sheetFather?.collapseSheet();
   }
 
-  void _reportPreviewSheetMetrics(
-    FlotanteSheetState sheet, {
-    bool schedulePostFrame = true,
-  }) {
-    final state = _previewSheetStateFor(sheet);
+  //arreglar async?
+  Future<void> reportPreviewSheetMetrics() async {
+    final sheetFather = _sheetFather;
+    if (sheetFather == null) return;
+    await _reportPreviewSheetMetrics(sheetFather, schedulePostFrame: false);
+  }
+
+  //convertirlo a async?
+  Future <void> _reportPreviewSheetMetrics( SheetFloatingWithDynamicContentState sheetFather, { bool schedulePostFrame = true, }) async{
+    final controller = sheetFather.draggableControllerOfSheetFloatign;
+    if (!controller.isAttached) return;
+    final state = _previewSheetStateFor(sheetFather);
     if (state == 'moving') return;
 
-    final height = MediaQuery.sizeOf(context).height * sheet.currentSheetSize;
+    final height = MediaQuery.sizeOf(context).height * controller.size;
     final roundedHeight = height.roundToDouble();
     final lastHeight = _lastPreviewSheetHeight;
     final heightChanged =
@@ -245,42 +251,32 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     }
   }
 
-  String _previewSheetStateFor(FlotanteSheetState sheet) {
-    if (sheet.isFullyExpanded) return 'expanded';
-    if (sheet.isCollapsed) return 'collapsed';
+  String _previewSheetStateFor(
+    SheetFloatingWithDynamicContentState sheetFather,
+  ) {
+    final controller = sheetFather.draggableControllerOfSheetFloatign;
+    if (!controller.isAttached) return 'moving';
+    final currentSize = controller.size;
+    final min = sheetFather.widget.initialSheetSize;
+    final max = sheetFather.widget.maxSheetSize;
+    final primary = sheetFather.widget.initChildNavOptionsSize
+        .clamp(min, max)
+        .toDouble();
 
-    final min = sheet.widget.minChildSize;
-    final max = sheet.isShowingSecondChild
-        ? (sheet.widget.maxChildSize2 ?? sheet.widget.maxChildSize)
-        : sheet.widget.maxChildSize;
-    final primary = sheet.isShowingSecondChild
-        ? sheet.widget.secondChildInitialSize.clamp(min, max).toDouble()
-        : _primarySnapPoint(sheet);
-
-    if ((sheet.currentSheetSize - primary).abs() < 0.005) {
+    if ((currentSize - max).abs() < 0.005) return 'expanded';
+    if ((currentSize - min).abs() < 0.005) return 'collapsed';
+    if ((currentSize - primary).abs() < 0.005) {
       return 'primary';
     }
     return 'moving';
-  }
-
-  double _primarySnapPoint(FlotanteSheetState sheet) {
-    final snapPoints = List<double>.of(sheet.widget.snapPoints)..sort();
-    if (snapPoints.length > 1) return snapPoints[1];
-    return sheet.widget.minChildSize;
   }
 
   @override
   void initState() {
     super.initState();
     _rutaItems = <_RutaItem>[
-      _RutaItem.fixed(
-        id: _RutaItemId.tuUbicacion,
-        title: widget.tuUbicacion,
-      ),
-      _RutaItem.fixed(
-        id: _RutaItemId.direccion,
-        title: widget.direccion,
-      ),
+      _RutaItem.fixed(id: _RutaItemId.tuUbicacion, title: widget.tuUbicacion),
+      _RutaItem.fixed(id: _RutaItemId.direccion, title: widget.direccion),
     ];
     _syncOrderOfRoute();
 
@@ -315,7 +311,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
 
   @override
   Widget build(BuildContext context) {
-    final sheet = _sheet!;
+    final sheetFather = _sheetFather!;
     final scrollController = PrimaryScrollController.of(context);
     MapSearchViewModel vmMapSearch = context.watch<MapSearchViewModel>();
     _syncOrderOfRoute(vmMapSearch);
@@ -325,19 +321,15 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
       child: Stack(
         children: [
           ValueListenableBuilder<double>(
-            valueListenable: sheet.sheetSizeListenable,
-            builder: (context, _, __) {
-              _reportPreviewSheetMetrics(sheet);
-
-              final snapPoints = List<double>.of(sheet.widget.snapPoints)..sort();
-              final contentHiddenThreshold = sheet.widget.minChildSize;
-              final contentFadeStartThreshold = snapPoints.length > 2
-                  ? snapPoints[2]
-                  : sheet.widget.maxChildSize;
+            valueListenable: sheetFather.sheetSizeListenable,
+            builder: (context, sheetSize, __) {
+              _reportPreviewSheetMetrics(sheetFather);
+              final contentHiddenThreshold = sheetFather.widget.initialSheetSize;
+              final contentFadeStartThreshold = sheetFather.widget.initChildNavOptionsSize;
               final fadeRange = contentFadeStartThreshold > contentHiddenThreshold
                   ? contentFadeStartThreshold - contentHiddenThreshold
                   : 0.0001;
-              final transitionProgress =((sheet.currentSheetSize - contentHiddenThreshold) / fadeRange).clamp(0.0, 1.0);
+              final transitionProgress = ((sheetSize - contentHiddenThreshold) / fadeRange).clamp(0.0, 1.0);
               final expandedHeaderOpacity = transitionProgress;
               final collapsedHeaderOpacity = 1.0 - transitionProgress;
               final contentOpacity = transitionProgress.clamp(0.0, 1.0);
@@ -360,8 +352,8 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                               onVerticalDragEndFromFather: _endDragFromHeader,
                               address: widget.direccion,
                               onPressedClose: () {
-                                _sheet?.showFirstChild();
-                                _sheet?.collapseSheet();
+                                _sheetFather?.changeToFirstChild();
+                                _sheetFather?.collapseSheet();
                                 widget.cancelNavigation();
                                 widget.cancelSetCamera();
                               },
@@ -421,8 +413,8 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                         // Button for close the sheet
                                         CircleIcon(icon: Icons.close,
                                           onPressed: () {
-                                            _sheet?.showFirstChild();
-                                            _sheet?.collapseSheet();
+                                            _sheetFather?.changeToFirstChild();
+                                            _sheetFather?.collapseSheet();
                                             widget.cancelNavigation();
                                             widget.cancelSetCamera();
                                           },
@@ -441,7 +433,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                   // Contenido del sheet
                   //Cambiar color a icons seleccionados
                   Expanded(
-                    child: sheet.isCollapsed
+                    child: _sheetFather!.isColapsed
                         ? CustomScrollView(
                             controller: scrollController,
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -529,7 +521,7 @@ Widget _dismissBg(Alignment alignment) {
     alignment: alignment,
     padding: const EdgeInsets.symmetric(horizontal: 16),
     color: Colors.redAccent,
-    child: const Icon(Icons.delete, color: Colors.white, size: 30,),
+    child: const Icon(Icons.delete, color: Colors.white, size: 30),
   );
 }
 
