@@ -39,6 +39,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   SheetFloatingWithDynamicContentState? _listenedSheetFather;
   double? _lastSheetSize;
   bool _cambio = false;
+  bool _showFilterWhenReady = false;
   bool _collapseFilterOnClose = true;
   
   SheetFloatingWithDynamicContentState? get _sheetFather => context.findAncestorStateOfType<SheetFloatingWithDynamicContentState>();
@@ -77,6 +78,15 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
     final isContracting = previousSize != null && currentSize < previousSize;
     final changeContentSize = sheetFather.widget.initialSheetSize + 0.13;
+    if (_showFilterWhenReady) {
+      if (isContracting) {
+        _showFilterWhenReady = false;
+      } else if (currentSize >= changeContentSize) {
+        _showFilterWhenReady = false;
+        setState(() => _cambio = true);
+        return;
+      }
+    }
     if (_cambio && isContracting && currentSize <= changeContentSize) {
       _keySearchBar.currentState?.resetToBase();
       setState(() => _cambio = false);
@@ -119,6 +129,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   }
 
   void _closeFilter() {
+    _showFilterWhenReady = false;
     setState(() => _cambio = false);
     if (_collapseFilterOnClose) {
       collapse();
@@ -126,7 +137,15 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   }
 
   void _openFilter() {
-    _collapseFilterOnClose = _sheetFather?.isColapsed ?? true;
+    final sheetFather = _sheetFather;
+    _collapseFilterOnClose = sheetFather?.isColapsed ?? true;
+    final currentSize = sheetFather?.sheetSizeListenable.value;
+    final changeContentSize = (sheetFather?.widget.initialSheetSize ?? 0.0) + 0.13;
+    if (currentSize != null && currentSize < changeContentSize) {
+      _showFilterWhenReady = true;
+      expand();
+      return;
+    }
     setState(() => _cambio = true);
     expand();
   }
