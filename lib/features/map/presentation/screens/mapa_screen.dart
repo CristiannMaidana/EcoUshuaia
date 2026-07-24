@@ -22,8 +22,8 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_quick_acce
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_options_of_nav_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_details_of_container_in_map.dart';
@@ -114,13 +114,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool _cambio = false;
   MapQuickAction? _pendingQuickAction;
 
-  //Variable para manejar el tamaño del sheet
-  final GlobalKey<SheetSearchBarState> _filterKey =
-      GlobalKey<SheetSearchBarState>();
-
-  final GlobalKey<FlotanteSheetState> _flotanteKey =
-      GlobalKey<FlotanteSheetState>();
-
   //=== Variable y metodos para el SheetAddContainer ===
   double _addressLon = 0;
   double _addressLat = 0;
@@ -129,12 +122,14 @@ class _MapaScreenStatePage extends State<MapaPage> {
   // KEYS
   // Key of content of sheet
   final GlobalKey<SheetOptionsOfNavToRouteState> _keySheetOptionsOfNavToRoute = GlobalKey<SheetOptionsOfNavToRouteState>();
+  final GlobalKey<SheetSearchBarState> _keySheetSearchBar = GlobalKey<SheetSearchBarState>();
 
   // Keys of sheet
   final GlobalKey<SheetOfZonesOfMapState> _keyOfSheetOfZonesOfMap = GlobalKey<SheetOfZonesOfMapState>();
   final GlobalKey<SheetOfDetailsOfContainerInMapState> _keyOfSheetOfDetailsContainerOnMap = GlobalKey<SheetOfDetailsOfContainerInMapState>();
   final GlobalKey<SheetForChangeStylesOfMapState> _keySheetForChangeStylesOfMap = GlobalKey<SheetForChangeStylesOfMapState>();
   final GlobalKey<SheetAddContainersToRouteState> _keySheetAddContainerToRoute = GlobalKey<SheetAddContainersToRouteState>();
+  final GlobalKey<SheetFloatingWithDynamicContentState> _keySheetFloating = GlobalKey<SheetFloatingWithDynamicContentState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -174,7 +169,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   void _changes() {
     setState(() {
       _cambio = !_cambio;
-      if (_cambio) _filterKey.currentState?.expand();
+      if (_cambio) _keySheetSearchBar.currentState?.expand();
     });
   }
 
@@ -266,7 +261,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   }
 
   void _openQuickSearchAddress() {
-    _filterKey.currentState?.openSearch();
+    _keySheetSearchBar.currentState?.openSearch();
   }
 
   Future<void> _runPendingQuickAction() async {
@@ -284,7 +279,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
         _pendingQuickAction = null;
         break;
       case MapQuickAction.searchAddress:
-        if (_filterKey.currentState == null) return;
+        if (_keySheetSearchBar.currentState == null) return;
         _openQuickSearchAddress();
         _pendingQuickAction = null;
         break;
@@ -528,9 +523,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
   }
 
-  Future<void> _abrirDetalleDireccion() async {
-    final sheet = _flotanteKey.currentState;
-    await sheet?.expandSecondSheet();
+  //Abre widget para datos de navegacion a direccion
+  Future<void> _openSheetOptionsOfNav() async {
+    _keySheetFloating.currentState?.changeToSecondChild();
   }
 
   Future<void> _goToContainerSelectedOnMap(Contenedor contenedor) async {
@@ -552,7 +547,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       if (!mounted) return;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
-    await _flotanteKey.currentState?.collapseSheet();
+    await _keySheetFloating.currentState?.collapseSheet();
   }
 
   Future<double>? _getMetros(double lat, double lon) {
@@ -654,46 +649,33 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         // Barra de navegacion del mapa
         if (!_nativeRouteReady || !_nativeNavigationStarted)
-          FlotanteSheet(
-            key: _flotanteKey,
-            minChildSize: .093,
-            maxChildSize: .80,
-            maxChildSize2: .80,
-            snapPoints: const [.093, .30, .55, .80],
-            snapPoints2: const [.093, .30, .55, .80],
-            onCollapsed: () {
-              final isSecond =
-                  _flotanteKey.currentState?.isShowingSecondChild ?? false;
-              if (!isSecond) {
-                _filterKey.currentState?.onSheetCollapsed();
-              }
-            },
-            // ignore: sort_child_properties_last
-            child: SheetSearchBar(
-              key: _filterKey,
-              cambio: _cambio,
-              closeFilter: _changes,
-              aplicarFiltros: _applyFilters,
-              buscarDireccion: _buscarDireccion,
-              abrirDetalleDireccion: _abrirDetalleDireccion,
-              goToContainer: _goToContainerSelectedOnMap,
-            ),
-            child2: SheetOptionsOfNavToRoute(
-              key: _keySheetOptionsOfNavToRoute,
-              openOptionContainer: () => _keySheetAddContainerToRoute.currentState?.expandSheet(),
-              tuUbicacion: 'Tu ubicación',
-              direccion: direccionSeleccionada.isEmpty
-                  ? 'Dirección seleccionada'
-                  : direccionSeleccionada,
-              userPoint: _userPoint,
-              destinationPoint: <String, double>{'lon': _addressLon, 'lat': _addressLat},
-              generateRoute: _paintNativeRoute,
-              onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
-              iniciarRuta: _startNativeNavigation,
-              navigationPayload: _nativeNavigationPayload,
-              cancelNavigation: _cancelNativeNavigation,
-              cancelSetCamera: _centerNativeTurnByTurnCamera,
-            ),
+          SheetFloatingWithDynamicContent(
+            key: _keySheetFloating,
+            childNavOptions: SheetOptionsOfNavToRoute(
+                key: _keySheetOptionsOfNavToRoute,
+                openOptionContainer: () => _keySheetAddContainerToRoute.currentState?.expandSheet(),
+                tuUbicacion: 'Tu ubicación',
+                direccion: direccionSeleccionada.isEmpty
+                    ? 'Dirección seleccionada'
+                    : direccionSeleccionada,
+                userPoint: _userPoint,
+                destinationPoint: <String, double>{'lon': _addressLon, 'lat': _addressLat},
+                generateRoute: _paintNativeRoute,
+                onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
+                iniciarRuta: _startNativeNavigation,
+                navigationPayload: _nativeNavigationPayload,
+                cancelNavigation: _cancelNativeNavigation,
+                cancelSetCamera: _centerNativeTurnByTurnCamera,
+              ),
+              childSearchBar: SheetSearchBar(
+                key: _keySheetSearchBar,
+                cambio: _cambio,
+                closeFilter: _changes,
+                aplicarFiltros: _applyFilters,
+                buscarDireccion: _buscarDireccion,
+                abrirDetalleDireccion: _openSheetOptionsOfNav,
+                goToContainer: _goToContainerSelectedOnMap,
+              ),
           ),
 
         //Sheet for zones options
@@ -714,11 +696,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
             selectedContainer: _contenedorSeleccionado!,
             distances: _getMetros,
             searchDirection: _buscarDireccion,
-            openDetailDirection: _abrirDetalleDireccion,
+            openDetailDirection: _openSheetOptionsOfNav,
             generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
             onCloseForSearchContainer: _containerSelectedFromSearch
-                ? () => _filterKey.currentState?.expand()
+                ? () async => _keySheetSearchBar.currentState?.expand()
                 : null,
+            onCloseForNavButtonExpandSheet: () async => _keySheetFloating.currentState?.expandSheetToMidSize(),
           ),
 
         //Sheet para agregar contenedores a la ruta
