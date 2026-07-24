@@ -142,9 +142,15 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
     );
   }
 
-  void changeChild() {
+  void changeToSecondChild() {
     setState(() {
       isShowingSecondChild = true;
+    });
+  }
+  
+  void changeToFirstChild() {
+    setState(() {
+      isShowingSecondChild = false;
     });
   }
   
