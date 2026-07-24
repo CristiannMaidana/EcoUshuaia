@@ -74,7 +74,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
       widget.initChildNavOptionsSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-    );
+    ).timeout(const Duration(milliseconds: 350), onTimeout: () {});
   }
 
   Future<void> collapseSheet() async {
@@ -84,7 +84,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
       widget.initialSheetSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-    );
+    ).timeout(const Duration(milliseconds: 350), onTimeout: () {});
   }
 
   bool _isExpandedSheet() {
