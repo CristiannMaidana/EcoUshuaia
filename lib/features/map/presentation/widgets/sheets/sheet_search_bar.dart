@@ -7,8 +7,8 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contene
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_search.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/flotante_sheet.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +42,8 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
   final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
   bool _collapseFilterOnClose = true;
+  
+  SheetFloatingWithDynamicContentState? get _sheetFather => context.findAncestorStateOfType<SheetFloatingWithDynamicContentState>();
 
   @override
   void initState() {
@@ -55,9 +57,6 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     super.dispose();
   }
 
-  FlotanteSheetState? get _sheet =>
-      context.findAncestorStateOfType<FlotanteSheetState>();
-
   void onSheetCollapsed() {
     _keySearchBar.currentState?.resetToBase();
     if (widget.cambio) {
@@ -67,28 +66,28 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
   // Manejo de altura desde incio
   void _dragFromHeader(DragUpdateDetails d) {
-    _sheet?.dragFromHeader(d);
+    _sheetFather?.dragFromHeaderSheet(d);
   }
 
   // Manejo de altura para arrastre
   void _endDragFromHeader(DragEndDetails d) {
-    _sheet?.endDragFromHeader(d);
+    _sheetFather?.dragEndFromHeaderSheet(d);
   }
 
-  // Reseteo sheet a tamaño inicial
-  Future<void> _collapse() async {
-    await _sheet?.collapseSheet();
+  /// Colapsa el contenido visible sin cambiar de hijo.
+  Future<void> collapse() async {
+    await _sheetFather?.collapseSheet();
   }
 
   void _closeFilter() {
     widget.closeFilter();
     if (_collapseFilterOnClose) {
-      _collapse();
+      collapse();
     }
   }
 
   void _openFilter() {
-    _collapseFilterOnClose = _sheet?.isCollapsed ?? true;
+    _collapseFilterOnClose = _sheetFather?.isColapsed ?? true;
     widget.closeFilter();
   }
 
@@ -103,7 +102,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     final vmContenedor = context.read<ContenedorViewModel>();
     final vmFavoritos = context.read<UsuarioContenedoresFavoritosViewModel>();
 
-    await _collapse();
+    await collapse();
     await vmContenedor.applyFilter(
       _filterViewmodel.filtros,
       filtrarFavoritos: _filterViewmodel.isSelected('Favoritos')
@@ -113,15 +112,17 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     widget.aplicarFiltros();
   }
 
-  // Agrando el sheet a su tamaño maximo
-  void expand() {
-    final sheet = _sheet;
-    sheet?.showFirstChild();
-    sheet?.expandSheet();
+  /// Muestra este contenido y lo expande al máximo.
+  Future<void> expand() async {
+    //Deberia mostrar primer hijo?
+    if (_sheetFather == null) return;
+
+    await _sheetFather?.expandSheet();
   }
 
-  void openSearch() {
-    expand();
+  Future<void> openSearch() async {
+    await expand();
+    if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _keySearchBar.currentState?.focusField();
     });
@@ -227,9 +228,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                     onVerticalDragUpdate: _dragFromHeader,
                     onVerticalDragEnd: _endDragFromHeader,
                     child: widget.cambio
-                        ? HeaderFilter(
-                            closeFilter: _closeFilter,
-                          )
+                        ? HeaderFilter(closeFilter: _closeFilter)
                         : SerchBar(
                             key: _keySearchBar,
                             changeHeader: _openFilter,
@@ -270,7 +269,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                 ),
               ),
 
-              // Seccion inferior inamovible  
+              // Seccion inferior inamovible
               // Boton cerrar y texto de filtros aplicados inferior
               if (widget.cambio)
                 Container(
