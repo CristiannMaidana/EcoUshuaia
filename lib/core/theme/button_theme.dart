@@ -8,7 +8,7 @@ final ButtonStyle botonEstandar = ElevatedButton.styleFrom(
     borderRadius: BorderRadius.circular(25),
   ),
   side: BorderSide(
-    color: camarone700,
+    color: camarone800,
     width: .5,
   ),
 );
