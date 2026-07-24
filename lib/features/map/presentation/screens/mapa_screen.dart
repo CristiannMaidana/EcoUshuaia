@@ -111,7 +111,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Contenedor? _contenedorSeleccionado;
   bool _containerSelectedFromSearch = false;
 
-  bool _cambio = false;
   MapQuickAction? _pendingQuickAction;
 
   //=== Variable y metodos para el SheetAddContainer ===
@@ -163,13 +162,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
         _addressLat = lat;
       }
       _userPoint = <String, double>{'lon': lon, 'lat': lat};
-    });
-  }
-
-  void _changes() {
-    setState(() {
-      _cambio = !_cambio;
-      if (_cambio) _keySheetSearchBar.currentState?.expand();
     });
   }
 
@@ -669,8 +661,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
               childSearchBar: SheetSearchBar(
                 key: _keySheetSearchBar,
-                cambio: _cambio,
-                closeFilter: _changes,
                 aplicarFiltros: _applyFilters,
                 buscarDireccion: _buscarDireccion,
                 abrirDetalleDireccion: _openSheetOptionsOfNav,
