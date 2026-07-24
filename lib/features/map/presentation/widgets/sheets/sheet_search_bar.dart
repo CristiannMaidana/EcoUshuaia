@@ -66,9 +66,30 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   }
 
   void _onSheetChanged() {
-    if (!(_listenedSheetFather?.isColapsed ?? false)) return;
-    _keySearchBar.currentState?.resetToBase();
-    if (_cambio) setState(() => _cambio = false);
+    if (_listenedSheetFather?.isColapsed ?? false) {
+      _keySearchBar.currentState?.resetToBase();
+      if (_cambio) setState(() => _cambio = false);
+      return;
+    }
+    if (_cambio) setState(() {});
+  }
+
+  double get _contentOpacity {
+    if (!_cambio) return 1.0;
+
+    final sheetFather = _listenedSheetFather;
+    final controller = sheetFather?.draggableControllerOfSheetFloatign;
+    if (sheetFather == null || controller == null || !controller.isAttached) {
+      return 0.0;
+    }
+
+    final fadeStart = sheetFather.widget.initChildNavOptionsSize - 0.290;
+    if (sheetFather.widget.initChildNavOptionsSize <= fadeStart) return 1.0;
+
+    final opacity = (controller.size - fadeStart) /
+        (sheetFather.widget.initChildNavOptionsSize - fadeStart);
+
+    return opacity.clamp(0.0, 1.0);
   }
 
   // Manejo de altura desde incio
@@ -211,12 +232,16 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ButtonFilterViewmodel>.value(
       value: _filterViewmodel,
-      child: Stack(
-        clipBehavior: Clip.none, // para que las sugerencias puedan superponerse
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+      child: AnimatedOpacity(
+        opacity: _contentOpacity,
+        duration: const Duration(milliseconds: 10),
+        curve: Curves.easeOutCubic,
+        child: Stack(
+          clipBehavior: Clip.none, // para que las sugerencias puedan superponerse
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
               // Barra de agarre para arrastrar el sheet
               Padding(
                 padding: const EdgeInsets.only(bottom: 6.3),
@@ -330,12 +355,13 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                     ),
                   ),
                 ),
-            ],
-          ),
+              ],
+            ),
 
-          // Drop bar sugerencias de busqueda (superpuesto)
-          _buildSuggestions(),
-        ],
+            // Drop bar sugerencias de busqueda (superpuesto)
+            _buildSuggestions(),
+          ],
+        ),
       ),
     );
   }
