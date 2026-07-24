@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +24,8 @@ class CustomButtonFilter extends StatelessWidget {
     return Selector<ButtonFilterViewmodel, bool>(
       selector: (_, vm) => vm.isSelected(label),
       builder: (context, selected, _) {
-        final bgColor = selected ? const Color.fromARGB(255, 214, 255, 219) : Colors.white;
-        final brColor = selected ? const Color.fromARGB(255, 56, 67, 57) : Colors.grey;
+        final bgColor = selected ? camarone100 : Colors.white;
+        final brColor = selected ? camarone700 : Colors.grey;
 
         return OutlinedButton(
           style: OutlinedButton.styleFrom(
