@@ -67,6 +67,16 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
     );
   }
 
+  Future<void> expandSheetToMidSize() async {
+    if (!draggableControllerOfSheetFloatign.isAttached) return;
+
+    await draggableControllerOfSheetFloatign.animateTo(
+      widget.initChildNavOptionsSize,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   Future<void> collapseSheet() async {
     if (!draggableControllerOfSheetFloatign.isAttached) return;
 
@@ -153,7 +163,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
       isShowingSecondChild = false;
     });
   }
-  
+
   // Calcula el nivel de padding para ir agrandandoce en base al tamaño de arrastre
   double get _t {
     if (!draggableControllerOfSheetFloatign.isAttached) return 0.0;
