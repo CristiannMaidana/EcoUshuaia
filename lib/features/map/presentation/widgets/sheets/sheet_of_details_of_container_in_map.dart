@@ -22,7 +22,8 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final Future<void> Function(double lat, double lon)? searchDirection;
   final Future<void> Function()? openDetailDirection;
   final Future<void> Function()? generateRouteWithCar;
-  final VoidCallback? onCloseForSearchContainer;
+  final Future<void> Function()? onCloseForSearchContainer;
+  final Future<void> Function()? onCloseForNavButtonExpandSheet;
   
   const SheetOfDetailsOfContainerInMap ({
     super.key,
@@ -36,6 +37,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
     required this.openDetailDirection,
     required this.generateRouteWithCar,
     this.onCloseForSearchContainer,
+    this.onCloseForNavButtonExpandSheet,
   });
 
   @override
@@ -101,6 +103,17 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     if (!draggableControllerOfDetailsContainerSheet.isAttached) return;
 
     widget.onCloseForSearchContainer?.call();
+    await draggableControllerOfDetailsContainerSheet.animateTo(
+      widget.initialSheetSize,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+  
+  Future<void> collapSheetForNavButton() async {
+    if (!draggableControllerOfDetailsContainerSheet.isAttached) return;
+
+    widget.onCloseForNavButtonExpandSheet?.call();
     await draggableControllerOfDetailsContainerSheet.animateTo(
       widget.initialSheetSize,
       duration: const Duration(milliseconds: 300),
@@ -416,20 +429,14 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                           onPressed: () async {
                                             final coord = widget.selectedContainer.coordenada;
                                             if (coord == null) return;
-                                        
-                                            await collapseSheet();
-                                            final buscarDireccion = widget.searchDirection;
-                                            if (buscarDireccion != null) {
-                                              await buscarDireccion(
-                                                coord.latitud,
-                                                coord.longitud,
-                                              );
-                                            }
+
+                                            await collapSheetForNavButton();
+
+                                            await widget.searchDirection?.call( coord.latitud, coord.longitud, );
+                                            
                                             await widget.openDetailDirection?.call();
-                                            final generateRouteCar = widget.generateRouteWithCar;
-                                            if (generateRouteCar != null) {
-                                              await generateRouteCar();
-                                            }
+
+                                            await widget.generateRouteWithCar?.call();
                                           },
                                           child: Row(
                                             children: [
