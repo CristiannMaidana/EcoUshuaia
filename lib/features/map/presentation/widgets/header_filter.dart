@@ -17,7 +17,7 @@ class HeaderFilter extends StatelessWidget{
         Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(left: 22, bottom: 20, right: 22),
+            padding: const EdgeInsets.only(left: 22, bottom: 10, right: 22),
             child: Row(
               children: [
                 //Titulo
@@ -27,7 +27,8 @@ class HeaderFilter extends StatelessWidget{
                     Text('Filtros', style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold)
                     ),
-                    Text('Personalizá lo que ves en el mapa', style: Theme.of(context).textTheme.labelSmall,)
+                    const SizedBox(height: 5,),
+                    Text('Personalizá lo que ves en el mapa', style: Theme.of(context).textTheme.labelMedium,)
                   ],
                 ),
                 const Spacer(),
