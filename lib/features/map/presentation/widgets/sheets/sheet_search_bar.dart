@@ -12,19 +12,14 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_float
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
 class SheetSearchBar extends StatefulWidget {
-  bool cambio;
-  final VoidCallback closeFilter;
   final VoidCallback aplicarFiltros;
   final Future<void> Function(double lat, double lon) buscarDireccion;
   final Future<void> Function() abrirDetalleDireccion;
   final Future<void> Function(Contenedor contenedor) goToContainer;
 
-  SheetSearchBar({
+  const SheetSearchBar({
     super.key,
-    required this.cambio,
-    required this.closeFilter,
     required this.aplicarFiltros,
     required this.buscarDireccion,
     required this.abrirDetalleDireccion,
@@ -41,6 +36,8 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   final LayerLink _searchBarLink = LayerLink();
 
   final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
+  SheetFloatingWithDynamicContentState? _listenedSheetFather;
+  bool _cambio = false;
   bool _collapseFilterOnClose = true;
   
   SheetFloatingWithDynamicContentState? get _sheetFather => context.findAncestorStateOfType<SheetFloatingWithDynamicContentState>();
@@ -52,16 +49,26 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final sheetFather = _sheetFather;
+    if (identical(_listenedSheetFather, sheetFather)) return;
+    _listenedSheetFather?.sheetSizeListenable.removeListener(_onSheetChanged);
+    _listenedSheetFather = sheetFather;
+    sheetFather?.sheetSizeListenable.addListener(_onSheetChanged);
+  }
+
+  @override
   void dispose() {
+    _listenedSheetFather?.sheetSizeListenable.removeListener(_onSheetChanged);
     _filterViewmodel.dispose();
     super.dispose();
   }
 
-  void onSheetCollapsed() {
+  void _onSheetChanged() {
+    if (!(_listenedSheetFather?.isColapsed ?? false)) return;
     _keySearchBar.currentState?.resetToBase();
-    if (widget.cambio) {
-      widget.closeFilter();
-    }
+    if (_cambio) setState(() => _cambio = false);
   }
 
   // Manejo de altura desde incio
@@ -80,7 +87,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   }
 
   void _closeFilter() {
-    widget.closeFilter();
+    setState(() => _cambio = false);
     if (_collapseFilterOnClose) {
       collapse();
     }
@@ -88,7 +95,8 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
   void _openFilter() {
     _collapseFilterOnClose = _sheetFather?.isColapsed ?? true;
-    widget.closeFilter();
+    setState(() => _cambio = true);
+    expand();
   }
 
   void _cleanFilters() {
@@ -220,14 +228,14 @@ class SheetSearchBarState extends State<SheetSearchBar> {
               CompositedTransformTarget(
                 link: _searchBarLink,
                 child: Padding(
-                  padding: widget.cambio
+                  padding: _cambio
                       ? EdgeInsets.only(top: 15)
                       : EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onVerticalDragUpdate: _dragFromHeader,
                     onVerticalDragEnd: _endDragFromHeader,
-                    child: widget.cambio
+                    child: _cambio
                         ? HeaderFilter(closeFilter: _closeFilter)
                         : SerchBar(
                             key: _keySearchBar,
@@ -256,7 +264,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                         constraints: BoxConstraints(
                           minHeight: viewport.maxHeight,
                         ),
-                        child: widget.cambio
+                        child: _cambio
                             ? ContentFilter(
                                 aplicarFiltros: widget.aplicarFiltros,
                               )
@@ -271,7 +279,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
               // Seccion inferior inamovible
               // Boton cerrar y texto de filtros aplicados inferior
-              if (widget.cambio)
+              if (_cambio)
                 Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
