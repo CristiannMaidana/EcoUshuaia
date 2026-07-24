@@ -31,9 +31,13 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
   bool isShowingSecondChild = false;
   double? _headerDragStartSize;
 
+  final ValueNotifier<double> _listenerSheetSizeNotifier = ValueNotifier<double>(0);
+  ValueNotifier<double> get sheetSizeListenable => _listenerSheetSizeNotifier;
+
   @override
   void initState() {
     super.initState();
+    _listenerSheetSizeNotifier.value = widget.initialSheetSize;
     draggableControllerOfSheetFloatign = DraggableScrollableController()
     ..addListener(_onSheetChanged);
   }
@@ -42,12 +46,14 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
   void dispose() {
     draggableControllerOfSheetFloatign.removeListener(_onSheetChanged);
     draggableControllerOfSheetFloatign.dispose();
+    _listenerSheetSizeNotifier.dispose();
     super.dispose();
   }
 
   void _onSheetChanged() {
-    if (!mounted) return;
+    if (!mounted || !draggableControllerOfSheetFloatign.isAttached) return;
     _isSheetOpen = draggableControllerOfSheetFloatign.size > widget.initialSheetSize;
+    _listenerSheetSizeNotifier.value = draggableControllerOfSheetFloatign.size;
     setState(() {});
   }
 
@@ -71,9 +77,14 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
     );
   }
 
-  bool isExpandedSheet() {
+  bool _isExpandedSheet() {
     if (!draggableControllerOfSheetFloatign.isAttached) return false;
     return _isSheetOpen;
+  }
+
+  bool get isColapsed{
+    if (!draggableControllerOfSheetFloatign.isAttached) return false;
+    return draggableControllerOfSheetFloatign.size <= widget.initialSheetSize;
   }
 
   void dragFromHeaderSheet(DragUpdateDetails detail) {
@@ -131,7 +142,12 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
     );
   }
 
-
+  void changeChild() {
+    setState(() {
+      isShowingSecondChild = true;
+    });
+  }
+  
   // Calcula el nivel de padding para ir agrandandoce en base al tamaño de arrastre
   double get _t {
     if (!draggableControllerOfSheetFloatign.isAttached) return 0.0;
@@ -155,7 +171,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
       fit: StackFit.expand,
       children: [
         // Functionality for close the sheet if is expand and touch out of the sheet.
-        if (isExpandedSheet())
+        if (_isExpandedSheet())
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: collapseSheet,
