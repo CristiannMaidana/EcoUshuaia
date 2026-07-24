@@ -211,6 +211,14 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     await _sheetFather?.collapseSheet();
   }
 
+  Future<void> _closeSheetNavigationOptions() async {
+    final sheetFather = _sheetFather;
+    await widget.cancelNavigation();
+    await sheetFather?.collapseSheet();
+    sheetFather?.changeToFirstChild();
+    await widget.cancelSetCamera();
+  }
+
   //arreglar async?
   Future<void> reportPreviewSheetMetrics() async {
     final sheetFather = _sheetFather;
@@ -351,12 +359,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                               onVerticalDragUpdateFromFather: _dragFromHeader,
                               onVerticalDragEndFromFather: _endDragFromHeader,
                               address: widget.direccion,
-                              onPressedClose: () {
-                                _sheetFather?.changeToFirstChild();
-                                _sheetFather?.collapseSheet();
-                                widget.cancelNavigation();
-                                widget.cancelSetCamera();
-                              },
+                              onPressedClose: _closeSheetNavigationOptions,
                             ),
                           ),
                         ),
@@ -412,12 +415,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                         SizedBox(width: 10),
                                         // Button for close the sheet
                                         CircleIcon(icon: Icons.close,
-                                          onPressed: () {
-                                            _sheetFather?.changeToFirstChild();
-                                            _sheetFather?.collapseSheet();
-                                            widget.cancelNavigation();
-                                            widget.cancelSetCamera();
-                                          },
+                                          onPressed: _closeSheetNavigationOptions,
                                         ),
                                       ],
                                     ),
