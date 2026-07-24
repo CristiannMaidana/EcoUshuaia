@@ -131,7 +131,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
   /// Colapsa el contenido visible sin cambiar de hijo.
   Future<void> collapse() async {
     _keySearchBar.currentState?.resetToBase();
-    
+
     final sheetFather = _sheetFather;
     if (sheetFather?.isColapsed ?? true) return;
     await sheetFather?.collapseSheet();
@@ -293,7 +293,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                 link: _searchBarLink,
                 child: Padding(
                   padding: _cambio
-                      ? EdgeInsets.only(top: 15)
+                      ? EdgeInsets.only(top: 8)
                       : EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
