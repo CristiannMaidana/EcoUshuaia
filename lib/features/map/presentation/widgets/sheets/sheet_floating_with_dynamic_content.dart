@@ -14,11 +14,11 @@ class SheetFloatingWithDynamicContent extends StatefulWidget {
     super.key,
     this.initialSheetSize = 0.093,
     this.initChildSearchBarSize = 0.80,
-    this.initChildNavOptionsSize = 0.55,
+    this.initChildNavOptionsSize = 0.50,
     this.maxSheetSize = 0.80,
     required this.childNavOptions,
     required this.childSearchBar,
-    this.snapPoints = const [0.093, 0.55, 0.80],
+    this.snapPoints = const [0.093, 0.50, 0.80],
   });
 
   @override
