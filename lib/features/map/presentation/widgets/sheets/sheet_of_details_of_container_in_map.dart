@@ -111,14 +111,14 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
   }
   
   Future<void> collapSheetForNavButton() async {
-    if (!draggableControllerOfDetailsContainerSheet.isAttached) return;
-
-    widget.onCloseForNavButtonExpandSheet?.call();
-    await draggableControllerOfDetailsContainerSheet.animateTo(
-      widget.initialSheetSize,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    if (draggableControllerOfDetailsContainerSheet.isAttached) {
+      await draggableControllerOfDetailsContainerSheet.animateTo(
+        widget.initialSheetSize,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      ).timeout(const Duration(milliseconds: 350), onTimeout: () {});
+    }
+    await widget.onCloseForNavButtonExpandSheet?.call();
   }
 
   bool isExpandedSheet() {
