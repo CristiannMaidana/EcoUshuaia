@@ -34,13 +34,13 @@ class HeaderForAddressIsClose extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 15),
+                  padding: const EdgeInsets.only(left: 10),
                   child: Text(_addressOnly(address),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
-                CircleIcon(
-                  icon: Icons.close,
+
+                CircleIcon(icon: Icons.close,
                   onPressed: onPressedClose,
                 ),
               ],
