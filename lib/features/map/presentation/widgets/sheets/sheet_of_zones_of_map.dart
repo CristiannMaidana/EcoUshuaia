@@ -320,6 +320,7 @@ class SheetOfZonesOfMapState extends State<SheetOfZonesOfMap> {
                                 // Text of header and button
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     // Text of header
                                     Column(
