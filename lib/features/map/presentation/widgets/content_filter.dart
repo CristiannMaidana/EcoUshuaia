@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/theme.dart';
 import 'package:eco_ushuaia/core/utils/hex_color.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/horario_recoleccion_filtros.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
@@ -21,11 +22,12 @@ class ContentFilter extends StatefulWidget {
 }
 
 class _ContentFilterState extends State<ContentFilter> {
-  List<String> labels = ['Hoy', 'Mañana', '06:00 - 12:00', '12:00 - 18:00', '18:00 - 24:00'];
+  List<String> labelsDate = ['Hoy', 'Mañana', 'Esta semana'];
+  List<String> labelsTime = ['00:00 - 06:00', '06:00 - 12:00', '12:00 - 18:00', '18:00 - 24:00'];
   List<String> labelsGenericsFilter = ['Favoritos', 'Cercanos', 'Disponibles'];
 
   // Helper para cargar la lista de ids desde vm
-  List<int> _idsForIndex(int i) {
+  List<int> _idsForIndexDate(int i) {
     final hvm = context.read<HorarioRecoleccionFiltrosViewModel>();
 
     // Mapea lista con ids de categoria
@@ -35,13 +37,27 @@ class _ContentFilterState extends State<ContentFilter> {
     switch (i) {
       case 0: return idsOf(hvm.itemsDiaZona);
       case 1: return idsOf(hvm.itemsHoraMannanaZona);
-      case 2: return idsOf(hvm.itemsHoraUno);
-      case 3: return idsOf(hvm.itemsHoraDos);
-      case 4: return idsOf(hvm.itemsHoraTres);
+      //case 2: TODO: no existe carga de datos para la semana ni logica en db
       default: return const [];
     }
   }
   
+  List<int> _idsForIndexTime(int i) {
+    final hvm = context.read<HorarioRecoleccionFiltrosViewModel>();
+
+    // Mapea lista con ids de categoria
+    List<int> idsOf(List<HorarioRecoleccionFiltros> xs) =>
+        xs.map((e) => e.idCategoriaResiduos).toSet().toList();
+
+    switch (i) {
+      //case 0: TODO: no existe carga de datos para franja 00-06
+      case 1: return idsOf(hvm.itemsHoraUno);
+      case 2: return idsOf(hvm.itemsHoraDos);
+      case 3: return idsOf(hvm.itemsHoraTres);
+      default: return const [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vmResiduos = context.watch<ResiduoViewmodel>();
@@ -113,14 +129,14 @@ class _ContentFilterState extends State<ContentFilter> {
                     spacing: 8.0,
                     runSpacing: 8.0,
                     alignment: WrapAlignment.start,
-                    children: List.generate(2, (i) {
-                      final label = labels[i];
-                      final ids   = _idsForIndex(i);
+                    children: List.generate(labelsDate.length, (i) {
+                      final ids   = _idsForIndexDate(i);
                       return CustomButtonFilter(
-                        label: label,
+                        label: labelsDate[i],
                         onTap: widget.aplicarFiltros,
                         tipoDeBoton: 'H_$i',
                         idEntidades: ids,
+                        icon: Icon(Icons.calendar_month, color: camarone600,),
                       );
                     }),
                   ),
@@ -131,15 +147,14 @@ class _ContentFilterState extends State<ContentFilter> {
                     spacing: 8.0,
                     runSpacing: 8.0,
                     alignment: WrapAlignment.start,
-                    children: List.generate(labels.length - 2, (j) {
-                      final i     = j + 2;
-                      final label = labels[i];
-                      final ids   = _idsForIndex(i);
+                    children: List.generate(labelsTime.length, (filterIndex) {
+                      final ids = _idsForIndexTime(filterIndex);
                       return CustomButtonFilter(
-                        label: label,
+                        label: labelsTime[filterIndex],
                         onTap: widget.aplicarFiltros,
-                        tipoDeBoton: 'H_$i',
+                        tipoDeBoton: 'H_$filterIndex',
                         idEntidades: ids,
+                        icon: Icon(Icons.timer_outlined, color: camarone600,),
                       );
                     }),
                   ),
@@ -148,23 +163,6 @@ class _ContentFilterState extends State<ContentFilter> {
             ),
           ),
         )
-        // Seccion nivel de llenado del contenedor
-        //Padding(
-          //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-          //child: ExpansionTileCustom(
-            //title: 'Nivel de llenado',
-            //initiallyOpen: true,
-            //child: Row(
-              //children: [
-                //Expanded(child: CustomButtonFilter(label: 'Bajo')),
-                //SizedBox(width: 8,),
-                //Expanded(child: CustomButtonFilter(label: 'Medio')),
-                //SizedBox(width: 8,),
-                //Expanded(child: CustomButtonFilter(label: 'Alto'))
-              //],
-            //),
-          //),
-        //),
       ],
     );
   }
