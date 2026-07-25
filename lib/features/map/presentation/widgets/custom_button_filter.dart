@@ -31,7 +31,7 @@ class CustomButtonFilter extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             backgroundColor: bgColor,
             foregroundColor: Colors.black,
-            side: BorderSide(width: 1, color: brColor),
+            side: BorderSide(width: .5, color: brColor),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
          onPressed: () {
