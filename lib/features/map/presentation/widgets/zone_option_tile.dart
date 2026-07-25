@@ -34,7 +34,7 @@ class ZoneOptionTile extends StatelessWidget {
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: borderRadius,
-            border: Border.all(color: selected ? camarone400 : Colors.black26),
+            border: Border.all(color: selected ? camarone600 : Colors.black26),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +47,7 @@ class ZoneOptionTile extends StatelessWidget {
                       title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: selected ? camarone950 : null,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
