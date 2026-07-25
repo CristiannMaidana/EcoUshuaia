@@ -84,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              
               QuickActions(
                 goMyZone: () {
                   context.read<MapQuickActionViewmodel>().openMyZone();
@@ -101,8 +102,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   );
                 },
               ),
+              
               QuickMap(),
+              
               DayNews(news: calendarioVm.eventsOf(DateTime.now())),
+              
               CustomNovedadesHome(
                 news: calendarioVm.eventsFromDay(DateTime.now()),
               ),
