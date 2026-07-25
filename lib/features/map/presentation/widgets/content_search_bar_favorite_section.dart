@@ -7,10 +7,12 @@ import 'package:provider/provider.dart';
 
 class ContentSearchBarFavoriteSection extends StatefulWidget {
   final Future<void> Function(Contenedor contenedor) goToContainer;
+  final Future<void> Function() openSheetOfAllTheFavorites;
 
   const ContentSearchBarFavoriteSection({
     super.key, 
-    required this.goToContainer
+    required this.goToContainer,
+    required this.openSheetOfAllTheFavorites,
   });
 
   @override
@@ -37,9 +39,7 @@ class ContentSearchBarFavoriteSectionState extends State<ContentSearchBarFavorit
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               TextButton(
-                onPressed: () {
-                  //TODO: key for expand sheet of all the favorite containers of the user
-                }, 
+                onPressed: () => widget.openSheetOfAllTheFavorites.call(), 
                 child: Text('Ver todos', 
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(color: camarone700),
                 )
