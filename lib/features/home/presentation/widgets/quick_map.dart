@@ -116,19 +116,6 @@ class QuickMap extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  const ShellTabSelectionNotification(2).dispatch(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    Text('Abrir mapa'),
-                                    SizedBox(width: 10,),
-                                    Icon(Icons.arrow_forward_ios_outlined),
-                                  ],
-                                )
-                              ),
-                              const SizedBox(width: 10),
                               OutlinedButton(
                                 onPressed: () {
                                   context.read<MapQuickActionViewmodel>().openSearchAddress();
@@ -141,6 +128,19 @@ class QuickMap extends StatelessWidget {
                                     Icon(Icons.search),
                                   ],
                                 ),
+                              ),
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  const ShellTabSelectionNotification(2).dispatch(context);
+                                },
+                                child: Row(
+                                  children: [
+                                    Text('Abrir mapa'),
+                                    SizedBox(width: 10,),
+                                    Icon(Icons.arrow_forward_ios_outlined),
+                                  ],
+                                )
                               ),
                             ],
                           )
