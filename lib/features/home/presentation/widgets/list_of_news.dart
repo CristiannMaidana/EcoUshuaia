@@ -8,19 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class CustomNovedadesHome extends StatefulWidget{
+class ListOfNews extends StatefulWidget{
   final List<Calendarios> news;
   
-  const CustomNovedadesHome({
+  const ListOfNews({
     super.key,
     required this.news,
   });
 
   @override
-  State<CustomNovedadesHome> createState() => _CustomNovedadesScreenState();
+  State<ListOfNews> createState() => _CustomNovedadesScreenState();
 }
 
-class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with SingleTickerProviderStateMixin {
+class _CustomNovedadesScreenState extends State<ListOfNews> with SingleTickerProviderStateMixin {
   String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
@@ -67,8 +67,7 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
         ),
         Column(
           children: [
-            ...List.generate(3, (index) {
-              final item = items[index];
+            ...items.take(3).map((item) {
               final hora = '${item.hora.inHours.toString().padLeft(2, '0')}:${(item.hora.inMinutes % 60).toString().padLeft(2, '0')}';
               
               return CustomNewNews(
