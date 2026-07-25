@@ -39,7 +39,11 @@ class DayNews extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Resumen del dia', style: Theme.of(context).textTheme.headlineSmall),
+          Text('Resumen del dia', 
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold
+            )
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

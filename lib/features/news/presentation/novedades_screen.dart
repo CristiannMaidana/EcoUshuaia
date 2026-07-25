@@ -47,7 +47,7 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Proximos eventos', 
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold
                 )
               ),

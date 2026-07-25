@@ -40,7 +40,7 @@ class QuickMap extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Text('Contenedores favoritos', style: Theme.of(context).textTheme.headlineSmall),
+                child: Text('Contenedores favoritos', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               ),
 
               //Section of map and text

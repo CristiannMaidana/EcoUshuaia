@@ -47,7 +47,7 @@ class QuickActions extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Acciones rápidas', 
-            style: Theme.of(context).textTheme.headlineSmall
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
           ),
           
           // Buttons
