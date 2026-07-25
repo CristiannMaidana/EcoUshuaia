@@ -6,7 +6,6 @@ import 'package:eco_ushuaia/features/shell/presentation/app_shell_screen.dart';
 import 'package:eco_ushuaia/features/auth/presentation/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/core/utils/validators/login_validators.dart';
-import 'package:eco_ushuaia/core/theme/container_theme.dart';
 import 'package:eco_ushuaia/core/ui/animations/avatar_lottie.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/social_login_section.dart';
 import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
