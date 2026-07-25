@@ -5,12 +5,15 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recolec
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/filter_section_of_distances_of_containers.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/filter_section_of_status_of_containers.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/filter_section_of_zones.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ContentFilter extends StatefulWidget {
   final VoidCallback aplicarFiltros;
+  // TODO: add propierties for get the user location
 
   const ContentFilter({
     super.key,
@@ -162,7 +165,15 @@ class _ContentFilterState extends State<ContentFilter> {
               ),
             ),
           ),
-        )
+        ),
+
+        // TODO: change for the user location
+        FilterSectionOfDistancesOfContainers(
+          lat: 1,
+          lon: 2,
+        ),
+
+        FilterSectionOfZones(),
       ],
     );
   }
