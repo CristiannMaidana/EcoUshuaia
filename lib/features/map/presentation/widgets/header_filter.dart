@@ -28,7 +28,7 @@ class HeaderFilter extends StatelessWidget{
                       fontWeight: FontWeight.bold)
                     ),
                     const SizedBox(height: 5,),
-                    Text('Personalizá lo que ves en el mapa', style: Theme.of(context).textTheme.labelMedium,)
+                    Text('Personalizá los contenedores en el mapa', style: Theme.of(context).textTheme.labelMedium,)
                   ],
                 ),
                 const Spacer(),
