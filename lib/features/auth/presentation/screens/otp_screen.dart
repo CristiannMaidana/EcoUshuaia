@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 class OtpScreen extends StatefulWidget {
+  
+  const OtpScreen ({
+    super.key,
+  });
+  
   @override
-  _OtpScreenState createState() => _OtpScreenState();
+  State<OtpScreen> createState() => OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
-  List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
-  List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+class OtpScreenState extends State<OtpScreen> {
+  final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
   @override
   void dispose() {
