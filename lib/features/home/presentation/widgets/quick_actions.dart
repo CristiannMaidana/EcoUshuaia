@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:eco_ushuaia/features/home/presentation/widgets/button_with_icon_and_text.dart';
 import 'package:flutter/material.dart';
 
 class QuickActions extends StatelessWidget {
@@ -58,39 +59,11 @@ class QuickActions extends StatelessWidget {
                   onTap: () async {
                     await callbacks[index]?.call();
                   },
-                  // Button container
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    width: 95,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(23),
-                      border: Border.all(width: 1, color: Colors.grey[200]!),
-                    ),
-                    // Button content
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Icon
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: backgroundColors[index],
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(width: 0.3, color: iconsColors[index],)
-                          ),
-                          child: Icon(icons[index], color: iconsColors[index], size: 25),
-                        ),
-                        const SizedBox(height: 4),
-                        // Text
-                        Text(actions[index],
-                          style: Theme.of(context).textTheme.bodySmall
-                        ),
-                      ],
-                    )
+                  child: ButtonWithIconAndText(
+                    label: actions[index],
+                    icon: icons[index],
+                    iconColor: iconsColors[index],
+                    backgroundColor: backgroundColors[index],
                   ),
                 ),
               ),
