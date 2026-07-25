@@ -185,9 +185,10 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
                                 //Header del widget (Texto - Boton cerrar)
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Contenedores favoritos',
-                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    Text('Favoritos',
+                                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                         fontWeight: FontWeight.bold
                                       ),
                                     ),
