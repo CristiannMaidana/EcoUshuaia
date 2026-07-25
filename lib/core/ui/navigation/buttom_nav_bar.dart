@@ -6,11 +6,11 @@ class ButtomNavBar extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onTabSelected;
 
-  ButtomNavBar({
-    Key? key,
+  const ButtomNavBar({
+    super.key,
     required this.selectedIndex,
     required this.onTabSelected,
-  }) : super(key: key);
+  });
 
   @override
   State<ButtomNavBar> createState() => _ButtomNavBarState();
