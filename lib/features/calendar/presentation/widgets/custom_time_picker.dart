@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class CustomTimePicker extends StatefulWidget {
   final TimeOfDay initial;
-  const CustomTimePicker({required this.initial});
+  
+  const CustomTimePicker({super.key, required this.initial});
 
   @override
   State<CustomTimePicker> createState() => CustomTimePickerState();
