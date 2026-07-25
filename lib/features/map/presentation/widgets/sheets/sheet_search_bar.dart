@@ -4,7 +4,8 @@ import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/content_search.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/content_search_bar_favorite_section.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/content_search_bar_recent_section.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
@@ -332,8 +333,13 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                             ? ContentFilter(
                                 aplicarFiltros: widget.aplicarFiltros,
                               )
-                            : ContentSearch(
-                                goToContainer: widget.goToContainer,
+                            : Column(
+                                children: [
+                                  ContentSearchBarFavoriteSection(
+                                    goToContainer: widget.goToContainer,
+                                  ),
+                                  ContentSearchBarRecentSection(),
+                                ],
                               ),
                       ),
                     );
