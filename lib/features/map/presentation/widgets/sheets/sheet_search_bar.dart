@@ -18,6 +18,7 @@ class SheetSearchBar extends StatefulWidget {
   final Future<void> Function(double lat, double lon) buscarDireccion;
   final Future<void> Function() abrirDetalleDireccion;
   final Future<void> Function(Contenedor contenedor) goToContainer;
+  final Future<void> Function() functionForOpenSheetOfAllTheFavorites;
 
   const SheetSearchBar({
     super.key,
@@ -25,6 +26,7 @@ class SheetSearchBar extends StatefulWidget {
     required this.buscarDireccion,
     required this.abrirDetalleDireccion,
     required this.goToContainer,
+    required this.functionForOpenSheetOfAllTheFavorites,
   });
 
   @override
@@ -337,6 +339,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                                 children: [
                                   ContentSearchBarFavoriteSection(
                                     goToContainer: widget.goToContainer,
+                                    openSheetOfAllTheFavorites: widget.functionForOpenSheetOfAllTheFavorites,
                                   ),
                                   ContentSearchBarRecentSection(),
                                 ],
