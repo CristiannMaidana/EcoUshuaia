@@ -28,7 +28,8 @@ class _ContentFilterState extends State<ContentFilter> {
   List<String> labelsDate = ['Hoy', 'Mañana', 'Esta semana'];
   List<String> labelsTime = ['00:00 - 06:00', '06:00 - 12:00', '12:00 - 18:00', '18:00 - 24:00'];
   List<String> labelsGenericsFilter = ['Favoritos', 'Disponibles', 'Recientes', 'Hoy'];
-
+  List<IconData> iconsForGenericsFilter = [ Icons.favorite, Icons.check_circle_outline, Icons.timer_outlined, Icons.calendar_month,];
+  
   // Helper para cargar la lista de ids desde vm
   List<int> _idsForIndexDate(int i) {
     final hvm = context.read<HorarioRecoleccionFiltrosViewModel>();
@@ -77,13 +78,17 @@ class _ContentFilterState extends State<ContentFilter> {
               spacing: 8,
               runSpacing: 8,
               alignment: WrapAlignment.start,
-              children: labelsGenericsFilter.map((label) => CustomButtonFilter(
-                label: label, 
-                onTap: widget.aplicarFiltros, 
-                tipoDeBoton: 'G_$label',
-                //TODO: change for the correct ids of type of filter
-                idEntidades: List.generate(3, (index) => index)
-              )).toList(),
+              children: List.generate(labelsGenericsFilter.length, (index) {
+                final label = labelsGenericsFilter[index];
+                return CustomButtonFilter(
+                  label: label,
+                  onTap: widget.aplicarFiltros,
+                  tipoDeBoton: 'G_$label',
+                  icon: Icon(iconsForGenericsFilter[index], color: camarone600,),
+                  //TODO: change for the correct ids of type of filter
+                  idEntidades: List.generate(3, (index) => index),
+                );
+              }),
             )
           ),
         ),
