@@ -59,7 +59,7 @@ class _CustomNovedadesScreenState extends State<CustomNovedadesHome> with Single
         ),
         Column(
           children: [
-            ...List.generate(items.length, (index) {
+            ...List.generate(3, (index) {
               final item = items[index];
               final hora = '${item.hora.inHours.toString().padLeft(2, '0')}:${(item.hora.inMinutes % 60).toString().padLeft(2, '0')}';
               
