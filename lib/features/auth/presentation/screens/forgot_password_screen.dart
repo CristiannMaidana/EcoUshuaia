@@ -6,6 +6,10 @@ import 'package:eco_ushuaia/core/utils/validators/forgot_password_validators.dar
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({
+    super.key
+  });
+  
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
