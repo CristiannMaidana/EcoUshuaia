@@ -11,7 +11,7 @@ class SheetForChangeStylesOfMap extends StatefulWidget {
   final MapStyle selectedStyle;
   final Future<void> Function(MapStyle style) onStyleChanged;
 
-  const SheetForChangeStylesOfMap ({
+  const SheetForChangeStylesOfMap({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
@@ -32,12 +32,12 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
   late MapStyle _selectedStyle;
 
- // Functionality for opacity of sheet
+  // Functionality for opacity of sheet
   double get _contentOpacity {
     if (!draggableControllerOfStylesMapSheet.isAttached) return 0.0;
 
     final currentSize = draggableControllerOfStylesMapSheet.size;
-    
+
     // La animación de aparición empieza después de este punto
     final fadeStart = widget.initialSheetSize + 0.09;
 
@@ -53,7 +53,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
   void initState() {
     super.initState();
     draggableControllerOfStylesMapSheet = DraggableScrollableController()
-    ..addListener(_onSheetChanged);
+      ..addListener(_onSheetChanged);
     _selectedStyle = widget.selectedStyle;
   }
 
@@ -119,8 +119,8 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
 
     final targetToGoSheet =
         draggableControllerOfStylesMapSheet.size < _snapMidpoint
-            ? widget.initialSheetSize
-            : widget.maxSheetSize;
+        ? widget.initialSheetSize
+        : widget.maxSheetSize;
 
     draggableControllerOfStylesMapSheet.animateTo(
       targetToGoSheet,
@@ -128,7 +128,6 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
       curve: Curves.easeOutCubic,
     );
   }
-
 
   // Functions specific to the sheet
   Future<void> _handleStyleChanged(MapStyle style) async {
@@ -150,7 +149,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
             onTap: collapseSheet,
             child: const SizedBox.expand(),
           ),
-        
+
         // SHEET
         // Handle of the sheet settings
         Align(
@@ -164,83 +163,88 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
               // Style of sheet for view
               return SafeArea(
                 top: false,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
-                    border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),),
-                  ),
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 10),
-                    curve: Curves.easeOutCubic,
-                    opacity: _contentOpacity,
-                    child: Column(
-                      children: [
-                        // HEADER OF SHEET
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onVerticalDragUpdate: _dragFromHeaderSheet,
-                          onVerticalDragEnd: _dragEndFromHeaderSheet,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const BarraAgarre(),
-                                const SizedBox(height: 12),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Estilo de mapa',
-                                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                            fontWeight: FontWeight.bold
-                                            ),
-                                        ),
-                                        Text('Elegi como queres ver el mapa.',
-                                          style: Theme.of(context).textTheme.labelMedium,
-                                        ),
-                                      ],
-                                    ),
-                                    CircleIcon(icon: Icons.close,
-                                      onPressed: collapseSheet,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        //BODY
-                        Expanded(
-                          child: SingleChildScrollView(
-                            controller: scrollControllerDefault,
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(36),),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(36),),
+                      border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[300]!,width: 1,),
+                      ),
+                    ),
+                    
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 10),
+                      curve: Curves.easeOutCubic,
+                      opacity: _contentOpacity,
+                      child: Column(
+                        children: [
+                          // HEADER OF SHEET
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onVerticalDragUpdate: _dragFromHeaderSheet,
+                            onVerticalDragEnd: _dragEndFromHeaderSheet,
                             child: Padding(
-                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20),
+                              padding: EdgeInsets.symmetric( horizontal: 22, vertical: 8,),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  MapStylePicker(
-                                    seleccionado: _selectedStyle,
-                                    onChanged: _handleStyleChanged,
+                                  const BarraAgarre(),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Estilo de mapa',
+                                            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text('Elegi como queres ver el mapa.',
+                                            style: Theme.of(context,).textTheme.labelMedium,
+                                          ),
+                                        ],
+                                      ),
+                                      CircleIcon(icon: Icons.close,
+                                        onPressed: collapseSheet,
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
-                          )
-                        )
-                      ]
+                          ),
+
+                          //BODY
+                          Expanded(
+                            child: SingleChildScrollView(
+                              controller: scrollControllerDefault,
+                              child: Padding(
+                                padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20,),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    MapStylePicker(
+                                      seleccionado: _selectedStyle,
+                                      onChanged: _handleStyleChanged,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               );
-            }
-          )
-        )
+            },
+          ),
+        ),
       ],
     );
   }
