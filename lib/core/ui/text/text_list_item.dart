@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 class TextListItem extends StatelessWidget{
   final String texto;
 
-  const TextListItem(this.texto);
+  const TextListItem({
+    super.key,
+    required this.texto,
+  });
 
   @override
   Widget build(BuildContext context) {
