@@ -4,6 +4,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recolec
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/filter_section_of_status_of_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -94,30 +95,13 @@ class _ContentFilterState extends State<ContentFilter> {
         ),
 
         // Seccion estado del contenedor
-        //Padding(
-          //padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
-          //child: ExpansionTileCustom(
-            //title: 'Estado',
-            //initiallyOpen: true,
-            //child: Row(
-              //children: [
-                //Expanded(
-                  //child: CustomButtonFilter(label: 'Operativo'),
-                //),
-                //SizedBox(width: 8),
-                //Expanded(
-                  //child: CustomButtonFilter(label: 'En mantenimiento'),
-                //),
-              //],
-            //)
-          //),
-        //),
+        FilterSectionOfStatusOfContainers(),
 
         // Seccion dias de recoleccion
         Padding(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 6),
           child: ExpansionTileCustom(
-            title: 'Recolección',
+            title: 'Horarios de recolección',
             initiallyOpen: true,
             child: SizedBox(
               width: double.infinity,
