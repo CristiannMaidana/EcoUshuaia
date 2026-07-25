@@ -5,7 +5,7 @@ import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmod
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CartaDetallesRecientes extends StatelessWidget{
+class CartaDetallesRecientes extends StatelessWidget {
   // TODO: add functionality for the color of fav button to change if is not favorite the container
   final Contenedor? contenedor;
   final Future<void> Function(Contenedor contenedor)? ir;
@@ -19,57 +19,68 @@ class CartaDetallesRecientes extends StatelessWidget{
   });
 
   @override
-  Widget build (BuildContext context){
+  Widget build(BuildContext context) {
     final vmResiduos = context.watch<ResiduoViewmodel>();
     final Residuos? residuo = (contenedor != null && contenedor!.idResiduo != null)
         ? vmResiduos.getResiduo(contenedor!.idResiduo!)
         : null;
-    
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.grey),
-        borderRadius: BorderRadius.circular(22) 
+        borderRadius: BorderRadius.circular(22),
       ),
       padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Icon del boton
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: Icon(
-                  Icons.circle, 
-                  size: 20, 
-                  color: residuo?.colorHex.toColor(),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Icon del boton
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Icon(
+                    Icons.circle,
+                    size: 20,
+                    color: residuo?.colorHex.toColor(),
+                  ),
                 ),
-              ),
 
-              SizedBox(width: 12),
+                SizedBox(width: 10),
 
-              //Texto de datos contenedor
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${contenedor?.nombreContenedor}', style: Theme.of(context).textTheme.labelLarge,),
-                  Text('Residuo: ${residuo?.nombre}',),
-                  Text('40 m - Recoleccion: hoy',),
-                ],
-              ),
-            ],
+                //Texto de datos contenedor
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${contenedor?.nombreContenedor}',
+                        maxLines: 2,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      Text('Residuo: ${residuo?.nombre}', 
+                        style: Theme.of(context).textTheme.labelMedium
+                      ),
+                      Text('40 m - Recoleccion: hoy'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          
+
           // Botones para interactar con el contenedor
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                onPressed: (){
+                onPressed: () {
                   deleteFavorito();
-                }, 
+                },
                 icon: Icon(Icons.favorite, color: Colors.yellow.shade600),
                 style: IconButton.styleFrom(
                   side: BorderSide(width: 1, color: Colors.grey),
@@ -81,7 +92,7 @@ class CartaDetallesRecientes extends StatelessWidget{
               IconButton(
                 onPressed: contenedor == null
                     ? null
-                    : ()  async {
+                    : () async {
                         final current = contenedor!;
                         await ir?.call(current);
                       },
@@ -92,7 +103,7 @@ class CartaDetallesRecientes extends StatelessWidget{
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ],
