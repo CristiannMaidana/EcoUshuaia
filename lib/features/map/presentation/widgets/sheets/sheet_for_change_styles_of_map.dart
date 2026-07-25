@@ -190,6 +190,7 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
                                 const SizedBox(height: 12),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
