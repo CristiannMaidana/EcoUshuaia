@@ -1,17 +1,24 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/carta_detalles_recientes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 
 class SheetForShowAllTheFavoritesContainers extends StatefulWidget {
   final double initialSheetSize;
   final double minSheetSize;
   final double maxSheetSize;
+  final Future<void> Function(Contenedor contenedor) goToContainer;
   
   const SheetForShowAllTheFavoritesContainers({
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.80,
+    required this.goToContainer,
   });
 
   @override
@@ -80,16 +87,6 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
       curve: Curves.easeInOut,
     );
   }
-  
-  Future<void> collapSheetForNavButton() async {
-    if (draggableControllerOfShowTheFavoritesContainers.isAttached) {
-      await draggableControllerOfShowTheFavoritesContainers.animateTo(
-        widget.initialSheetSize,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      ).timeout(const Duration(milliseconds: 350), onTimeout: () {});
-    }
-  }
 
   bool isExpandedSheet() {
     if (!draggableControllerOfShowTheFavoritesContainers.isAttached) return false;
@@ -132,6 +129,9 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
       
   @override
   Widget build(BuildContext context) {
+    final vmFavoritos = context.watch<UsuarioContenedoresFavoritosViewModel>();
+    final favoritos = vmFavoritos.favoritos;
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -142,7 +142,6 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
             onTap: collapseSheet,
             child: const SizedBox.expand(),
           ),
-        
 
         // -Sheet of zones-
         // Handle of the sheet settings
@@ -198,6 +197,36 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
                                     ),
                                   ],
                                 ),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.favorite, color: camarone600,),
+                                        const SizedBox(width: 15),
+                                        Text('${favoritos.length} contenedores favoritos', 
+                                          style: Theme.of(context).textTheme.labelLarge
+                                        ),
+                                      ],
+                                    ),
+
+                                    TextButton(
+                                      onPressed: () {}, 
+                                      child: Row(
+                                        children: [
+                                          Text('Ordenar', 
+                                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                              color: camarone600
+                                              )
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Icon(Icons.swap_vert, color: camarone600,)
+                                        ],
+                                      )
+                                    )
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -212,7 +241,21 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(),
+                                  favoritos.isEmpty? Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text('No hay contenedores guardados'),
+                                    ) : Column(
+                                          children: favoritos.map(
+                                              (contenedor) => Padding(
+                                                padding: EdgeInsets.only(bottom: 10),
+                                                child: CartaDetallesRecientes(
+                                                  contenedor: contenedor,
+                                                  deleteFavorito: () => vmFavoritos.removeFavoritoById(contenedor.idContenedor),
+                                                  ir: widget.goToContainer,
+                                                ),
+                                              ),
+                                            ).toList(growable: false),
+                                        ),
                                 ],
                               ),
                             ),
