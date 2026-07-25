@@ -24,7 +24,7 @@ class ContentFilter extends StatefulWidget {
 class _ContentFilterState extends State<ContentFilter> {
   List<String> labelsDate = ['Hoy', 'Mañana', 'Esta semana'];
   List<String> labelsTime = ['00:00 - 06:00', '06:00 - 12:00', '12:00 - 18:00', '18:00 - 24:00'];
-  List<String> labelsGenericsFilter = ['Favoritos', 'Cercanos', 'Disponibles'];
+  List<String> labelsGenericsFilter = ['Favoritos', 'Disponibles', 'Recientes', 'Hoy'];
 
   // Helper para cargar la lista de ids desde vm
   List<int> _idsForIndexDate(int i) {
