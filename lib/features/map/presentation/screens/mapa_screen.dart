@@ -24,6 +24,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.d
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_show_all_the_favorites_containers.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_options_of_nav_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_details_of_container_in_map.dart';
@@ -129,6 +130,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetForChangeStylesOfMapState> _keySheetForChangeStylesOfMap = GlobalKey<SheetForChangeStylesOfMapState>();
   final GlobalKey<SheetAddContainersToRouteState> _keySheetAddContainerToRoute = GlobalKey<SheetAddContainersToRouteState>();
   final GlobalKey<SheetFloatingWithDynamicContentState> _keySheetFloating = GlobalKey<SheetFloatingWithDynamicContentState>();
+  final GlobalKey<SheetForShowAllTheFavoritesContainersState> _keySheetAllTheFavoriteContainerOfUser = GlobalKey<SheetForShowAllTheFavoritesContainersState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -542,6 +544,32 @@ class _MapaScreenStatePage extends State<MapaPage> {
     await _keySheetFloating.currentState?.collapseSheet();
   }
 
+  Future<void> _goToContainerSelectedOnMapFromAllFavorites(Contenedor contenedor) async {
+    final coord = contenedor.coordenada;
+    if (coord == null) return;
+
+    await _nativeNavigationBridge?.clearDestinationPreview();    
+    
+    await _keySheetFloating.currentState?.collapseSheet();
+    
+    await _keySheetAllTheFavoriteContainerOfUser.currentState?.collapseSheet();
+    
+    await _nativeNavigationBridge?.centerOnCoordinate(
+      latitude: coord.latitud,
+      longitude: coord.longitud,
+    );
+    if (!mounted) return;
+
+    setState(() {
+      _containerSelectedFromSearch = true;
+      _contenedorSeleccionado = contenedor;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
+    });
+  }
+
   Future<double>? _getMetros(double lat, double lon) {
     return _mapController?.getMetros(lon, lat);
   }
@@ -665,6 +693,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 buscarDireccion: _buscarDireccion,
                 abrirDetalleDireccion: _openSheetOptionsOfNav,
                 goToContainer: _goToContainerSelectedOnMap,
+                functionForOpenSheetOfAllTheFavorites: () async => _keySheetAllTheFavoriteContainerOfUser.currentState?.expandSheet(),
               ),
           ),
 
@@ -707,7 +736,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
           key: _keySheetForChangeStylesOfMap,
           selectedStyle: _estiloActual,
           onStyleChanged: _changeMapStyle,
-        )
+        ),
+
+        SheetForShowAllTheFavoritesContainers(
+          key: _keySheetAllTheFavoriteContainerOfUser,
+          goToContainer: _goToContainerSelectedOnMapFromAllFavorites,
+        ),
       ],
     );
   }
