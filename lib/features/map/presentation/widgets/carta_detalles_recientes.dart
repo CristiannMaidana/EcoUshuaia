@@ -27,7 +27,7 @@ class CartaDetallesRecientes extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: Colors.grey),
+        border: Border.all(width: .3, color: Colors.grey),
         borderRadius: BorderRadius.circular(22),
       ),
       padding: EdgeInsets.all(10),
@@ -60,12 +60,14 @@ class CartaDetallesRecientes extends StatelessWidget {
                         maxLines: 2,
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text('Residuo: ${residuo?.nombre}', 
                         style: Theme.of(context).textTheme.labelMedium
                       ),
-                      Text('40 m - Recoleccion: hoy'),
+                      Text('40 m - Recoleccion: hoy', 
+                        style: Theme.of(context).textTheme.labelMedium
+                      ),
                     ],
                   ),
                 ),
@@ -83,7 +85,7 @@ class CartaDetallesRecientes extends StatelessWidget {
                 },
                 icon: Icon(Icons.favorite, color: Colors.yellow.shade600),
                 style: IconButton.styleFrom(
-                  side: BorderSide(width: 1, color: Colors.grey),
+                  side: BorderSide(width: .5, color: Colors.grey),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -98,7 +100,7 @@ class CartaDetallesRecientes extends StatelessWidget {
                       },
                 icon: Icon(Icons.arrow_forward),
                 style: IconButton.styleFrom(
-                  side: BorderSide(width: 1, color: Colors.grey),
+                  side: BorderSide(width: .5, color: Colors.grey),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
