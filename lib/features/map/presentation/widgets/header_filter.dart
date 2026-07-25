@@ -19,6 +19,7 @@ class HeaderFilter extends StatelessWidget{
           child: Padding(
             padding: const EdgeInsets.only(left: 22, bottom: 10, right: 22),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //Titulo
                 Column(
