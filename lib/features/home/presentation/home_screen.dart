@@ -6,7 +6,7 @@ import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_actions.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
-import 'package:eco_ushuaia/features/news/presentation/novedades_screen.dart';
+import 'package:eco_ushuaia/features/home/presentation/widgets/list_of_news.dart';
 import 'package:eco_ushuaia/features/shell/presentation/navigation/shell_tab_selection_notification.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:eco_ushuaia/features/waste_instructions/presentation/waste_instructions_screen.dart';
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               
               DayNews(news: calendarioVm.eventsOf(DateTime.now())),
               
-              CustomNovedadesHome(
+              ListOfNews(
                 news: calendarioVm.eventsFromDay(DateTime.now()),
               ),
             ],
