@@ -33,7 +33,7 @@ class ContentSearchBarFavoriteSectionState extends State<ContentSearchBarFavorit
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Favoritos', 
+              Text('Contenedores favoritos', 
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               TextButton(
