@@ -4,7 +4,6 @@ class StandardButton extends StatelessWidget {
   final String texto;
   final VoidCallback onPressed;
   final IconData? icono;
-  //final bool expandido;
   final ButtonStyle? style;
   final double? width;
   final double? height;
@@ -14,7 +13,6 @@ class StandardButton extends StatelessWidget {
     required this.texto,
     required this.onPressed,
     this.icono,
-    //this.expandido = false,
     this.style,
     this.width,
     this.height,
@@ -35,8 +33,8 @@ class StandardButton extends StatelessWidget {
 
     Widget button = ElevatedButton(
       onPressed: onPressed,
-      child: child,
       style: style,
+      child: child,
     );
 
     Widget result = button;
@@ -47,9 +45,7 @@ class StandardButton extends StatelessWidget {
         height: height,
         child: button,
       );
-    }// else if (expandido) {
-     // result = SizedBox( child: button);
-   // }
+    }
 
     return result;
   }
