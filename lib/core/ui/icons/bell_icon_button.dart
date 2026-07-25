@@ -4,7 +4,11 @@ class BellIconButton extends StatelessWidget {
   final bool isActive;
   final double size;
 
-  const BellIconButton({Key? key, this.isActive = false, this.size = 45}) : super(key: key);
+  const BellIconButton({
+    super.key, 
+    this.isActive = false, 
+    this.size = 45
+  });
 
   @override
   Widget build(BuildContext context) {
