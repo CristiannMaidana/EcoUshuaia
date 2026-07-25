@@ -49,10 +49,10 @@ class CustomButtonFilter extends StatelessWidget {
             children: [
               icon!,
               SizedBox(width: 10,),
-              Text(label, style: const TextStyle(fontSize: 13)),
+              Text(label, style: Theme.of(context).textTheme.labelMedium),
             ],
           ) : 
-          Text(label, style: const TextStyle(fontSize: 13)),
+          Text(label, style: Theme.of(context).textTheme.labelMedium),
         );
       },
     );
