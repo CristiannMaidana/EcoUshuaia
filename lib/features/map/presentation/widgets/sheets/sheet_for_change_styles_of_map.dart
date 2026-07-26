@@ -177,66 +177,64 @@ class SheetForChangeStylesOfMapState extends State<SheetForChangeStylesOfMap> {
                       duration: const Duration(milliseconds: 10),
                       curve: Curves.easeOutCubic,
                       opacity: _contentOpacity,
-                      child: Column(
-                        children: [
-                          // HEADER OF SHEET
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onVerticalDragUpdate: _dragFromHeaderSheet,
-                            onVerticalDragEnd: _dragEndFromHeaderSheet,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric( horizontal: 22, vertical: 8,),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const BarraAgarre(),
-                                  const SizedBox(height: 12),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Estilo de mapa',
-                                            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text('Elegi como queres ver el mapa.',
-                                            style: Theme.of(context,).textTheme.labelMedium,
-                                          ),
-                                        ],
-                                      ),
-                                      CircleIcon(icon: Icons.close,
-                                        onPressed: collapseSheet,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          //BODY
-                          Expanded(
-                            child: SingleChildScrollView(
-                              controller: scrollControllerDefault,
+                      child: SingleChildScrollView(
+                        controller: scrollControllerDefault,
+                        child: Column(
+                          children: [
+                            // HEADER OF SHEET
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onVerticalDragUpdate: _dragFromHeaderSheet,
+                              onVerticalDragEnd: _dragEndFromHeaderSheet,
                               child: Padding(
-                                padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20,),
+                                padding: EdgeInsets.symmetric( horizontal: 22, vertical: 8,),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    MapStylePicker(
-                                      seleccionado: _selectedStyle,
-                                      onChanged: _handleStyleChanged,
+                                    const BarraAgarre(),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Estilo de mapa',
+                                              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text('Elegi como queres ver el mapa.',
+                                              style: Theme.of(context,).textTheme.labelMedium,
+                                            ),
+                                          ],
+                                        ),
+                                        CircleIcon(icon: Icons.close,
+                                          onPressed: collapseSheet,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+
+                            //BODY
+                            Padding(
+                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20,),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MapStylePicker(
+                                    seleccionado: _selectedStyle,
+                                    onChanged: _handleStyleChanged,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
