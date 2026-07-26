@@ -166,103 +166,113 @@ class SheetForShowAllTheFavoritesContainersState extends State<SheetForShowAllTh
                     duration: const Duration(milliseconds: 10),
                     curve: Curves.easeOutCubic,
                     opacity: _contentOpacity,
-                    child: Column(
-                      children: [
-                        // HEADER OF SHEET
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onVerticalDragUpdate: _dragFromHeaderSheet,
-                          onVerticalDragEnd: _dragEndFromHeaderSheet,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                            child: Column(
-                              children: [
-                                // Grab Bar
-                                BarraAgarre(),
-                                SizedBox(height: 8),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => Column(
+                        children: [
+                          // HEADER OF SHEET
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                            child: SingleChildScrollView(
+                              primary: false,
+                              physics: const NeverScrollableScrollPhysics(),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onVerticalDragUpdate: _dragFromHeaderSheet,
+                                onVerticalDragEnd: _dragEndFromHeaderSheet,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                                  child: Column(
+                                    children: [
+                                      // Grab Bar
+                                      BarraAgarre(),
+                                      
+                                      SizedBox(height: 8),
 
-                                // Text of header and button
-                                //Header del widget (Texto - Boton cerrar)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Favoritos',
-                                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                        fontWeight: FontWeight.bold
-                                      ),
-                                    ),
-                                    
-                                    CircleIcon(icon: Icons.close,
-                                      onPressed: collapseSheet,
-                                    ),
-                                  ],
-                                ),
-
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(Icons.favorite, color: camarone600,),
-                                        const SizedBox(width: 15),
-                                        Text('${favoritos.length} contenedores favoritos', 
-                                          style: Theme.of(context).textTheme.labelLarge
-                                        ),
-                                      ],
-                                    ),
-
-                                    TextButton(
-                                      onPressed: () {}, 
-                                      child: Row(
+                                      // Text of header and button
+                                      //Header del widget (Texto - Boton cerrar)
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Ordenar', 
-                                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                              color: camarone600
-                                              )
+                                          Text('Favoritos',
+                                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                              fontWeight: FontWeight.bold
+                                            ),
                                           ),
-                                          const SizedBox(width: 10),
-                                          Icon(Icons.swap_vert, color: camarone600,)
+                                          
+                                          CircleIcon(icon: Icons.close,
+                                            onPressed: collapseSheet,
+                                          ),
                                         ],
-                                      )
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      
-                        // BODY
-                        Expanded(
-                          child: SingleChildScrollView(
-                            controller: scrollControllerDefault,
-                            child: Padding(
-                              padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  favoritos.isEmpty? Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Text('No hay contenedores guardados'),
-                                    ) : Column(
-                                          children: favoritos.map(
-                                              (contenedor) => Padding(
-                                                padding: EdgeInsets.only(bottom: 10),
-                                                child: CartaDetallesRecientes(
-                                                  contenedor: contenedor,
-                                                  deleteFavorito: () => vmFavoritos.removeFavoritoById(contenedor.idContenedor),
-                                                  ir: widget.goToContainer,
-                                                ),
+                                      ),
+
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(Icons.favorite, color: camarone600,),
+                                              const SizedBox(width: 15),
+                                              Text('${favoritos.length} contenedores favoritos', 
+                                                style: Theme.of(context).textTheme.labelLarge
                                               ),
-                                            ).toList(growable: false),
-                                        ),
-                                ],
+                                            ],
+                                          ),
+
+                                          TextButton(
+                                            onPressed: () {}, 
+                                            child: Row(
+                                              children: [
+                                                Text('Ordenar', 
+                                                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                                    color: camarone600
+                                                    )
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Icon(Icons.swap_vert, color: camarone600,)
+                                              ],
+                                            )
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
+                          ),
+                        
+                          // BODY
+                          Expanded(
+                            child: SingleChildScrollView(
+                              controller: scrollControllerDefault,
+                              child: Padding(
+                                padding: EdgeInsetsGeometry.fromLTRB(22, 8, 22, 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    favoritos.isEmpty? Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text('No hay contenedores guardados'),
+                                      ) : Column(
+                                            children: favoritos.map(
+                                                (contenedor) => Padding(
+                                                  padding: EdgeInsets.only(bottom: 10),
+                                                  child: CartaDetallesRecientes(
+                                                    contenedor: contenedor,
+                                                    deleteFavorito: () => vmFavoritos.removeFavoritoById(contenedor.idContenedor),
+                                                    ir: widget.goToContainer,
+                                                  ),
+                                                ),
+                                              ).toList(growable: false),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                            )
                           )
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
