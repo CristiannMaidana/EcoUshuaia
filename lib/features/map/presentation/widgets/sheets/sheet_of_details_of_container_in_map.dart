@@ -254,7 +254,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                               color: camarone100,
                                               borderRadius: BorderRadius.all(Radius.circular(18)),
                                             ),
-                                            child: Icon(Icons.location_on_outlined,
+                                            child: Icon(Icons.location_on_rounded,
                                               size: 38,
                                               color: camarone700
                                             ),
