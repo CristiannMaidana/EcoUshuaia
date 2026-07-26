@@ -178,7 +178,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       padding: const EdgeInsets.all(15),
                       child: Container(
                         decoration: containerInputsLogin,
-                        child: Expanded(
                           child: SingleChildScrollView(
                             child: Form(
                               key: _formKey,
@@ -360,7 +359,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ),
-                        ),
                       ),
                     ),
                       
