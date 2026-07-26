@@ -80,6 +80,7 @@ class SheetFloatingWithDynamicContentState extends State<SheetFloatingWithDynami
   Future<void> collapseSheet() async {
     if (!draggableControllerOfSheetFloatign.isAttached) return;
 
+    FocusManager.instance.primaryFocus?.unfocus();
     await draggableControllerOfSheetFloatign.animateTo(
       widget.initialSheetSize,
       duration: const Duration(milliseconds: 300),
