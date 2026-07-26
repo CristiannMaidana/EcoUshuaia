@@ -72,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Consumer<AuthUsuarioViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
