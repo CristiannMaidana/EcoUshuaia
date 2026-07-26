@@ -446,58 +446,67 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                             ignoring: contentOpacity < 0.2,
                             child: Opacity(
                               opacity: contentOpacity,
-                              child: Column(
-                                children: [
-                                  // Boton para elegir tipo perfil de ruta
-                                  ButtonsTypeMobility(
-                                    selectedRouteProfile: _selectedRouteProfile,
-                                    onCarPressed: () => _selectPerfilOfRouteAndGenereteIt(0),
-                                    onBikePressed: () => _selectPerfilOfRouteAndGenereteIt(1),
-                                    onWalkPressed: () => _selectPerfilOfRouteAndGenereteIt(2),
-                                  ),
-                                      
-                                  // Lista de paradas agregadas a la ruta
-                                  Expanded(
-                                    child: ReorderableListView.builder(
-                                      scrollController: scrollController,
-                                      itemCount: _rutaItems.length,
-                                      onReorder: _onReorder,
-                                      buildDefaultDragHandles: false,
-                                      footer: Padding(
-                                        key: const ValueKey('detalle_ruta'),
-                                        padding: const EdgeInsets.fromLTRB(12, 15, 12, 8,),
-                                        child: ButtonStartRoute(
-                                          botonIr: widget.iniciarRuta,
-                                          routePayload: widget.navigationPayload,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) => Column(
+                                  children: [
+                                    // Boton para elegir tipo perfil de ruta
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                                      child: SingleChildScrollView(
+                                        primary: false,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        child: ButtonsTypeMobility(
+                                          selectedRouteProfile: _selectedRouteProfile,
+                                          onCarPressed: () => _selectPerfilOfRouteAndGenereteIt(0),
+                                          onBikePressed: () => _selectPerfilOfRouteAndGenereteIt(1),
+                                          onWalkPressed: () => _selectPerfilOfRouteAndGenereteIt(2),
                                         ),
                                       ),
-                                      itemBuilder: (context, index) {
-                                        final item = _rutaItems[index];
-                                        final direccion = _getDirectionOfItem(vmMapSearch, item);
-                                        final child = CardOfAddressSelected(
-                                          key: ValueKey(item.id),
-                                          title: item.id == _RutaItemId.direccion ? 'Destino' : item.title,
-                                          direccion: direccion,
-                                          dragHandle: ReorderableDragStartListener(
-                                            index: index,
-                                            child: const Icon(Icons.drag_handle, color: Colors.grey)
-                                          ),
-                                        );
-
-                                        if (!item.isDismissible) return child;
-
-                                        return Dismissible(
-                                          key: ValueKey('dismiss_${item.id}'),
-                                          direction: DismissDirection.horizontal,
-                                          background: _dismissBg(Alignment.centerLeft),
-                                          secondaryBackground: _dismissBg(Alignment.centerRight),
-                                          onDismissed: (_) => _onDismiss(item),
-                                          child: child,
-                                        );
-                                      },
                                     ),
-                                  ),
-                                ],
+                                        
+                                    // Lista de paradas agregadas a la ruta
+                                    Expanded(
+                                      child: ReorderableListView.builder(
+                                        scrollController: scrollController,
+                                        itemCount: _rutaItems.length,
+                                        onReorder: _onReorder,
+                                        buildDefaultDragHandles: false,
+                                        footer: Padding(
+                                          key: const ValueKey('detalle_ruta'),
+                                          padding: const EdgeInsets.fromLTRB(12, 15, 12, 8,),
+                                          child: ButtonStartRoute(
+                                            botonIr: widget.iniciarRuta,
+                                            routePayload: widget.navigationPayload,
+                                          ),
+                                        ),
+                                        itemBuilder: (context, index) {
+                                          final item = _rutaItems[index];
+                                          final direccion = _getDirectionOfItem(vmMapSearch, item);
+                                          final child = CardOfAddressSelected(
+                                            key: ValueKey(item.id),
+                                            title: item.id == _RutaItemId.direccion ? 'Destino' : item.title,
+                                            direccion: direccion,
+                                            dragHandle: ReorderableDragStartListener(
+                                              index: index,
+                                              child: const Icon(Icons.drag_handle, color: Colors.grey)
+                                            ),
+                                          );
+
+                                          if (!item.isDismissible) return child;
+
+                                          return Dismissible(
+                                            key: ValueKey('dismiss_${item.id}'),
+                                            direction: DismissDirection.horizontal,
+                                            background: _dismissBg(Alignment.centerLeft),
+                                            secondaryBackground: _dismissBg(Alignment.centerRight),
+                                            onDismissed: (_) => _onDismiss(item),
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
