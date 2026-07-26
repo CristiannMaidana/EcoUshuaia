@@ -171,64 +171,75 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                     opacity: _contentOpacity, 
                     duration: const Duration(milliseconds: 10),
                     curve: Curves.easeOutCubic,
-                    child: Column(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => Column(
                       children: [
                         // HEADER OF SHEET
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onVerticalDragUpdate: _dragFromHeaderSheet,
-                          onVerticalDragEnd: _dragEndFromHeaderSheet,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                            child: Column(
-                              children: [
-                                // Grab Bar
-                                BarraAgarre(),
-                                SizedBox(height: 8),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                          child: SingleChildScrollView(
+                            primary: false,
+                            physics: const NeverScrollableScrollPhysics(),
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onVerticalDragUpdate: _dragFromHeaderSheet,
+                              onVerticalDragEnd: _dragEndFromHeaderSheet,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                                child: Column(
+                                  children: [
+                                    // Grab Bar
+                                    BarraAgarre(),
+                                    
+                                    SizedBox(height: 8),
 
-                                // Text of header and button
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Agregar parada',
-                                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                              fontWeight: FontWeight.bold
-                                            ),
+                                    // Text of header and button
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Agregar parada',
+                                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                                  fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text('Elegí uno o más contenedores para incluir en tu recorrido.', 
+                                                style: Theme.of(context).textTheme.labelMedium,
+                                                softWrap: true,
+                                                maxLines: null,
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(height: 5),
-                                          Text('Elegí uno o más contenedores para incluir en tu recorrido.', 
-                                            style: Theme.of(context).textTheme.labelMedium,
-                                            softWrap: true,
-                                            maxLines: null,
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                        SizedBox(width: 70),
+                                        CircleIcon(icon: Icons.close,
+                                          onPressed: collapseSheet,
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: 70),
-                                    CircleIcon(icon: Icons.close,
-                                      onPressed: collapseSheet,
+                                    
+                                    SliderCustom(
+                                      lon: widget.lon,
+                                      lat: widget.lat,
+                                    ),
+                                    
+                                    // Text of number of containers found
+                                    Row(
+                                      children: [
+                                        Icon(Icons.circle, size: 10, color: camarone600,),
+                                        const SizedBox(width: 10),
+                                        Text('${contenedoresCercanos.length} contenedores encontrados', 
+                                          style: Theme.of(context).textTheme.labelLarge
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                SliderCustom(
-                                  lon: widget.lon,
-                                  lat: widget.lat,
-                                ),
-                                // Text of number of containers found
-                                Row(
-                                  children: [
-                                    Icon(Icons.circle, size: 10, color: camarone600,),
-                                    const SizedBox(width: 10),
-                                    Text('${contenedoresCercanos.length} contenedores encontrados', 
-                                      style: Theme.of(context).textTheme.labelLarge
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -279,6 +290,7 @@ class SheetAddContainersToRouteState extends State<SheetAddContainersToRoute> {
                           )
                         )
                       ],
+                      ),
                     ),
                   ),
                 )
