@@ -29,6 +29,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_optio
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_details_of_container_in_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_zones_of_map.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_preview_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_search_bar.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -131,6 +132,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetAddContainersToRouteState> _keySheetAddContainerToRoute = GlobalKey<SheetAddContainersToRouteState>();
   final GlobalKey<SheetFloatingWithDynamicContentState> _keySheetFloating = GlobalKey<SheetFloatingWithDynamicContentState>();
   final GlobalKey<SheetForShowAllTheFavoritesContainersState> _keySheetAllTheFavoriteContainerOfUser = GlobalKey<SheetForShowAllTheFavoritesContainersState>();
+  final GlobalKey<SheetPreviewAddressState> _keySheetPreviewAddress = GlobalKey<SheetPreviewAddressState>();
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -522,6 +524,11 @@ class _MapaScreenStatePage extends State<MapaPage> {
     _keySheetFloating.currentState?.changeToSecondChild();
   }
 
+  Future<void> _openSheetOptionsOfNavForSheetAddress() async {
+    _keySheetPreviewAddress.currentState?.expandSheet(_addressLat, _addressLon);
+    _keySheetFloating.currentState?.collapseSheet();
+  }
+
   Future<void> _goToContainerSelectedOnMap(Contenedor contenedor) async {
     final coord = contenedor.coordenada;
     if (coord == null) return;
@@ -691,7 +698,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 key: _keySheetSearchBar,
                 aplicarFiltros: _applyFilters,
                 buscarDireccion: _buscarDireccion,
-                abrirDetalleDireccion: _openSheetOptionsOfNav,
+                abrirDetalleDireccion: _openSheetOptionsOfNavForSheetAddress,
                 goToContainer: _goToContainerSelectedOnMap,
                 functionForOpenSheetOfAllTheFavorites: () async => _keySheetAllTheFavoriteContainerOfUser.currentState?.expandSheet(),
               ),
@@ -741,6 +748,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
         SheetForShowAllTheFavoritesContainers(
           key: _keySheetAllTheFavoriteContainerOfUser,
           goToContainer: _goToContainerSelectedOnMapFromAllFavorites,
+        ),
+
+        SheetPreviewAddress(
+          key: _keySheetPreviewAddress,
+          searchDirection: _buscarDireccion,
+          openDetailDirection: () async => _keySheetFloating.currentState?.changeToSecondChild(),
+          generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
+          onCloseForSearchAddress: () async => _keySheetSearchBar.currentState?.expand(),
+          onCloseForNavButtonExpandSheet: () async => _keySheetFloating.currentState?.expandSheetToMidSize(),
         ),
       ],
     );
