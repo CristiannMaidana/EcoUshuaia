@@ -26,6 +26,7 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
   final Map<String, dynamic> navigationPayload;
   final Future<void> Function() cancelNavigation;
   final Future<void> Function() cancelSetCamera;
+  final Future<void> Function() onNavigateBack;
 
   const SheetOptionsOfNavToRoute({
     super.key,
@@ -40,6 +41,7 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
     required this.navigationPayload,
     required this.cancelNavigation,
     required this.cancelSetCamera,
+    required this.onNavigateBack,
   });
 
   @override
@@ -211,12 +213,13 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
     await _sheetFather?.collapseSheet();
   }
 
-  Future<void> _closeSheetNavigationOptions() async {
+  Future<void> closeNavigationOptions() async {
     final sheetFather = _sheetFather;
     await widget.cancelNavigation();
     await sheetFather?.collapseSheet();
     sheetFather?.changeToFirstChild();
     await widget.cancelSetCamera();
+    await widget.onNavigateBack();
   }
 
   //arreglar async?
@@ -359,7 +362,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                               onVerticalDragUpdateFromFather: _dragFromHeader,
                               onVerticalDragEndFromFather: _endDragFromHeader,
                               address: widget.direccion,
-                              onPressedClose: _closeSheetNavigationOptions,
+                              onPressedClose: closeNavigationOptions,
                             ),
                           ),
                         ),
@@ -415,7 +418,7 @@ class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
                                         SizedBox(width: 10),
                                         // Button for close the sheet
                                         CircleIcon(icon: Icons.close,
-                                          onPressed: _closeSheetNavigationOptions,
+                                          onPressed: closeNavigationOptions,
                                         ),
                                       ],
                                     ),
