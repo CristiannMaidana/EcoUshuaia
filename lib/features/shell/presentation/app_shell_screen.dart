@@ -2,7 +2,9 @@ import 'package:eco_ushuaia/core/network/http_client.dart';
 import 'package:eco_ushuaia/features/auth/domain/repositories/domicilio_repository.dart';
 import 'package:eco_ushuaia/features/auth/presentation/viewmodels/domicilio_viewmodel.dart';
 import 'package:eco_ushuaia/core/ui/navigation/buttom_nav_bar.dart';
+import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/calendar_screen.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/home/presentation/home_screen.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
@@ -112,6 +114,11 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen> {
         ChangeNotifierProvider(
           create: (ctx) => CategoriaResiduosViewmodel(
             ctx.read<CategoriaResiduosRepository>(),
+          )..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CategoriaNoticiasViewmodel(
+            context.read<CategoriaNoticiasRepositories>(),
           )..load(),
         ),
       ],
