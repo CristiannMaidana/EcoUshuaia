@@ -11,6 +11,7 @@ class MapNativeCoordinator extends ChangeNotifier {
 
   MapboxNavigationMapViewBridge? _navigationBridge;
   MapboxContainerPinsBridge? _containerPinsBridge;
+  Future<void> _pendingZonesSynchronization = Future<void>.value();
 
   Map<String, dynamic> _navigationPayload = const <String, dynamic>{};
   bool _routeReady = false;
@@ -32,7 +33,8 @@ class MapNativeCoordinator extends ChangeNotifier {
 
   Future<void> attachNavigationMapBridge( MapboxNavigationMapViewBridge bridge ) async {
     _navigationBridge = bridge;
-    await synchronizeZonesWithNativeMap();
+    _pendingZonesSynchronization = synchronizeZonesWithNativeMap();
+    await _pendingZonesSynchronization;
   }
 
   Future<void> attachContainerPinsBridge( MapboxContainerPinsBridge bridge ) async {
@@ -141,12 +143,12 @@ class MapNativeCoordinator extends ChangeNotifier {
   }
 
   Future<void> hideAllZones(double sheetHeight) async {
-    await synchronizeZonesWithNativeMap();
+    await _pendingZonesSynchronization;
     await _navigationBridge?.hideZones(sheetHeight: sheetHeight);
   }
 
   Future<void> showAllZones(double sheetHeight) async {
-    await synchronizeZonesWithNativeMap();
+    await _pendingZonesSynchronization;
     await _navigationBridge?.showAllZones(sheetHeight: sheetHeight);
   }
 
@@ -154,7 +156,7 @@ class MapNativeCoordinator extends ChangeNotifier {
     required int? userZoneId,
     required double sheetHeight,
   }) async {
-    await synchronizeZonesWithNativeMap();
+    await _pendingZonesSynchronization;
     final zones = _zonaMapaViewModel.itemsConCoordenadas;
     if (zones.isEmpty) return;
 
@@ -170,7 +172,7 @@ class MapNativeCoordinator extends ChangeNotifier {
   }
 
   Future<void> showFirstTwoAffectedZones(double sheetHeight) async {
-    await synchronizeZonesWithNativeMap();
+    await _pendingZonesSynchronization;
     final zones = _zonaMapaViewModel.itemsConCoordenadas;
     if (zones.isEmpty) return;
 
@@ -192,7 +194,7 @@ class MapNativeCoordinator extends ChangeNotifier {
   }
 
   void _onZonasChanged() {
-    synchronizeZonesWithNativeMap();
+    _pendingZonesSynchronization = synchronizeZonesWithNativeMap();
   }
 
   @override
