@@ -1,7 +1,5 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
-import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/note_end_app.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/quick_map.dart';
 import 'package:eco_ushuaia/features/home/presentation/widgets/day_news.dart';
@@ -33,97 +31,92 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ? '¡Hola, $nombreUsuario!'
         : '¡Hola, Usuario!';
 
-    return ChangeNotifierProvider(
-      create: (context) => CategoriaNoticiasViewmodel(
-        context.read<CategoriaNoticiasRepositories>(),
-      )..load(),
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 100,
-          // Text of header
-          title: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('EcoUshuaia',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(color: camarone700)
-                  ),
-                  const SizedBox(height: 6),
-                  Text(saludoUsuario,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text('Bienvenido a tu ciudad más limpia',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          // Bell for notification
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 15, top: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(36),
-                  color: Colors.white,
-                  border: Border.all(width: .3, color: Colors.grey[400]!),
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        // Text of header
+        title: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('EcoUshuaia',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(color: camarone700)
                 ),
-                child: IconButton(
-                  icon: const Icon(Icons.notifications_outlined, size: 40,),
-                  onPressed: () {},
+                const SizedBox(height: 6),
+                Text(saludoUsuario,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 2),
+                Text('Bienvenido a tu ciudad más limpia',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
-              QuickActions(
-                goMyZone: () {
-                  context.read<MapQuickActionViewmodel>().openMyZone();
-                  const ShellTabSelectionNotification(2).dispatch(context);
-                },
-                goCalendar: () {
-                  const ShellTabSelectionNotification(1).dispatch(context);
-                },
-                goWasteGuide: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const WasteInstructionsScreen(),
-                    ),
-                  );
-                },
+        // Bell for notification
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 15, top: 20),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(36),
+                color: Colors.white,
+                border: Border.all(width: .3, color: Colors.grey[400]!),
               ),
-              
-              QuickMap(),
-              
-              DayNews(news: calendarioVm.eventsOf(DateTime.now())),
-              
-              ListOfNews(
-                news: calendarioVm.eventsFromDay(DateTime.now()),
+              child: IconButton(
+                icon: const Icon(Icons.notifications_outlined, size: 40,),
+                onPressed: () {},
               ),
-
-              NoteEndApp(
-                goWasteGuide: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const WasteInstructionsScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            
+            QuickActions(
+              goMyZone: () {
+                context.read<MapQuickActionViewmodel>().openMyZone();
+                const ShellTabSelectionNotification(2).dispatch(context);
+              },
+              goCalendar: () {
+                const ShellTabSelectionNotification(1).dispatch(context);
+              },
+              goWasteGuide: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const WasteInstructionsScreen(),
+                  ),
+                );
+              },
+            ),
+            
+            QuickMap(),
+            
+            DayNews(news: calendarioVm.eventsOf(DateTime.now())),
+            
+            ListOfNews(
+              news: calendarioVm.eventsFromDay(DateTime.now()),
+            ),
+
+            NoteEndApp(
+              goWasteGuide: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const WasteInstructionsScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

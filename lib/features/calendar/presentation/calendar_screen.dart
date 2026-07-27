@@ -1,5 +1,4 @@
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
-import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noticias_repositories.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
@@ -22,10 +21,8 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
-  final GlobalKey<CalendarioWidgetState> _calendarKey =
-      GlobalKey<CalendarioWidgetState>();
-  final GlobalKey<DragSheetContainerState> _sheetKey =
-      GlobalKey<DragSheetContainerState>();
+  final GlobalKey<CalendarioWidgetState> _calendarKey = GlobalKey<CalendarioWidgetState>();
+  final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
   final GlobalKey _filterBtnKey = GlobalKey();
   Calendarios? _selectedCal;
   OverlayEntry? _filterEntry;
@@ -146,91 +143,156 @@ class _CalenderScreenState extends State<CalenderScreen> {
         ? DateFormat('d MMMM', locale).format(selectedDay)
         : DateFormat('MMMM', locale).format(visibleMonth);
 
-    return ChangeNotifierProvider<CategoriaNoticiasViewmodel>(
-      create: (ctx) =>
-          CategoriaNoticiasViewmodel(ctx.read<CategoriaNoticiasRepositories>())
-            ..load(),
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: AppBar(
-            scrolledUnderElevation: 0,
-            toolbarHeight: 60,
-            title: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          scrolledUnderElevation: 0,
+          toolbarHeight: 60,
+          title: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Calendario',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(fechaHoy,
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15,
+              ),
+              child: Row(
                 children: [
-                  Text('Calendario',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.black,
+                        size: 22,
+                      ),
+                      onPressed: () {
+                        showGeneralDialog<void>(
+                          context: context,
+                          barrierDismissible: true,
+                          barrierLabel: 'Nuevo recordatorio',
+                          barrierColor: Colors.black45,
+                          transitionDuration: const Duration(
+                            milliseconds: 280,
+                          ),
+                          pageBuilder: (_, _, _) => Center(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: NewReminder(),
+                            ),
+                          ),
+                          transitionBuilder: (_, anim, _, child) {
+                            final curved = CurvedAnimation(
+                              parent: anim,
+                              curve: Curves.easeOutCubic,
+                            );
+                            return FadeTransition(
+                              opacity: curved,
+                              child: ScaleTransition(
+                                scale: Tween(
+                                  begin: 0.95,
+                                  end: 1.0,
+                                ).animate(curved),
+                                child: child,
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
-                  Text(fechaHoy,
-                    style: Theme.of(context).textTheme.labelMedium,
+                  const SizedBox(width: 10),
+                  Builder(
+                    builder: (context) => Container(
+                      key: _filterBtnKey,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: Color(0xFFE7EFE5),
+                          width: 1,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.edit_calendar_sharp),
+                        onPressed: () => _toggleFilter(context),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.notifications),
+                      onPressed: () {},
+                    ),
                   ),
                 ],
               ),
             ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
+          ],
+        ),
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              //Calendar
+              AnimatedContainer(
+                margin: const EdgeInsets.symmetric(
                   horizontal: 15,
+                  vertical: 20,
                 ),
+                height: calendarHeight.toDouble(),
+                duration: const Duration(milliseconds: 200),
+                decoration: BoxDecoration(
+                  color: Color(0xFFFCFEFC),
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                ),
+                child: CalendarioWidget(key: _calendarKey),
+              ),
+
+              //Texto noticias
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.add,
-                          color: Colors.black,
-                          size: 22,
-                        ),
-                        onPressed: () {
-                          showGeneralDialog<void>(
-                            context: context,
-                            barrierDismissible: true,
-                            barrierLabel: 'Nuevo recordatorio',
-                            barrierColor: Colors.black45,
-                            transitionDuration: const Duration(
-                              milliseconds: 280,
-                            ),
-                            pageBuilder: (_, _, _) => Center(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: NewReminder(),
-                              ),
-                            ),
-                            transitionBuilder: (_, anim, _, child) {
-                              final curved = CurvedAnimation(
-                                parent: anim,
-                                curve: Curves.easeOutCubic,
-                              );
-                              return FadeTransition(
-                                opacity: curved,
-                                child: ScaleTransition(
-                                  scale: Tween(
-                                    begin: 0.95,
-                                    end: 1.0,
-                                  ).animate(curved),
-                                  child: child,
-                                ),
-                              );
-                            },
-                          );
-                        },
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Noticias de: $newsHeaderText',
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Builder(
-                      builder: (context) => Container(
-                        key: _filterBtnKey,
+
+                    // Boton "Hoy"
+                    SafeArea(
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 15),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(22),
@@ -239,112 +301,42 @@ class _CalenderScreenState extends State<CalenderScreen> {
                             width: 1,
                           ),
                         ),
-                        child: IconButton(
-                          icon: const Icon(Icons.edit_calendar_sharp),
-                          onPressed: () => _toggleFilter(context),
+                        child: TextButton(
+                          onPressed: () {
+                            _calendarKey.currentState?.goToday();
+                            context
+                                .read<CalendarioViewmodel>()
+                                .setSelectedDay(DateTime.now());
+                          },
+                          child: Text('Hoy',
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.notifications),
-                        onPressed: () {},
                       ),
                     ),
                   ],
                 ),
               ),
+
+              //News list
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 3),
+                  child: CustomNovedades(expand: _onNovedadTap),
+                ),
+              ),
             ],
           ),
-        ),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                //Calendar
-                AnimatedContainer(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 20,
-                  ),
-                  height: calendarHeight.toDouble(),
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFCFEFC),
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                  ),
-                  child: CalendarioWidget(key: _calendarKey),
-                ),
 
-                //Texto noticias
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Noticias de: $newsHeaderText',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-
-                      // Boton "Hoy"
-                      SafeArea(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 15),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(22),
-                            border: Border.all(
-                              color: Color(0xFFE7EFE5),
-                              width: 1,
-                            ),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              _calendarKey.currentState?.goToday();
-                              context
-                                  .read<CalendarioViewmodel>()
-                                  .setSelectedDay(DateTime.now());
-                            },
-                            child: Text('Hoy',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                //News list
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 3),
-                    child: CustomNovedades(expand: _onNovedadTap),
-                  ),
-                ),
-              ],
+          //Sheet de detalle de noticia
+          DragSheetContainer(
+            key: _sheetKey,
+            child: DetailNews(
+              newCalendar: _selectedCal,
+              onClose: _closeSheet,
             ),
-
-            //Sheet de detalle de noticia
-            DragSheetContainer(
-              key: _sheetKey,
-              child: DetailNews(
-                newCalendar: _selectedCal,
-                onClose: _closeSheet,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
