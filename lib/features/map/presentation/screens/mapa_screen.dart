@@ -21,7 +21,6 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/address_turn_by_tu
 import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_quick_access_on_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
-import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_native_coordinator.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_sheet_flow_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
@@ -36,6 +35,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_searc
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 import 'package:provider/provider.dart';
 
 class MapaScreen extends StatelessWidget {
@@ -106,7 +106,6 @@ class MapaPage extends StatefulWidget {
 class _MapaScreenStatePage extends State<MapaPage> {
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
-  MapController? _mapController;
 
   MapStyle _estiloActual = MapStyle.Estandar;
 
@@ -177,10 +176,17 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (!mounted || !ok) return;
     if (!_hasLocationPermission) setState(() => _hasLocationPermission = ok);
 
-    final ctrl = _mapController ?? MapController(null);
     Map<String, double> puntos;
     try {
-      puntos = await ctrl.getPoint();
+      final position = await geo.Geolocator.getCurrentPosition(
+        locationSettings: const geo.LocationSettings(
+          accuracy: geo.LocationAccuracy.high,
+        ),
+      );
+      puntos = <String, double>{
+        'lon': position.longitude,
+        'lat': position.latitude,
+      };
     } catch (_) {
       return;
     }
@@ -289,10 +295,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
     if (nativeMapCoordinator.hasNavigationBridge) {
       await nativeMapCoordinator.centerTurnByTurnCamera();
-      return;
     }
-
-    await _mapController?.centerOnUserOnce();
   }
 
   Future<void> _paintNativeRoute({required String profile, List<Map<String, double>>? routePoints}) async {
@@ -338,14 +341,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
       if (!mounted) return;
       setState(() => _hasLocationPermission = ok);
 
-      if (ok && _mapController != null) {
-        await _mapController!.enableUserPuck();
-        if (!mounted) return;
-
-        final vm = context.read<ContenedorViewModel>();
-        await _mapController!.showContenedores(vm.items);
-      }
-
       if (ok) {
         if (!mounted) return;
         await _getCoordenates(updateAddress: false);
@@ -357,13 +352,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
     final ok = await _perms.ensureWhenInUsePermission(context);
     if (!mounted) return;
     setState(() => _hasLocationPermission = ok);
-    if (ok && _mapController != null) {
-      await _mapController!.enableUserPuck();
-      if (!mounted) return;
-
-      final vm = context.read<ContenedorViewModel>();
-      await _mapController!.showContenedores(vm.items);
-    }
     if (ok) {
       if (!mounted) return;
       await _getCoordenates(updateAddress: false);
@@ -448,10 +436,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
       if (!mounted) return;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
-  }
-
-  Future<double>? _getMetros(double lat, double lon) {
-    return _mapController?.getMetros(lon, lat);
   }
 
   @override
@@ -570,7 +554,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
               ),
               childSearchBar: SheetSearchBar(
                 key: _keySheetSearchBar,
-                aplicarFiltros: nativeMapCoordinator.synchronizeVisibleContainersWithNativeMap,
                 buscarDireccion: _buscarDireccion,
                 abrirDetalleDireccion: _openAddressPreviewFromSearch,
                 goToContainer: _goToContainerSelectedOnMap,
@@ -594,7 +577,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
           SheetOfDetailsOfContainerInMap(
             key: _keyOfSheetOfDetailsContainerOnMap,
             selectedContainer: _contenedorSeleccionado!,
-            distances: _getMetros,
             searchDirection: _buscarDireccion,
             openDetailDirection: _openSheetOptionsOfNav,
             generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
