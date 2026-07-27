@@ -1,4 +1,3 @@
-import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
@@ -7,7 +6,6 @@ import 'package:eco_ushuaia/features/map/presentation/controllers/map_native_coo
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_sheet_flow_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/screens/mapa_screen.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
@@ -45,11 +43,6 @@ class _MapaScreenState extends State<ContainerMapaScreen> with SingleTickerProvi
               usuarioVm.usuario?.idUsuario,
               contenedorVm.items,
             ),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => CategoriaResiduosViewmodel(
-            ctx.read<CategoriaResiduosRepository>(),
-          )..load(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => HorarioRecoleccionFiltrosViewModel(
