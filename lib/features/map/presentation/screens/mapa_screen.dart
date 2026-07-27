@@ -22,6 +22,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_quick_acce
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
+import 'package:eco_ushuaia/features/map/presentation/controllers/map_native_coordinator.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/sheet_flow_navigation_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
@@ -52,8 +53,7 @@ class MapaScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) =>
-              ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
+          create: (ctx) => ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
         ),
         ChangeNotifierProxyProvider2<
           UsuarioViewModel,
@@ -75,8 +75,7 @@ class MapaScreen extends StatelessWidget {
           )..load(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) =>
-              ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
+          create: (ctx) => ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => HorarioRecoleccionFiltrosViewModel(
@@ -87,8 +86,13 @@ class MapaScreen extends StatelessWidget {
           create: (_) => MapSearchViewModel(AddressSearchService()),
         ),
         ChangeNotifierProvider(
-          create: (ctx) =>
-              ZonaMapaViewModel(ctx.read<ZonaMapaRepository>())..load(),
+          create: (ctx) => ZonaMapaViewModel(ctx.read<ZonaMapaRepository>())..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => MapNativeCoordinator(
+            contenedorViewModel: ctx.read<ContenedorViewModel>(),
+            zonaMapaViewModel: ctx.read<ZonaMapaViewModel>(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (_) => SheetFlowNavigationController<_SheetFlowDestination>(),
@@ -111,15 +115,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   bool _hasLocationPermission = false;
   MapController? _mapController;
 
-  MapboxNavigationMapViewBridge? _nativeNavigationBridge;
-  MapboxContainerPinsBridge? _containerPinsBridge;
-  Map<String, dynamic> _nativeNavigationPayload = const <String, dynamic>{};
-  bool _nativeRouteReady = false;
-  bool _nativeNavigationStarted = false;
   MapStyle _estiloActual = MapStyle.Estandar;
-
-  ContenedorViewModel? _vm;
-  ZonaMapaViewModel? _zonaVm;
 
   Contenedor? _contenedorSeleccionado;
 
@@ -147,6 +143,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   // PROVIDERS
   // Provider for the navigation flow between sheets.
   SheetFlowNavigationController<_SheetFlowDestination> get _sheetFlowNavigation => context.read<SheetFlowNavigationController<_SheetFlowDestination>>();
+  MapNativeCoordinator get _nativeMapCoordinator => context.read<MapNativeCoordinator>();
 
   void _startContainerFlowFromMap() {
     _sheetFlowNavigation
@@ -232,44 +229,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
     });
   }
 
-  List<Contenedor> _containersForCurrentMapState(ContenedorViewModel vm) {
-    return vm.hasActiveFilters ? vm.contenedorFiltrado : vm.items;
-  }
-
-  // Actualiza los contenedores cuando cambia el VM
-  void _onVmChanged() {
-    final vm = _vm;
-    final bridge = _containerPinsBridge;
-    if (vm != null && bridge != null) {
-      final data = _containersForCurrentMapState(vm);
-      if (data.isEmpty) {
-        bridge.clearContainers();
-      } else {
-        bridge.setContainers(data);
-      }
-    }
-  }
-
-  void _onZonaVmChanged() {
-    _syncZonesToNative();
-  }
-
-  Future<void> _syncZonesToNative() async {
-    final bridge = _nativeNavigationBridge;
-    final vm = _zonaVm;
-    if (bridge == null || vm == null) return;
-
-    final zonas = vm.items
-        .where((zona) => zona.coordenada != null)
-        .toList(growable: false);
-    if (zonas.isEmpty) {
-      await bridge.clearZones();
-      return;
-    }
-
-    await bridge.setZones(zonas);
-  }
-
   // Callback que recibe el contenedor tocado desde MapController
   void _onContenedorTap(Contenedor c) {
     _startContainerFlowFromMap();
@@ -277,20 +236,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _contenedorSeleccionado = c;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
-  }
-
-  // Cargar los contenedores filtrados en mapa
-  void _applyFilters() {
-    final vm = _vm;
-    final bridge = _containerPinsBridge;
-    if (vm == null || bridge == null) return;
-
-    final data = _containersForCurrentMapState(vm);
-    if (data.isEmpty) {
-      bridge.clearContainers();
-    } else {
-      bridge.setContainers(data);
-    }
   }
 
   Future<void> _openQuickFavoritos() async {
@@ -316,7 +261,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     if (zonaVm.items.isEmpty && !zonaVm.loading) {
       await zonaVm.load();
     }
-    await _testShowMyZone(0);
+    await _showUserZone(0);
   }
 
   void _openQuickSearchAddress() {
@@ -329,7 +274,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
     switch (action) {
       case MapQuickAction.myZone:
-        if (_nativeNavigationBridge == null) return;
+        if (!_nativeMapCoordinator.hasNavigationBridge) return;
         await _openQuickMyZone();
         _pendingQuickAction = null;
         break;
@@ -345,43 +290,18 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
-  Future<void> _onMapboxNavigationMapReady(
-    MapboxNavigationMapViewBridge bridge,
-  ) async {
-    _nativeNavigationBridge = bridge;
-    final zonaVm = context.read<ZonaMapaViewModel>();
-    if (_zonaVm != zonaVm) {
-      _zonaVm?.removeListener(_onZonaVmChanged);
-      _zonaVm = zonaVm..addListener(_onZonaVmChanged);
-    }
-    await _syncZonesToNative();
+  Future<void> _onMapboxNavigationMapReady( MapboxNavigationMapViewBridge bridge, ) async {
+    await _nativeMapCoordinator.attachNavigationMapBridge(bridge);
     await _runPendingQuickAction();
   }
 
-  Future<void> _onMapboxContainerPinsReady(
-    MapboxContainerPinsBridge bridge,
-  ) async {
-    _containerPinsBridge = bridge;
-
-    final vm = context.read<ContenedorViewModel>();
-    if (_vm != vm) {
-      _vm?.removeListener(_onVmChanged);
-      _vm = vm..addListener(_onVmChanged);
-    }
-
-    final data = _containersForCurrentMapState(vm);
-
-    if (data.isEmpty) {
-      await bridge.clearContainers();
-    } else {
-      await bridge.setContainers(data);
-    }
+  Future<void> _onMapboxContainerPinsReady( MapboxContainerPinsBridge bridge, ) async {
+    await _nativeMapCoordinator.attachContainerPinsBridge(bridge);
     await _runPendingQuickAction();
   }
 
   void _onMapboxContainerSelected(int idContenedor) {
-    final vm = _vm;
-    if (vm == null) return;
+    final vm = context.read<ContenedorViewModel>();
 
     final candidates = <Contenedor>[...vm.items, ...vm.contenedorFiltrado];
     for (final contenedor in candidates) {
@@ -392,36 +312,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
-  void _onNativeNavigationPayload(Map<String, dynamic> payload) {
-    if (!mounted) return;
-
-    setState(() {
-      _nativeNavigationPayload = payload;
-      _nativeRouteReady = payload['hasRoute'] == true;
-      _nativeNavigationStarted =
-          payload['isNavigating'] == true ||
-          payload['shouldEnterRouteMode'] == true;
-    });
-  }
-
-  Future<void> _startNativeNavigation() async {
-    final payload = await _nativeNavigationBridge?.startNavigation();
-    if (payload != null) _onNativeNavigationPayload(payload);
-  }
-
-  Future<void> _cancelNativeNavigation() async {
-    final payload = await _nativeNavigationBridge?.cancelNavigation();
-    if (payload != null) _onNativeNavigationPayload(payload);
-  }
-
   Future<void> _centerNativeTurnByTurnCamera() async {
+    final nativeMapCoordinator = _nativeMapCoordinator;
     if (!_hasLocationPermission) {
       await _retryPermission();
       return;
     }
 
-    if (_nativeNavigationBridge != null) {
-      await _nativeNavigationBridge!.centerTurnByTurnCamera();
+    if (nativeMapCoordinator.hasNavigationBridge) {
+      await nativeMapCoordinator.centerTurnByTurnCamera();
       return;
     }
 
@@ -429,8 +328,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
   }
 
   Future<void> _paintNativeRoute({required String profile, List<Map<String, double>>? routePoints}) async {
-    final bridge = _nativeNavigationBridge;
-    if (bridge == null) return;
+    final nativeMapCoordinator = _nativeMapCoordinator;
+    if (!nativeMapCoordinator.hasNavigationBridge) return;
 
     if (_userPoint['lat'] == 0 || _userPoint['lon'] == 0) {
       await _getCoordenates(updateAddress: false);
@@ -444,7 +343,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
     _keySheetOptionsOfNavToRoute.currentState?.reportPreviewSheetMetrics();
 
-    final payload = await bridge.previewRoute(
+    await nativeMapCoordinator.previewRoute(
       originLatitude: originLatitude,
       originLongitude: originLongitude,
       destinationLatitude: _addressLat,
@@ -452,66 +351,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
       profile: profile,
       routePoints: routePoints,
     );
-    if (payload != null) _onNativeNavigationPayload(payload);
   }
 
-  Future<void> _updateNativePreviewSheetInset(
-    double height,
-    String state,
-  ) async {
-    await _nativeNavigationBridge?.updatePreviewSheetInset(
-      height: height,
-      state: state,
-    );
-  }
-
-  Future<void> _testHideZones(double sheetHeight) async {
-    await _syncZonesToNative();
-    await _nativeNavigationBridge?.hideZones(sheetHeight: sheetHeight);
-  }
-
-  Future<void> _testShowAllZones(double sheetHeight) async {
-    await _syncZonesToNative();
-    await _nativeNavigationBridge?.showAllZones(sheetHeight: sheetHeight);
-  }
-
-  Future<void> _testShowMyZone(double sheetHeight) async {
+  Future<void> _showUserZone(double sheetHeight) async {
     final usuarioZoneId = context.read<UsuarioViewModel>().usuario?.idZona;
-    await _syncZonesToNative();
-    final zonas =
-        _zonaVm?.items
-            .where((zona) => zona.coordenada != null)
-            .toList(growable: false) ??
-        const [];
-    if (zonas.isEmpty) return;
-
-    final zoneId = zonas.any((zona) => zona.idZona == usuarioZoneId)
-        ? usuarioZoneId
-        : zonas.first.idZona;
-    if (zoneId == null) return;
-
-    await _nativeNavigationBridge?.showMyZone(
-      zoneId: zoneId,
-      sheetHeight: sheetHeight,
-    );
-  }
-
-  Future<void> _testShowAffectedZones(double sheetHeight) async {
-    await _syncZonesToNative();
-    final zonas =
-        _zonaVm?.items
-            .where((zona) => zona.coordenada != null)
-            .toList(growable: false) ??
-        const [];
-    if (zonas.isEmpty) return;
-
-    final zoneIds = zonas
-        .take(2)
-        .map((zona) => zona.idZona)
-        .toList(growable: false);
-    await _nativeNavigationBridge?.showAffectedZones(
-      zoneIds: zoneIds,
-      activeZoneId: zoneIds.first,
+    await _nativeMapCoordinator.showUserZoneOrFirstAvailable(
+      userZoneId: usuarioZoneId,
       sheetHeight: sheetHeight,
     );
   }
@@ -560,14 +405,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Future<void> _changeMapStyle(MapStyle style) async {
     if (!mounted) return;
     setState(() => _estiloActual = style);
-    await _nativeNavigationBridge?.setMapStyle(style);
-  }
-
-  @override
-  void dispose() {
-    _vm?.removeListener(_onVmChanged);
-    _zonaVm?.removeListener(_onZonaVmChanged);
-    super.dispose();
+    await _nativeMapCoordinator.changeMapStyle(style);
   }
 
   // Metodo para buscar direccion desde parametros
@@ -576,7 +414,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
       _addressLat = lat;
       _addressLon = lon;
     });
-    await _nativeNavigationBridge?.showDestinationPreview(
+    await _nativeMapCoordinator.showDestinationPreview(
       latitude: lat,
       longitude: lon,
     );
@@ -597,9 +435,10 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Future<void> _goToContainerSelectedOnMap(Contenedor contenedor) async {
     final coord = contenedor.coordenada;
     if (coord == null) return;
+    final nativeMapCoordinator = _nativeMapCoordinator;
 
-    await _nativeNavigationBridge?.clearDestinationPreview();
-    await _nativeNavigationBridge?.centerOnCoordinate(
+    await nativeMapCoordinator.clearDestinationPreview();
+    await nativeMapCoordinator.centerOnCoordinate(
       latitude: coord.latitud,
       longitude: coord.longitud,
     );
@@ -619,14 +458,15 @@ class _MapaScreenStatePage extends State<MapaPage> {
   Future<void> _goToContainerSelectedOnMapFromAllFavorites(Contenedor contenedor) async {
     final coord = contenedor.coordenada;
     if (coord == null) return;
+    final nativeMapCoordinator = _nativeMapCoordinator;
 
-    await _nativeNavigationBridge?.clearDestinationPreview();    
+    await nativeMapCoordinator.clearDestinationPreview();
     
     await _keySheetFloating.currentState?.collapseSheet();
     
     await _keySheetAllTheFavoriteContainerOfUser.currentState?.collapseSheet();
     
-    await _nativeNavigationBridge?.centerOnCoordinate(
+    await nativeMapCoordinator.centerOnCoordinate(
       latitude: coord.latitud,
       longitude: coord.longitud,
     );
@@ -649,6 +489,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
   @override
   Widget build(BuildContext context) {
     final quickActionVm = context.watch<MapQuickActionViewmodel>();
+    final nativeMapCoordinator = context.watch<MapNativeCoordinator>();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final action = quickActionVm.consumePendingAction();
       if (action == null || !mounted) return;
@@ -675,20 +516,20 @@ class _MapaScreenStatePage extends State<MapaPage> {
               onMapReady: _onMapboxNavigationMapReady,
               onContainerPinsReady: _onMapboxContainerPinsReady,
               onContainerSelected: _onMapboxContainerSelected,
-              onRoutePreviewed: _onNativeNavigationPayload,
-              onRouteProgress: _onNativeNavigationPayload,
-              onNavigationStateChanged: _onNativeNavigationPayload,
-              onNavigationError: _onNativeNavigationPayload,
+              onRoutePreviewed: nativeMapCoordinator.handleNavigationPayload,
+              onRouteProgress: nativeMapCoordinator.handleNavigationPayload,
+              onNavigationStateChanged: nativeMapCoordinator.handleNavigationPayload,
+              onNavigationError: nativeMapCoordinator.handleNavigationPayload,
             ),
 
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AddressTurnByTurn(
-                  navigationPayload: _nativeNavigationPayload,
-                  hasRoute: _nativeRouteReady,
-                  isNavigating: _nativeNavigationStarted,
-                  onCancelNavigation: _cancelNativeNavigation,
+                  navigationPayload: nativeMapCoordinator.navigationPayload,
+                  hasRoute: nativeMapCoordinator.routeReady,
+                  isNavigating: nativeMapCoordinator.navigationStarted,
+                  onCancelNavigation: nativeMapCoordinator.cancelNavigation,
                 ),
               ),
             ),
@@ -697,7 +538,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
         // Seccion de permisos de ubicacion
         if (!_hasLocationPermission)
-          if (!_nativeRouteReady || !_nativeNavigationStarted)
+          if (!nativeMapCoordinator.routeReady || !nativeMapCoordinator.navigationStarted)
             Positioned.fill(
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.black54),
@@ -731,7 +572,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             ),
 
         //Floating buttons of quick actions
-        if (!_nativeRouteReady || !_nativeNavigationStarted)
+        if (!nativeMapCoordinator.routeReady || !nativeMapCoordinator.navigationStarted)
           ButtonsQuickAccessOnMap(
             actionButtonStyleMap: () => _keySheetForChangeStylesOfMap.currentState?.expandSheet(),
             actionButtonZones: () => _keyOfSheetOfZonesOfMap.currentState?.expandSheet(), 
@@ -739,7 +580,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
 
         // Barra de navegacion del mapa
-        if (!_nativeRouteReady || !_nativeNavigationStarted)
+        if (!nativeMapCoordinator.routeReady || !nativeMapCoordinator.navigationStarted)
           SheetFloatingWithDynamicContent(
             key: _keySheetFloating,
             childNavOptions: SheetOptionsOfNavToRoute(
@@ -752,16 +593,16 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 userPoint: _userPoint,
                 destinationPoint: <String, double>{'lon': _addressLon, 'lat': _addressLat},
                 generateRoute: _paintNativeRoute,
-                onPreviewSheetMetricsChanged: _updateNativePreviewSheetInset,
-                iniciarRuta: _startNativeNavigation,
-                navigationPayload: _nativeNavigationPayload,
-                cancelNavigation: _cancelNativeNavigation,
+                onPreviewSheetMetricsChanged: nativeMapCoordinator.updateNavigationPreviewSheetInset,
+                iniciarRuta: nativeMapCoordinator.startNavigation,
+                navigationPayload: nativeMapCoordinator.navigationPayload,
+                cancelNavigation: nativeMapCoordinator.cancelNavigation,
                 cancelSetCamera: _centerNativeTurnByTurnCamera,
                 onNavigateBack: _returnToPreviousSheetFromNavigation,
               ),
               childSearchBar: SheetSearchBar(
                 key: _keySheetSearchBar,
-                aplicarFiltros: _applyFilters,
+                aplicarFiltros: nativeMapCoordinator.synchronizeVisibleContainersWithNativeMap,
                 buscarDireccion: _buscarDireccion,
                 abrirDetalleDireccion: _openAddressPreviewFromSearch,
                 goToContainer: _goToContainerSelectedOnMap,
@@ -770,13 +611,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
           ),
 
         //Sheet for zones options
-        if (!_nativeRouteReady || !_nativeNavigationStarted)
+        if (!nativeMapCoordinator.routeReady || !nativeMapCoordinator.navigationStarted)
           SheetOfZonesOfMap(
             key: _keyOfSheetOfZonesOfMap,
-            onHideZones: _testHideZones,
-            onShowAllZones: _testShowAllZones,
-            onShowMyZone: _testShowMyZone,
-            onShowAffectedZones: _testShowAffectedZones,
+            onHideZones: nativeMapCoordinator.hideAllZones,
+            onShowAllZones: nativeMapCoordinator.showAllZones,
+            onShowMyZone: _showUserZone,
+            onShowAffectedZones: nativeMapCoordinator.showFirstTwoAffectedZones,
             backToUserLocation: _centerNativeTurnByTurnCamera,
           ),
 
