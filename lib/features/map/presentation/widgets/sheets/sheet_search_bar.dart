@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SheetSearchBar extends StatefulWidget {
-  final VoidCallback aplicarFiltros;
   final Future<void> Function(double lat, double lon) buscarDireccion;
   final Future<void> Function() abrirDetalleDireccion;
   final Future<void> Function(Contenedor contenedor) goToContainer;
@@ -22,7 +21,6 @@ class SheetSearchBar extends StatefulWidget {
 
   const SheetSearchBar({
     super.key,
-    required this.aplicarFiltros,
     required this.buscarDireccion,
     required this.abrirDetalleDireccion,
     required this.goToContainer,
@@ -166,7 +164,6 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     final vmContenedor = context.read<ContenedorViewModel>();
     _filterViewmodel.clean();
     vmContenedor.clearAllFilter();
-    widget.aplicarFiltros();
   }
 
   Future<void> _applyFilters() async {
@@ -180,7 +177,6 @@ class SheetSearchBarState extends State<SheetSearchBar> {
           ? vmFavoritos.filtrarContenedoresFavoritos
           : null,
     );
-    widget.aplicarFiltros();
   }
 
   /// Muestra este contenido y lo expande al máximo.
@@ -332,9 +328,7 @@ class SheetSearchBarState extends State<SheetSearchBar> {
                           minHeight: viewport.maxHeight,
                         ),
                         child: _cambio
-                            ? ContentFilter(
-                                aplicarFiltros: widget.aplicarFiltros,
-                              )
+                            ? ContentFilter()
                             : Column(
                                 children: [
                                   ContentSearchBarFavoriteSection(
