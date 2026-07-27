@@ -694,7 +694,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
             ),
           ],
         ),
-        const SizedBox.expand(),
 
         // Seccion de permisos de ubicacion
         if (!_hasLocationPermission)
