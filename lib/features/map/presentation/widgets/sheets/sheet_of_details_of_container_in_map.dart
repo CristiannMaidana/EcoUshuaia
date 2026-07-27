@@ -266,7 +266,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                             children: [
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10,),
-                                                child: Text('Zona ${widget.selectedContainer.idZona}',
+                                                child: Text(widget.selectedContainer.nombreContenedor ?? 'Contenedor numero',
                                                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                                     fontWeight: FontWeight.bold
                                                   ),
@@ -274,7 +274,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10),
-                                                child: Text(widget.selectedContainer.nombreContenedor ??'Contenedor numero',
+                                                child: Text('Zona ${widget.selectedContainer.idZona}',
                                                   style: Theme.of(context).textTheme.bodyMedium,
                                                 ),
                                               ),
