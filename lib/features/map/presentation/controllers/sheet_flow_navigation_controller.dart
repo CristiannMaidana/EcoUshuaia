@@ -1,14 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-/// Controls a dynamic navigation history between sheets.
-///
-/// The controller stores destination identifiers instead of widgets so it does
-/// not own their lifecycle or couple the flow to a particular sheet.
 class SheetFlowNavigationController<T> extends ChangeNotifier {
-  SheetFlowNavigationController({Iterable<T> initialStack = const []})
-    : _stack = List<T>.of(initialStack);
-
-  final List<T> _stack;
+  final List<T> _stack = <T>[];
 
   List<T> get stack => List<T>.unmodifiable(_stack);
 
