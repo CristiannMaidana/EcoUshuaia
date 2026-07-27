@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 class CustomButtonFilter extends StatelessWidget {
   final String label;
   final dynamic tipoDeBoton;
-  final VoidCallback? onTap;
   final Icon? icon;
   final List<int>? idEntidades;
 
@@ -14,7 +13,6 @@ class CustomButtonFilter extends StatelessWidget {
     super.key,
     required this.label,
     required this.tipoDeBoton,
-    this.onTap,
     this.icon,
     this.idEntidades,
   });
