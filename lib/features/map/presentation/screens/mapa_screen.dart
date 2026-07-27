@@ -201,10 +201,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
     }
   }
 
-  // Condicion para mostrar el sheet
-  bool openSheetAddContainer = false;
-  bool openSheetAddAddress = false;
-
   void _agregarDireccionNueva(Contenedor contenedor) {
     _keySheetOptionsOfNavToRoute.currentState?.addContenedor(contenedor);
   }
