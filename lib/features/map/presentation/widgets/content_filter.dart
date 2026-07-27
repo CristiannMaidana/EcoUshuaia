@@ -12,12 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ContentFilter extends StatefulWidget {
-  final VoidCallback aplicarFiltros;
   // TODO: add propierties for get the user location
 
   const ContentFilter({
     super.key,
-    required this.aplicarFiltros,
   });
 
   @override
@@ -82,7 +80,6 @@ class _ContentFilterState extends State<ContentFilter> {
                 final label = labelsGenericsFilter[index];
                 return CustomButtonFilter(
                   label: label,
-                  onTap: widget.aplicarFiltros,
                   tipoDeBoton: 'G_$label',
                   icon: Icon(iconsForGenericsFilter[index], color: camarone600,),
                   //TODO: change for the correct ids of type of filter
@@ -110,7 +107,6 @@ class _ContentFilterState extends State<ContentFilter> {
                   tipoDeBoton: 1,
                   label: residuo.nombre, 
                   icon: Icon(Icons.circle, size: 12, color: residuo.colorHex.toColor(),),
-                  onTap: widget.aplicarFiltros,
                   idEntidades: id,
                 );
               }).toList(),
@@ -141,7 +137,6 @@ class _ContentFilterState extends State<ContentFilter> {
                       final ids   = _idsForIndexDate(i);
                       return CustomButtonFilter(
                         label: labelsDate[i],
-                        onTap: widget.aplicarFiltros,
                         tipoDeBoton: 'H_$i',
                         idEntidades: ids,
                         icon: Icon(Icons.calendar_month, color: camarone600,),
@@ -159,7 +154,6 @@ class _ContentFilterState extends State<ContentFilter> {
                       final ids = _idsForIndexTime(filterIndex);
                       return CustomButtonFilter(
                         label: labelsTime[filterIndex],
-                        onTap: widget.aplicarFiltros,
                         tipoDeBoton: 'H_$filterIndex',
                         idEntidades: ids,
                         icon: Icon(Icons.timer_outlined, color: camarone600,),
