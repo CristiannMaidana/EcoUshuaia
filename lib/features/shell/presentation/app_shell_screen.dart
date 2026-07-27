@@ -4,7 +4,9 @@ import 'package:eco_ushuaia/features/auth/presentation/viewmodels/domicilio_view
 import 'package:eco_ushuaia/core/ui/navigation/buttom_nav_bar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/calendar_screen.dart';
 import 'package:eco_ushuaia/features/home/presentation/home_screen.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/container_mapa_screen.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/settings/presentation/settings_screen.dart';
 import 'package:eco_ushuaia/features/shell/data/repositories/usuario_repository_imp.dart';
 import 'package:eco_ushuaia/features/shell/data/sources/usuarios_remote_data_sources.dart';
@@ -101,6 +103,9 @@ class _ContainerHomeScreenState extends State<ContainerHomeScreen> {
           create: (ctx) => DomicilioViewModel(ctx.read<DomicilioRepository>()),
           update: (_, usuarioVm, domicilioVm) =>
               domicilioVm!..syncWithUserId(usuarioVm.usuario?.idDireccion),
+        ), 
+        ChangeNotifierProvider(
+          create: (ctx) => ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
         ),
       ],
       child: NotificationListener<ShellTabSelectionNotification>(
