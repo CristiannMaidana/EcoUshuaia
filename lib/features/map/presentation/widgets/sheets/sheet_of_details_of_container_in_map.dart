@@ -22,7 +22,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final Future<void> Function(double lat, double lon)? searchDirection;
   final Future<void> Function()? openDetailDirection;
   final Future<void> Function()? generateRouteWithCar;
-  final Future<void> Function()? onCloseForSearchContainer;
+  final VoidCallback onClose;
   final Future<void> Function()? onCloseForNavButtonExpandSheet;
   
   const SheetOfDetailsOfContainerInMap ({
@@ -36,7 +36,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
     required this.searchDirection,
     required this.openDetailDirection,
     required this.generateRouteWithCar,
-    this.onCloseForSearchContainer,
+    required this.onClose,
     this.onCloseForNavButtonExpandSheet,
   });
 
@@ -102,7 +102,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
   Future<void> collapseSheet() async {
     if (!draggableControllerOfDetailsContainerSheet.isAttached) return;
 
-    widget.onCloseForSearchContainer?.call();
+    widget.onClose();
     await draggableControllerOfDetailsContainerSheet.animateTo(
       widget.initialSheetSize,
       duration: const Duration(milliseconds: 300),
@@ -447,7 +447,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                             },
                                             child: Row(
                                               children: [
-                                                const Icon(Icons.map_outlined,
+                                                const Icon(Icons.time_to_leave,
                                                   color: Colors.white,
                                                   size: 24,
                                                 ),
