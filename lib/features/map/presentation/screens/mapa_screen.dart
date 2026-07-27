@@ -22,6 +22,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/buttons_quick_acce
 import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_map_view.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
+import 'package:eco_ushuaia/features/map/presentation/controllers/sheet_flow_navigation_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_show_all_the_favorites_containers.dart';
@@ -35,6 +36,12 @@ import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewm
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:provider/provider.dart';
+
+enum _SheetFlowDestination {
+  search,
+  containerDetails,
+  navigation,
+}
 
 class MapaScreen extends StatelessWidget {
   const MapaScreen({super.key});
@@ -82,6 +89,9 @@ class MapaScreen extends StatelessWidget {
           create: (ctx) =>
               ZonaMapaViewModel(ctx.read<ZonaMapaRepository>())..load(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => SheetFlowNavigationController<_SheetFlowDestination>(),
+        ),
       ],
       child: MapaPage(),
     );
@@ -111,7 +121,6 @@ class _MapaScreenStatePage extends State<MapaPage> {
   ZonaMapaViewModel? _zonaVm;
 
   Contenedor? _contenedorSeleccionado;
-  bool _containerSelectedFromSearch = false;
 
   MapQuickAction? _pendingQuickAction;
 
@@ -133,6 +142,43 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetFloatingWithDynamicContentState> _keySheetFloating = GlobalKey<SheetFloatingWithDynamicContentState>();
   final GlobalKey<SheetForShowAllTheFavoritesContainersState> _keySheetAllTheFavoriteContainerOfUser = GlobalKey<SheetForShowAllTheFavoritesContainersState>();
   final GlobalKey<SheetPreviewAddressState> _keySheetPreviewAddress = GlobalKey<SheetPreviewAddressState>();
+
+  // PROVIDERS
+  // Provider for the flow of sheet when the user nav to a container.
+  SheetFlowNavigationController<_SheetFlowDestination> get _sheetFlowOfNavToContainer => context.read<SheetFlowNavigationController<_SheetFlowDestination>>();
+
+  void _startContainerFlowFromMap() {
+    _sheetFlowOfNavToContainer
+      ..clear()
+      ..push(_SheetFlowDestination.containerDetails);
+  }
+
+  void _startContainerFlowFromSearch() {
+    _sheetFlowOfNavToContainer
+      ..clear()
+      ..push(_SheetFlowDestination.search)
+      ..push(_SheetFlowDestination.containerDetails);
+  }
+
+  void _closeContainerDetailsFromFlow() {
+    final previousSheet = _sheetFlowOfNavToContainer.pop();
+    if (previousSheet != _SheetFlowDestination.search) return;
+
+    _keySheetFloating.currentState?.changeToFirstChild();
+    _keySheetSearchBar.currentState?.expand();
+  }
+
+  Future<void> _returnToContainerDetailsFromNavigation() async {
+    if (_sheetFlowOfNavToContainer.current !=
+        _SheetFlowDestination.navigation) {
+      return;
+    }
+
+    final previousSheet = _sheetFlowOfNavToContainer.pop();
+    if (previousSheet != _SheetFlowDestination.containerDetails) return;
+
+    await _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
+  }
 
   // Condicion para mostrar el sheet
   bool openSheetAddContainer = false;
@@ -209,8 +255,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   // Callback que recibe el contenedor tocado desde MapController
   void _onContenedorTap(Contenedor c) {
+    _startContainerFlowFromMap();
     setState(() {
-      _containerSelectedFromSearch = false;
       _contenedorSeleccionado = c;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
@@ -521,6 +567,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   //Abre widget para datos de navegacion a direccion
   Future<void> _openSheetOptionsOfNav() async {
+    _sheetFlowOfNavToContainer.push(_SheetFlowDestination.navigation);
     _keySheetFloating.currentState?.changeToSecondChild();
   }
 
@@ -540,8 +587,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
     if (!mounted) return;
 
+    _startContainerFlowFromSearch();
     setState(() {
-      _containerSelectedFromSearch = true;
       _contenedorSeleccionado = contenedor;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -567,8 +614,8 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
     if (!mounted) return;
 
+    _startContainerFlowFromSearch();
     setState(() {
-      _containerSelectedFromSearch = true;
       _contenedorSeleccionado = contenedor;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -693,6 +740,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 navigationPayload: _nativeNavigationPayload,
                 cancelNavigation: _cancelNativeNavigation,
                 cancelSetCamera: _centerNativeTurnByTurnCamera,
+                onNavigateBack: _returnToContainerDetailsFromNavigation,
               ),
               childSearchBar: SheetSearchBar(
                 key: _keySheetSearchBar,
@@ -724,9 +772,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
             searchDirection: _buscarDireccion,
             openDetailDirection: _openSheetOptionsOfNav,
             generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
-            onCloseForSearchContainer: _containerSelectedFromSearch
-                ? () async => _keySheetSearchBar.currentState?.expand()
-                : null,
+            onClose: _closeContainerDetailsFromFlow,
             onCloseForNavButtonExpandSheet: () async => _keySheetFloating.currentState?.expandSheetToMidSize(),
           ),
 
