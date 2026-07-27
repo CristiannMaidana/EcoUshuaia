@@ -18,7 +18,6 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final double maxSheetSize;
   
   final Contenedor selectedContainer;
-  final Future<double>? Function(double lat, double lon)? distances;
   final Future<void> Function(double lat, double lon)? searchDirection;
   final Future<void> Function()? openDetailDirection;
   final Future<void> Function()? generateRouteWithCar;
@@ -31,7 +30,6 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
     this.minSheetSize = 0.00,
     this.maxSheetSize = 0.47,
     
-    required this.distances,
     required this.selectedContainer,
     required this.searchDirection,
     required this.openDetailDirection,
@@ -47,8 +45,6 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
 class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContainerInMap> {
   late final DraggableScrollableController draggableControllerOfDetailsContainerSheet;
   bool _isSheetOpen = false;
-  // TODO: calculate the distance for the user to the container
-  Future<double>? _metrosFuture;
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
 
@@ -158,15 +154,6 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutCubic,
     );
-  }
-
-
-  // Functions specific to the sheet
-  String _formatDistance(double meters) {
-    if (meters.isNaN || meters.isInfinite) return '';
-    if (meters < 1000) return '${meters.round()} M';
-    final km = meters / 1000;
-    return '${km.toStringAsFixed(1)} KM';
   }
 
   @override
@@ -330,18 +317,10 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                       ),
                                       SizedBox(width: 8),
                                       SizedBox(
-                                        child: FutureBuilder<double>(
-                                          future: _metrosFuture,
-                                          builder: (context, snap) {
-                                            final text = snap.hasData
-                                                ? _formatDistance(snap.data!)
-                                                : '';
-                                            return DataContainer(
-                                              contenido: text,
-                                              icon: Icons.location_on_outlined,
-                                              colorIcon: Colors.black,
-                                            );
-                                          },
+                                        child: DataContainer(
+                                          contenido: '',
+                                          icon: Icons.location_on_outlined,
+                                          colorIcon: Colors.black,
                                         ),
                                       ),
                                     ],
