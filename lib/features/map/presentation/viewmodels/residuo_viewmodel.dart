@@ -16,6 +16,8 @@ class ResiduoViewmodel extends ChangeNotifier {
   List<Residuos> get items => _items;
 
   Future<void> load({Map <String, dynamic>? filtros}) async {
+    if (_loading || _items.isNotEmpty) return;
+
     _loading = true;
     _error = null;
     notifyListeners();
