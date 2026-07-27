@@ -23,7 +23,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/mapbox_navigation_
 import 'package:eco_ushuaia/features/map/presentation/widgets/map_style_picker.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_native_coordinator.dart';
-import 'package:eco_ushuaia/features/map/presentation/controllers/sheet_flow_navigation_controller.dart';
+import 'package:eco_ushuaia/features/map/presentation/controllers/map_sheet_flow_controller.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_add_containers_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_show_all_the_favorites_containers.dart';
@@ -37,13 +37,6 @@ import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewm
 import 'package:flutter/material.dart';
 import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dart';
 import 'package:provider/provider.dart';
-
-enum _SheetFlowDestination {
-  search,
-  containerDetails,
-  addressPreview,
-  navigation,
-}
 
 class MapaScreen extends StatelessWidget {
   const MapaScreen({super.key});
@@ -95,7 +88,7 @@ class MapaScreen extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider(
-          create: (_) => SheetFlowNavigationController<_SheetFlowDestination>(),
+          create: (_) => MapSheetFlowController(),
         ),
       ],
       child: MapaPage(),
@@ -142,55 +135,30 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   // PROVIDERS
   // Provider for the navigation flow between sheets.
-  SheetFlowNavigationController<_SheetFlowDestination> get _sheetFlowNavigation => context.read<SheetFlowNavigationController<_SheetFlowDestination>>();
+  MapSheetFlowController get _mapSheetFlow => context.read<MapSheetFlowController>();
   MapNativeCoordinator get _nativeMapCoordinator => context.read<MapNativeCoordinator>();
 
-  void _startContainerFlowFromMap() {
-    _sheetFlowNavigation
-      ..clear()
-      ..push(_SheetFlowDestination.containerDetails);
-  }
-
-  void _startContainerFlowFromSearch() {
-    _sheetFlowNavigation
-      ..clear()
-      ..push(_SheetFlowDestination.search)
-      ..push(_SheetFlowDestination.containerDetails);
-  }
-
-  void _startAddressFlowFromSearch() {
-    _sheetFlowNavigation
-      ..clear()
-      ..push(_SheetFlowDestination.search)
-      ..push(_SheetFlowDestination.addressPreview);
-  }
-
   void _closeContainerDetailsFromFlow() {
-    final previousSheet = _sheetFlowNavigation.pop();
-    if (previousSheet != _SheetFlowDestination.search) return;
+    final previousSheet = _mapSheetFlow.closeCurrentSheetAndReturnPreviousDestination();
+    if (previousSheet != MapSheetDestination.search) return;
 
     _keySheetFloating.currentState?.changeToFirstChild();
     _keySheetSearchBar.currentState?.expand();
   }
 
   Future<void> _closeAddressPreviewFromFlow() async {
-    final previousSheet = _sheetFlowNavigation.pop();
-    if (previousSheet != _SheetFlowDestination.search) return;
+    final previousSheet = _mapSheetFlow.closeCurrentSheetAndReturnPreviousDestination();
+    if (previousSheet != MapSheetDestination.search) return;
 
     _keySheetFloating.currentState?.changeToFirstChild();
     await _keySheetSearchBar.currentState?.expand();
   }
 
   Future<void> _returnToPreviousSheetFromNavigation() async {
-    if (_sheetFlowNavigation.current !=
-        _SheetFlowDestination.navigation) {
-      return;
-    }
-
-    final previousSheet = _sheetFlowNavigation.pop();
-    if (previousSheet == _SheetFlowDestination.containerDetails) {
+    final previousSheet = _mapSheetFlow.returnFromNavigationToPreviousDestination();
+    if (previousSheet == MapSheetDestination.containerDetails) {
       await _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
-    } else if (previousSheet == _SheetFlowDestination.addressPreview) {
+    } else if (previousSheet == MapSheetDestination.addressPreview) {
       await _keySheetPreviewAddress.currentState?.expandSheet(
         _addressLat,
         _addressLon,
@@ -231,7 +199,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   // Callback que recibe el contenedor tocado desde MapController
   void _onContenedorTap(Contenedor c) {
-    _startContainerFlowFromMap();
+    _mapSheetFlow.startContainerDetailsFromMap();
     setState(() {
       _contenedorSeleccionado = c;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
@@ -422,12 +390,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   //Abre widget para datos de navegacion a direccion
   Future<void> _openSheetOptionsOfNav() async {
-    _sheetFlowNavigation.push(_SheetFlowDestination.navigation);
+    _mapSheetFlow.openNavigationFromCurrentSheet();
     _keySheetFloating.currentState?.changeToSecondChild();
   }
 
   Future<void> _openAddressPreviewFromSearch() async {
-    _startAddressFlowFromSearch();
+    _mapSheetFlow.startAddressPreviewFromSearch();
     _keySheetPreviewAddress.currentState?.expandSheet(_addressLat, _addressLon);
     _keySheetFloating.currentState?.collapseSheet();
   }
@@ -444,7 +412,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
     if (!mounted) return;
 
-    _startContainerFlowFromSearch();
+    _mapSheetFlow.startContainerDetailsFromSearch();
     setState(() {
       _contenedorSeleccionado = contenedor;
     });
@@ -472,7 +440,7 @@ class _MapaScreenStatePage extends State<MapaPage> {
     );
     if (!mounted) return;
 
-    _startContainerFlowFromSearch();
+    _mapSheetFlow.startContainerDetailsFromSearch();
     setState(() {
       _contenedorSeleccionado = contenedor;
     });
