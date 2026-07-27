@@ -40,6 +40,7 @@ import 'package:provider/provider.dart';
 enum _SheetFlowDestination {
   search,
   containerDetails,
+  addressPreview,
   navigation,
 }
 
@@ -144,40 +145,60 @@ class _MapaScreenStatePage extends State<MapaPage> {
   final GlobalKey<SheetPreviewAddressState> _keySheetPreviewAddress = GlobalKey<SheetPreviewAddressState>();
 
   // PROVIDERS
-  // Provider for the flow of sheet when the user nav to a container.
-  SheetFlowNavigationController<_SheetFlowDestination> get _sheetFlowOfNavToContainer => context.read<SheetFlowNavigationController<_SheetFlowDestination>>();
+  // Provider for the navigation flow between sheets.
+  SheetFlowNavigationController<_SheetFlowDestination> get _sheetFlowNavigation => context.read<SheetFlowNavigationController<_SheetFlowDestination>>();
 
   void _startContainerFlowFromMap() {
-    _sheetFlowOfNavToContainer
+    _sheetFlowNavigation
       ..clear()
       ..push(_SheetFlowDestination.containerDetails);
   }
 
   void _startContainerFlowFromSearch() {
-    _sheetFlowOfNavToContainer
+    _sheetFlowNavigation
       ..clear()
       ..push(_SheetFlowDestination.search)
       ..push(_SheetFlowDestination.containerDetails);
   }
 
+  void _startAddressFlowFromSearch() {
+    _sheetFlowNavigation
+      ..clear()
+      ..push(_SheetFlowDestination.search)
+      ..push(_SheetFlowDestination.addressPreview);
+  }
+
   void _closeContainerDetailsFromFlow() {
-    final previousSheet = _sheetFlowOfNavToContainer.pop();
+    final previousSheet = _sheetFlowNavigation.pop();
     if (previousSheet != _SheetFlowDestination.search) return;
 
     _keySheetFloating.currentState?.changeToFirstChild();
     _keySheetSearchBar.currentState?.expand();
   }
 
-  Future<void> _returnToContainerDetailsFromNavigation() async {
-    if (_sheetFlowOfNavToContainer.current !=
+  Future<void> _closeAddressPreviewFromFlow() async {
+    final previousSheet = _sheetFlowNavigation.pop();
+    if (previousSheet != _SheetFlowDestination.search) return;
+
+    _keySheetFloating.currentState?.changeToFirstChild();
+    await _keySheetSearchBar.currentState?.expand();
+  }
+
+  Future<void> _returnToPreviousSheetFromNavigation() async {
+    if (_sheetFlowNavigation.current !=
         _SheetFlowDestination.navigation) {
       return;
     }
 
-    final previousSheet = _sheetFlowOfNavToContainer.pop();
-    if (previousSheet != _SheetFlowDestination.containerDetails) return;
-
-    await _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
+    final previousSheet = _sheetFlowNavigation.pop();
+    if (previousSheet == _SheetFlowDestination.containerDetails) {
+      await _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
+    } else if (previousSheet == _SheetFlowDestination.addressPreview) {
+      await _keySheetPreviewAddress.currentState?.expandSheet(
+        _addressLat,
+        _addressLon,
+      );
+    }
   }
 
   // Condicion para mostrar el sheet
@@ -567,11 +588,12 @@ class _MapaScreenStatePage extends State<MapaPage> {
 
   //Abre widget para datos de navegacion a direccion
   Future<void> _openSheetOptionsOfNav() async {
-    _sheetFlowOfNavToContainer.push(_SheetFlowDestination.navigation);
+    _sheetFlowNavigation.push(_SheetFlowDestination.navigation);
     _keySheetFloating.currentState?.changeToSecondChild();
   }
 
-  Future<void> _openSheetOptionsOfNavForSheetAddress() async {
+  Future<void> _openAddressPreviewFromSearch() async {
+    _startAddressFlowFromSearch();
     _keySheetPreviewAddress.currentState?.expandSheet(_addressLat, _addressLon);
     _keySheetFloating.currentState?.collapseSheet();
   }
@@ -740,13 +762,13 @@ class _MapaScreenStatePage extends State<MapaPage> {
                 navigationPayload: _nativeNavigationPayload,
                 cancelNavigation: _cancelNativeNavigation,
                 cancelSetCamera: _centerNativeTurnByTurnCamera,
-                onNavigateBack: _returnToContainerDetailsFromNavigation,
+                onNavigateBack: _returnToPreviousSheetFromNavigation,
               ),
               childSearchBar: SheetSearchBar(
                 key: _keySheetSearchBar,
                 aplicarFiltros: _applyFilters,
                 buscarDireccion: _buscarDireccion,
-                abrirDetalleDireccion: _openSheetOptionsOfNavForSheetAddress,
+                abrirDetalleDireccion: _openAddressPreviewFromSearch,
                 goToContainer: _goToContainerSelectedOnMap,
                 functionForOpenSheetOfAllTheFavorites: () async => _keySheetAllTheFavoriteContainerOfUser.currentState?.expandSheet(),
               ),
@@ -799,9 +821,9 @@ class _MapaScreenStatePage extends State<MapaPage> {
         SheetPreviewAddress(
           key: _keySheetPreviewAddress,
           searchDirection: _buscarDireccion,
-          openDetailDirection: () async => _keySheetFloating.currentState?.changeToSecondChild(),
+          openDetailDirection: _openSheetOptionsOfNav,
           generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
-          onCloseForSearchAddress: () async => _keySheetSearchBar.currentState?.expand(),
+          onCloseForSearchAddress: _closeAddressPreviewFromFlow,
           onCloseForNavButtonExpandSheet: () async => _keySheetFloating.currentState?.expandSheetToMidSize(),
         ),
       ],
