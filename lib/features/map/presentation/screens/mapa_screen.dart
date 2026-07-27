@@ -1,20 +1,10 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
-import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
-import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
-import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
-import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
-import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
-import 'package:eco_ushuaia/features/map/domain/repositories/zona_mapa_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_container_pins_bridge.dart';
 import 'package:eco_ushuaia/features/map/presentation/services/mapbox_navigation_map_view_bridge.dart';
-import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_service.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/categoria_residuos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_quick_action_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/address_turn_by_turn.dart';
@@ -38,72 +28,14 @@ import 'package:eco_ushuaia/features/map/data/sources/local/location_service.dar
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:provider/provider.dart';
 
-class MapaScreen extends StatelessWidget {
-  const MapaScreen({super.key});
+class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
-        ),
-        ChangeNotifierProxyProvider2<
-          UsuarioViewModel,
-          ContenedorViewModel,
-          UsuarioContenedoresFavoritosViewModel
-        >(
-          create: (ctx) => UsuarioContenedoresFavoritosViewModel(
-            ctx.read<UsuarioContenedorFavoritosRepository>(),
-          ),
-          update: (_, usuarioVm, contenedorVm, favoritosVm) => favoritosVm!
-            ..syncWithUserIdAndContenedores(
-              usuarioVm.usuario?.idUsuario,
-              contenedorVm.items,
-            ),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => CategoriaResiduosViewmodel(
-            ctx.read<CategoriaResiduosRepository>(),
-          )..load(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => ResiduoViewmodel(ctx.read<ResiduoRepository>())..load(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => HorarioRecoleccionFiltrosViewModel(
-            ctx.read<HorarioRecoleccionFiltrosRepository>(),
-          )..initAll(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MapSearchViewModel(AddressSearchService()),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => ZonaMapaViewModel(ctx.read<ZonaMapaRepository>())..load(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => MapNativeCoordinator(
-            contenedorViewModel: ctx.read<ContenedorViewModel>(),
-            zonaMapaViewModel: ctx.read<ZonaMapaViewModel>(),
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MapSheetFlowController(),
-        ),
-      ],
-      child: MapaPage(),
-    );
-  }
+  State<MapScreen> createState() => MapScreenState();
 }
 
-class MapaPage extends StatefulWidget {
-  const MapaPage({super.key});
-
-  @override
-  State<MapaPage> createState() => _MapaScreenStatePage();
-}
-
-class _MapaScreenStatePage extends State<MapaPage> {
+class MapScreenState extends State<MapScreen> {
   final _perms = LocationPermissionService.I;
   bool _hasLocationPermission = false;
 
