@@ -20,7 +20,7 @@ class SheetAddContainersToRoute extends StatefulWidget {
     super.key,
     this.initialSheetSize = 0.00,
     this.minSheetSize = 0.00,
-    this.maxSheetSize = 0.70,
+    this.maxSheetSize = 0.80,
     required this.lon,
     required this.lat,
     required this.add,
