@@ -2,7 +2,7 @@ import 'package:eco_ushuaia/features/map/domain/entities/medicion_sensor.dart';
 
 class MedicionSensorDto {
   final int idContenedor;
-  final int volumenMedido;
+  final double volumenMedido;
   final String nivelLlenado;
 
   const MedicionSensorDto({
@@ -14,7 +14,7 @@ class MedicionSensorDto {
   factory MedicionSensorDto.fromJson(Map<String, dynamic> fromJson) {
     return MedicionSensorDto(
       idContenedor: fromJson['id_contenedor'], 
-      volumenMedido: fromJson['volumen_medido'], 
+      volumenMedido: double.parse(fromJson['volumen_medido'].toString()),
       nivelLlenado: fromJson['nivel_llenado'],
     );
   }
