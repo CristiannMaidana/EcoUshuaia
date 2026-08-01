@@ -140,6 +140,9 @@ class MapScreenState extends State<MapScreen> {
     _mapSheetFlow.startContainerDetailsFromMap();
     setState(() {
       _contenedorSeleccionado = c;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       _keyOfSheetOfDetailsContainerOnMap.currentState?.expandSheet();
     });
   }
