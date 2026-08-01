@@ -22,6 +22,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
   final Future<void> Function(double lat, double lon)? searchDirection;
   final Future<void> Function()? openDetailDirection;
   final Future<void> Function()? generateRouteWithCar;
+  final Future<String> Function() getDistanceToSelectedContainer;
   final VoidCallback onClose;
   final Future<void> Function()? onCloseForNavButtonExpandSheet;
   
@@ -35,6 +36,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
     required this.searchDirection,
     required this.openDetailDirection,
     required this.generateRouteWithCar,
+    required this.getDistanceToSelectedContainer,
     required this.onClose,
     this.onCloseForNavButtonExpandSheet,
   });
@@ -46,6 +48,7 @@ class SheetOfDetailsOfContainerInMap extends StatefulWidget {
 class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContainerInMap> {
   late final DraggableScrollableController draggableControllerOfDetailsContainerSheet;
   bool _isSheetOpen = false;
+  String _distanceToSelectedContainer = 'Desconocido';
 
   double get _snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
 
@@ -86,19 +89,32 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     setState(() {});
   }
 
+  Future<void> _loadDistanceToSelectedContainer() async {
+    final selectedContainerId = widget.selectedContainer.idContenedor;
+    setState(() {
+      _distanceToSelectedContainer = 'Desconocido';
+    });
+    final distanceToSelectedContainer = await widget.getDistanceToSelectedContainer();
+    if (!mounted || widget.selectedContainer.idContenedor != selectedContainerId) return;
+    setState(() {
+      _distanceToSelectedContainer = distanceToSelectedContainer;
+    });
+  }
+
   Future<void> expandSheet() async {
     if (!draggableControllerOfDetailsContainerSheet.isAttached) return;
 
     final updatedFillLevel = context
         .read<MedicionSensorViewModel>()
         .load(widget.selectedContainer.idContenedor);
+    final updatedDistance = _loadDistanceToSelectedContainer();
 
     await draggableControllerOfDetailsContainerSheet.animateTo(
       widget.maxSheetSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-    await updatedFillLevel;
+    await Future.wait([updatedFillLevel, updatedDistance]);
   }
 
   Future<void> collapseSheet() async {
@@ -329,7 +345,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                       SizedBox(width: 8),
                                       SizedBox(
                                         child: DataContainer(
-                                          contenido: '',
+                                          contenido: _distanceToSelectedContainer,
                                           icon: Icons.location_on_outlined,
                                           colorIcon: Colors.black,
                                         ),
