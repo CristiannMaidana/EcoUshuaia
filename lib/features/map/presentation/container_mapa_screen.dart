@@ -1,5 +1,6 @@
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/medicion_sensor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/zona_mapa_repository.dart';
 import 'package:eco_ushuaia/features/map/presentation/controllers/map_native_coordinator.dart';
@@ -9,6 +10,7 @@ import 'package:eco_ushuaia/features/map/presentation/services/mapbox_search_ser
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/horario_recoleccion_filtros_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/medicion_sensor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/zona_mapa_viewmodel.dart';
 import 'package:eco_ushuaia/features/shell/presentation/viewmodels/usuario_viewmodel.dart';
@@ -29,6 +31,11 @@ class _MapaScreenState extends State<ContainerMapaScreen> with SingleTickerProvi
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => ContenedorViewModel(ctx.read<ContenedorRepository>())..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => MedicionSensorViewModel(
+            ctx.read<MedicionSensorRepository>(),
+          ),
         ),
         ChangeNotifierProxyProvider2<
           UsuarioViewModel,
