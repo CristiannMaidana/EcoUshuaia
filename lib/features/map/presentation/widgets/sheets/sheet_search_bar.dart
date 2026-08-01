@@ -1,13 +1,8 @@
 import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/contenedor_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
-import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_search_bar_favorite_section.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/content_search_bar_recent_section.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/header_filter.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/content_filter.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/search_bar.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_floating_with_dynamic_content.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +13,7 @@ class SheetSearchBar extends StatefulWidget {
   final Future<void> Function() abrirDetalleDireccion;
   final Future<void> Function(Contenedor contenedor) goToContainer;
   final Future<void> Function() functionForOpenSheetOfAllTheFavorites;
+  final VoidCallback functionForOpenSheetOfFilters;
 
   const SheetSearchBar({
     super.key,
@@ -25,6 +21,7 @@ class SheetSearchBar extends StatefulWidget {
     required this.abrirDetalleDireccion,
     required this.goToContainer,
     required this.functionForOpenSheetOfAllTheFavorites,
+    required this.functionForOpenSheetOfFilters,
   });
 
   @override
@@ -32,92 +29,12 @@ class SheetSearchBar extends StatefulWidget {
 }
 
 class SheetSearchBarState extends State<SheetSearchBar> {
-  late final ButtonFilterViewmodel _filterViewmodel;
   // Link para tener la posicion del searchBar
   final LayerLink _searchBarLink = LayerLink();
 
   final GlobalKey<SerchBarState> _keySearchBar = GlobalKey<SerchBarState>();
-  SheetFloatingWithDynamicContentState? _listenedSheetFather;
-  double? _lastSheetSize;
-  bool _cambio = false;
-  bool _showFilterWhenReady = false;
-  bool _collapseFilterOnClose = true;
-  
+
   SheetFloatingWithDynamicContentState? get _sheetFather => context.findAncestorStateOfType<SheetFloatingWithDynamicContentState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _filterViewmodel = ButtonFilterViewmodel();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final sheetFather = _sheetFather;
-    if (identical(_listenedSheetFather, sheetFather)) return;
-    _listenedSheetFather?.sheetSizeListenable.removeListener(_onSheetChanged);
-    _listenedSheetFather = sheetFather;
-    _lastSheetSize = sheetFather?.sheetSizeListenable.value;
-    sheetFather?.sheetSizeListenable.addListener(_onSheetChanged);
-  }
-
-  @override
-  void dispose() {
-    _listenedSheetFather?.sheetSizeListenable.removeListener(_onSheetChanged);
-    _filterViewmodel.dispose();
-    super.dispose();
-  }
-
-  void _onSheetChanged() {
-    final sheetFather = _listenedSheetFather;
-    if (sheetFather == null) return;
-
-    final currentSize = sheetFather.sheetSizeListenable.value;
-    final previousSize = _lastSheetSize;
-    _lastSheetSize = currentSize;
-
-    if (sheetFather.isColapsed) {
-      collapse();
-      return;
-    }
-
-    final isContracting = previousSize != null && currentSize < previousSize;
-    final changeContentSize = sheetFather.widget.initialSheetSize + 0.13;
-    if (_showFilterWhenReady) {
-      if (isContracting) {
-        _showFilterWhenReady = false;
-      } else if (currentSize >= changeContentSize) {
-        _showFilterWhenReady = false;
-        setState(() => _cambio = true);
-        return;
-      }
-    }
-    if (_cambio && isContracting && currentSize <= changeContentSize) {
-      _keySearchBar.currentState?.resetToBase();
-      setState(() => _cambio = false);
-      return;
-    }
-    if (_cambio) setState(() {});
-  }
-
-  double get _contentOpacity {
-    if (!_cambio) return 1.0;
-
-    final sheetFather = _listenedSheetFather;
-    final controller = sheetFather?.draggableControllerOfSheetFloatign;
-    if (sheetFather == null || controller == null || !controller.isAttached) {
-      return 0.0;
-    }
-
-    final fadeStart = sheetFather.widget.initChildNavOptionsSize - 0.390;
-    if (sheetFather.widget.initChildNavOptionsSize <= fadeStart) return 1.0;
-
-    final opacity = (controller.size - fadeStart) /
-        (sheetFather.widget.initChildNavOptionsSize - fadeStart);
-
-    return opacity.clamp(0.0, 1.0);
-  }
 
   // Manejo de altura desde incio
   void _dragFromHeader(DragUpdateDetails d) {
@@ -136,47 +53,6 @@ class SheetSearchBarState extends State<SheetSearchBar> {
     final sheetFather = _sheetFather;
     if (sheetFather?.isColapsed ?? true) return;
     await sheetFather?.collapseSheet();
-  }
-
-  void _closeFilter() {
-    _showFilterWhenReady = false;
-    setState(() => _cambio = false);
-    if (_collapseFilterOnClose) {
-      collapse();
-    }
-  }
-
-  void _openFilter() {
-    final sheetFather = _sheetFather;
-    _collapseFilterOnClose = sheetFather?.isColapsed ?? true;
-    final currentSize = sheetFather?.sheetSizeListenable.value;
-    final changeContentSize = (sheetFather?.widget.initialSheetSize ?? 0.0) + 0.13;
-    if (currentSize != null && currentSize < changeContentSize) {
-      _showFilterWhenReady = true;
-      expand();
-      return;
-    }
-    setState(() => _cambio = true);
-    expand();
-  }
-
-  void _cleanFilters() {
-    final vmContenedor = context.read<ContenedorViewModel>();
-    _filterViewmodel.clean();
-    vmContenedor.clearAllFilter();
-  }
-
-  Future<void> _applyFilters() async {
-    final vmContenedor = context.read<ContenedorViewModel>();
-    final vmFavoritos = context.read<UsuarioContenedoresFavoritosViewModel>();
-
-    await collapse();
-    await vmContenedor.applyFilter(
-      _filterViewmodel.filtros,
-      filtrarFavoritos: _filterViewmodel.isSelected('Favoritos')
-          ? vmFavoritos.filtrarContenedoresFavoritos
-          : null,
-    );
   }
 
   /// Muestra este contenido y lo expande al máximo.
@@ -268,134 +144,73 @@ class SheetSearchBarState extends State<SheetSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ButtonFilterViewmodel>.value(
-      value: _filterViewmodel,
-      child: AnimatedOpacity(
-        opacity: _contentOpacity,
-        duration: const Duration(milliseconds: 10),
-        curve: Curves.easeOutCubic,
-        child: Stack(
-          clipBehavior: Clip.none, // para que las sugerencias puedan superponerse
+    return Stack(
+      clipBehavior: Clip.none, // para que las sugerencias puedan superponerse
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              // Barra de agarre para arrastrar el sheet
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6.3),
-                child: BarraAgarre(),
-              ),
-
-              // Header del sheet
-              // El header es el searchBar o el header de filtros dependiendo del estado del sheet
-              CompositedTransformTarget(
-                link: _searchBarLink,
-                child: Padding(
-                  padding: _cambio
-                      ? EdgeInsets.only(top: 8)
-                      : EdgeInsets.symmetric(horizontal: 20),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onVerticalDragUpdate: _dragFromHeader,
-                    onVerticalDragEnd: _endDragFromHeader,
-                    child: _cambio
-                        ? HeaderFilter(closeFilter: _closeFilter)
-                        : SerchBar(
-                            key: _keySearchBar,
-                            changeHeader: _openFilter,
-                            expandir: expand,
-                            onSubmitted: widget.buscarDireccion,
-                            detalleDireccion: widget.abrirDetalleDireccion,
-                          ),
-                  ),
-                ),
-              ),
-
-              // Contenido del sheet expandido
-              // Contenido de filtros o busqueda dependiendo del estado del sheet
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, viewport) {
-                    // Viene del padre
-                    final scrollController = PrimaryScrollController.of(context);
-                    return SingleChildScrollView(
-                      controller: scrollController,
-                      physics: ClampingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(),
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: viewport.maxHeight,
-                        ),
-                        child: _cambio
-                            ? ContentFilter()
-                            : Column(
-                                children: [
-                                  ContentSearchBarFavoriteSection(
-                                    goToContainer: widget.goToContainer,
-                                    openSheetOfAllTheFavorites: widget.functionForOpenSheetOfAllTheFavorites,
-                                  ),
-                                  ContentSearchBarRecentSection(),
-                                ],
-                              ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // Seccion inferior inamovible
-              // Boton cerrar y texto de filtros aplicados inferior
-              if (_cambio)
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      top: BorderSide(color: Color(0xFFE7EDF1), width: 1),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // TODO: cambiar a texto dinamico para mostrar los filtros aplicados
-                        Text('Ningun filtro activado'),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 110,
-                              child: OutlinedButton(
-                                onPressed: _cleanFilters,
-                                child: Text('Limpiar'),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            SizedBox(
-                              width: 110,
-                              child: ElevatedButton(
-                                onPressed: _applyFilters,
-                                child: Text('Aplicar'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            // Barra de agarre para arrastrar el sheet
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6.3),
+              child: BarraAgarre(),
             ),
 
-            // Drop bar sugerencias de busqueda (superpuesto)
-            _buildSuggestions(),
+            // Header del sheet
+            CompositedTransformTarget(
+              link: _searchBarLink,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onVerticalDragUpdate: _dragFromHeader,
+                  onVerticalDragEnd: _endDragFromHeader,
+                  child: SerchBar(
+                    key: _keySearchBar,
+                    changeHeader: widget.functionForOpenSheetOfFilters,
+                    expandir: expand,
+                    onSubmitted: widget.buscarDireccion,
+                    detalleDireccion: widget.abrirDetalleDireccion,
+                  ),
+                ),
+              ),
+            ),
+
+            // Contenido del sheet expandido
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, viewport) {
+                  // Viene del padre
+                  final scrollController = PrimaryScrollController.of(context);
+                  return SingleChildScrollView(
+                    controller: scrollController,
+                    physics: ClampingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics(),
+                    ),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: viewport.maxHeight,
+                      ),
+                      child: Column(
+                        children: [
+                          ContentSearchBarFavoriteSection(
+                            goToContainer: widget.goToContainer,
+                            openSheetOfAllTheFavorites: widget.functionForOpenSheetOfAllTheFavorites,
+                          ),
+                          ContentSearchBarRecentSection(),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
-      ),
+
+        // Drop bar sugerencias de busqueda (superpuesto)
+        _buildSuggestions(),
+      ],
     );
   }
 }
