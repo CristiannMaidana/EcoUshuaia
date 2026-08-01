@@ -135,6 +135,29 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 
+  Future<String> _getDistanceToContainer(Contenedor container) async {
+    await _getCoordenates(updateAddress: false);
+
+    final userLatitude = _userPoint['lat'];
+    final userLongitude = _userPoint['lon'];
+    final containerCoordinate = container.coordenada;
+
+    if (userLatitude == null || userLongitude == null || containerCoordinate == null) {
+      return 'Desconocido';
+    }
+    if (userLatitude == 0 && userLongitude == 0) return 'Desconocido';
+
+    final distanceInMeters = geo.Geolocator.distanceBetween(
+      userLatitude,
+      userLongitude,
+      containerCoordinate.latitud,
+      containerCoordinate.longitud,
+    );
+
+    if (distanceInMeters < 1000) return '${distanceInMeters.round()} m';
+    return '${(distanceInMeters / 1000).toStringAsFixed(1)} km';
+  }
+
   // Callback que recibe el contenedor tocado desde MapController
   void _onContenedorTap(Contenedor c) {
     _mapSheetFlow.startContainerDetailsFromMap();
@@ -515,6 +538,7 @@ class MapScreenState extends State<MapScreen> {
             searchDirection: _buscarDireccion,
             openDetailDirection: _openSheetOptionsOfNav,
             generateRouteWithCar: () => _paintNativeRoute(profile: 'automobile'),
+            getDistanceToSelectedContainer: () => _getDistanceToContainer(_contenedorSeleccionado!),
             onClose: _closeContainerDetailsFromFlow,
             onCloseForNavButtonExpandSheet: () async => _keySheetFloating.currentState?.expandSheetToMidSize(),
           ),
