@@ -51,7 +51,7 @@ class SheetOptionsOfNavToRoute extends StatefulWidget {
 class SheetOptionsOfNavToRouteState extends State<SheetOptionsOfNavToRoute> {
   SheetFloatingWithDynamicContentState? get _sheetFather => context.findAncestorStateOfType<SheetFloatingWithDynamicContentState>();
 
-  int _selectedRouteProfile = -1;
+  int _selectedRouteProfile = 0;
   double? _lastPreviewSheetHeight;
   String? _lastPreviewSheetState;
 
