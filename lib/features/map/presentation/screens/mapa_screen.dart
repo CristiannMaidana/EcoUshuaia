@@ -19,6 +19,7 @@ import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_s
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_options_of_nav_to_route.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_for_change_styles_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_details_of_container_in_map.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_filter_of_containers.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_of_zones_of_map.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_preview_address.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/sheets/sheet_search_bar.dart';
@@ -63,6 +64,7 @@ class MapScreenState extends State<MapScreen> {
   final GlobalKey<SheetFloatingWithDynamicContentState> _keySheetFloating = GlobalKey<SheetFloatingWithDynamicContentState>();
   final GlobalKey<SheetForShowAllTheFavoritesContainersState> _keySheetAllTheFavoriteContainerOfUser = GlobalKey<SheetForShowAllTheFavoritesContainersState>();
   final GlobalKey<SheetPreviewAddressState> _keySheetPreviewAddress = GlobalKey<SheetPreviewAddressState>();
+  final GlobalKey<SheetOfFilterOfContainersState> _keySheetOfFilterOfContainers = GlobalKey<SheetOfFilterOfContainersState>();
 
   // PROVIDERS
   // Provider for the navigation flow between sheets.
@@ -516,7 +518,13 @@ class MapScreenState extends State<MapScreen> {
                 abrirDetalleDireccion: _openAddressPreviewFromSearch,
                 goToContainer: _goToContainerSelectedOnMap,
                 functionForOpenSheetOfAllTheFavorites: () async => _keySheetAllTheFavoriteContainerOfUser.currentState?.expandSheet(),
+                functionForOpenSheetOfFilters: () => _keySheetOfFilterOfContainers.currentState?.expandSheet(),
               ),
+          ),
+
+        if (!nativeMapCoordinator.routeReady || !nativeMapCoordinator.navigationStarted)
+          SheetOfFilterOfContainers(
+            key: _keySheetOfFilterOfContainers,
           ),
 
         //Sheet for zones options
