@@ -17,18 +17,21 @@ import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario
 import 'package:eco_ushuaia/features/map/data/repositories/categoria_residuos_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/contenedor_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/horario_recoleccion_filtros_repository_imp.dart';
+import 'package:eco_ushuaia/features/map/data/repositories/medicion_sensor_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/residuo_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/usuario_contenedor_favoritos_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/repositories/zona_mapa_repository_imp.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/categoria_residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/contenedor_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/horario_recoleccion_filtros_remote_data_sources.dart';
+import 'package:eco_ushuaia/features/map/data/sources/remote/medicion_sensor_filters_remote.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/residuos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/usuario_contenedor_favoritos_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/data/sources/remote/zona_mapa_remote_data_source.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/categoria_residuos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/contenedor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/horario_recoleccion_filtros_repository.dart';
+import 'package:eco_ushuaia/features/map/domain/repositories/medicion_sensor_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/residuo_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/usuario_contenedor_favoritos_repository.dart';
 import 'package:eco_ushuaia/features/map/domain/repositories/zona_mapa_repository.dart';
@@ -66,6 +69,15 @@ List<SingleChildWidget> _contenedoresProviders() => [
   ),
   ProxyProvider<ContenedorRemoteDataSource, ContenedorRepository>(
     update: (_, ds, _) => ContenedorRepositoryImp(ds),
+  ),
+];
+
+List<SingleChildWidget> _medicionesSensorProviders() => [
+  ProxyProvider<ApiClient, MedicionSensorFiltersRemote>(
+    update: (_, api, _) => MedicionSensorFiltersRemote(api),
+  ),
+  ProxyProvider<MedicionSensorFiltersRemote, MedicionSensorRepository>(
+    update: (_, ds, _) => MedicionSensorRepositoryImp(ds),
   ),
 ];
 
@@ -169,6 +181,7 @@ List<SingleChildWidget> buildAppProviders() => [
   ..._coreProviders(),
   ..._residuosProviders(),
   ..._contenedoresProviders(),
+  ..._medicionesSensorProviders(),
   ..._usuariosContenedoresFavoritosProviders(),
   ..._usuariosCreateProviders(),
   ..._domiciliosProviders(),
