@@ -27,7 +27,12 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
 
   bool _isSheetOpen = false;
 
-  double get snapMidpoint => (widget.initialSheetSize + widget.maxSheetSize) / 2;
+  double get initialChildSize => widget.initialSheetSize;
+  double get minChildSize => widget.minSheetSize;
+  double get maxChildSize => widget.maxSheetSize;
+  double get snapMidpoint => (initialChildSize + maxChildSize) / 2;
+  double get fadeStartSheetSize => initialChildSize + 0.17;
+  double get fadeEndSheetSize => maxChildSize;
 
   /// Opacity used while the sheet grows from its collapsed size.
   ///
@@ -36,12 +41,11 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
   double get contentOpacity {
     if (!draggableControllerOfSheet.isAttached) return 0.0;
 
-    final fadeStart = widget.initialSheetSize + 0.17;
-    if (widget.maxSheetSize <= fadeStart) return 1.0;
+    if (fadeEndSheetSize <= fadeStartSheetSize) return 1.0;
 
     final opacity =
-        (draggableControllerOfSheet.size - fadeStart) /
-        (widget.maxSheetSize - fadeStart);
+        (draggableControllerOfSheet.size - fadeStartSheetSize) /
+        (fadeEndSheetSize - fadeStartSheetSize);
     return opacity.clamp(0.0, 1.0);
   }
 
@@ -75,7 +79,7 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
   void onSheetChanged() {
     if (!mounted || !draggableControllerOfSheet.isAttached) return;
 
-    _isSheetOpen = draggableControllerOfSheet.size > widget.initialSheetSize;
+    _isSheetOpen = draggableControllerOfSheet.size > initialChildSize;
     setState(() {});
   }
 
@@ -83,7 +87,7 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
     if (!draggableControllerOfSheet.isAttached) return;
 
     await draggableControllerOfSheet.animateTo(
-      widget.maxSheetSize,
+      maxChildSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -93,7 +97,7 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
     if (!draggableControllerOfSheet.isAttached) return;
 
     await draggableControllerOfSheet.animateTo(
-      widget.initialSheetSize,
+      initialChildSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -104,13 +108,17 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
     return _isSheetOpen;
   }
 
+  void onTapOutsideSheet() {
+    collapseSheet();
+  }
+
   void dragFromHeaderSheet(DragUpdateDetails details) {
     if (!draggableControllerOfSheet.isAttached) return;
 
     final screenHeight = MediaQuery.sizeOf(context).height;
     final nextSheetSize =
         (draggableControllerOfSheet.size - details.delta.dy / screenHeight)
-            .clamp(widget.initialSheetSize, widget.maxSheetSize);
+            .clamp(initialChildSize, maxChildSize);
 
     draggableControllerOfSheet.jumpTo(nextSheetSize);
   }
@@ -122,7 +130,7 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
     const velocityThreshold = 900.0;
     final shouldCollapse =
         dragVelocity > velocityThreshold ||
-        draggableControllerOfSheet.size < widget.maxSheetSize / 2;
+        draggableControllerOfSheet.size < maxChildSize / 2;
 
     if (shouldCollapse) {
       collapseSheet();
@@ -130,8 +138,8 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
     }
 
     final targetSheetSize = draggableControllerOfSheet.size < snapMidpoint
-        ? widget.initialSheetSize
-        : widget.maxSheetSize;
+        ? initialChildSize
+        : maxChildSize;
 
     draggableControllerOfSheet.animateTo(
       targetSheetSize,
@@ -149,18 +157,18 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
         if (isExpandedSheet())
           GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: collapseSheet,
+            onTap: onTapOutsideSheet,
             child: const SizedBox.expand(),
           ),
-          
+
         // The draggable sheet itself.
         Align(
           alignment: Alignment.bottomCenter,
           child: DraggableScrollableSheet(
             controller: draggableControllerOfSheet,
-            initialChildSize: widget.initialSheetSize,
-            minChildSize: widget.minSheetSize,
-            maxChildSize: widget.maxSheetSize,
+            initialChildSize: initialChildSize,
+            minChildSize: minChildSize,
+            maxChildSize: maxChildSize,
             builder: (context, scrollController) {
               return SafeArea(
                 top: false,
@@ -174,42 +182,45 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
                       horizontal: BorderSide(color: Colors.grey[300]!),
                     ),
                   ),
-                  
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 10),
-                    curve: Curves.easeOutCubic,
-                    opacity: contentOpacity,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final footer = footerOfSheet(context);
 
-                        return Column(
-                          children: [
-                            // The header is wrapped in a GestureDetector to allow dragging the sheet.
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: constraints.maxHeight,
-                              ),
-                              child: SingleChildScrollView(
-                                primary: false,
-                                physics: const NeverScrollableScrollPhysics(),
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onVerticalDragUpdate: dragFromHeaderSheet,
-                                  onVerticalDragEnd: dragEndFromHeaderSheet,
-                                  child: headerOfSheet(context),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 10),
+                      curve: Curves.easeOutCubic,
+                      opacity: contentOpacity,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final footer = footerOfSheet(context);
+
+                          return Column(
+                            children: [
+                              // The header is wrapped in a GestureDetector to allow dragging the sheet.
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxHeight: constraints.maxHeight,
+                                ),
+                                child: SingleChildScrollView(
+                                  primary: false,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onVerticalDragUpdate: dragFromHeaderSheet,
+                                    onVerticalDragEnd: dragEndFromHeaderSheet,
+                                    child: headerOfSheet(context),
+                                  ),
                                 ),
                               ),
-                            ),
-                            
-                            // The body is scrollable and receives the controller.
-                            bodyOfSheet(context, scrollController),
-                            
-                            // The footer is optional and displayed after the body.
-                            ?footer,
-                          ],
-                        );
-                      },
+
+                              // The body is scrollable and receives the controller.
+                              bodyOfSheet(context, scrollController),
+
+                              // The footer is optional and displayed after the body.
+                              ?footer,
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
