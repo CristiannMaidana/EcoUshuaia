@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.d
 import 'package:eco_ushuaia/features/map/domain/entities/contenedor.dart';
 import 'package:eco_ushuaia/features/map/domain/entities/residuos.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/map_search_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/medicion_sensor.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/usuario_contenedores_favoritos_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/data_container.dart';
@@ -88,11 +89,16 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
   Future<void> expandSheet() async {
     if (!draggableControllerOfDetailsContainerSheet.isAttached) return;
 
+    final updatedFillLevel = context
+        .read<MedicionSensorViewModel>()
+        .load(widget.selectedContainer.idContenedor);
+
     await draggableControllerOfDetailsContainerSheet.animateTo(
       widget.maxSheetSize,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+    await updatedFillLevel;
   }
 
   Future<void> collapseSheet() async {
@@ -161,6 +167,11 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
     final vmUsuarioFavoritos = context.watch<UsuarioContenedoresFavoritosViewModel>();
     final vmResiduos = context.watch<ResiduoViewmodel>();
     final vmMap = context.watch<MapSearchViewModel>();
+    final medicionSensorViewModel = context.watch<MedicionSensorViewModel>();
+    final medicionSensorDelContenedor =
+        medicionSensorViewModel.medicionSensor?.idContenedor == widget.selectedContainer.idContenedor
+            ? medicionSensorViewModel.medicionSensor
+            : null;
 
     // Get info of the selected residuo
     final idResiduoOfContainer = widget.selectedContainer.idResiduo;
@@ -372,7 +383,7 @@ class SheetOfDetailsOfContainerInMapState extends State<SheetOfDetailsOfContaine
                                           child: InfoStateContainer(
                                             titulo: 'Nivel de llenado',
                                             icon: Icons.delete_outline,
-                                            descripcion:(widget.selectedContainer.capacidadTotal ??'Desconocido').toString(),
+                                            descripcion:medicionSensorDelContenedor?.nivelLlenado ?? 'Desconocido',
                                           ),
                                         ),
                                         SizedBox(width: 8),
