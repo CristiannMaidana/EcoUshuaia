@@ -1,6 +1,6 @@
 class MedicionSensor {
   final int idContenedor;
-  final int volumenMedido;
+  final double volumenMedido;
   final String nivelLlenado;
 
   const MedicionSensor({
