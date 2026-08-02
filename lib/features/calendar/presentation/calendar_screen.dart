@@ -1,11 +1,10 @@
 import 'package:eco_ushuaia/features/calendar/domain/entities/calendarios.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario_viewmodel.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_noticias_viewmodel.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/drag_sheet_container.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/filter_widget.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/new_reminder.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheet_of_type_of_news.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/list_news.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,9 +22,9 @@ class CalenderScreen extends StatefulWidget {
 class _CalenderScreenState extends State<CalenderScreen> {
   final GlobalKey<CalendarioWidgetState> _calendarKey = GlobalKey<CalendarioWidgetState>();
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
-  final GlobalKey _filterBtnKey = GlobalKey();
+  final GlobalKey<SheetOfTypeOfNewsState> _sheetOfTypeOfNewsKey = GlobalKey<SheetOfTypeOfNewsState>();
+
   Calendarios? _selectedCal;
-  OverlayEntry? _filterEntry;
 
   @override
   void initState() {
@@ -45,69 +44,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
   void _closeSheet() {
     _sheetKey.currentState?.collapse();
-  }
-
-  @override
-  void dispose() {
-    _hideFilter();
-    super.dispose();
-  }
-
-  void _toggleFilter(BuildContext context) {
-    if (_filterEntry == null) {
-      _showFilterBelow(context);
-    } else {
-      _hideFilter();
-    }
-  }
-
-  void _showFilterBelow(BuildContext context) {
-    final overlay = Overlay.of(context);
-    final box = _filterBtnKey.currentContext?.findRenderObject() as RenderBox?;
-    final pos = box?.localToGlobal(Offset.zero) ?? Offset.zero;
-    final size = box?.size ?? const Size(0, 0);
-    final top = pos.dy + size.height + 6;
-    final catsVm = context.read<CategoriaNoticiasViewmodel>();
-
-    _filterEntry = OverlayEntry(
-      builder: (_) => Stack(
-        children: [
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _hideFilter,
-              child: Container(color: Colors.transparent),
-            ),
-          ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: top,
-                  left: pos.dx - 200 + (size.width / 2),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child:
-                      ChangeNotifierProvider<CategoriaNoticiasViewmodel>.value(
-                        value: catsVm,
-                        child: const FilterWidget(),
-                      ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    overlay.insert(_filterEntry!);
-  }
-
-  void _hideFilter() {
-    _filterEntry?.remove();
-    _filterEntry = null;
   }
 
   @override
@@ -223,7 +159,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   const SizedBox(width: 10),
                   Builder(
                     builder: (context) => Container(
-                      key: _filterBtnKey,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(22),
@@ -234,7 +169,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.edit_calendar_sharp),
-                        onPressed: () => _toggleFilter(context),
+                        onPressed: () => _sheetOfTypeOfNewsKey.currentState?.expandSheet(),
                       ),
                     ),
                   ),
@@ -335,6 +270,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
               newCalendar: _selectedCal,
               onClose: _closeSheet,
             ),
+          ),
+
+          SheetOfTypeOfNews(
+            key: _sheetOfTypeOfNewsKey,
           ),
         ],
       ),
