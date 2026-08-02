@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/categoria_
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/custom_button_filter.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -119,34 +120,66 @@ class SheetOfTypeOfNewsState extends SheetGenericState<SheetOfTypeOfNews> {
     final showsStatus = categories.loading || categories.error != null;
 
     return Expanded(
-      child: ListView.separated(
+      child: SingleChildScrollView(
         controller: scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-        itemCount: showsStatus ? 1 : categories.items.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          if (categories.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (categories.error != null) {
-            return Center(child: Text(categories.error!));
-          }
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        child: showsStatus
+            ? Center(
+                child: categories.loading
+                    ? const CircularProgressIndicator()
+                    : Text(categories.error!),
+              )
+            : Column(
+              children: [
+                ExpansionTileCustom(
+                    title: 'Categorías de noticias',
+                    initiallyOpen: true,
+                    child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: categories.items.map((category) {
+                          return CustomButtonFilter(
+                            label: category.categoria,
+                            tipoDeBoton: _categoryFilterType,
+                            idEntidades: [category.idCategoriaNoticias],
+                            icon: Icon(
+                              Icons.circle,
+                              size: 12,
+                              color: category.colorHex.toColor(),
+                            ),
+                          );
+                        }).toList(),
+                    ),
+                  ),
 
-          final category = categories.items[index];
+                  ExpansionTileCustom(
+                    title: 'Recordatorios agendados',
+                    initiallyOpen: true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text('No hay recordatorios agendados', style: Theme.of(context).textTheme.bodyLarge,),
+                    ),
+                  ),
 
-          return SizedBox(
-            width: double.infinity,
-            child: CustomButtonFilter(
-              label: category.categoria,
-              tipoDeBoton: _categoryFilterType,
-              idEntidades: [category.idCategoriaNoticias],
-              icon: Icon(Icons.circle,
-                size: 12,
-                color: category.colorHex.toColor(),
-              ),
+                  ExpansionTileCustom(
+                    title: 'Contenedores agendados',
+                    initiallyOpen: true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text('No hay contenedores agendados', style: Theme.of(context).textTheme.bodyLarge,),
+                    ),
+                  ),
+
+                  ExpansionTileCustom(
+                    title: 'Direcciones agendados',
+                    initiallyOpen: true,
+                    child:Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text('No hay direcciones agendados', style: Theme.of(context).textTheme.bodyLarge,),
+                    ),
+                  ),
+              ],
             ),
-          );
-        },
       ),
     );
   }
