@@ -11,9 +11,12 @@ class TextFormFieldCustom extends StatelessWidget {
   final FocusNode? focusNode;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
+  final int? minLines;
+  final int? maxLines;
   final EdgeInsetsGeometry contentPadding;
   final bool obscureText;
   final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
 
   const TextFormFieldCustom({
     super.key,
@@ -25,9 +28,12 @@ class TextFormFieldCustom extends StatelessWidget {
     this.focusNode,
     this.controller,
     this.keyboardType,
+    this.minLines,
+    this.maxLines = 1,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
     this.obscureText = false,
     this.onTap,
+    this.onChanged,
   });
 
   @override
@@ -50,7 +56,10 @@ class TextFormFieldCustom extends StatelessWidget {
             style: Theme.of(context).textTheme.labelMedium,
             obscureText: obscureText,
             onTap: onTap,
+            onChanged: onChanged,
             keyboardType: keyboardType,
+            minLines: minLines,
+            maxLines: maxLines,
             decoration: InputDecoration(
               labelText: labelText,
               contentPadding: contentPadding,
