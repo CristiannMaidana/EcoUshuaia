@@ -4,7 +4,7 @@ import 'package:eco_ushuaia/features/calendar/domain/repositories/categoria_noti
 
 class CategoriaNoticiasViewmodel extends ChangeNotifier {
   final CategoriaNoticiasRepositories repo;
-  
+
   CategoriaNoticiasViewmodel(this.repo);
 
   bool _loading = false;
@@ -73,6 +73,13 @@ class CategoriaNoticiasViewmodel extends ChangeNotifier {
     } else {
       _selectedIds.add(id);
     }
+    notifyListeners();
+  }
+
+  void applySelectedCategories(Iterable<int> ids) {
+    _selectedIds
+      ..clear()
+      ..addAll(ids.where(_byId.containsKey));
     notifyListeners();
   }
 }
