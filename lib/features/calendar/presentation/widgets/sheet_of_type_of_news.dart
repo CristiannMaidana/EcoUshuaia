@@ -187,7 +187,7 @@ class SheetOfTypeOfNewsState extends SheetGenericState<SheetOfTypeOfNews> {
   @override
   Widget? footerOfSheet(BuildContext context) {
     if (!draggableControllerOfSheet.isAttached ||
-        MediaQuery.sizeOf(context).height * draggableControllerOfSheet.size < 180) {
+        MediaQuery.sizeOf(context).height * draggableControllerOfSheet.size < 240) {
       return null;
     }
 
