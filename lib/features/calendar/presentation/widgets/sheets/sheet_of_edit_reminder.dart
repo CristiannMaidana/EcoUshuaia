@@ -3,6 +3,7 @@ import 'package:eco_ushuaia/core/ui/widgets/sheet_generic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
+import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 
 class SheetOfEditReminder extends SheetGeneric {
@@ -60,32 +61,71 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
       child: SingleChildScrollView(
         controller: scrollController,
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-        child: Column(
-          children: [
-            
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: TitleOfReminder(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              
+              TitleOfReminder(
                 controller: TitleOfReminderController(),
                 onTitleChanged: (title) {
                   // Handle title change
                 },
               ),
-            ),
-            const SizedBox(height: 16),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: DescriptionOfReminder(
+              const SizedBox(height: 16),
+              
+              DescriptionOfReminder(
                 controller: DescriptionOfReminderController(),
                 onDescriptionChanged: (description) {
                   // Handle description change
                 },
               ),
-            ),
-            const SizedBox(height: 16),
-
-          ],
+              const SizedBox(height: 16),
+              
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Fecha', 
+                    style: Theme.of(context).textTheme.labelLarge
+                  ),
+                  
+                  // TODO: in title have to be a var with the date selected, for default is today
+                  ExpansionTileCustom(
+                    title: 'Fecha',
+                    initiallyOpen: false,
+                    child: Column(
+                      children: [
+                        // Add advanced options widgets here
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Hora', 
+                    style: Theme.of(context).textTheme.labelLarge
+                  ),
+                  
+                  // TODO: in title have to be a var with the time selected, for default is the current time
+                  ExpansionTileCustom(
+                    title: 'Hora',
+                    initiallyOpen: false,
+                    child: Column(
+                      children: [
+                        // Add advanced options widgets here
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+          
+            ],
+          ),
         ),
       )
     );
