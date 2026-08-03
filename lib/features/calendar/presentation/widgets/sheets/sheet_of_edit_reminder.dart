@@ -3,6 +3,7 @@ import 'package:eco_ushuaia/core/ui/widgets/sheet_generic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/wheel_picker_of_time.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,9 @@ class SheetOfEditReminder extends SheetGeneric {
 }
 
 class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
+  final WheelPickerOfTimeController _wheelPickerOfTimeController =
+      WheelPickerOfTimeController();
+
   @override
   Widget headerOfSheet(BuildContext context) {
     return Padding(
@@ -85,45 +89,22 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Fecha', 
+                  Text('Fecha y hora', 
                     style: Theme.of(context).textTheme.labelLarge
                   ),
                   
                   // TODO: in title have to be a var with the date selected, for default is today
                   ExpansionTileCustom(
-                    title: 'Fecha',
+                    title: 'Fecha y hora',
                     initiallyOpen: false,
-                    child: Column(
-                      children: [
-                        // Add advanced options widgets here
-                      ],
+                    child: WheelPickerOfTime(
+                      controller: _wheelPickerOfTimeController,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
               
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Hora', 
-                    style: Theme.of(context).textTheme.labelLarge
-                  ),
-                  
-                  // TODO: in title have to be a var with the time selected, for default is the current time
-                  ExpansionTileCustom(
-                    title: 'Hora',
-                    initiallyOpen: false,
-                    child: Column(
-                      children: [
-                        // Add advanced options widgets here
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-          
             ],
           ),
         ),
