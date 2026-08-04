@@ -122,10 +122,12 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
   static const double _wheelHeight = _itemExtent * 4.5;
 
   late final DateTime _today;
+  late final int _currentHour;
   late final List<DateTime> _availableDays;
   late final FixedExtentScrollController _dayScrollController;
   late final FixedExtentScrollController _hourScrollController;
   late final FixedExtentScrollController _minuteScrollController;
+  bool _isCorrectingHourSelection = false;
 
   @override
   void initState() {
@@ -133,14 +135,25 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
 
     final now = DateTime.now();
     _today = DateTime(now.year, now.month, now.day);
+    _currentHour = now.hour;
     _availableDays = _createAvailableDays();
-    final selectedDateTime = widget.controller.selectedDateTime;
+    var selectedDateTime = widget.controller.selectedDateTime;
     final selectedDayIndex = _availableDays.indexWhere(
       (day) => _isSameDay(day, selectedDateTime),
     );
-    final initialDayIndex = selectedDayIndex >= 0
-        ? selectedDayIndex
-        : _availableDays.indexWhere((day) => _isSameDay(day, _today));
+
+    if (selectedDayIndex < 0) {
+      widget.controller._updateSelectedDay(_today);
+      selectedDateTime = widget.controller.selectedDateTime;
+    }
+
+    if (_isSameDay(selectedDateTime, _today) &&
+        selectedDateTime.hour < _currentHour) {
+      widget.controller._updateSelectedHour(_currentHour);
+      selectedDateTime = widget.controller.selectedDateTime;
+    }
+
+    final initialDayIndex = selectedDayIndex >= 0 ? selectedDayIndex : 0;
 
     _dayScrollController = FixedExtentScrollController(
       initialItem: initialDayIndex,
@@ -154,49 +167,62 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
   }
 
   List<DateTime> _createAvailableDays() {
-    final startingDate = _moveDateByMonths(_today, -1);
-    final endingDate = _moveDateByMonths(_today, 1);
-    final numberOfDays = endingDate.difference(startingDate).inDays + 1;
-
     return List<DateTime>.generate(
-      numberOfDays,
-      (index) => startingDate.add(Duration(days: index)),
-    );
-  }
-
-  DateTime _moveDateByMonths(DateTime date, int numberOfMonths) {
-    final firstDayOfTargetMonth = DateTime(
-      date.year,
-      date.month + numberOfMonths,
-    );
-    final lastDayOfTargetMonth = DateTime(
-      firstDayOfTargetMonth.year,
-      firstDayOfTargetMonth.month + 1,
-      0,
-    ).day;
-    final targetDay = date.day <= lastDayOfTargetMonth
-        ? date.day
-        : lastDayOfTargetMonth;
-
-    return DateTime(
-      firstDayOfTargetMonth.year,
-      firstDayOfTargetMonth.month,
-      targetDay,
+      91,
+      (index) => _today.add(Duration(days: index)),
     );
   }
 
   void _selectDay(int selectedIndex) {
+    final selectedDay = _availableDays[selectedIndex];
+    final mustUseCurrentHour =
+        _isSameDay(selectedDay, _today) &&
+        widget.controller.selectedDateTime.hour < _currentHour;
+
     setState(() {
-      widget.controller._updateSelectedDay(_availableDays[selectedIndex]);
+      widget.controller._updateSelectedDay(selectedDay);
+
+      if (mustUseCurrentHour) {
+        widget.controller._updateSelectedHour(_currentHour);
+      }
     });
+
+    if (mustUseCurrentHour) {
+      _moveHourWheelTo(_currentHour);
+    }
+
     _notifySelectedDateTimeChanged();
   }
 
   void _selectHour(int selectedHour) {
+    if (_isCorrectingHourSelection) return;
+
+    if (!_isHourSelectable(selectedHour)) {
+      _moveHourWheelTo(widget.controller.selectedDateTime.hour);
+      return;
+    }
+
     setState(() {
       widget.controller._updateSelectedHour(selectedHour);
     });
     _notifySelectedDateTimeChanged();
+  }
+
+  bool _isHourSelectable(int hour) {
+    final selectedDay = widget.controller.selectedDateTime;
+    return !_isSameDay(selectedDay, _today) || hour >= _currentHour;
+  }
+
+  Future<void> _moveHourWheelTo(int hour) async {
+    if (!_hourScrollController.hasClients) return;
+
+    _isCorrectingHourSelection = true;
+    await _hourScrollController.animateToItem(
+      hour,
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
+    );
+    _isCorrectingHourSelection = false;
   }
 
   void _selectMinute(int selectedMinute) {
@@ -211,16 +237,11 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
   }
 
   String _formatDayForWheel(DateTime day) {
-    final yesterday = _today.subtract(const Duration(days: 1));
     final tomorrow = _today.add(const Duration(days: 1));
     final abbreviatedMonth = _abbreviatedMonthNames[day.month - 1];
 
     if (_isSameDay(day, _today)) {
       return 'Hoy, ${day.day} $abbreviatedMonth';
-    }
-
-    if (_isSameDay(day, yesterday)) {
-      return 'Ayer, ${day.day} $abbreviatedMonth';
     }
 
     if (_isSameDay(day, tomorrow)) {
@@ -242,6 +263,7 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
     required int itemCount,
     required String Function(int index) formatItem,
     required ValueChanged<int> onSelectedItemChanged,
+    bool Function(int index)? isItemEnabled,
   }) {
     return ListWheelScrollView.useDelegate(
       controller: controller,
@@ -254,9 +276,12 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
       childDelegate: ListWheelChildBuilderDelegate(
         childCount: itemCount,
         builder: (context, index) {
+          final itemEnabled = isItemEnabled?.call(index) ?? true;
+
           return Center(
             child: Text(
               formatItem(index),
+              style: itemEnabled ? null : const TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -303,6 +328,7 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
                       itemCount: 24,
                       formatItem: (index) => index.toString().padLeft(2, '0'),
                       onSelectedItemChanged: _selectHour,
+                      isItemEnabled: _isHourSelectable,
                     ),
                   ),
                   Expanded(
