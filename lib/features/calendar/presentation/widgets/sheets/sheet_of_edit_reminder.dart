@@ -168,6 +168,12 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
               ),
               const SizedBox(height: 16),
               
+              OpenSheetTileCustom(
+                title: Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
+                onTap: () {
+                  // Handle repeat option tap
+                },
+              ),
             ],
           ),
         ),
