@@ -4,6 +4,7 @@ import 'package:eco_ushuaia/core/ui/widgets/sheet_generic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/button_icon_show_text.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/drop_bar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/open_sheet_tile_custom.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/wheel_picker_of_time.dart';
@@ -24,6 +25,17 @@ class SheetOfEditReminder extends SheetGeneric {
 
 class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
   final WheelPickerOfTimeController _wheelPickerOfTimeController = WheelPickerOfTimeController();
+  final GlobalKey<DropBarState> _reminderNotificationDropBarKey = GlobalKey<DropBarState>();
+  static const List<String> _reminderNotificationOptions = [
+    'En el momento',
+    '5 minutos antes',
+    '10 minutos antes',
+    '15 minutos antes',
+    '30 minutos antes',
+    '1 hora antes',
+    '2 horas antes',
+  ];
+  bool _isReminderNotificationDropBarOpen = false;
   bool _isReminderButtonSelected = false;
   bool _isReminderButtonSelected1 = false;
   bool _isReminderButtonSelected2 = false;
@@ -168,10 +180,26 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
               ),
               const SizedBox(height: 16),
               
-              OpenSheetTileCustom(
-                title: Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
-                onTap: () {
-                  // Handle repeat option tap
+              Builder(
+                builder: (reminderNotificationTileContext) {
+                  return OpenSheetTileCustom(
+                    title: Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
+                    isOpen: _isReminderNotificationDropBarOpen,
+                    onTap: () {
+                      _reminderNotificationDropBarKey.currentState?.openDropBar(
+                        reminderNotificationTileContext,
+                      );
+                    },
+                  );
+                },
+              ),
+              DropBar(
+                key: _reminderNotificationDropBarKey,
+                options: _reminderNotificationOptions,
+                onOpenChanged: (isOpen) {
+                  setState(() {
+                    _isReminderNotificationDropBarOpen = isOpen;
+                  });
                 },
               ),
             ],
