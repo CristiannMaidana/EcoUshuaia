@@ -1,4 +1,4 @@
-import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionOfReminderController extends TextEditingController {
@@ -63,32 +63,63 @@ class _DescriptionOfReminderState extends State<DescriptionOfReminder> {
   @override
   Widget build(BuildContext context) {
     final characterCount = widget.controller.characterCount;
-    final exceedsCharacterLimit = widget.controller.exceedsCharacterLimit;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Descripcion (Opcional)', 
-          style: Theme.of(context).textTheme.labelLarge
+        Text('Descripción (opcional)',
+          style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
 
-        TextFormFieldCustom(
-          controller: widget.controller,
-          keyboardType: TextInputType.multiline,
-          minLines: 1,
-          maxLines: null,
-          labelText: 'ingresa una descripcion...',
-        ),
-        const SizedBox(height: 8),
-
-        Text('$characterCount/${DescriptionOfReminderController.maximumCharacterCount} letras', style: Theme.of(context).textTheme.labelLarge),
-        if (exceedsCharacterLimit)
-          Text('La descripcion no puede superar las 200 letras.',
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Colors.red
-            ),
+        SizedBox(
+          height: 110,
+          child: Stack(
+            children: [
+              TextFormField(
+                controller: widget.controller,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                maxLines: null,
+                expands: true,
+                maxLength: DescriptionOfReminderController.maximumCharacterCount,
+                buildCounter:( context, {
+                      required currentLength,
+                      required isFocused,
+                      required maxLength,
+                    }) => null,
+                textAlignVertical: TextAlignVertical.top,
+                style: Theme.of(context).textTheme.bodyMedium,
+                decoration: InputDecoration(
+                  hintText: 'Agregá más información...',
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600]
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 34),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Color(0xFFE1E6EB)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: camarone600),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 16,
+                bottom: 14,
+                child: IgnorePointer(
+                  child: Text('$characterCount/${DescriptionOfReminderController.maximumCharacterCount}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                  ),
+                ),
+              ),
+            ],
           ),
+        ),
       ],
     );
   }
