@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 class DropBar extends StatefulWidget {
   final List<String> options;
   final ValueChanged<String>? onOptionSelected;
+  final ValueChanged<bool>? onOpenChanged;
   final String? initialSelectedValue;
 
   const DropBar({
     super.key,
     required this.options,
     this.onOptionSelected,
+    this.onOpenChanged,
     this.initialSelectedValue,
   });
 
@@ -44,7 +46,10 @@ class DropBarState extends State<DropBar> {
     if (_selectedValue != null && !widget.options.contains(_selectedValue)) {
       _selectedValue = null;
     }
-    _dropBarOverlayEntry?.markNeedsBuild();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _dropBarOverlayEntry == null) return;
+      _dropBarOverlayEntry!.markNeedsBuild();
+    });
   }
 
   void openDropBar(BuildContext anchorContext) {
@@ -114,11 +119,15 @@ class DropBarState extends State<DropBar> {
     );
 
     overlayState.insert(_dropBarOverlayEntry!);
+    widget.onOpenChanged?.call(true);
   }
 
   void closeDropBar() {
-    _dropBarOverlayEntry?.remove();
+    if (_dropBarOverlayEntry == null) return;
+
+    _dropBarOverlayEntry!.remove();
     _dropBarOverlayEntry = null;
+    widget.onOpenChanged?.call(false);
   }
 
   void _selectOption(String selectedOption) {
@@ -163,7 +172,8 @@ class DropBarState extends State<DropBar> {
 
   @override
   void dispose() {
-    closeDropBar();
+    _dropBarOverlayEntry?.remove();
+    _dropBarOverlayEntry = null;
     super.dispose();
   }
 
