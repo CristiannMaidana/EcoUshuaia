@@ -3,12 +3,7 @@ import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/core/ui/widgets/sheet_generic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/button_icon_show_text.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/drop_bar.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/open_sheet_tile_custom.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/wheel_picker_of_time.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/content_of_reminder_time_and_date.dart';
 import 'package:flutter/material.dart';
 
 class SheetCreateReminder extends SheetGeneric {
@@ -24,26 +19,9 @@ class SheetCreateReminder extends SheetGeneric {
 }
 
 class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
-  final WheelPickerOfTimeController _wheelPickerOfTimeController = WheelPickerOfTimeController();
-  final GlobalKey<DropBarState> _reminderNotificationDropBarKey = GlobalKey<DropBarState>();
-  final GlobalKey<DropBarState> _reminderRepeatDropBarKey = GlobalKey<DropBarState>();
-  static const List<String> _reminderNotificationOptions = [
-    'En el momento',
-    '5 minutos antes',
-    '10 minutos antes',
-    '15 minutos antes',
-    '30 minutos antes',
-    '1 hora antes',
-    '2 horas antes',
-  ];
-  static const List<String> _reminderRepeatOptions = [
-    'No repetir',
-    'Todos los días',
-    'Cada semana',
-    'Cada mes',
-  ];
-  bool _isReminderNotificationDropBarOpen = false;
-  bool _isReminderRepeatDropBarOpen = false;
+  final GlobalKey<ContentOfReminderTimeAndDateState>
+      _contentOfReminderTimeAndDateKey =
+      GlobalKey<ContentOfReminderTimeAndDateState>();
   bool _isReminderButtonSelected = false;
   bool _isReminderButtonSelected1 = false;
   bool _isReminderButtonSelected2 = false;
@@ -153,111 +131,8 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
               ),
               const SizedBox(height: 16),
 
-              TitleOfReminder(
-                controller: TitleOfReminderController(),
-                onTitleChanged: (title) {
-                  // Handle title change
-                },
-              ),
-              const SizedBox(height: 16),
-              
-              DescriptionOfReminder(
-                controller: DescriptionOfReminderController(),
-                onDescriptionChanged: (description) {
-                  // Handle description change
-                },
-              ),
-              const SizedBox(height: 16),
-              
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Fecha y hora', 
-                    style: Theme.of(context).textTheme.labelLarge
-                  ),
-                  
-                  // TODO: in title have to be a var with the date selected, for default is today
-                  ExpansionTileCustom(
-                    title: 'Selecciona fecha y hora',
-                    initiallyOpen: false,
-                    child: WheelPickerOfTime(
-                      controller: _wheelPickerOfTimeController,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Repetir', style: Theme.of(context).textTheme.labelLarge),
-
-                  Builder(
-                    builder: (reminderRepeatTileContext) {
-                      return OpenSheetTileCustom(
-                        title: Row(
-                          children: [
-                            Icon(Icons.repeat, color: camarone600),
-                            const SizedBox(width: 10),
-                            Text('Repetir', style: Theme.of(context).textTheme.labelLarge),
-                          ],
-                        ),
-                        isOpen: _isReminderRepeatDropBarOpen,
-                        onTap: () {
-                          _reminderRepeatDropBarKey.currentState?.openDropBar(
-                            reminderRepeatTileContext,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-              DropBar(
-                key: _reminderRepeatDropBarKey,
-                options: _reminderRepeatOptions,
-                onOpenChanged: (isOpen) {
-                  setState(() {
-                    _isReminderRepeatDropBarOpen = isOpen;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Notificación', style: Theme.of(context).textTheme.labelLarge),
-                  Builder(
-                    builder: (reminderNotificationTileContext) {
-                      return OpenSheetTileCustom(
-                        title: Row(
-                          children: [
-                            Icon(Icons.notifications, color: camarone600),
-                            const SizedBox(width: 10),
-                            Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
-                          ],
-                        ),
-                        isOpen: _isReminderNotificationDropBarOpen,
-                        onTap: () {
-                          _reminderNotificationDropBarKey.currentState?.openDropBar(
-                            reminderNotificationTileContext,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-              DropBar(
-                key: _reminderNotificationDropBarKey,
-                options: _reminderNotificationOptions,
-                onOpenChanged: (isOpen) {
-                  setState(() {
-                    _isReminderNotificationDropBarOpen = isOpen;
-                  });
-                },
+              ContentOfReminderTimeAndDate(
+                key: _contentOfReminderTimeAndDateKey,
               ),
               
             ],
