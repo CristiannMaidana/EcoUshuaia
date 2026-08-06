@@ -3,8 +3,8 @@ import 'package:eco_ushuaia/features/calendar/presentation/viewmodels/calendario
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_basic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/drag_sheet_container.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/new_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheet_of_type_of_news.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheets/sheet_create_reminder.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/list_news.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +23,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   final GlobalKey<CalendarioWidgetState> _calendarKey = GlobalKey<CalendarioWidgetState>();
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
   final GlobalKey<SheetOfTypeOfNewsState> _sheetOfTypeOfNewsKey = GlobalKey<SheetOfTypeOfNewsState>();
+  final GlobalKey<SheetCreateReminderState> _sheetCreateReminderKey = GlobalKey<SheetCreateReminderState>();
 
   Calendarios? _selectedCal;
 
@@ -116,44 +117,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       border: Border.all(color: Color(0xFFE7EFE5), width: 1),
                     ),
                     child: IconButton(
-                      icon: const Icon(
-                        Icons.add,
+                      icon: const Icon(Icons.add,
                         color: Colors.black,
                         size: 22,
                       ),
-                      onPressed: () {
-                        showGeneralDialog<void>(
-                          context: context,
-                          barrierDismissible: true,
-                          barrierLabel: 'Nuevo recordatorio',
-                          barrierColor: Colors.black45,
-                          transitionDuration: const Duration(
-                            milliseconds: 280,
-                          ),
-                          pageBuilder: (_, _, _) => Center(
-                            child: Material(
-                              color: Colors.transparent,
-                              child: NewReminder(),
-                            ),
-                          ),
-                          transitionBuilder: (_, anim, _, child) {
-                            final curved = CurvedAnimation(
-                              parent: anim,
-                              curve: Curves.easeOutCubic,
-                            );
-                            return FadeTransition(
-                              opacity: curved,
-                              child: ScaleTransition(
-                                scale: Tween(
-                                  begin: 0.95,
-                                  end: 1.0,
-                                ).animate(curved),
-                                child: child,
-                              ),
-                            );
-                          },
-                        );
-                      },
+                      onPressed: () => _sheetCreateReminderKey.currentState?.expandSheet(),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -274,6 +242,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
           SheetOfTypeOfNews(
             key: _sheetOfTypeOfNewsKey,
+          ),
+
+          SheetCreateReminder(
+            key: _sheetCreateReminderKey,
           ),
         ],
       ),
