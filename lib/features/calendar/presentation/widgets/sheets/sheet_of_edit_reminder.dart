@@ -26,6 +26,8 @@ class SheetOfEditReminder extends SheetGeneric {
 class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
   final WheelPickerOfTimeController _wheelPickerOfTimeController = WheelPickerOfTimeController();
   final GlobalKey<DropBarState> _reminderNotificationDropBarKey = GlobalKey<DropBarState>();
+  final GlobalKey<DropBarState> _reminderRepeatDropBarKey =
+      GlobalKey<DropBarState>();
   static const List<String> _reminderNotificationOptions = [
     'En el momento',
     '5 minutos antes',
@@ -35,7 +37,14 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
     '1 hora antes',
     '2 horas antes',
   ];
+  static const List<String> _reminderRepeatOptions = [
+    'No repetir',
+    'Todos los días',
+    'Cada semana',
+    'Cada mes',
+  ];
   bool _isReminderNotificationDropBarOpen = false;
+  bool _isReminderRepeatDropBarOpen = false;
   bool _isReminderButtonSelected = false;
   bool _isReminderButtonSelected1 = false;
   bool _isReminderButtonSelected2 = false;
@@ -180,18 +189,67 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
               ),
               const SizedBox(height: 16),
               
-              Builder(
-                builder: (reminderNotificationTileContext) {
-                  return OpenSheetTileCustom(
-                    title: Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
-                    isOpen: _isReminderNotificationDropBarOpen,
-                    onTap: () {
-                      _reminderNotificationDropBarKey.currentState?.openDropBar(
-                        reminderNotificationTileContext,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Repetir', style: Theme.of(context).textTheme.labelLarge),
+
+                  Builder(
+                    builder: (reminderRepeatTileContext) {
+                      return OpenSheetTileCustom(
+                        title: Row(
+                          children: [
+                            Icon(Icons.repeat, color: camarone600),
+                            const SizedBox(width: 10),
+                            Text('Repetir', style: Theme.of(context).textTheme.labelLarge),
+                          ],
+                        ),
+                        isOpen: _isReminderRepeatDropBarOpen,
+                        onTap: () {
+                          _reminderRepeatDropBarKey.currentState?.openDropBar(
+                            reminderRepeatTileContext,
+                          );
+                        },
                       );
                     },
-                  );
+                  ),
+                ],
+              ),
+              DropBar(
+                key: _reminderRepeatDropBarKey,
+                options: _reminderRepeatOptions,
+                onOpenChanged: (isOpen) {
+                  setState(() {
+                    _isReminderRepeatDropBarOpen = isOpen;
+                  });
                 },
+              ),
+              const SizedBox(height: 16),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Notificación', style: Theme.of(context).textTheme.labelLarge),
+                  Builder(
+                    builder: (reminderNotificationTileContext) {
+                      return OpenSheetTileCustom(
+                        title: Row(
+                          children: [
+                            Icon(Icons.notifications, color: camarone600),
+                            const SizedBox(width: 10),
+                            Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
+                          ],
+                        ),
+                        isOpen: _isReminderNotificationDropBarOpen,
+                        onTap: () {
+                          _reminderNotificationDropBarKey.currentState?.openDropBar(
+                            reminderNotificationTileContext,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
               DropBar(
                 key: _reminderNotificationDropBarKey,
@@ -202,6 +260,8 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
                   });
                 },
               ),
+              const SizedBox(height: 16),
+              
             ],
           ),
         ),
