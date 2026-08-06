@@ -16,7 +16,7 @@ class SheetOfEditReminder extends SheetGeneric {
     super.key,
     super.initialSheetSize = 0.00,
     super.minSheetSize = 0.00,
-    super.maxSheetSize = 0.80,
+    super.maxSheetSize = 0.95,
   });
 
   @override
@@ -260,7 +260,6 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
                   });
                 },
               ),
-              const SizedBox(height: 16),
               
             ],
           ),
@@ -270,5 +269,20 @@ class SheetOfEditReminderState extends SheetGenericState<SheetOfEditReminder> {
   }
 
   @override
-  Widget? footerOfSheet(BuildContext context) => null;
+  Widget footerOfSheet(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+      child: ElevatedButton(
+        onPressed: () {
+          //TODO: create the post for the reminder
+          collapseSheet();
+        },
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(double.infinity, 48),
+          backgroundColor: camarone600,
+        ),
+        child: Text('Crear recordatorio', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
+      ),
+    );
+  }
 }
