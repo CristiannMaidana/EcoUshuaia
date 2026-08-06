@@ -11,7 +11,7 @@ class SheetCreateReminder extends SheetGeneric {
     super.key,
     super.initialSheetSize = 0.00,
     super.minSheetSize = 0.00,
-    super.maxSheetSize = 0.95,
+    super.maxSheetSize = 1.00,
   });
 
   @override
@@ -19,9 +19,7 @@ class SheetCreateReminder extends SheetGeneric {
 }
 
 class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
-  final GlobalKey<ContentOfReminderTimeAndDateState>
-      _contentOfReminderTimeAndDateKey =
-      GlobalKey<ContentOfReminderTimeAndDateState>();
+  final GlobalKey<ContentOfReminderTimeAndDateState> _contentOfReminderTimeAndDateKey = GlobalKey<ContentOfReminderTimeAndDateState>();
   bool _isReminderButtonSelected = false;
   bool _isReminderButtonSelected1 = false;
   bool _isReminderButtonSelected2 = false;
