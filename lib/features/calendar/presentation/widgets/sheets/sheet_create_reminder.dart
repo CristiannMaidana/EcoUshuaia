@@ -20,10 +20,8 @@ class SheetCreateReminder extends SheetGeneric {
 
 class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
   final GlobalKey<ContentOfReminderTimeAndDateState> _contentOfReminderTimeAndDateKey = GlobalKey<ContentOfReminderTimeAndDateState>();
-  bool _isReminderButtonSelected = false;
-  bool _isReminderButtonSelected1 = false;
-  bool _isReminderButtonSelected2 = false;
-  bool _isReminderButtonSelected3 = false;
+  bool _isReminderButtonSelectedUser = false;
+  bool _isReminderButtonSelectedContainer = false;
 
   @override
   Widget headerOfSheet(BuildContext context) {
@@ -76,55 +74,28 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
                 children: [
                   ButtonIconShowText(
                     icon: Icons.insert_drive_file_outlined,
-                    text: 'Elegir fecha',
-                    isSelected: _isReminderButtonSelected,
+                    text: 'Recordatorio personal',
+                    isSelected: _isReminderButtonSelectedUser,
                     onSelected: () async {
                       setState(() {
-                        _isReminderButtonSelected = !_isReminderButtonSelected;
+                        _isReminderButtonSelectedUser = !_isReminderButtonSelectedUser;
                       });
                     },
                     selectedColor: camarone600,
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 15),
 
                   ButtonIconShowText(
-                    icon: Icons.local_shipping,
-                    text: 'Recolección',
-                    isSelected: _isReminderButtonSelected1,
-                    onSelected: () async {
-                      setState(() {
-                        _isReminderButtonSelected1 = !_isReminderButtonSelected1;
-                      });
-                    },
-                    selectedColor: Color.fromRGBO(121, 83, 255, 1),
-                  ),
-                  const SizedBox(width: 10),
-               
-                  ButtonIconShowText(
                     icon: Icons.delete,
-                    text: 'Llenado',
-                    isSelected: _isReminderButtonSelected2,
+                    text: 'Recordatorio de reciclaje',
+                    isSelected: _isReminderButtonSelectedContainer,
                     onSelected: () async {
                       setState(() {
-                        _isReminderButtonSelected2 = !_isReminderButtonSelected2;
+                        _isReminderButtonSelectedContainer = !_isReminderButtonSelectedContainer;
                       });
                     },
                     selectedColor: Color.fromRGBO(255, 189, 74, 1),
                   ),
-                  const SizedBox(width: 10),
-
-                  ButtonIconShowText(
-                    icon: Icons.recycling,
-                    text: 'Disponible',
-                    isSelected: _isReminderButtonSelected3,
-                    onSelected: () async {
-                      setState(() {
-                        _isReminderButtonSelected3 = !_isReminderButtonSelected3;
-                      });
-                    },
-                    selectedColor: Color.fromRGBO(88, 172, 255, 1),
-                  ),
-                  const SizedBox(width: 10),
                 ],
               ),
               const SizedBox(height: 16),
@@ -151,7 +122,6 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
         },
         style: ElevatedButton.styleFrom(
           minimumSize: Size(double.infinity, 48),
-          backgroundColor: camarone600,
         ),
         child: Text('Crear recordatorio', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
       ),
