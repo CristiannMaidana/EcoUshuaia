@@ -57,13 +57,13 @@ class _ButtonIconShowTextState extends State<ButtonIconShowText> {
             duration: _buttonAnimationDuration,
             curve: Curves.easeOutCubic,
             padding: EdgeInsets.symmetric(
-              horizontal: widget.isSelected ? 20 : 20,
+              horizontal: widget.isSelected ? 20 : 30,
               vertical: 12,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(widget.icon, color: foregroundColor, size: 24),
+                Icon(widget.icon, color: foregroundColor, size: 26),
                 AnimatedSwitcher(
                   duration: _buttonAnimationDuration,
                   switchInCurve: Curves.easeOutCubic,
