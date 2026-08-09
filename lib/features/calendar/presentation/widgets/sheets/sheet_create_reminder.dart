@@ -12,7 +12,7 @@ class SheetCreateReminder extends SheetGeneric {
     super.key,
     super.initialSheetSize = 0.00,
     super.minSheetSize = 0.00,
-    super.maxSheetSize = 1.00,
+    super.maxSheetSize = 0.99,
   });
 
   @override
