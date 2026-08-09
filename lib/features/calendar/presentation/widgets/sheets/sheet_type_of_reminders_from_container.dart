@@ -11,6 +11,7 @@ class SheetTypeOfRemindersFromContainer extends SheetGeneric {
           initialSheetSize: 0.0,
           minSheetSize: 0.0,
           maxSheetSize: 0.92,
+          animationDurationMilliseconds: 30,
         );
 
   @override
