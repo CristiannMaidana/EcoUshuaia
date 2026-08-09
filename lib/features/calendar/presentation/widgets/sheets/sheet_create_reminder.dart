@@ -3,6 +3,7 @@ import 'package:eco_ushuaia/core/ui/widgets/barra_agarre.dart';
 import 'package:eco_ushuaia/core/ui/widgets/sheet_generic.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/circle_icon.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/button_icon_show_text.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/content_of_reminder_container.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/content_of_reminder_time_and_date.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,8 @@ class SheetCreateReminder extends SheetGeneric {
 
 class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
   final GlobalKey<ContentOfReminderTimeAndDateState> _contentOfReminderTimeAndDateKey = GlobalKey<ContentOfReminderTimeAndDateState>();
-  bool _isReminderButtonSelectedUser = false;
+  final GlobalKey<ContentOfReminderContainerState> _contentOfReminderContainerKey = GlobalKey<ContentOfReminderContainerState>();
+  bool _isReminderButtonSelectedUser = true;
   bool _isReminderButtonSelectedContainer = false;
 
   @override
@@ -69,7 +71,6 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              // TODO: chango to allow only one selected button at a time, for default open the first button selected
               Row(
                 children: [
                   ButtonIconShowText(
@@ -77,8 +78,11 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
                     text: 'Recordatorio personal',
                     isSelected: _isReminderButtonSelectedUser,
                     onSelected: () async {
+                      if (_isReminderButtonSelectedUser) return;
+
                       setState(() {
-                        _isReminderButtonSelectedUser = !_isReminderButtonSelectedUser;
+                        _isReminderButtonSelectedUser = true;
+                        _isReminderButtonSelectedContainer = false;
                       });
                     },
                     selectedColor: camarone600,
@@ -90,8 +94,11 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
                     text: 'Recordatorio de reciclaje',
                     isSelected: _isReminderButtonSelectedContainer,
                     onSelected: () async {
+                      if (_isReminderButtonSelectedContainer) return;
+
                       setState(() {
-                        _isReminderButtonSelectedContainer = !_isReminderButtonSelectedContainer;
+                        _isReminderButtonSelectedUser = false;
+                        _isReminderButtonSelectedContainer = true;
                       });
                     },
                     selectedColor: Color.fromRGBO(255, 189, 74, 1),
@@ -100,10 +107,14 @@ class SheetCreateReminderState extends SheetGenericState<SheetCreateReminder> {
               ),
               const SizedBox(height: 16),
 
-              ContentOfReminderTimeAndDate(
-                key: _contentOfReminderTimeAndDateKey,
-              ),
-              
+              if (_isReminderButtonSelectedUser)
+                ContentOfReminderTimeAndDate(
+                  key: _contentOfReminderTimeAndDateKey,
+                )
+              else
+                ContentOfReminderContainer(
+                  key: _contentOfReminderContainerKey,
+                ),
             ],
           ),
         ),
