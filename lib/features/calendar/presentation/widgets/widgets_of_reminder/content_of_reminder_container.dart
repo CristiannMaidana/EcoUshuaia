@@ -3,11 +3,13 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_re
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/drop_bar.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/open_sheet_tile_custom.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheets/sheet_type_of_reminders_from_container.dart';
 import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 
 class ContentOfReminderContainerValues {
   final String? selectedWasteType;
+  final String selectedReminderType;
   final String? selectedContainerApplication;
   final double maximumDistanceInKilometers;
   final String? selectedRepeatOption;
@@ -15,6 +17,7 @@ class ContentOfReminderContainerValues {
 
   const ContentOfReminderContainerValues({
     required this.selectedWasteType,
+    required this.selectedReminderType,
     required this.selectedContainerApplication,
     required this.maximumDistanceInKilometers,
     required this.selectedRepeatOption,
@@ -63,6 +66,7 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
   final DescriptionOfReminderController _descriptionOfReminderController = DescriptionOfReminderController();
 
   String? _selectedWasteType = 'Vidrio';
+  String _selectedReminderType = 'Cuando vuelva a estar disponible';
   String? _selectedContainerApplication;
   double _maximumDistanceInKilometers = 2;
   bool _isReminderRepeatDropBarOpen = false;
@@ -71,6 +75,7 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
   ContentOfReminderContainerValues get reminderValues {
     return ContentOfReminderContainerValues(
       selectedWasteType: _selectedWasteType,
+      selectedReminderType: _selectedReminderType,
       selectedContainerApplication: _selectedContainerApplication,
       maximumDistanceInKilometers: _maximumDistanceInKilometers,
       selectedRepeatOption: _reminderRepeatDropBarKey.currentState?.selectedValue,
@@ -157,19 +162,36 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
                   children: [
                     const Icon(Icons.notifications, color: camarone600),
                     const SizedBox(width: 10),
-                    Text('Cuando vuelva a estar disponible',
+                    Text(_selectedReminderType,
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                   ],
                 ),
-                //TODO: change to a push navigation to a new sheet with the options of the type of reminder
-                onTap: () {},
+                onTap: _openReminderTypeSelection,
               );
             },
           ),
         ],
       );
     }
+
+  Future<void> _openReminderTypeSelection() async {
+    final selectedReminderType = await Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
+        builder: (_) => const SheetTypeOfRemindersFromContainer(),
+      ),
+    );
+
+    if (!mounted ||
+        selectedReminderType == null ||
+        selectedReminderType == _selectedReminderType) {
+      return;
+    }
+
+    setState(() {
+      _selectedReminderType = selectedReminderType;
+    });
+  }
 
   Widget _buildContainerApplicationSelector(BuildContext context) {
     return Column(
