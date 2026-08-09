@@ -9,13 +9,15 @@ abstract class SheetGeneric extends StatefulWidget {
   final double initialSheetSize;
   final double minSheetSize;
   final double maxSheetSize;
+  final int animationDurationMilliseconds;
 
   const SheetGeneric({
     super.key,
     required this.initialSheetSize,
     required this.minSheetSize,
     required this.maxSheetSize,
-  });
+    this.animationDurationMilliseconds = 300,
+  }) : assert(animationDurationMilliseconds >= 0);
 }
 
 /// Common state and behavior for every [SheetGeneric].
@@ -88,7 +90,9 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
 
     await draggableControllerOfSheet.animateTo(
       maxChildSize,
-      duration: const Duration(milliseconds: 300),
+      duration: Duration(
+        milliseconds: widget.animationDurationMilliseconds,
+      ),
       curve: Curves.easeInOut,
     );
   }
@@ -98,7 +102,8 @@ abstract class SheetGenericState<T extends SheetGeneric> extends State<T> {
 
     await draggableControllerOfSheet.animateTo(
       initialChildSize,
-      duration: const Duration(milliseconds: 300),
+      duration:  Duration(        milliseconds: widget.animationDurationMilliseconds,
+),
       curve: Curves.easeInOut,
     );
   }
