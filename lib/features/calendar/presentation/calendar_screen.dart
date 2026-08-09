@@ -5,6 +5,7 @@ import 'package:eco_ushuaia/features/calendar/presentation/widgets/detail_news.d
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/drag_sheet_container.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheet_of_type_of_news.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheets/sheet_create_reminder.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheets/sheet_of_edit_reminder.dart';
 import 'package:eco_ushuaia/features/news/presentation/widgets/list_news.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   final GlobalKey<DragSheetContainerState> _sheetKey = GlobalKey<DragSheetContainerState>();
   final GlobalKey<SheetOfTypeOfNewsState> _sheetOfTypeOfNewsKey = GlobalKey<SheetOfTypeOfNewsState>();
   final GlobalKey<SheetCreateReminderState> _sheetCreateReminderKey = GlobalKey<SheetCreateReminderState>();
+  final GlobalKey<SheetOfEditReminderState> _sheetEditReminderKey = GlobalKey<SheetOfEditReminderState>();
 
   Calendarios? _selectedCal;
 
@@ -81,173 +83,188 @@ class _CalenderScreenState extends State<CalenderScreen> {
         : DateFormat('MMMM', locale).format(visibleMonth);
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          scrolledUnderElevation: 0,
-          toolbarHeight: 60,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            Column(
               children: [
-                Text('Calendario',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                // AppBar
+                SizedBox(
+                  child: AppBar(
+                    primary: false,
+                    scrolledUnderElevation: 0,
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text('Calendario',
+                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(fechaHoy,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 15,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(22),
+                                border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.add,
+                                  color: Colors.black,
+                                  size: 22,
+                                ),
+                                onPressed: () => _sheetCreateReminderKey.currentState?.expandSheet(),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Builder(
+                              builder: (context) => Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(22),
+                                  border: Border.all(
+                                    color: Color(0xFFE7EFE5),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.edit_calendar_sharp),
+                                  onPressed: () => _sheetOfTypeOfNewsKey.currentState?.expandSheet(),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(22),
+                                border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.notifications),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(fechaHoy,
-                  style: Theme.of(context).textTheme.labelMedium,
+
+                //Body
+                Expanded(
+                  child: Column(
+                    children: [
+                      //Calendar
+                      AnimatedContainer(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 20,
+                        ),
+                        height: calendarHeight.toDouble(),
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFCFEFC),
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(color: Color(0xFFE7EFE5), width: 1),
+                        ),
+                        child: CalendarioWidget(key: _calendarKey),
+                      ),
+
+                      //Texto noticias
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('Noticias de: $newsHeaderText',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
+
+                            // Boton "Hoy"
+                            SafeArea(
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 15),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(22),
+                                  border: Border.all(
+                                    color: Color(0xFFE7EFE5),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: TextButton(
+                                  onPressed: () {
+                                    _calendarKey.currentState?.goToday();
+                                    context
+                                        .read<CalendarioViewmodel>()
+                                        .setSelectedDay(DateTime.now());
+                                  },
+                                  child: Text('Hoy',
+                                    style: Theme.of(context).textTheme.labelMedium,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //News list
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 15, 3),
+                          child: CustomNovedades(expand: _onNovedadTap),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 15,
+
+            //Sheet de detalle de noticia
+            DragSheetContainer(
+              key: _sheetKey,
+              child: DetailNews(
+                newCalendar: _selectedCal,
+                onClose: _closeSheet,
               ),
-              child: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.add,
-                        color: Colors.black,
-                        size: 22,
-                      ),
-                      onPressed: () => _sheetCreateReminderKey.currentState?.expandSheet(),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Builder(
-                    builder: (context) => Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(
-                          color: Color(0xFFE7EFE5),
-                          width: 1,
-                        ),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.edit_calendar_sharp),
-                        onPressed: () => _sheetOfTypeOfNewsKey.currentState?.expandSheet(),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              ),
+            ),
+
+            SheetOfTypeOfNews(
+              key: _sheetOfTypeOfNewsKey,
+            ),
+
+            SheetCreateReminder(
+              key: _sheetCreateReminderKey,
+            ),
+
+            SheetOfEditReminder(
+              key: _sheetEditReminderKey,
             ),
           ],
         ),
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              //Calendar
-              AnimatedContainer(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 20,
-                ),
-                height: calendarHeight.toDouble(),
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFCFEFC),
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: Color(0xFFE7EFE5), width: 1),
-                ),
-                child: CalendarioWidget(key: _calendarKey),
-              ),
-
-              //Texto noticias
-              Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Noticias de: $newsHeaderText',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-
-                    // Boton "Hoy"
-                    SafeArea(
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(22),
-                          border: Border.all(
-                            color: Color(0xFFE7EFE5),
-                            width: 1,
-                          ),
-                        ),
-                        child: TextButton(
-                          onPressed: () {
-                            _calendarKey.currentState?.goToday();
-                            context
-                                .read<CalendarioViewmodel>()
-                                .setSelectedDay(DateTime.now());
-                          },
-                          child: Text('Hoy',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //News list
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 3),
-                  child: CustomNovedades(expand: _onNovedadTap),
-                ),
-              ),
-            ],
-          ),
-
-          //Sheet de detalle de noticia
-          DragSheetContainer(
-            key: _sheetKey,
-            child: DetailNews(
-              newCalendar: _selectedCal,
-              onClose: _closeSheet,
-            ),
-          ),
-
-          SheetOfTypeOfNews(
-            key: _sheetOfTypeOfNewsKey,
-          ),
-
-          SheetCreateReminder(
-            key: _sheetCreateReminderKey,
-          ),
-        ],
       ),
     );
   }
