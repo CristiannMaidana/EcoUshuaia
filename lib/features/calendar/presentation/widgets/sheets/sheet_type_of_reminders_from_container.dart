@@ -89,6 +89,7 @@ class _SheetTypeOfRemindersFromContainerState extends SheetGenericState<SheetTyp
           const SizedBox(height: 8),
           
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleIcon( icon: Icons.arrow_back,
                 onPressed: _returnWithSelectedReminderType,
