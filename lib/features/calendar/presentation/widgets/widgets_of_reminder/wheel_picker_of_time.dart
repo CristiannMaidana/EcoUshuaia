@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 
-const List<String> _abbreviatedWeekdayNames = [
-  'Lun',
-  'Mar',
-  'Mié',
-  'Jue',
-  'Vie',
-  'Sáb',
-  'Dom',
-];
-
 const List<String> _fullWeekdayNames = [
   'Lunes',
   'Martes',
@@ -18,21 +8,6 @@ const List<String> _fullWeekdayNames = [
   'Viernes',
   'Sábado',
   'Domingo',
-];
-
-const List<String> _abbreviatedMonthNames = [
-  'ene',
-  'feb',
-  'mar',
-  'abr',
-  'may',
-  'jun',
-  'jul',
-  'ago',
-  'sept',
-  'oct',
-  'nov',
-  'dic',
 ];
 
 const List<String> _fullMonthNames = [
@@ -58,14 +33,22 @@ class WheelPickerOfTimeController {
 
   DateTime get selectedDateTime => _selectedDateTime;
 
-  String get formattedSelectedDateTime {
+  String get formattedSelectedDate {
     final weekday = _fullWeekdayNames[_selectedDateTime.weekday - 1];
     final month = _fullMonthNames[_selectedDateTime.month - 1];
+
+    return '$weekday ${_selectedDateTime.day} de $month de ${_selectedDateTime.year}';
+  }
+
+  String get formattedSelectedTime {
     final hour = _selectedDateTime.hour.toString().padLeft(2, '0');
     final minute = _selectedDateTime.minute.toString().padLeft(2, '0');
 
-    return '$weekday ${_selectedDateTime.day} de $month · $hour:$minute';
+    return '$hour:$minute';
   }
+
+  String get formattedSelectedDateTime =>
+      '$formattedSelectedDate · $formattedSelectedTime';
 
   void _updateSelectedDay(DateTime selectedDay) {
     _selectedDateTime = DateTime(
@@ -103,14 +86,18 @@ class WheelPickerOfTimeController {
   }
 }
 
+enum WheelPickerOfTimeMode { date, time }
+
 class WheelPickerOfTime extends StatefulWidget {
   const WheelPickerOfTime({
     super.key,
     required this.controller,
+    required this.mode,
     this.onSelectedDateTimeChanged,
   });
 
   final WheelPickerOfTimeController controller;
+  final WheelPickerOfTimeMode mode;
   final ValueChanged<DateTime>? onSelectedDateTimeChanged;
 
   @override
@@ -127,6 +114,7 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
   late final FixedExtentScrollController _dayScrollController;
   late final FixedExtentScrollController _hourScrollController;
   late final FixedExtentScrollController _minuteScrollController;
+  bool _isCorrectingDaySelection = false;
   bool _isCorrectingHourSelection = false;
 
   @override
@@ -153,7 +141,7 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
       selectedDateTime = widget.controller.selectedDateTime;
     }
 
-    final initialDayIndex = selectedDayIndex >= 0 ? selectedDayIndex : 0;
+    final initialDayIndex = selectedDayIndex >= 0 ? selectedDayIndex : 30;
 
     _dayScrollController = FixedExtentScrollController(
       initialItem: initialDayIndex,
@@ -168,13 +156,24 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
 
   List<DateTime> _createAvailableDays() {
     return List<DateTime>.generate(
-      91,
-      (index) => _today.add(Duration(days: index)),
+      121,
+      (index) => _today.add(Duration(days: index - 30)),
     );
   }
 
   void _selectDay(int selectedIndex) {
+    if (_isCorrectingDaySelection) return;
+
     final selectedDay = _availableDays[selectedIndex];
+    if (!_isDaySelectable(selectedIndex)) {
+      _moveDayWheelTo(
+        _availableDays.indexWhere(
+          (day) => _isSameDay(day, widget.controller.selectedDateTime),
+        ),
+      );
+      return;
+    }
+
     final mustUseCurrentHour =
         _isSameDay(selectedDay, _today) &&
         widget.controller.selectedDateTime.hour < _currentHour;
@@ -187,11 +186,21 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
       }
     });
 
-    if (mustUseCurrentHour) {
-      _moveHourWheelTo(_currentHour);
-    }
-
     _notifySelectedDateTimeChanged();
+  }
+
+  bool _isDaySelectable(int index) => !_availableDays[index].isBefore(_today);
+
+  Future<void> _moveDayWheelTo(int index) async {
+    if (!_dayScrollController.hasClients || index < 0) return;
+
+    _isCorrectingDaySelection = true;
+    await _dayScrollController.animateToItem(
+      index,
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
+    );
+    _isCorrectingDaySelection = false;
   }
 
   void _selectHour(int selectedHour) {
@@ -225,6 +234,20 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
     _isCorrectingHourSelection = false;
   }
 
+  @override
+  void didUpdateWidget(covariant WheelPickerOfTime oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.mode != WheelPickerOfTimeMode.time) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_hourScrollController.hasClients) return;
+      final selectedHour = widget.controller.selectedDateTime.hour;
+      if (_hourScrollController.selectedItem != selectedHour) {
+        _hourScrollController.jumpToItem(selectedHour);
+      }
+    });
+  }
+
   void _selectMinute(int selectedMinute) {
     setState(() {
       widget.controller._updateSelectedMinute(selectedMinute);
@@ -238,18 +261,18 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
 
   String _formatDayForWheel(DateTime day) {
     final tomorrow = _today.add(const Duration(days: 1));
-    final abbreviatedMonth = _abbreviatedMonthNames[day.month - 1];
+    final month = _fullMonthNames[day.month - 1];
 
     if (_isSameDay(day, _today)) {
-      return 'Hoy, ${day.day} $abbreviatedMonth';
+      return 'Hoy, ${day.day} de $month de ${day.year}';
     }
 
     if (_isSameDay(day, tomorrow)) {
-      return 'Mañana, ${day.day} $abbreviatedMonth';
+      return 'Mañana, ${day.day} de $month de ${day.year}';
     }
 
-    final abbreviatedWeekday = _abbreviatedWeekdayNames[day.weekday - 1];
-    return '$abbreviatedWeekday, ${day.day} $abbreviatedMonth';
+    final weekday = _fullWeekdayNames[day.weekday - 1];
+    return '$weekday, ${day.day} de $month de ${day.year}';
   }
 
   bool _isSameDay(DateTime firstDate, DateTime secondDate) {
@@ -283,7 +306,7 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
               formatItem(index),
               style: itemEnabled ? null : const TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
-              maxLines: 1,
+              maxLines: widget.mode == WheelPickerOfTimeMode.date ? 2 : 1,
               overflow: TextOverflow.ellipsis,
             ),
           );
@@ -312,40 +335,41 @@ class _WheelPickerOfTimeState extends State<WheelPickerOfTime> {
               Container(height: _itemExtent, color: const Color(0xFFE5E7EB)),
               Row(
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: _buildWheel(
-                      controller: _dayScrollController,
-                      itemCount: _availableDays.length,
-                      formatItem: (index) =>
-                          _formatDayForWheel(_availableDays[index]),
-                      onSelectedItemChanged: _selectDay,
+                  if (widget.mode == WheelPickerOfTimeMode.date)
+                    Expanded(
+                      child: _buildWheel(
+                        controller: _dayScrollController,
+                        itemCount: _availableDays.length,
+                        formatItem: (index) =>
+                            _formatDayForWheel(_availableDays[index]),
+                        onSelectedItemChanged: _selectDay,
+                        isItemEnabled: _isDaySelectable,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildWheel(
-                      controller: _hourScrollController,
-                      itemCount: 24,
-                      formatItem: (index) => index.toString().padLeft(2, '0'),
-                      onSelectedItemChanged: _selectHour,
-                      isItemEnabled: _isHourSelectable,
+                  if (widget.mode == WheelPickerOfTimeMode.time) ...[
+                    Expanded(
+                      child: _buildWheel(
+                        controller: _hourScrollController,
+                        itemCount: 24,
+                        formatItem: (index) => index.toString().padLeft(2, '0'),
+                        onSelectedItemChanged: _selectHour,
+                        isItemEnabled: _isHourSelectable,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildWheel(
-                      controller: _minuteScrollController,
-                      itemCount: 60,
-                      formatItem: (index) => index.toString().padLeft(2, '0'),
-                      onSelectedItemChanged: _selectMinute,
+                    Expanded(
+                      child: _buildWheel(
+                        controller: _minuteScrollController,
+                        itemCount: 60,
+                        formatItem: (index) => index.toString().padLeft(2, '0'),
+                        onSelectedItemChanged: _selectMinute,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        Text(widget.controller.formattedSelectedDateTime),
       ],
     );
   }
