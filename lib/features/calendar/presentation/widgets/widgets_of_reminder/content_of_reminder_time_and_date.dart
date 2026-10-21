@@ -1,7 +1,6 @@
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_option_dropdown.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/button_selected.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/reminder_text_fields_card.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/wheel_picker_of_time.dart';
 import 'package:flutter/material.dart';
@@ -78,12 +77,24 @@ class ContentOfReminderTimeAndDateState
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ReminderTextFieldsCard(
-          titleField: TitleOfReminder(controller: _titleOfReminderController),
-          descriptionField: DescriptionOfReminder(
-            controller: _descriptionOfReminderController,
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: Text(
+            'Para tus tareas y actividades del día a día',
+            textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: 18,
+              height: 1.4,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
+        const SizedBox(height: 16),
+
+        TitleOfReminder(controller: _titleOfReminderController),
+        const SizedBox(height: 10),
+
+        DescriptionOfReminder(controller: _descriptionOfReminderController),
         const SizedBox(height: 16),
 
         CalendarOptionDropdown(
