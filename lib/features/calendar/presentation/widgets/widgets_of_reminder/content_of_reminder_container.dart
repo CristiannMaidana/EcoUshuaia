@@ -1,25 +1,34 @@
 import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_option_dropdown.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/button_selected.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/drop_bar.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/open_sheet_tile_custom.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/sheets/sheet_type_of_reminders_from_container.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/button_filter_viewmodel.dart';
+import 'package:eco_ushuaia/features/map/presentation/viewmodels/residuo_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ContentOfReminderContainerValues {
+  final String reminderTitle;
+  final String reminderDescription;
   final String? selectedWasteType;
+  final List<int> selectedWasteTypeIds;
   final String selectedReminderType;
   final String? selectedContainerApplication;
   final double maximumDistanceInKilometers;
+  final int selectedFillLevelPercent;
   final String? selectedRepeatOption;
   final String? selectedNotificationOption;
 
   const ContentOfReminderContainerValues({
+    required this.reminderTitle,
+    required this.reminderDescription,
     required this.selectedWasteType,
+    required this.selectedWasteTypeIds,
     required this.selectedReminderType,
     required this.selectedContainerApplication,
     required this.maximumDistanceInKilometers,
+    required this.selectedFillLevelPercent,
     required this.selectedRepeatOption,
     required this.selectedNotificationOption,
   });
@@ -29,22 +38,24 @@ class ContentOfReminderContainer extends StatefulWidget {
   const ContentOfReminderContainer({super.key});
 
   @override
-  ContentOfReminderContainerState createState() => ContentOfReminderContainerState();
+  ContentOfReminderContainerState createState() =>
+      ContentOfReminderContainerState();
 }
 
-class ContentOfReminderContainerState extends State<ContentOfReminderContainer> {
-  // TODO: change for the provider of residuos
-  static const List<String> _wasteTypeOptions = [
-    'Plástico',
-    'Papel y cartón',
-    'Vidrio',
-    'Orgánico',
+class ContentOfReminderContainerState
+    extends State<ContentOfReminderContainer> {
+  static const int _wasteTypeFilter = 1;
+  static const List<String> _reminderTypeOptions = [
+    'Contenedor disponible',
+    'Nivel de llenado',
+    'Cambio de estado',
   ];
   static const List<String> _containerApplicationOptions = [
-    'Todos los contenedores',
-    'Contenedores cercanos',
-    'Contenedores favoritos',
+    'Favoritos',
+    'Cercanos',
+    'Todos',
   ];
+  static const List<int> _fillLevelOptions = [10, 30, 50, 70, 90, 100];
   static const List<String> _reminderRepeatOptions = [
     'No repetir',
     'Todos los días',
@@ -61,25 +72,38 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
     '2 horas antes',
   ];
 
-  final GlobalKey<DropBarState> _reminderRepeatDropBarKey = GlobalKey<DropBarState>();
-  final GlobalKey<DropBarState> _reminderNotificationDropBarKey = GlobalKey<DropBarState>();
-  final DescriptionOfReminderController _descriptionOfReminderController = DescriptionOfReminderController();
+  final TitleOfReminderController _titleOfReminderController =
+      TitleOfReminderController();
+  final DescriptionOfReminderController _descriptionOfReminderController =
+      DescriptionOfReminderController();
+  final ButtonFilterViewmodel _wasteTypeFilterViewmodel =
+      ButtonFilterViewmodel();
 
-  String? _selectedWasteType = 'Vidrio';
-  String _selectedReminderType = 'Cuando vuelva a estar disponible';
-  String? _selectedContainerApplication;
+  String _selectedReminderType = _reminderTypeOptions.first;
+  String? _selectedContainerApplication = 'Cercanos';
   double _maximumDistanceInKilometers = 2;
-  bool _isReminderRepeatDropBarOpen = false;
-  bool _isReminderNotificationDropBarOpen = false;
+  int _selectedFillLevelPercent = 30;
+  String? _selectedRepeatOption;
+  String? _selectedNotificationOption;
 
   ContentOfReminderContainerValues get reminderValues {
+    final selectedWasteTypes = _wasteTypeFilterViewmodel.selected;
+    final selectedWasteTypeIds =
+        _wasteTypeFilterViewmodel.filtros[_wasteTypeFilter] ?? const <int>[];
+
     return ContentOfReminderContainerValues(
-      selectedWasteType: _selectedWasteType,
+      reminderTitle: _titleOfReminderController.reminderTitle,
+      reminderDescription: _descriptionOfReminderController.reminderDescription,
+      selectedWasteType: selectedWasteTypes.isEmpty
+          ? null
+          : selectedWasteTypes.first,
+      selectedWasteTypeIds: List<int>.unmodifiable(selectedWasteTypeIds),
       selectedReminderType: _selectedReminderType,
       selectedContainerApplication: _selectedContainerApplication,
       maximumDistanceInKilometers: _maximumDistanceInKilometers,
-      selectedRepeatOption: _reminderRepeatDropBarKey.currentState?.selectedValue,
-      selectedNotificationOption: _reminderNotificationDropBarKey.currentState?.selectedValue,
+      selectedFillLevelPercent: _selectedFillLevelPercent,
+      selectedRepeatOption: _selectedRepeatOption,
+      selectedNotificationOption: _selectedNotificationOption,
     );
   }
 
@@ -87,177 +111,192 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildWasteTypeSelector(context),
-        const SizedBox(height: 16),
-        
-        _buildTypeOfReminder(context),
-        const SizedBox(height: 16),
-        
-        _buildContainerApplicationSelector(context),
-        const SizedBox(height: 16),
-
-        _buildMaximumDistanceSelector(context),
-        const SizedBox(height: 16),
-
-        _buildRepeatSelector(context),
-        DropBar(
-          key: _reminderRepeatDropBarKey,
-          options: _reminderRepeatOptions,
-          onOpenChanged: (isOpen) {
-            setState(() {
-              _isReminderRepeatDropBarOpen = isOpen;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-
-        _buildNotificationSelector(context),
-        DropBar(
-          key: _reminderNotificationDropBarKey,
-          options: _reminderNotificationOptions,
-          onOpenChanged: (isOpen) {
-            setState(() {
-              _isReminderNotificationDropBarOpen = isOpen;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        
+        TitleOfReminder(controller: _titleOfReminderController),
+        const SizedBox(height: 10),
         DescriptionOfReminder(controller: _descriptionOfReminderController),
+        const SizedBox(height: 16),
+
+        ChangeNotifierProvider<ButtonFilterViewmodel>.value(
+          value: _wasteTypeFilterViewmodel,
+          child: Builder(builder: _buildWasteTypeSelector),
+        ),
+        const SizedBox(height: 16),
+
+        CalendarOptionDropdown(
+          title: 'Tipo de aviso',
+          subtitle: _selectedReminderType,
+          icon: Icons.notifications_active_outlined,
+          expandedChild: _buildSelectableOptions(
+            options: _reminderTypeOptions,
+            selectedOption: _selectedReminderType,
+            onOptionSelected: (option) {
+              setState(() => _selectedReminderType = option);
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        CalendarOptionDropdown(
+          title: 'Aplicar a',
+          subtitle: _selectedContainerApplication ?? 'Seleccioná contenedores',
+          icon: Icons.place_outlined,
+          expandedChild: _buildSelectableOptions(
+            options: _containerApplicationOptions,
+            selectedOption: _selectedContainerApplication,
+            onOptionSelected: (option) {
+              setState(() => _selectedContainerApplication = option);
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        CalendarOptionDropdown(
+          title: 'Radio de búsqueda',
+          subtitle: _formatDistance(_maximumDistanceInKilometers),
+          icon: Icons.radar_outlined,
+          expandedChild: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Column(
+              children: [
+                Slider(
+                  value: _maximumDistanceInKilometers,
+                  min: 0.5,
+                  max: 10,
+                  divisions: 19,
+                  activeColor: camarone600,
+                  label: _formatDistance(_maximumDistanceInKilometers),
+                  onChanged: (distance) {
+                    setState(() => _maximumDistanceInKilometers = distance);
+                  },
+                ),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text('500 m'), Text('10 km')],
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        CalendarOptionDropdown(
+          title: 'Nivel de llenado',
+          subtitle: _formatFillLevel(_selectedFillLevelPercent),
+          icon: Icons.bar_chart_outlined,
+          expandedChild: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _fillLevelOptions.map((level) {
+              return ButtonSelected(
+                text: _formatFillLevel(level),
+                isSelected: level == _selectedFillLevelPercent,
+                onPressed: () {
+                  setState(() => _selectedFillLevelPercent = level);
+                },
+              );
+            }).toList(),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        CalendarOptionDropdown(
+          title: 'Repetir',
+          subtitle: _selectedRepeatOption ?? 'Seleccioná una frecuencia',
+          icon: Icons.repeat,
+          expandedChild: _buildSelectableOptions(
+            options: _reminderRepeatOptions,
+            selectedOption: _selectedRepeatOption,
+            onOptionSelected: (option) {
+              setState(() => _selectedRepeatOption = option);
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        CalendarOptionDropdown(
+          title: 'Notificación',
+          subtitle: _selectedNotificationOption ?? 'Seleccioná cuándo avisarte',
+          icon: Icons.notifications_outlined,
+          expandedChild: _buildSelectableOptions(
+            options: _reminderNotificationOptions,
+            selectedOption: _selectedNotificationOption,
+            onOptionSelected: (option) {
+              setState(() => _selectedNotificationOption = option);
+            },
+          ),
+        ),
       ],
     );
   }
 
   Widget _buildWasteTypeSelector(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Tipo de residuo', style: Theme.of(context).textTheme.labelLarge),
-        ExpansionTileCustom(
-          title: _selectedWasteType ?? 'Seleccioná un tipo de residuo',
-          initiallyOpen: false,
-          child: _buildSelectableOptions(
-            options: _wasteTypeOptions,
-            selectedOption: _selectedWasteType,
-            onOptionSelected: (selectedWasteType) {
-              setState(() {
-                _selectedWasteType = selectedWasteType;
-              });
-            },
-          ),
-        ),
-      ],
+    final wasteTypesViewmodel = context.watch<ResiduoViewmodel>();
+    final filterViewmodel = context.watch<ButtonFilterViewmodel>();
+    final selectedCount = filterViewmodel.selected.length;
+    final subtitle = selectedCount == 0
+        ? 'Seleccioná un tipo de residuo'
+        : selectedCount == 1
+        ? filterViewmodel.selected.first
+        : '$selectedCount tipos seleccionados';
+
+    return CalendarOptionDropdown(
+      title: 'Tipo de residuo',
+      subtitle: subtitle,
+      icon: Icons.recycling,
+      expandedChild: _buildWasteTypeOptions(
+        wasteTypesViewmodel,
+        filterViewmodel,
+      ),
     );
   }
 
-  Widget _buildTypeOfReminder(BuildContext context) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Tipo de aviso', style: Theme.of(context).textTheme.labelLarge),
-          Builder(
-            builder: (reminderRepeatTileContext) {
-              return OpenSheetTileCustom(
-                title: Row(
-                  children: [
-                    const Icon(Icons.notifications, color: camarone600),
-                    const SizedBox(width: 10),
-                    Text(_selectedReminderType,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
-                ),
-                onTap: _openReminderTypeSelection,
-              );
-            },
-          ),
-        ],
+  Widget _buildWasteTypeOptions(
+    ResiduoViewmodel wasteTypesViewmodel,
+    ButtonFilterViewmodel filterViewmodel,
+  ) {
+    if (wasteTypesViewmodel.loading && wasteTypesViewmodel.items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        child: Center(child: CircularProgressIndicator()),
       );
     }
 
-  Future<void> _openReminderTypeSelection() async {
-    final selectedReminderType = await Navigator.of(context).push<String>(
-      MaterialPageRoute<String>(
-        builder: (_) => const SheetTypeOfRemindersFromContainer(),
-      ),
-    );
-
-    if (!mounted ||
-        selectedReminderType == null ||
-        selectedReminderType == _selectedReminderType) {
-      return;
+    if (wasteTypesViewmodel.error != null &&
+        wasteTypesViewmodel.items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text('No se pudieron cargar los tipos de residuo.'),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: wasteTypesViewmodel.load,
+              child: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      );
     }
 
-    setState(() {
-      _selectedReminderType = selectedReminderType;
-    });
-  }
+    if (wasteTypesViewmodel.items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Text('No hay tipos de residuo disponibles.'),
+      );
+    }
 
-  Widget _buildContainerApplicationSelector(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Aplicar a', style: Theme.of(context).textTheme.labelLarge),
-        ExpansionTileCustom(
-          title: _selectedContainerApplication ?? 'Opciones de contenedor',
-          initiallyOpen: false,
-          child: _buildSelectableOptions(
-            options: _containerApplicationOptions,
-            selectedOption: _selectedContainerApplication,
-            onOptionSelected: (selectedContainerApplication) {
-              setState(() {
-                _selectedContainerApplication = selectedContainerApplication;
-              });
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMaximumDistanceSelector(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Distancia máxima', style: Theme.of(context).textTheme.labelLarge),
-        ExpansionTileCustom(
-          title: 'Ajustá el radio de búsqueda',
-          initiallyOpen: false,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Radio máximo',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  Text(
-                    '${_maximumDistanceInKilometers.toStringAsFixed(1)} km',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: camarone800,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              Slider(
-                value: _maximumDistanceInKilometers,
-                min: 0.5,
-                max: 10,
-                divisions: 19,
-                activeColor: camarone600,
-                label: '${_maximumDistanceInKilometers.toStringAsFixed(1)} km',
-                onChanged: (maximumDistanceInKilometers) {
-                  setState(() {
-                    _maximumDistanceInKilometers = maximumDistanceInKilometers;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
+      mainAxisSize: MainAxisSize.min,
+      children: wasteTypesViewmodel.items.map((wasteType) {
+        return ButtonSelected(
+          text: wasteType.nombre,
+          isSelected: filterViewmodel.isSelected(wasteType.nombre),
+          onPressed: () {
+            filterViewmodel.toggle(wasteType.nombre, _wasteTypeFilter, [
+              wasteType.idResiduo,
+            ]);
+          },
+        );
+      }).toList(),
     );
   }
 
@@ -267,6 +306,7 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
     required ValueChanged<String> onOptionSelected,
   }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: options.map((option) {
         return ButtonSelected(
           text: option,
@@ -277,66 +317,24 @@ class ContentOfReminderContainerState extends State<ContentOfReminderContainer> 
     );
   }
 
-  Widget _buildRepeatSelector(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Repetir', style: Theme.of(context).textTheme.labelLarge),
-        Builder(
-          builder: (reminderRepeatTileContext) {
-            return OpenSheetTileCustom(
-              title: Row(
-                children: [
-                  const Icon(Icons.repeat, color: camarone600),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Repetir',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ],
-              ),
-              isOpen: _isReminderRepeatDropBarOpen,
-              onTap: () {
-                _reminderRepeatDropBarKey.currentState?.openDropBar(
-                  reminderRepeatTileContext,
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
+  String _formatDistance(double distance) => distance < 1
+      ? '${(distance * 1000).round()} m'
+      : '${distance.toStringAsFixed(distance == distance.roundToDouble() ? 0 : 1)} km';
+
+  String _formatFillLevel(int level) {
+    if (level <= 10) return '$level% (muy bajo)';
+    if (level <= 30) return '$level% (bajo)';
+    if (level <= 50) return '$level% (medio)';
+    if (level <= 70) return '$level% (alto)';
+    if (level <= 90) return '$level% (muy alto)';
+    return '$level% (lleno)';
   }
 
-  Widget _buildNotificationSelector(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Avisarme', style: Theme.of(context).textTheme.labelLarge),
-        Builder(
-          builder: (reminderNotificationTileContext) {
-            return OpenSheetTileCustom(
-              title: Row(
-                children: [
-                  const Icon(Icons.notifications, color: camarone600),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Avisarme',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ],
-              ),
-              isOpen: _isReminderNotificationDropBarOpen,
-              onTap: () {
-                _reminderNotificationDropBarKey.currentState?.openDropBar(
-                  reminderNotificationTileContext,
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
+  @override
+  void dispose() {
+    _titleOfReminderController.dispose();
+    _wasteTypeFilterViewmodel.dispose();
+    _descriptionOfReminderController.dispose();
+    super.dispose();
   }
-  
 }
