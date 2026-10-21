@@ -67,11 +67,6 @@ class _DescriptionOfReminderState extends State<DescriptionOfReminder> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Descripción (opcional)',
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-        const SizedBox(height: 8),
-
         SizedBox(
           height: 110,
           child: Stack(
@@ -91,7 +86,7 @@ class _DescriptionOfReminderState extends State<DescriptionOfReminder> {
                 textAlignVertical: TextAlignVertical.top,
                 style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
-                  hintText: 'Agregá más información...',
+                  hintText: 'Nota de recordatorio (opcional)',
                   hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey[600]
                   ),
