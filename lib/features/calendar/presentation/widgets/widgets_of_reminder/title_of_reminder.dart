@@ -1,4 +1,4 @@
-import 'package:eco_ushuaia/features/auth/presentation/widgets/text_form_field_custom.dart';
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class TitleOfReminderController extends TextEditingController {
@@ -20,16 +20,27 @@ class TitleOfReminder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Título del recordatorio', 
-          style: Theme.of(context).textTheme.labelLarge
-        ),
-        const SizedBox(height: 8),
-        
-        TextFormFieldCustom(
+        TextFormField(
           controller: controller,
           onChanged: onTitleChanged,
-          labelText: 'ingresa un titulo...',
-          prefixIcon: const Icon(Icons.insert_drive_file_outlined),
+          style: Theme.of(context).textTheme.bodyMedium,
+          decoration: InputDecoration(
+            hintText: 'Titulo...',
+            hintStyle: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.all(16),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFE1E6EB)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: camarone600),
+            ),
+          ),
         ),
       ],
     );
