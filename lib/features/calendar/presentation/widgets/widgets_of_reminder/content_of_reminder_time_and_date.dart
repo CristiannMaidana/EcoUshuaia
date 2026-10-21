@@ -1,10 +1,9 @@
-import 'package:eco_ushuaia/core/theme/colors.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/calendar_option_dropdown.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/button_selected.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/description_of_reminder.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/drop_bar.dart';
-import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/open_sheet_tile_custom.dart';
+import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/reminder_text_fields_card.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/title_of_reminder.dart';
 import 'package:eco_ushuaia/features/calendar/presentation/widgets/widgets_of_reminder/wheel_picker_of_time.dart';
-import 'package:eco_ushuaia/features/map/presentation/widgets/expansion_tile_custom.dart';
 import 'package:flutter/material.dart';
 
 class ContentOfReminderTimeAndDateValues {
@@ -27,10 +26,12 @@ class ContentOfReminderTimeAndDate extends StatefulWidget {
   const ContentOfReminderTimeAndDate({super.key});
 
   @override
-  ContentOfReminderTimeAndDateState createState() => ContentOfReminderTimeAndDateState();
+  ContentOfReminderTimeAndDateState createState() =>
+      ContentOfReminderTimeAndDateState();
 }
 
-class ContentOfReminderTimeAndDateState extends State<ContentOfReminderTimeAndDate> {
+class ContentOfReminderTimeAndDateState
+    extends State<ContentOfReminderTimeAndDate> {
   static const List<String> _reminderRepeatOptions = [
     'No repetir',
     'Todos los días',
@@ -47,22 +48,22 @@ class ContentOfReminderTimeAndDateState extends State<ContentOfReminderTimeAndDa
     '2 horas antes',
   ];
 
-  final TitleOfReminderController _titleOfReminderController = TitleOfReminderController();
-  final DescriptionOfReminderController _descriptionOfReminderController = DescriptionOfReminderController();
-  final WheelPickerOfTimeController _wheelPickerOfTimeController = WheelPickerOfTimeController();
-  final GlobalKey<DropBarState> _reminderRepeatDropBarKey = GlobalKey<DropBarState>();
-  final GlobalKey<DropBarState> _reminderNotificationDropBarKey = GlobalKey<DropBarState>();
-
-  bool _isReminderRepeatDropBarOpen = false;
-  bool _isReminderNotificationDropBarOpen = false;
+  final TitleOfReminderController _titleOfReminderController =
+      TitleOfReminderController();
+  final DescriptionOfReminderController _descriptionOfReminderController =
+      DescriptionOfReminderController();
+  final WheelPickerOfTimeController _wheelPickerOfTimeController =
+      WheelPickerOfTimeController();
+  String? _selectedRepeatOption;
+  String? _selectedNotificationOption;
 
   ContentOfReminderTimeAndDateValues get reminderValues {
     return ContentOfReminderTimeAndDateValues(
       reminderTitle: _titleOfReminderController.reminderTitle,
       reminderDescription: _descriptionOfReminderController.reminderDescription,
       selectedDateTime: _wheelPickerOfTimeController.selectedDateTime,
-      selectedRepeatOption:  _reminderRepeatDropBarKey.currentState?.selectedValue,
-      selectedNotificationOption: _reminderNotificationDropBarKey.currentState?.selectedValue,
+      selectedRepeatOption: _selectedRepeatOption,
+      selectedNotificationOption: _selectedNotificationOption,
     );
   }
 
@@ -77,112 +78,88 @@ class ContentOfReminderTimeAndDateState extends State<ContentOfReminderTimeAndDa
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TitleOfReminder(controller: _titleOfReminderController),
+        ReminderTextFieldsCard(
+          titleField: TitleOfReminder(controller: _titleOfReminderController),
+          descriptionField: DescriptionOfReminder(
+            controller: _descriptionOfReminderController,
+          ),
+        ),
         const SizedBox(height: 16),
 
-        DescriptionOfReminder(controller: _descriptionOfReminderController),
-        const SizedBox(height: 16),
-        
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Fecha y hora', style: Theme.of(context).textTheme.labelLarge),
-            ExpansionTileCustom(
-              title: 'Selecciona fecha y hora',
-              initiallyOpen: false,
-              child: WheelPickerOfTime(
-                controller: _wheelPickerOfTimeController,
-              ),
+        CalendarOptionDropdown(
+          title: 'Fecha',
+          subtitle: _wheelPickerOfTimeController.formattedSelectedDate,
+          icon: Icons.calendar_today_outlined,
+          position: CalendarOptionDropdownPosition.top,
+          expandedChild: Padding(
+            padding: const EdgeInsets.all(16),
+            child: WheelPickerOfTime(
+              controller: _wheelPickerOfTimeController,
+              mode: WheelPickerOfTimeMode.date,
+              onSelectedDateTimeChanged: (_) => setState(() {}),
             ),
-          ],
+          ),
+        ),
+        CalendarOptionDropdown(
+          title: 'Hora',
+          subtitle: _wheelPickerOfTimeController.formattedSelectedTime,
+          icon: Icons.access_time_outlined,
+          position: CalendarOptionDropdownPosition.bottom,
+          expandedChild: Padding(
+            padding: const EdgeInsets.all(16),
+            child: WheelPickerOfTime(
+              controller: _wheelPickerOfTimeController,
+              mode: WheelPickerOfTimeMode.time,
+              onSelectedDateTimeChanged: (_) => setState(() {}),
+            ),
+          ),
         ),
         const SizedBox(height: 16),
 
-        _buildRepeatSelector(context),
-        DropBar(
-          key: _reminderRepeatDropBarKey,
-          options: _reminderRepeatOptions,
-          onOpenChanged: (isOpen) {
-            setState(() {
-              _isReminderRepeatDropBarOpen = isOpen;
-            });
-          },
+        CalendarOptionDropdown(
+          title: 'Repetir',
+          subtitle: _selectedRepeatOption ?? 'Seleccioná una frecuencia',
+          icon: Icons.repeat,
+          expandedChild: _buildSelectableOptions(
+            options: _reminderRepeatOptions,
+            selectedOption: _selectedRepeatOption,
+            onOptionSelected: (option) {
+              setState(() => _selectedRepeatOption = option);
+            },
+          ),
         ),
         const SizedBox(height: 16),
-        
-        _buildNotificationSelector(context),
-        DropBar(
-          key: _reminderNotificationDropBarKey,
-          options: _reminderNotificationOptions,
-          onOpenChanged: (isOpen) {
-            setState(() {
-              _isReminderNotificationDropBarOpen = isOpen;
-            });
-          },
+
+        CalendarOptionDropdown(
+          title: 'Notificación',
+          subtitle: _selectedNotificationOption ?? 'Seleccioná cuándo avisarte',
+          icon: Icons.notifications_outlined,
+          expandedChild: _buildSelectableOptions(
+            options: _reminderNotificationOptions,
+            selectedOption: _selectedNotificationOption,
+            onOptionSelected: (option) {
+              setState(() => _selectedNotificationOption = option);
+            },
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildRepeatSelector(BuildContext context) {
+  Widget _buildSelectableOptions({
+    required List<String> options,
+    required String? selectedOption,
+    required ValueChanged<String> onOptionSelected,
+  }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Repetir', style: Theme.of(context).textTheme.labelLarge),
-        Builder(
-          builder: (reminderRepeatTileContext) {
-            return OpenSheetTileCustom(
-              title: Row(
-                children: [
-                  const Icon(Icons.repeat, color: camarone600),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Repetir',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ],
-              ),
-              isOpen: _isReminderRepeatDropBarOpen,
-              onTap: () {
-                _reminderRepeatDropBarKey.currentState?.openDropBar(
-                  reminderRepeatTileContext,
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNotificationSelector(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Notificación', style: Theme.of(context).textTheme.labelLarge),
-        Builder(
-          builder: (reminderNotificationTileContext) {
-            return OpenSheetTileCustom(
-              title: Row(
-                children: [
-                  const Icon(Icons.notifications, color: camarone600),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Avisarme',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ],
-              ),
-              isOpen: _isReminderNotificationDropBarOpen,
-              onTap: () {
-                _reminderNotificationDropBarKey.currentState?.openDropBar(
-                  reminderNotificationTileContext,
-                );
-              },
-            );
-          },
-        ),
-      ],
+      mainAxisSize: MainAxisSize.min,
+      children: options.map((option) {
+        return ButtonSelected(
+          text: option,
+          isSelected: option == selectedOption,
+          onPressed: () => onOptionSelected(option),
+        );
+      }).toList(),
     );
   }
 }
