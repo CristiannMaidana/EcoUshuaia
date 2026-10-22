@@ -8,6 +8,10 @@ const Color rojoError = Color(0xFFEF9A9A);
 
 const Color colorNegro = Colors.black;
 
+const Color verde500 = Color(0xFF22C55E);
+const Color verde100 = Color(0xFFDCFCE7);
+const Color verde50 = Color.fromARGB(255, 231, 239, 234);
+
 //Colores finales 
 const Color camarone50  = Color.fromRGBO(242, 255, 240, 1);
 
