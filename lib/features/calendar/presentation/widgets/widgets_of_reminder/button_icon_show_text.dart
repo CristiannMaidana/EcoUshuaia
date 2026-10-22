@@ -1,3 +1,4 @@
+import 'package:eco_ushuaia/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class ButtonIconShowText extends StatefulWidget {
@@ -48,7 +49,7 @@ class _ButtonIconShowTextState extends State<ButtonIconShowText> {
       child: Material(
         color: widget.isSelected
             ? widget.selectedColor
-            : Colors.grey[200],
+            : verde50,
         borderRadius: BorderRadius.circular(24),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -57,7 +58,7 @@ class _ButtonIconShowTextState extends State<ButtonIconShowText> {
             duration: _buttonAnimationDuration,
             curve: Curves.easeOutCubic,
             padding: EdgeInsets.symmetric(
-              horizontal: widget.isSelected ? 20 : 30,
+              horizontal: widget.isSelected ? 20 : 25,
               vertical: 12,
             ),
             child: Row(
